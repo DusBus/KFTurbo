@@ -97,8 +97,10 @@ simulated function UnSetBurningBehavior()
 {
     class'PawnHelper'.static.UnSetBurningBehavior(self, AfflictionData);
 
+    GoToState('');
+
     if( Level.NetMode != NM_DedicatedServer )
-        PostNetReceive();
+        PostNetReceive();    
 }
 
 simulated function ZombieCrispUp()

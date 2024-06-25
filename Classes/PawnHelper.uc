@@ -7,6 +7,7 @@ class PawnHelper extends Object;
 //Burn affliction data
 struct BurnAfflictionData
 {
+	var bool bHasCompleted;
 	var float BurnPrimaryModifier;
 	var float BurnSecondaryModifier;
 	var float BurnDuration;
@@ -335,15 +336,20 @@ static final function float GetHeadHealthModifier(KFMonster KFM, LevelInfo Level
 
 static final function TickAfflictionData(float DeltaTime, KFMonster KFM, out AfflictionData AD)
 {
-    if(KFM.bBurnified && AD.Burn.BurnRatio < 1.f)
+    if(KFM.bBurnified)
     {
         AD.Burn.BurnRatio += (DeltaTime / AD.Burn.BurnDuration);
+
+		if (AD.Burn.BurnRatio >= 1.f)
+		{
+			AD.Burn.bHasCompleted = true;
+		}
     }
 }
 
 static final function bool ShouldApplyBurn(AfflictionData AD)
 {
-	return AD.Burn.BurnRatio < 1.f;
+	return !AD.Burn.bHasCompleted && AD.Burn.BurnRatio < 1.f;
 }
 
 static final function float GetBurnSpeedMultiplier(AfflictionData AD)
