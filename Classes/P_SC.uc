@@ -87,14 +87,7 @@ function PlayDirectionalHit(Vector HitLoc)
 
 simulated function SetBurningBehavior()
 {
-    if(ProAI != None && ProAI.bForcedRage)
-        return;
-
     class'PawnHelper'.static.SetBurningBehavior(self, AfflictionData);
-    //BurnRatio = 0.f;
-
-    if( Role == Role_Authority && IsInState('RunningState') )
-        GotoState('');
 
     if( Level.NetMode != NM_DedicatedServer )
         PostNetReceive();
@@ -103,7 +96,6 @@ simulated function SetBurningBehavior()
 simulated function UnSetBurningBehavior()
 {
     class'PawnHelper'.static.UnSetBurningBehavior(self, AfflictionData);
-    //BurnRatio = 0.f;
 
     if( Level.NetMode != NM_DedicatedServer )
         PostNetReceive();
@@ -150,76 +142,16 @@ simulated function SetZappedBehavior()
     Super.SetZappedBehavior();
 }
 
-function RangedAttack(Actor A)
-{
-	if ( bShotAnim || Physics == PHYS_Swimming)
-		return;
-	else if ( CanAttack(A) )
-	{
-		bShotAnim = true;
-		SetAnimAction(MeleeAnims[Rand(2)]);
-		CurrentDamType = ZombieDamType[0];
-		GoToState('SawingLoop');
-	}
-}
-
-function bool ShouldCharge()
-{
-	if (ProAI != None && ProAI.bForcedRage)
-	{
-		return true;
-	}
-	else if (Level.Game.GameDifficulty < 5.0 && float(Health) / HealthMax < 0.5)
-	{
-		return true;
-	}
-	else if (Level.Game.GameDifficulty >= 5.0 && float(Health) / HealthMax < 0.75)
-	{
-		return true;
-	}
-
-	return false;
-}
-
 state RunningState
 {
-	// Set the zed to the zapped behavior
-    simulated function SetZappedBehavior()
-    {
-        if(ProAI != None && ProAI.bForcedRage)
-            return;
-
-        Global.SetZappedBehavior();
-        GoToState('');
-	}
-
-    simulated function UnSetZappedBehavior()
-    {
-        Super.UnSetZappedBehavior();
-		
-		if (ProAI == None || !ProAI.bForcedRage)
-		{
-			return;
-		}
-
-		BeginState();
-    }
-
     simulated function UnSetBurningBehavior()
     {
-		Super.UnSetBurningBehavior();
-
-		if (ProAI == None || !ProAI.bForcedRage)
-		{
-			return;
-		}
-
-		BeginState();
+		Global.UnSetBurningBehavior();
     }
 
 	function BeginState()
 	{
-		if(bZapped && (ProAI == None || !ProAI.bForcedRage))
+		if(bZapped)
         {
             GoToState('');
         }
