@@ -26,7 +26,7 @@ static final function PenetratingWeaponTrace(Vector TraceStart, KFWeapon Weapon,
 
 	while(HitCount < PenetrationMax)
 	{
-		switch(WeaponTrace(TraceStart, TraceEnd, MomentumVector, Weapon, Fire, HitActor, HitLocation, (PenetrationMultiplier * float(HitCount))))
+		switch(WeaponTrace(TraceStart, TraceEnd, MomentumVector, Weapon, Fire, HitActor, HitLocation, (PenetrationMultiplier ** float(HitCount + 1))))
 		{
 		case TR_Block:
 			HitCount = PenetrationMax + 1;
@@ -83,9 +83,6 @@ static final function ETraceResult WeaponTrace(Vector TraceStart, Vector TraceEn
 	optional out material Material*/
 
 	HitActor = Fire.Instigator.HitPointTrace(HitLocation, HitNormal, TraceEnd, HitPoints, TraceStart, vect(0,0,0), 1);
-
-	//One Minus the value to get the actual multiplier.
-	DamageReduction = 1.0 - DamageReduction;
 
 	if(ShouldSkipActor(HitActor, Fire.Instigator))
 	{
