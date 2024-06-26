@@ -1,5 +1,16 @@
 class KFPPlayerController extends KFPCServ;
 
+event ClientOpenMenu(string Menu, optional bool bDisconnect,optional string Msg1, optional string Msg2)
+{
+	//Attempt fix weird issue where wrong login menu is present.
+	if (Menu ~= "ServerPerks.SRInvasionLoginMenu" || Menu ~= "KFGui.KFInvasionLoginMenu")
+	{
+		Menu = string(class'KFTurbo.KFPInvasionLoginMenu');
+	}
+
+	Super.ClientOpenMenu(Menu, bDisconnect, Msg1, Msg2);	
+}
+
 function ShowBuyMenu(string wlTag,float maxweight)
 {
 	StopForceFeedback();
@@ -10,7 +21,7 @@ simulated function ClientReceiveLoginMenu(string MenuClass, bool bForce)
 {
 	if (MenuClass ~= "ServerPerks.SRInvasionLoginMenu" || MenuClass ~= "KFGui.KFInvasionLoginMenu")
 	{
-		MenuClass = "KFTurbo.KFPInvasionLoginMenu";
+		MenuClass = string(class'KFTurbo.KFPInvasionLoginMenu');
 	}
 
 	Super.ClientReceiveLoginMenu(MenuClass, bForce);
@@ -95,6 +106,6 @@ function ServerInitializeSteamStatInt(byte Index, int Value)
 
 defaultproperties
 {
-     LobbyMenuClassString="KFTurbo.KFPLobbyMenu"
-     PawnClass=Class'KFTurbo.KFPHumanPawn'
+	LobbyMenuClassString="KFTurbo.KFPLobbyMenu"
+	PawnClass=Class'KFTurbo.KFPHumanPawn'
 }
