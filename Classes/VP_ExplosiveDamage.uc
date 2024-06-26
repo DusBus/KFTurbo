@@ -3,5 +3,5 @@ class VP_ExplosiveDamage extends SRCustomProgressInt;
 
 defaultproperties
 {
-     ProgressName="Explosive Damage"
+     ProgressName="Steam Explosive Damage"
 }

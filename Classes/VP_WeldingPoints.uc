@@ -3,5 +3,5 @@ class VP_WeldingPoints extends SRCustomProgressInt;
 
 defaultproperties
 {
-     ProgressName="Welding Points"
+     ProgressName="Steam Welding Points"
 }

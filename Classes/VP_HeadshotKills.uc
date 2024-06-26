@@ -3,5 +3,5 @@ class VP_HeadshotKills extends SRCustomProgressInt;
 
 defaultproperties
 {
-     ProgressName="Headshot Kills"
+     ProgressName="Steam Headshot Kills"
 }

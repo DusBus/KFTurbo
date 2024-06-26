@@ -3,5 +3,5 @@ class VP_ShotgunDamage extends SRCustomProgressInt;
 
 defaultproperties
 {
-     ProgressName="Shotgun Damage"
+     ProgressName="Steam Shotgun Damage"
 }

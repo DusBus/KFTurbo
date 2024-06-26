@@ -3,5 +3,5 @@ class VP_DamageHealed extends SRCustomProgressInt;
 
 defaultproperties
 {
-     ProgressName="Damage Healed"
+     ProgressName="Steam Damage Healed"
 }

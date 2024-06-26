@@ -3,5 +3,5 @@ class VP_FlamethrowerDamage extends SRCustomProgressInt;
 
 defaultproperties
 {
-     ProgressName="Flamethrower Damage"
+     ProgressName="Steam Flamethrower Damage"
 }

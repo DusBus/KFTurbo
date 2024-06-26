@@ -3,5 +3,5 @@ class VP_MeleeDamage extends SRCustomProgressInt;
 
 defaultproperties
 {
-     ProgressName="Melee Damage"
+     ProgressName="Steam Melee Damage"
 }

@@ -3,5 +3,5 @@ class VP_StalkerKills extends SRCustomProgressInt;
 
 defaultproperties
 {
-     ProgressName="Stalker Kills"
+     ProgressName="Steam Stalker Kills"
 }

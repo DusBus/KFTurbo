@@ -3,5 +3,5 @@ class VP_BullpupDamage extends SRCustomProgressInt;
 
 defaultproperties
 {
-     ProgressName="Bullpup Damage"
+     ProgressName="Steam Assault Rifle Damage"
 }
