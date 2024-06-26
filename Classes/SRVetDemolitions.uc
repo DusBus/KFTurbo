@@ -142,5 +142,5 @@ defaultproperties
      OnHUDIcon=Texture'KillingFloor2HUD.Perk_Icons.Perk_Demolition'
      OnHUDGoldIcon=Texture'KillingFloor2HUD.Perk_Icons.Perk_Demolition_Gold'
      VeterancyName="Demolitions"
-     Requirements(0)="Deal %x damage with the Explosives"
+     Requirements(0)="Deal %x damage with the explosives."
 }

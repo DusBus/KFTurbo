@@ -172,5 +172,5 @@ defaultproperties
      OnHUDIcon=Texture'KillingFloorHUD.Perks.Perk_Support'
      OnHUDGoldIcon=Texture'KillingFloor2HUD.Perk_Icons.Perk_Support_Gold'
      VeterancyName="Support Specialist"
-     Requirements(0)="Deal %x damage with shotguns"
+     Requirements(0)="Deal %x damage with shotguns."
 }

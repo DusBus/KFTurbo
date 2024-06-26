@@ -206,5 +206,5 @@ defaultproperties
      OnHUDIcon=Texture'KillingFloorHUD.Perks.Perk_Berserker'
      OnHUDGoldIcon=Texture'KillingFloor2HUD.Perk_Icons.Perk_Berserker_Gold'
      VeterancyName="Berserker"
-     Requirements(0)="Deal %x damage with melee weapons"
+     Requirements(0)="Deal %x damage with melee weapons."
 }

@@ -189,5 +189,5 @@ defaultproperties
      OnHUDIcon=Texture'KillingFloorHUD.Perks.Perk_SharpShooter'
      OnHUDGoldIcon=Texture'KillingFloor2HUD.Perk_Icons.Perk_SharpShooter_Gold'
      VeterancyName="Sharpshooter"
-     Requirements(0)="Get %x headshot kills with Pistols, Rifle, Crossbow, M14, M99, or S.P. Musket"
+     Requirements(0)="Get %x headshot kills with Sharpshooter weapons."
 }

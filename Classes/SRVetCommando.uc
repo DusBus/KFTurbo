@@ -251,5 +251,5 @@ defaultproperties
      OnHUDIcon=Texture'KillingFloorHUD.Perks.Perk_Commando'
      OnHUDGoldIcon=Texture'KillingFloor2HUD.Perk_Icons.Perk_Commando_Gold'
      VeterancyName="Commando"
-     Requirements(0)="Deal %x damage with Assault/Battle Rifles"
+     Requirements(0)="Deal %x damage with Assault Rifles."
 }

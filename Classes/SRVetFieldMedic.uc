@@ -168,5 +168,5 @@ defaultproperties
      OnHUDIcon=Texture'KillingFloorHUD.Perks.Perk_Medic'
      OnHUDGoldIcon=Texture'KillingFloor2HUD.Perk_Icons.Perk_Medic_Gold'
      VeterancyName="Field Medic"
-     Requirements(0)="Heal %x HP on your teammates"
+     Requirements(0)="Heal %x HP on your teammates."
 }
