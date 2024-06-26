@@ -6,7 +6,7 @@ var() String PlayerSteamID;
 var() String DisplayName;
 var() array<String> GroupIDList;
 
-var() array<string> VariantIDList;
+var() array<String> VariantIDList;
 
 defaultproperties
 {

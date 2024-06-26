@@ -266,7 +266,7 @@ function bool PreDraw(Canvas Canvas)
 		{
 			if (VariantClasses[MouseOverIndex].VariantList.Length > MouseOverSubIndex)
 			{
-				SetHint(BuyMenuSettings.GetHintForPickup(VariantClasses[MouseOverIndex].VariantList[MouseOverSubIndex].VariantClass));
+				SetHint(BuyMenuSettings.GetHintForPickup(VariantClasses[MouseOverIndex].VariantList[MouseOverSubIndex].VariantID));
 			}
 			else
 			{
@@ -301,6 +301,7 @@ function DrawAlternateSkinButtons(Canvas Canvas, int CurIndex, float X, float Y,
 	local float TempX, TempY;
 	local bool bHovered, bSubButtonHovered;
 	local ButtonExtent ItemButton;
+	local Texture VariantIconTexture;
 
 	//Update bounds data to what's relevant to use.
 	//Handle perk icon space
@@ -397,9 +398,11 @@ function DrawAlternateSkinButtons(Canvas Canvas, int CurIndex, float X, float Y,
 			Canvas.SetDrawColor(255, 255, 255, 255);
 		}
 
-		if (BuyMenuSettings.GetIconForPickup(VariantClasses[CurIndex].VariantList[i].VariantClass) != None)
+		VariantIconTexture = BuyMenuSettings.GetIconForPickup(VariantClasses[CurIndex].VariantList[i].VariantID);
+
+		if (VariantIconTexture != None)
 		{
-			Canvas.DrawRect(BuyMenuSettings.GetIconForPickup(VariantClasses[CurIndex].VariantList[i].VariantClass), ButtonSize, ButtonSize);
+			Canvas.DrawRect(VariantIconTexture, ButtonSize, ButtonSize);
 		}
 
 		if (VariantClasses[CurIndex].VariantList[i].ItemStatus != 0)

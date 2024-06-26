@@ -11,7 +11,7 @@ var KFTurboMut KFTurboMutator;
 struct VariantWeapon
 {
     var class<KFWeaponPickup> VariantClass;
-    var string VariantID;
+    var String VariantID;
     var int ItemStatus;
 };
 
@@ -24,18 +24,18 @@ var array<WeaponVariantData> VariantWeaponList;
 
 // Built-in Variant Set Names:
 //Common variants - accessible to all players.
-var const String DefaultID; //All non-variants.
-var const String GoldVariantID; //Gold skins.
-var const String CamoVariantID; //Camo skins.
-var const String TurboVariantID; //KFTurbo sticker skins.
-var const String VMVariantID; //VM sticker skins.
-var const String WLVariantID; //Westlondon sticker skins.
+const DefaultID = "DEF"; //All non-variants.
+const GoldVariantID = "GOLD"; //Gold skins.
+const CamoVariantID = "CAMO"; //Camo skins.
+const TurboVariantID = "TURBO"; //KFTurbo sticker skins.
+const VMVariantID = "VM"; //VM sticker skins.
+const WLVariantID = "WEST"; //Westlondon sticker skins.
 
 //Special variants - accessible to specific players.
-var const String RetartVariantID;
-var const String ScuddlesVariantID;
-var const String CubicVariantID;
-var const String SMPVariantID;
+const RetartVariantID = "RET";
+const ScuddlesVariantID = "SCUD";
+const CubicVariantID = "CUBIC";
+const SMPVariantID = "SHOWME";
 
 
 static final function DebugLog(string DebugString)
@@ -47,12 +47,14 @@ static final function DebugLog(string DebugString)
 function GetPlayerVariantIDList(String PlayerSteamID, out array<String> PlayerVariantIDList)
 {
     local int PlayerIndex, GroupIDIndex;
+    local int VariantIndex;
     local int GroupIndex;
     local KFTurboRepLinkSettingsUser UserObject;
     local KFTurboRepLinkSettingsGroup GroupObject;
     local array<String> UserGroupIDList;
     local bool bFoundGroupID;
 
+    DebugLog("| - | - GetPlayerVariantIDList");
     PlayerVariantIDList.Length = 0;
 
     for (PlayerIndex = 0; PlayerIndex < UserList.Length; PlayerIndex++)
@@ -65,6 +67,12 @@ function GetPlayerVariantIDList(String PlayerSteamID, out array<String> PlayerVa
         UserObject = UserList[PlayerIndex];
         PlayerVariantIDList = UserObject.VariantIDList;
         UserGroupIDList = UserObject.GroupIDList; //Cache group ID list.
+
+        for (VariantIndex = 0; VariantIndex < PlayerVariantIDList.Length; VariantIndex++)
+        {
+            DebugLog("| - | - | - (Adding user variant "$PlayerVariantIDList[VariantIndex]$")");
+        }
+
         break;
     }
 
@@ -95,7 +103,7 @@ function GetPlayerVariantIDList(String PlayerSteamID, out array<String> PlayerVa
     }
 }
 
-static final function AppendPlayerVariantIDList(out array<string> PlayerVariantIDList, array<string> NewVariantIDList)
+static final function AppendPlayerVariantIDList(out array<String> PlayerVariantIDList, array<String> NewVariantIDList)
 {
     local int VariantIDIndex, PlayerVariantIDIndex;
     local bool bAlreadyInPlayerList;
@@ -117,6 +125,7 @@ static final function AppendPlayerVariantIDList(out array<string> PlayerVariantI
             continue;
         }
 
+        DebugLog("| - | - | - (Adding group variant "$NewVariantIDList[VariantIDIndex]$")");
         PlayerVariantIDList[PlayerVariantIDList.Length] = NewVariantIDList[VariantIDIndex];
     }
 }
@@ -134,10 +143,10 @@ function GeneratePlayerVariantData(String PlayerSteamID, out array<WeaponVariant
 
     GetPlayerVariantIDList(PlayerSteamID, PlayerVariantIDList);
 
-    //DebugLog("Just called KFTurboRepLinkSettings::GetPlayerVariantIDList. Printing out variant ID access.");
+    DebugLog("Just called KFTurboRepLinkSettings::GetPlayerVariantIDList. Printing out variant ID access.");
     for (VariantWeaponListIndex = PlayerVariantIDList.Length - 1; VariantWeaponListIndex >= 0; VariantWeaponListIndex--)
     {
-        //DebugLog("| - "$PlayerVariantIDList[VariantWeaponListIndex]);
+        DebugLog("| - "$ PlayerVariantIDList[VariantWeaponListIndex]);
     }
 
     PlayerVariantWeaponList.Length = 0;
@@ -198,13 +207,13 @@ function Initialize()
 
         VariantWeaponList[NewVariantIndex].WeaponPickup = KFWeaponPickupClass;
         
-        //DebugLog("KFTurboRepLinkSettings::Initialize | Generating cache for: "$KFWeaponPickupClass$" (Has "$KFWeaponPickupClass.default.VariantClasses.Length$" variants.)");
+        DebugLog("KFTurboRepLinkSettings::Initialize | Generating cache for: "$KFWeaponPickupClass$" (Has "$KFWeaponPickupClass.default.VariantClasses.Length$" variants.)");
 
         for (LoadInventoryVariantIndex = KFWeaponPickupClass.default.VariantClasses.Length - 1; LoadInventoryVariantIndex >= 0; LoadInventoryVariantIndex--)
         {
             KFWeaponVariantPickupClass = class<KFWeaponPickup>(KFWeaponPickupClass.default.VariantClasses[LoadInventoryVariantIndex]);
 
-            //DebugLog("KFTurboRepLinkSettings::Initialize | |- Trying variant "$KFWeaponVariantPickupClass);
+            DebugLog("KFTurboRepLinkSettings::Initialize | |- Trying variant "$KFWeaponVariantPickupClass);
 
             if (KFWeaponVariantPickupClass == none)
             {
@@ -226,7 +235,7 @@ function Initialize()
                 VariantWeaponList[NewVariantIndex].VariantList[VariantWeaponList[NewVariantIndex].VariantList.Length] = VariantWeaponEntry;
             }
 
-            //DebugLog("KFTurboRepLinkSettings::Initialize | | |- Result: VariantID "$VariantWeaponEntry.VariantID$" | Status "$VariantWeaponEntry.ItemStatus);
+            DebugLog("KFTurboRepLinkSettings::Initialize | | |- Result: VariantID "$VariantWeaponEntry.VariantID$" | Status "$VariantWeaponEntry.ItemStatus);
         }
     }
 
@@ -278,12 +287,13 @@ function bool AssignSpecialVariantID(out VariantWeapon Entry)
             Entry.VariantID = RetartVariantID;
             break;
         case class'W_V_M4203_Scuddles_Pickup' :
-            Entry.VariantID = RetartVariantID;
+            Entry.VariantID = ScuddlesVariantID;
             break;
         case class'W_V_M14_Cubic_Pickup' :
-            Entry.VariantID = RetartVariantID;
+            Entry.VariantID = CubicVariantID;
             break;
         case class'W_V_M14_SMP_Pickup' :
+        case class'W_V_AA12_SMP_Pickup' :
             Entry.VariantID = SMPVariantID;
             break;
     }
@@ -317,18 +327,6 @@ static final function bool IsGenericWestLondonSkin(class<Pickup> PickupClass)
 
 defaultproperties
 {
-    DefaultID = "DEF"
-    GoldVariantID = "GOLD"
-    CamoVariantID = "CAMO"
-    TurboVariantID = "TURBO"
-    VMVariantID = "VM"
-    WLVariantID = "WEST"
-
-    RetartVariantID = "RET"
-    ScuddlesVariantID = "SCUD"
-    CubicVariantID = "CUBIC"
-    SMPVariantID = "SHOWME"
-
     //Default group that gives all players access to a set weapon skins.
     Begin Object Class=KFTurboRepLinkSettingsGroup Name=RepLinkDefaultGroup
         DisplayName="DefaultGroup"

@@ -8,12 +8,20 @@ var	Texture StarTexture;
 //Are we playing KFPro+? Fixed to be callable by clients.
 static function bool IsHighDifficulty( Actor Actor )
 {
+	local class<KFProGameType> GameClass;
 	if(Actor == None || Actor.Level == None)
 	{
 		return false;
 	}
 
-	return ClassIsChildOf(Actor.Level.GetGameClass(), class'KFProGameType');
+	GameClass = class<KFProGameType>(Actor.Level.GetGameClass());
+	
+	if (GameClass == none)
+	{
+		return false;
+	}
+
+	return GameClass.default.bIsHighDifficulty;
 }
 
 static final function int GetScaledRequirement(byte CurLevel, int InValue)
