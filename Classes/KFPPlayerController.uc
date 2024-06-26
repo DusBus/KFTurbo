@@ -8,6 +8,11 @@ event ClientOpenMenu(string Menu, optional bool bDisconnect,optional string Msg1
 		Menu = string(class'KFTurbo.KFPInvasionLoginMenu');
 	}
 
+	if (Menu ~= "ServerPerks.SRLobbyMenu" || Menu ~= "KFGui.LobbyMenu")
+	{
+		Menu = string(class'KFTurbo.KFPLobbyMenu');
+	}
+
 	Super.ClientOpenMenu(Menu, bDisconnect, Msg1, Msg2);	
 }
 
