@@ -14,12 +14,12 @@ simulated function PostBeginPlay()
 
 function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
 {
-	if (Role == ROLE_Authority)
-	{
-		class'PawnHelper'.static.TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitIndex, AfflictionData);
-	}
+    if (Role == ROLE_Authority)
+    {
+        class'PawnHelper'.static.TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitIndex, AfflictionData);
+    }
 
-	Super.TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitIndex);
+    Super.TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitIndex);
 }
 
 simulated function Tick(float DeltaTime)
@@ -103,44 +103,44 @@ simulated function Timer()
 
 function RangedAttack(Actor A)
 {
-	local int LastFireTime;
-	local float Dist;
+    local int LastFireTime;
+    local float Dist;
 
-	if ( bShotAnim )
-		return;
+    if ( bShotAnim )
+        return;
 
     Dist = VSize(A.Location - Location);
 
-	if ( Physics == PHYS_Swimming )
-	{
-		SetAnimAction('Claw');
-		bShotAnim = true;
-		LastFireTime = Level.TimeSeconds;
-	}
-	else if ( Dist < MeleeRange + CollisionRadius + A.CollisionRadius )
-	{
-		bShotAnim = true;
-		LastFireTime = Level.TimeSeconds;
-		SetAnimAction('Claw');
-		//PlaySound(sound'Claw2s', SLOT_Interact); KFTODO: Replace this
-		Controller.bPreparingMove = true;
-		Acceleration = vect(0,0,0);
-	}
-	else if( Dist <= ScreamRadius && !bDecapitated && !bZapped && BurnDown <= 0)
-	{
-		bShotAnim=true;
-		SetAnimAction('Siren_Scream');
-		// Only stop moving if we are close
-		if( Dist < ScreamRadius * 0.25 )
-		{
-    		Controller.bPreparingMove = true;
-    		Acceleration = vect(0,0,0);
+    if ( Physics == PHYS_Swimming )
+    {
+        SetAnimAction('Claw');
+        bShotAnim = true;
+        LastFireTime = Level.TimeSeconds;
+    }
+    else if ( Dist < MeleeRange + CollisionRadius + A.CollisionRadius )
+    {
+        bShotAnim = true;
+        LastFireTime = Level.TimeSeconds;
+        SetAnimAction('Claw');
+        //PlaySound(sound'Claw2s', SLOT_Interact); KFTODO: Replace this
+        Controller.bPreparingMove = true;
+        Acceleration = vect(0,0,0);
+    }
+    else if( Dist <= ScreamRadius && !bDecapitated && !bZapped && BurnDown <= 0)
+    {
+        bShotAnim=true;
+        SetAnimAction('Siren_Scream');
+        // Only stop moving if we are close
+        if( Dist < ScreamRadius * 0.25 )
+        {
+            Controller.bPreparingMove = true;
+            Acceleration = vect(0,0,0);
         }
         else
         {
             Acceleration = AccelRate * Normal(A.Location - Location);
         }
-	}
+    }
 }
 
 simulated function SpawnTwoShots()
