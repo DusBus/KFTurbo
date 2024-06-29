@@ -84,7 +84,6 @@ simulated function HitWall( vector HitNormal, actor Wall )
 simulated function Explode(vector HitLocation, vector HitNormal)
 {
 	local PlayerController LocalPlayer;
-	local Actor ExplosionActor;
 
 	if (bHasExploded)
 	{
@@ -98,10 +97,8 @@ simulated function Explode(vector HitLocation, vector HitNormal)
 	
 	if ( EffectIsRelevant(Location,false) )
 	{
-		ExplosionActor = Spawn(Class'KFMod.ZEDMKIISecondaryProjectileExplosion',,,HitLocation + HitNormal*20,rotator(HitNormal));
-		ExplosionActor.SetDrawScale(0.8f);
-        ExplosionActor = Spawn(ExplosionDecal,self,,HitLocation, rotator(-HitNormal));
-		ExplosionActor.SetDrawScale(0.8f);
+		Spawn(Class'KFTurbo.V_Berserker_Grenade_Explosion',,,HitLocation + HitNormal*20,rotator(HitNormal));
+        Spawn(Class'KFTurbo.V_Berserker_Grenade_Impact',self,,HitLocation, rotator(-HitNormal));
 	}
 
 	// Shake nearby players screens
@@ -218,19 +215,16 @@ defaultproperties
     DampenFactorParallel=0.125000
 	
 	LightType=LT_Pulse
-    LightBrightness=32
-	LightPeriod=32
-    LightRadius=8.000000
+    LightBrightness=128
+	LightPeriod=16
+    LightRadius=0.500000
     LightHue=128
     LightSaturation=64
-    LightCone=16
     bDynamicLight=True
 
     StaticMesh=StaticMesh'KillingFloorStatics.FragProjectile'
 	Skins(0)=Texture'KFTurbo.Generic.BerserkerGrenade_D'
     DrawScale=0.3
-
-    ExplosionDecal=Class'KFMod.FlameThrowerBurnMark_Medium'
 
     ExplodeSounds=(sound'KF_FY_ZEDV2SND.WEP_ZEDV2_Secondary_Explode')
 }
