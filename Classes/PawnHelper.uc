@@ -4,47 +4,61 @@
 //========
 class PawnHelper extends Object;
 
-//Burn affliction data
-struct BurnAfflictionData
-{
-	var bool bHasCompleted;
-	var float BurnPrimaryModifier;
-	var float BurnSecondaryModifier;
-	var float BurnDuration;
-	var float BurnRatio;
-	var int Priority;
-};
-
-struct ZapAfflictionData
-{
-	//We cache TotalZap in pretick and then use it in tick.
-	var float CachedTotalZap;
-	//Actual zap affliction properties.
-	var float ZapDischargeDelay; //How long to wait before losing charge.
-	var float ZapDischargeRate; //How fast to lose charge after delay.
-	var float ZappedModifier; //How much to reduce ground speed by when zapped. (Not hooked up yet.)
-};
-
 //Master container for all afflictions.
 struct AfflictionData
 {
-	var BurnAfflictionData Burn;
-	var ZapAfflictionData Zap;
-	var float HarpoonModifier;
+	var A_Burn Burn;
+	var A_Zap Zap;
+	var A_Harpoon Harpoon;
 };
 
-//Meant to score burn priorities.
-struct AfflictionBurnPriorityData
+static final function InitializePawnHelper(KFMonster Monster, out AfflictionData Data)
 {
-	var class<KFWeaponDamageType> DamageType;
-	var BurnAfflictionData Burn;
-};
+	if (Data.Burn != None)
+	{
+		Data.Burn.Initialize(Monster);
+	}
 
-const PrimarySpeedReduction = 0.8f;
-const SecondarySpeedReduction = 0.3f;
-const HarpoonSpeedReduction = 0.75f;
+	if (Data.Zap != None)
+	{
+		Data.Zap.Initialize(Monster);
+	}
 
-var array<AfflictionBurnPriorityData> FirePriorityList;
+	if (Data.Harpoon != None)
+	{
+		Data.Harpoon.Initialize(Monster);
+	}
+
+	SpawnClientExtendedZCollision(Monster);
+}
+
+//NOTE: No special destroy code is needed. EZCollision is already destroyed on any zed that has it (not role-dependent).
+static final function SpawnClientExtendedZCollision(KFMonster KFM)
+{
+	local vector AttachPos;
+
+	//Auth has already created this hitbox.
+	if(KFM.Role == ROLE_Authority)
+	{
+		return;
+	}
+
+	if (KFM.bUseExtendedCollision && KFM.MyExtCollision == none )
+	{
+		KFM.MyExtCollision = KFM.Spawn(class'ClientExtendedZCollision', KFM);
+		//Slightly smaller version for non auth clients
+		KFM.MyExtCollision.SetCollisionSize(KFM.ColRadius * 0.9f, KFM.ColHeight * 0.9f);
+
+		KFM.MyExtCollision.bHardAttach = true;
+
+		AttachPos = KFM.Location + (KFM.ColOffset >> KFM.Rotation);
+		
+		KFM.MyExtCollision.SetLocation(AttachPos);
+		KFM.MyExtCollision.SetPhysics(PHYS_None);
+		KFM.MyExtCollision.SetBase(KFM);
+		KFM.SavedExtCollision = KFM.MyExtCollision.bCollideActors;
+	}
+}
 
 static final function ZombieCrispUp(KFMonster KFM)
 {
@@ -80,14 +94,44 @@ static final function SetBurningBehavior(KFMonster KFM, AfflictionData AD)
 	if(KFM.Role == Role_Authority)
 	{
 		KFM.SetGroundSpeed(KFM.GetOriginalGroundSpeed());
-		KFM.AirSpeed = KFM.default.AirSpeed * static.GetSpeedModifier(KFM, AD);
-		KFM.WaterSpeed = KFM.default.WaterSpeed * static.GetSpeedModifier(KFM, AD);
+		KFM.AirSpeed = KFM.default.AirSpeed * GetSpeedMultiplier(AD);
+		KFM.WaterSpeed = KFM.default.WaterSpeed * GetSpeedMultiplier(AD);
 
 		if( KFM.Controller != none )
 		{
 			MonsterController(KFM.Controller).Accuracy = -20;
 		}
 	}
+}
+
+static final function UnSetBurningBehavior(KFMonster KFM, AfflictionData AD)
+{
+	if(KFM == None)
+	{
+		return;
+	}
+
+    if(!KFM.bHarpoonStunned)
+    {
+    	UnSetHarpoonedBehaviour(KFM, AD);
+    }
+
+	if (KFM.Role == Role_Authority )
+	{
+		if( !KFM.bZapped )
+		{
+    		KFM.SetGroundSpeed(KFM.GetOriginalGroundSpeed());
+    		KFM.AirSpeed = KFM.default.AirSpeed * GetSpeedMultiplier(AD);
+    		KFM.WaterSpeed = KFM.default.WaterSpeed * GetSpeedMultiplier(AD);
+        }
+
+		if ( KFM.Controller != none )
+		{
+		   MonsterController(KFM.Controller).Accuracy = MonsterController(KFM.Controller).default.Accuracy;
+		}
+	}
+
+	KFM.bAshen = False;
 }
 
 static final function SetHarpoonedBehaviour(KFMonster KFM, AfflictionData AD)
@@ -102,8 +146,8 @@ static final function SetHarpoonedBehaviour(KFMonster KFM, AfflictionData AD)
 		KFM.Intelligence = BRAINS_Retarded;
 
 		KFM.SetGroundSpeed(KFM.GetOriginalGroundSpeed());
-		KFM.AirSpeed = KFM.default.AirSpeed * static.GetSpeedModifier(KFM, AD);
-		KFM.WaterSpeed = KFM.default.WaterSpeed * static.GetSpeedModifier(KFM, AD);
+		KFM.AirSpeed = KFM.default.AirSpeed * GetSpeedMultiplier(AD);
+		KFM.WaterSpeed = KFM.default.WaterSpeed * GetSpeedMultiplier(AD);
 
 		if( KFM.Controller != none )
 		{
@@ -122,37 +166,6 @@ static final function SetHarpoonedBehaviour(KFMonster KFM, AfflictionData AD)
 	KFM.WalkAnims[3] = KFM.BurningWalkAnims[2];
 }
 
-static final function UnSetBurningBehavior(KFMonster KFM, AfflictionData AD)
-{
-	if(KFM == None)
-	{
-		return;
-	}
-
-    if(!KFM.bHarpoonStunned)
-    {
-    	UnSetHarpoonedBehaviour(KFM, AD);
-        return;
-    }
-
-	if (KFM.Role == Role_Authority )
-	{
-		if( !KFM.bZapped )
-		{
-    		KFM.SetGroundSpeed(KFM.GetOriginalGroundSpeed());
-    		KFM.AirSpeed = KFM.default.AirSpeed * static.GetSpeedModifier(KFM, AD);
-    		KFM.WaterSpeed = KFM.default.WaterSpeed * static.GetSpeedModifier(KFM, AD);
-        }
-
-		if ( KFM.Controller != none )
-		{
-		   MonsterController(KFM.Controller).Accuracy = MonsterController(KFM.Controller).default.Accuracy;
-		}
-	}
-
-	KFM.bAshen = False;
-}
-
 static final function UnSetHarpoonedBehaviour(KFMonster KFM, AfflictionData AD)
 {
 	local int i;
@@ -164,8 +177,8 @@ static final function UnSetHarpoonedBehaviour(KFMonster KFM, AfflictionData AD)
 		if( !KFM.bZapped )
 		{
     		KFM.SetGroundSpeed(KFM.GetOriginalGroundSpeed());
-    		KFM.AirSpeed = KFM.default.AirSpeed * static.GetSpeedModifier(KFM, AD);
-    		KFM.WaterSpeed = KFM.default.WaterSpeed * static.GetSpeedModifier(KFM, AD);
+    		KFM.AirSpeed = KFM.default.AirSpeed * GetSpeedMultiplier(AD);
+    		KFM.WaterSpeed = KFM.default.WaterSpeed * GetSpeedMultiplier(AD);
         }
 
 		if ( KFM.Controller != none )
@@ -229,59 +242,37 @@ static final function bool IsFireDamageType(class<DamageType> DT)
 
 static final function float GetOriginalGroundSpeed(KFMonster KFM, AfflictionData AD)
 {
-	return KFM.OriginalGroundSpeed * GetSpeedModifier(KFM, AD);
+	return KFM.OriginalGroundSpeed * GetSpeedMultiplier(AD);
 }
 
-static final function float GetSpeedModifier(KFMonster KFM, AfflictionData AD)
+static final function float GetSpeedMultiplier(AfflictionData AD)
 {
 	local float Multiplier;
 	Multiplier = 1.f;
 
-	if(KFM.bHarpoonStunned)
+	if (AD.Burn != None)
 	{
-		Multiplier *= static.GetHarpoonSpeedMultiplier(AD);
+		Multiplier *= AD.Burn.GetMovementSpeedModifier();
 	}
 
-	if( KFM.bBurnified && ShouldApplyBurn(AD))
+	if (AD.Harpoon != None)
 	{
-		Multiplier *= static.GetBurnSpeedMultiplier(AD);
+		Multiplier *= AD.Harpoon.GetMovementSpeedModifier();
+	}
+
+	if (AD.Zap != None)
+	{
+		Multiplier *= AD.Zap.GetMovementSpeedModifier();
 	}
 
 	return Multiplier;
 }
 
-static final function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Momentum, class<DamageType> DamageType, int HitIndex, out AfflictionData AD)
+static simulated function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Momentum, class<DamageType> DamageType, int HitIndex, out AfflictionData AD)
 {
-	UpdateBurnData(DamageType, AD);
-}
-
-static final function UpdateBurnData(class<DamageType> DamageType, out AfflictionData AD)
-{
-	local int Index;
-
-	if (AD.Burn.Priority == 0)
+	if (AD.Burn != None)
 	{
-		return;
-	}
-
-	for (Index = 0; Index < default.FirePriorityList.Length; Index++)
-	{
-		if (default.FirePriorityList[Index].DamageType != DamageType)
-		{
-			continue;
-		}
-
-		if (default.FirePriorityList[Index].Burn.Priority >= AD.Burn.Priority)
-		{
-			break;
-		}
-
-		AD.Burn.BurnPrimaryModifier = default.FirePriorityList[Index].Burn.BurnPrimaryModifier;
-		AD.Burn.BurnSecondaryModifier = default.FirePriorityList[Index].Burn.BurnSecondaryModifier;
-		AD.Burn.BurnDuration = default.FirePriorityList[Index].Burn.BurnDuration;
-		AD.Burn.Priority = default.FirePriorityList[Index].Burn.Priority;
-		AD.Burn.BurnRatio = 0.f;
-		break;
+		AD.Burn.TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitIndex);
 	}
 }
 
@@ -347,98 +338,37 @@ static final function float GetHeadHealthModifier(KFMonster KFM, LevelInfo Level
 
 static final function PreTickAfflictionData(float DeltaTime, KFMonster KFM, out AfflictionData AD)
 {
-	AD.Zap.CachedTotalZap = KFM.TotalZap;
+	if (AD.Burn != None)
+	{
+		AD.Burn.PreTick(DeltaTime);
+	}
+
+	if (AD.Zap != None)
+	{
+		AD.Zap.PreTick(DeltaTime);
+	}
+
+	if (AD.Harpoon != None)
+	{
+		AD.Harpoon.PreTick(DeltaTime);
+	}
 }
 
 static final function TickAfflictionData(float DeltaTime, KFMonster KFM, out AfflictionData AD)
 {
-    if(KFM.bBurnified)
-    {
-        AD.Burn.BurnRatio += (DeltaTime / AD.Burn.BurnDuration);
-
-		if (AD.Burn.BurnRatio >= 1.f)
-		{
-			AD.Burn.bHasCompleted = true;
-		}
-    }
-
-	if (AD.Zap.CachedTotalZap > 0.f)
+	if (AD.Burn != None)
 	{
-		//Restore TotalZap so we can actually work with it.
-		KFM.TotalZap = AD.Zap.CachedTotalZap;
-
-		if( !KFM.bZapped && KFM.TotalZap > 0 && ((KFM.Level.TimeSeconds - KFM.LastZapTime) > AD.Zap.ZapDischargeDelay)  )
-		{
-			KFM.TotalZap -= DeltaTime * AD.Zap.ZapDischargeRate;
-		}
-	}
-}
-
-static final function bool ShouldApplyBurn(AfflictionData AD)
-{
-	return !AD.Burn.bHasCompleted && AD.Burn.BurnRatio < 1.f;
-}
-
-static final function float GetBurnSpeedMultiplier(AfflictionData AD)
-{
-	return Lerp(AD.Burn.BurnRatio, AD.Burn.BurnPrimaryModifier, AD.Burn.BurnSecondaryModifier, true);
-}
-
-static final function float GetHarpoonSpeedMultiplier(AfflictionData AD)
-{
-	return 1.f - AD.HarpoonModifier;
-}
-
-static final function float GetBurnPrimaryModifier(AfflictionData AD)
-{
-	return AD.Burn.BurnPrimaryModifier;
-}
-
-static final function float GetBurnSecondaryModifier(AfflictionData AD)
-{
-	return AD.Burn.BurnSecondaryModifier;
-}
-
-static final function float GetBurnDuration(AfflictionData AD)
-{
-	return AD.Burn.BurnDuration;
-}
-
-static final function float GetBurnRatio(AfflictionData AD)
-{
-	return AD.Burn.BurnRatio;
-}
-
-static final function float GetHarpoonModifier(AfflictionData AD)
-{
-	return AD.HarpoonModifier;
-}
-
-//NOTE: No special destroy code is needed. EZCollision is already destroyed on any zed that has it (not role-dependent).
-static final function SpawnClientExtendedZCollision(KFMonster KFM)
-{
-	local vector AttachPos;
-
-	//Auth has already created this hitbox.
-	if(KFM.Role == ROLE_Authority)
-	{
-		return;
+		AD.Burn.Tick(DeltaTime);
 	}
 
-	if (KFM.bUseExtendedCollision && KFM.MyExtCollision == none )
+	if (AD.Zap != None)
 	{
-		KFM.MyExtCollision = KFM.Spawn(class'ClientExtendedZCollision', KFM);
-		//Slightly smaller version for non auth clients
-		KFM.MyExtCollision.SetCollisionSize(KFM.ColRadius * 0.9f, KFM.ColHeight * 0.9f);
+		AD.Zap.Tick(DeltaTime);
+	}
 
-		KFM.MyExtCollision.bHardAttach = true;
-
-		AttachPos = KFM.Location + (KFM.ColOffset >> KFM.Rotation);
-		
-		KFM.MyExtCollision.SetLocation(AttachPos);
-		KFM.MyExtCollision.SetPhysics(PHYS_None);
-		KFM.MyExtCollision.SetBase(KFM);
-		KFM.SavedExtCollision = KFM.MyExtCollision.bCollideActors;
+	if (AD.Harpoon != None)
+	{
+		AD.Harpoon.Tick(DeltaTime);
 	}
 }
 
@@ -455,10 +385,5 @@ static final function DisablePawnCollision(Pawn P)
 
 defaultproperties
 {
-     FirePriorityList(0)=(DamageType=Class'KFMod.DamTypeHuskGun',Burn=(BurnPrimaryModifier=0.250000,BurnSecondaryModifier=0.500000,BurnDuration=6.000000))
-     FirePriorityList(1)=(DamageType=Class'KFMod.DamTypeTrenchgun',Burn=(BurnPrimaryModifier=0.300000,BurnSecondaryModifier=0.600000,BurnDuration=5.500000,Priority=1))
-     FirePriorityList(2)=(DamageType=Class'KFMod.DamTypeFlareRevolver',Burn=(BurnPrimaryModifier=0.800000,BurnSecondaryModifier=0.900000,BurnDuration=4.500000,Priority=2))
-     FirePriorityList(3)=(DamageType=Class'KFMod.DamTypeMAC10MPInc',Burn=(BurnPrimaryModifier=0.850000,BurnSecondaryModifier=0.950000,BurnDuration=4.250000,Priority=3))
-     FirePriorityList(4)=(DamageType=Class'KFMod.DamTypeFlamethrower',Burn=(BurnPrimaryModifier=0.900000,BurnSecondaryModifier=1.000000,BurnDuration=4.000000,Priority=4))
-     FirePriorityList(5)=(DamageType=Class'KFMod.DamTypeBurned',Burn=(BurnPrimaryModifier=0.900000,BurnSecondaryModifier=1.000000,BurnDuration=4.000000,Priority=5))
+
 }

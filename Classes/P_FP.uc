@@ -15,7 +15,7 @@ simulated function PostBeginPlay()
 
 	ProAI = AI_FP(Controller);
 
-    class'PawnHelper'.static.SpawnClientExtendedZCollision(self);
+    class'PawnHelper'.static.InitializePawnHelper(self, AfflictionData);
 }
 
 function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
@@ -178,7 +178,20 @@ Ignores StartCharging;
 
 defaultproperties
 {
-     AfflictionData=(Burn=(BurnPrimaryModifier=1.000000,BurnSecondaryModifier=1.000000,BurnDuration=4.000000,Priority=6),Zap=(ZapDischargeDelay=1.f,ZapDischargeRate=0.5f,ZappedModifier=0.25f),HarpoonModifier=0.500000)
-     EventClasses(0)="P_FP_DEF"
-     ControllerClass=Class'KFTurbo.AI_FP'
+    Begin Object Class=A_Burn Name=BurnAffliction
+        BurnDurationModifier=1.f
+    End Object
+
+    Begin Object Class=A_Zap Name=ZapAffliction
+        ZapDischargeRate=0.5f
+    End Object
+
+    Begin Object Class=A_Harpoon Name=HarpoonAffliction
+        HarpoonSpeedModifier=0.5f
+    End Object
+
+    AfflictionData=(Burn=A_Burn'BurnAffliction',Zap=A_Zap'ZapAffliction',Harpoon=A_Harpoon'HarpoonAffliction')
+
+    EventClasses(0)="P_FP_DEF"
+    ControllerClass=Class'KFTurbo.AI_FP'
 }

@@ -9,7 +9,7 @@ simulated function PostBeginPlay()
 {
     Super.PostBeginPlay();
 
-     class'PawnHelper'.static.SpawnClientExtendedZCollision(self);
+     class'PawnHelper'.static.InitializePawnHelper(self, AfflictionData);
 }
 
 function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
@@ -71,13 +71,11 @@ function PlayDirectionalHit(Vector HitLoc)
 simulated function SetBurningBehavior()
 {
     class'PawnHelper'.static.SetBurningBehavior(self, AfflictionData);
-    //BurnRatio = 0.f;
 }
 
 simulated function UnSetBurningBehavior()
 {
     class'PawnHelper'.static.UnSetBurningBehavior(self, AfflictionData);
-    //BurnRatio = 0.f;
 }
 
 simulated function ZombieCrispUp()
@@ -109,5 +107,17 @@ ignores AnimEnd, Trigger, Bump, HitWall, HeadVolumeChange, PhysicsVolumeChange, 
 
 defaultproperties
 {
-     AfflictionData=(Burn=(BurnPrimaryModifier=1.000000,BurnSecondaryModifier=1.000000,BurnDuration=4.000000,Priority=6),Zap=(ZapDischargeDelay=1.f,ZapDischargeRate=0.5f,ZappedModifier=0.25f),HarpoonModifier=0.500000)
+    Begin Object Class=A_Burn Name=BurnAffliction
+        BurnDurationModifier=1.f
+    End Object
+
+    Begin Object Class=A_Zap Name=ZapAffliction
+        ZapDischargeRate=0.5f
+    End Object
+
+    Begin Object Class=A_Harpoon Name=HarpoonAffliction
+        HarpoonSpeedModifier=0.5f
+    End Object
+
+    AfflictionData=(Burn=A_Burn'BurnAffliction',Zap=A_Zap'ZapAffliction',Harpoon=A_Harpoon'HarpoonAffliction')
 }

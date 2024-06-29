@@ -16,7 +16,7 @@ simulated function PostBeginPlay()
     //In unrealscript it's probably more expensive to check role/if controller exists rather than just cast a null.
     ProAI = AI_SC(Controller);
 
-    class'PawnHelper'.static.SpawnClientExtendedZCollision(self);
+    class'PawnHelper'.static.InitializePawnHelper(self, AfflictionData);
 }
 
 function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
@@ -73,7 +73,7 @@ function float NumPlayersHeadHealthModifer()
 
 simulated function float GetOriginalGroundSpeed()
 {
-    return Super.GetOriginalGroundSpeed() * class'PawnHelper'.static.GetSpeedModifier(self, AfflictionData);
+    return Super.GetOriginalGroundSpeed() * class'PawnHelper'.static.GetSpeedMultiplier(AfflictionData);
 }
 
 function PlayDirectionalHit(Vector HitLoc)
@@ -173,7 +173,20 @@ state RunningState
 
 defaultproperties
 {
-     AfflictionData=(Burn=(BurnPrimaryModifier=1.000000,BurnSecondaryModifier=1.000000,BurnDuration=4.000000,Priority=6),Zap=(ZapDischargeDelay=1.f,ZapDischargeRate=0.5f,ZappedModifier=0.25f),HarpoonModifier=0.500000)
-     EventClasses(0)="KFTurbo.P_SC_DEF"
-     ControllerClass=Class'KFTurbo.AI_SC'
+    Begin Object Class=A_Burn Name=BurnAffliction
+        BurnDurationModifier=1.f
+    End Object
+
+    Begin Object Class=A_Zap Name=ZapAffliction
+        ZapDischargeRate=0.5f
+    End Object
+
+    Begin Object Class=A_Harpoon Name=HarpoonAffliction
+        HarpoonSpeedModifier=0.5f
+    End Object
+
+    AfflictionData=(Burn=A_Burn'BurnAffliction',Zap=A_Zap'ZapAffliction',Harpoon=A_Harpoon'HarpoonAffliction')
+
+    EventClasses(0)="KFTurbo.P_SC_DEF"
+    ControllerClass=Class'KFTurbo.AI_SC'
 }
