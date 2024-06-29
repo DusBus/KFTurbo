@@ -1,5 +1,24 @@
 class KFPHumanPawn extends SRHumanPawn;
 
+var bool bDebugServerBuyWeapon;
+
+final function DebugServerBuyWeapon(Class<Weapon> WClass, float Weight)
+{
+	if (!bDebugServerBuyWeapon)
+	{
+		return;
+	}
+
+	log("========================");
+	log("Testing: "$WClass$" (Pickup: "$WClass.Default.PickupClass$")");
+	log("Can Buy Now: "$ CanBuyNow());
+	log("KFWeapon Cast: "$ (Class<KFWeapon>(WClass)==None));
+	log("KFWeaponPickup Cast: "$ (Class<KFWeaponPickup>(WClass.Default.PickupClass)==None));
+	log("Has Weapon Class: "$ HasWeaponClass(WClass));
+	log("Can Buy Pickup: "$ CanBuyPickup(WClass));
+	log("Get Corrected Weapon Pickup: "$ GetCorrectedWeaponPickup(WClass.Default.PickupClass));
+}
+
 function bool CanBuyPickup(class<Weapon> WClass)
 {
 	// Validate if allowed to buy that weapon.
@@ -33,6 +52,8 @@ function ServerBuyWeapon( Class<Weapon> WClass, float Weight )
 	local Inventory I,OI;
 	local class<KFWeapon> SecType;
 	local class<KFWeaponPickup> WeaponPickup;
+
+	DebugServerBuyWeapon(WClass, Weight);
 
 	if( !CanBuyNow() || Class<KFWeapon>(WClass)==None || Class<KFWeaponPickup>(WClass.Default.PickupClass)==None || HasWeaponClass(WClass) )
 		Return;
@@ -260,4 +281,5 @@ simulated event SetAnimAction(name NewAction)
 
 defaultproperties
 {
+	bDebugServerBuyWeapon=false
 }

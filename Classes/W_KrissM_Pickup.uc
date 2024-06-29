@@ -5,4 +5,5 @@ defaultproperties
      Weight=4.000000
      cost=2000
      InventoryType=Class'KFTurbo.W_KrissM_Weap'
+     VariantClasses=()
 }
