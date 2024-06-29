@@ -26,7 +26,7 @@ static final function PenetratingWeaponTrace(Vector TraceStart, KFWeapon Weapon,
 
 	while(HitCount < PenetrationMax)
 	{
-		switch(WeaponTrace(TraceStart, TraceEnd, MomentumVector, Weapon, Fire, HitActor, HitLocation, (PenetrationMultiplier ** float(HitCount + 1))))
+		switch(WeaponTrace(TraceStart, TraceEnd, MomentumVector, Weapon, Fire, HitActor, HitLocation, (PenetrationMultiplier ** float(HitCount))))
 		{
 		case TR_Block:
 			HitCount = PenetrationMax + 1;
