@@ -188,13 +188,13 @@ static function AddAdjustedExtraAmmoFor(KFPlayerReplicationInfo KFPRI, class<Amm
 		return;
 	}
 
-	if(Multiplier > 1.f)
+	switch (AmmoType)
 	{
-		Multiplier *= 1.5f;
-	}
-	else if(AmmoType == class'FragAmmo')
-	{
-		Multiplier *= LerpStat(KFPRI, 1.f, 1.6f);
+		case class'FragAmmo':
+			Multiplier *= LerpStat(KFPRI, 1.f, 1.6f);
+			break;
+		default:
+			Super.AddAdjustedExtraAmmoFor(KFPRI, AmmoType, Multiplier);
 	}
 }
 

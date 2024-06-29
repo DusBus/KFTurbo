@@ -15,10 +15,21 @@ struct BurnAfflictionData
 	var int Priority;
 };
 
+struct ZapAfflictionData
+{
+	//We cache TotalZap in pretick and then use it in tick.
+	var float CachedTotalZap;
+	//Actual zap affliction properties.
+	var float ZapDischargeDelay; //How long to wait before losing charge.
+	var float ZapDischargeRate; //How fast to lose charge after delay.
+	var float ZappedModifier; //How much to reduce ground speed by when zapped. (Not hooked up yet.)
+};
+
 //Master container for all afflictions.
 struct AfflictionData
 {
 	var BurnAfflictionData Burn;
+	var ZapAfflictionData Zap;
 	var float HarpoonModifier;
 };
 
@@ -334,6 +345,11 @@ static final function float GetHeadHealthModifier(KFMonster KFM, LevelInfo Level
     return AdjustedModifier;
 }
 
+static final function PreTickAfflictionData(float DeltaTime, KFMonster KFM, out AfflictionData AD)
+{
+	AD.Zap.CachedTotalZap = KFM.TotalZap;
+}
+
 static final function TickAfflictionData(float DeltaTime, KFMonster KFM, out AfflictionData AD)
 {
     if(KFM.bBurnified)
@@ -345,6 +361,17 @@ static final function TickAfflictionData(float DeltaTime, KFMonster KFM, out Aff
 			AD.Burn.bHasCompleted = true;
 		}
     }
+
+	if (AD.Zap.CachedTotalZap > 0.f)
+	{
+		//Restore TotalZap so we can actually work with it.
+		KFM.TotalZap = AD.Zap.CachedTotalZap;
+
+		if( !KFM.bZapped && KFM.TotalZap > 0 && ((KFM.Level.TimeSeconds - KFM.LastZapTime) > AD.Zap.ZapDischargeDelay)  )
+		{
+			KFM.TotalZap -= DeltaTime * AD.Zap.ZapDischargeRate;
+		}
+	}
 }
 
 static final function bool ShouldApplyBurn(AfflictionData AD)

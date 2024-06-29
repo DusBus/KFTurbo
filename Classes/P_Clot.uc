@@ -24,6 +24,8 @@ function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Mo
 
 simulated function Tick(float DeltaTime)
 {
+    class'PawnHelper'.static.PreTickAfflictionData(DeltaTime, self, AfflictionData);
+    
     Super.Tick(DeltaTime);
 
     class'PawnHelper'.static.TickAfflictionData(DeltaTime, self, AfflictionData);
@@ -102,5 +104,5 @@ simulated function Timer()
 
 defaultproperties
 {
-     AfflictionData=(Burn=(BurnPrimaryModifier=1.000000,BurnSecondaryModifier=1.000000,BurnDuration=4.000000,Priority=6),HarpoonModifier=0.500000)
+     AfflictionData=(Burn=(BurnPrimaryModifier=1.000000,BurnSecondaryModifier=1.000000,BurnDuration=4.000000,Priority=6),Zap=(ZapDischargeDelay=1.f,ZapDischargeRate=0.5f,ZappedModifier=0.25f),HarpoonModifier=0.500000)
 }

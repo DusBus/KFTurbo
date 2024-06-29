@@ -6,7 +6,7 @@ var int LevelRankRequirement; //Denotes levels between new rank names.
 var	Texture StarTexture;
 
 //Are we playing KFPro+? Fixed to be callable by clients.
-static function bool IsHighDifficulty( Actor Actor )
+static final function bool IsHighDifficulty( Actor Actor )
 {
 	local class<KFProGameType> GameClass;
 	if(Actor == None || Actor.Level == None)
@@ -22,6 +22,20 @@ static function bool IsHighDifficulty( Actor Actor )
 	}
 
 	return GameClass.default.bIsHighDifficulty;
+}
+
+//Default behaviour for increasing extra ammo is 50% more than perk bonus.
+static function AddAdjustedExtraAmmoFor(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
+{
+	if (!IsHighDifficulty(KFPRI))
+	{
+		return;
+	}
+
+	if (Multiplier > 1.f)
+	{
+		Multiplier *= 1.5f;
+	}
 }
 
 static final function int GetScaledRequirement(byte CurLevel, int InValue)

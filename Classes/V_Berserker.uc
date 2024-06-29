@@ -39,6 +39,24 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 	return Min(StatOther.RMeleeDamageStat + StatOther.GetCustomValueInt(class'VP_MeleeDamage'), FinalInt);
 }
 
+static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, Class<Ammunition> AmmoType)
+{
+	local float Multiplier;
+
+	Multiplier = 1.f;
+
+	switch (AmmoType)
+	{
+	case class'FragAmmo' :
+		Multiplier = LerpStat(KFPRI, 1.f, 1.2f);
+		break;
+	}
+
+	AddAdjustedExtraAmmoFor(KFPRI, AmmoType, Multiplier);
+
+	return Multiplier;
+}
+
 static function int AddDamage(KFPlayerReplicationInfo KFPRI, KFMonster Injured, KFPawn DamageTaker, int InDamage, class<DamageType> DmgType)
 {
 	if (class<KFWeaponDamageType>(DmgType) != none && class<KFWeaponDamageType>(DmgType).default.bIsMeleeDamage)
@@ -109,6 +127,11 @@ static function bool CanBeGrabbed(KFPlayerReplicationInfo KFPRI, KFMonster Other
 static function int ZedTimeExtensions(KFPlayerReplicationInfo KFPRI)
 {
 	return Min(KFPRI.ClientVeteranSkillLevel, 4);
+}
+
+static function class<Grenade> GetNadeType(KFPlayerReplicationInfo KFPRI)
+{
+	return class'V_Berserker_Grenade';
 }
 
 static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)
