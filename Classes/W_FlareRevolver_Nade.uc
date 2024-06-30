@@ -28,10 +28,8 @@ static function bool UnloadAssets()
 
 simulated function StartDudExplosionTimer()
 {
-    log("timer set");
     SetTimer(2,false);
 }
-
 
 simulated function PostBeginPlay()
 {
@@ -127,7 +125,6 @@ simulated function ProcessTouch(Actor Other, Vector HitLocation)
 
 function Timer()
 {
-    log("timer ended");
     if(bDisintegrated || bHasExploded)
     {
         Destroy();
@@ -147,7 +144,6 @@ simulated function Explode(vector HitLocation, vector HitNormal)
     local Controller C;
 	local PlayerController  LocalPlayer;
 
-    log("has exploded");
     if(bHasExploded)
     {
         return;
@@ -192,7 +188,6 @@ simulated function Landed( vector HitNormal )
 
 simulated function Destroyed()
 {
-    log("destroyed");
 	if ( FlameTrail != none )
 	{
         FlameTrail.Kill();

@@ -12,8 +12,7 @@ var AI_SC ProAI;
 simulated function PostBeginPlay()
 {
     Super.PostBeginPlay();
-
-    //In unrealscript it's probably more expensive to check role/if controller exists rather than just cast a null.
+    
     ProAI = AI_SC(Controller);
 
     class'PawnHelper'.static.InitializePawnHelper(self, AfflictionData);
@@ -36,6 +35,11 @@ function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Mo
 	}
 
 	Super.TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitIndex);
+}
+
+function bool MeleeDamageTarget(int HitDamage, vector PushDirection)
+{
+    return class'PawnHelper'.static.MeleeDamageTarget(Self, HitDamage, PushDirection);
 }
 
 simulated function Tick(float DeltaTime)

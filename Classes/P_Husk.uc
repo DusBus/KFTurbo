@@ -12,6 +12,21 @@ simulated function PostBeginPlay()
     class'PawnHelper'.static.InitializePawnHelper(self, AfflictionData);
 }
 
+function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
+{
+	if (Role == ROLE_Authority)
+	{
+		class'PawnHelper'.static.TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitIndex, AfflictionData);
+	}
+
+	Super.TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitIndex);
+}
+
+function bool MeleeDamageTarget(int HitDamage, vector PushDirection)
+{
+    return class'PawnHelper'.static.MeleeDamageTarget(Self, HitDamage, PushDirection);
+}
+
 simulated function Tick(float DeltaTime)
 {
     class'PawnHelper'.static.PreTickAfflictionData(DeltaTime, self, AfflictionData);
@@ -93,10 +108,6 @@ ignores AnimEnd, Trigger, Bump, HitWall, HeadVolumeChange, PhysicsVolumeChange, 
 
 defaultproperties
 {
-    Begin Object Class=A_Burn Name=BurnAffliction
-        BurnDurationModifier=1.f
-    End Object
-
     Begin Object Class=A_Zap Name=ZapAffliction
         ZapDischargeRate=0.5f
     End Object
@@ -105,5 +116,5 @@ defaultproperties
         HarpoonSpeedModifier=0.5f
     End Object
 
-    AfflictionData=(Burn=A_Burn'BurnAffliction',Zap=A_Zap'ZapAffliction',Harpoon=A_Harpoon'HarpoonAffliction')
+    AfflictionData=(Burn=None,Zap=A_Zap'ZapAffliction',Harpoon=A_Harpoon'HarpoonAffliction')
 }

@@ -8,7 +8,7 @@ simulated event PostBeginPlay()
 	PCOwner = Level.GetLocalPlayerController();
 	Initialize(PCOwner);
 	GetStatsAndAchievements();
-	log("Called GetStatsAndAchievements", 'KFTurbo');
+	//log("Called GetStatsAndAchievements", 'KFTurbo');
 }
 
 simulated event PostNetBeginPlay();
@@ -17,7 +17,7 @@ simulated event OnStatsAndAchievementsReady()
 {
 	local int WeaponIndex, VariantIndex, WeaponLockID;
 	local class<KFWeapon> WeaponClass;
-	log("Calling OnStatsAndAchievementsReady", 'KFTurbo');
+	//log("Calling OnStatsAndAchievementsReady", 'KFTurbo');
 
 	InitStatInt(OwnedWeaponDLC, GetOwnedWeaponDLC());
 

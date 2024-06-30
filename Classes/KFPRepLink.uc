@@ -115,12 +115,12 @@ simulated function DebugVariantInfo(bool bFilterStatus)
             VariantSet = VariantSet $ " | " $ j $ ": " $ PlayerVariantList[i].VariantList[j].VariantClass $ " (" $ PlayerVariantList[i].VariantList[j].ItemStatus $ ")";
         }
 
-        log(VariantSet, 'KFTurbo');
+        //log(VariantSet, 'KFTurbo');
     }
 
     if (PlayerVariantList.Length == 0)
     {
-        log("WARNING: PlayerVariantList was empty!", 'KFTurbo');
+        //log("WARNING: PlayerVariantList was empty!", 'KFTurbo');
     }
 }
 

@@ -20,7 +20,7 @@ function UpdateMyBuyables()
 	// Let's start with our current inventory
 	if ( PlayerOwner().Pawn.Inventory == none )
 	{
-		log("Inventory is none!");
+		//log("Inventory is none!");
 		return;
 	}
 

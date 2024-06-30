@@ -415,6 +415,99 @@ static final function DisablePawnCollision(Pawn P)
 	P.bBlockHitPointTraces = false;
 }
 
+static function bool MeleeDamageTarget(KFMonster Monster, int HitDamage, vector PushDirection)
+{
+	local vector HitLocation, HitNormal;
+	local Actor ControllerTarget, HitActor;
+	local KFHumanPawn HumanPawn;
+	local Name TearBone;
+	local float dummy;
+	local Emitter BloodHit;
+
+	if(Monster.Role != ROLE_Authority || Monster.Controller == None)
+	{
+		Return false; 
+	}
+
+	ControllerTarget = Monster.Controller.Target;
+
+	if (ControllerTarget == None)
+	{
+		return false;
+	}
+
+	if (ControllerTarget != none && ControllerTarget.IsA('KFDoorMover'))
+	{
+		Monster.Controller.Target.TakeDamage(HitDamage, Monster, HitLocation, PushDirection, Monster.CurrentDamType);
+		Return true;
+	}
+
+	if (Monster.bSTUNNED || Monster.DECAP)
+	{
+		return false;
+	}
+
+	if (VSizeSquared(ControllerTarget.Location - Monster.Location) > Square((Monster.MeleeRange * 1.4) + ControllerTarget.CollisionRadius + Monster.CollisionRadius))
+	{
+		return false;
+	}
+
+	if ((Monster.Physics != PHYS_Flying) && (Monster.Physics != PHYS_Swimming) && (Abs(Monster.Location.Z - ControllerTarget.Location.Z) > FMax(Monster.CollisionHeight, ControllerTarget.CollisionHeight) + (0.5 * FMin(Monster.CollisionHeight, ControllerTarget.CollisionHeight))))
+	{
+		return false;
+	}
+	
+	Monster.bBlockHitPointTraces = false;
+	HitActor = Monster.Trace(HitLocation, HitNormal, ControllerTarget.Location , Monster.Location + Monster.EyePosition(), true);
+	Monster.bBlockHitPointTraces = true;
+
+	if( Pawn(HitActor) == none )
+	{
+		Monster.bBlockHitPointTraces = false;
+		HitActor = Monster.Trace(HitLocation, HitNormal, ControllerTarget.Location, Monster.Location, false);
+		Monster.bBlockHitPointTraces = true;
+
+		if ( HitActor != None )
+		{
+			return false;
+		}
+	}
+
+	HumanPawn = KFHumanPawn(ControllerTarget);
+
+	if ( HumanPawn != none )
+	{
+		HumanPawn.TakeDamage(HitDamage, Monster, HitLocation, PushDirection, Monster.CurrentDamType);
+
+		if (HumanPawn.Health <= 0.f)
+		{
+			if ( !class'GameInfo'.static.UseLowGore() )
+			{
+				BloodHit = Monster.Spawn(class'KFMod.FeedingSpray', Monster,, ControllerTarget.Location,rotator(PushDirection));
+				HumanPawn.SpawnGibs(rotator(PushDirection), 1);
+				TearBone = HumanPawn.GetClosestBone(HitLocation, Monster.Velocity, dummy);
+				HumanPawn.HideBone(TearBone);
+			}
+
+			if (Monster.Health <= (1.0 - Monster.FeedThreshold) * Monster.HealthMax)
+			{
+				Monster.Health += (Monster.FeedThreshold * Monster.HealthMax) * (Monster.Health / Monster.HealthMax);
+			}
+		}
+	}
+	else if (ControllerTarget != None)
+	{
+		if( KFMonster(ControllerTarget) != none )
+		{
+			HitDamage *= Monster.DamageToMonsterScale;
+		}
+
+		ControllerTarget.TakeDamage(hitdamage, Monster, HitLocation, PushDirection, Monster.CurrentDamType);
+	}
+
+	return true;
+}
+
 defaultproperties
 {
 
