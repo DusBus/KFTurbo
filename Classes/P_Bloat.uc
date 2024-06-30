@@ -78,6 +78,16 @@ simulated function UnSetBurningBehavior()
     class'PawnHelper'.static.UnSetBurningBehavior(self, AfflictionData);
 }
 
+simulated function SetZappedBehavior()
+{
+    class'PawnHelper'.static.SetZappedBehavior(self, AfflictionData);
+}
+
+simulated function UnSetZappedBehavior()
+{
+    class'PawnHelper'.static.UnSetZappedBehavior(self, AfflictionData);
+}
+
 simulated function ZombieCrispUp()
 {
     class'PawnHelper'.static.ZombieCrispUp(self);

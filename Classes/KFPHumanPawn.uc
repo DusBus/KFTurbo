@@ -2,6 +2,11 @@ class KFPHumanPawn extends SRHumanPawn;
 
 var bool bDebugServerBuyWeapon;
 
+simulated function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> damageType, optional int HitIndex)
+{
+	Super.TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitIndex);
+}
+
 final function DebugServerBuyWeapon(Class<Weapon> WClass, float Weight)
 {
 	if (!bDebugServerBuyWeapon)

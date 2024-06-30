@@ -71,13 +71,21 @@ function PlayDirectionalHit(Vector HitLoc)
 simulated function SetBurningBehavior()
 {
     class'PawnHelper'.static.SetBurningBehavior(self, AfflictionData);
-    //BurnRatio = 0.f;
 }
 
 simulated function UnSetBurningBehavior()
 {
     class'PawnHelper'.static.UnSetBurningBehavior(self, AfflictionData);
-    //BurnRatio = 0.f;
+}
+
+simulated function SetZappedBehavior()
+{
+    class'PawnHelper'.static.SetZappedBehavior(self, AfflictionData);
+}
+
+simulated function UnSetZappedBehavior()
+{
+    class'PawnHelper'.static.UnSetZappedBehavior(self, AfflictionData);
 }
 
 simulated function ZombieCrispUp()

@@ -55,10 +55,17 @@ simulated function Tick(float DeltaTime)
 
 simulated function PostNetReceive()
 {
-    if (bCharging)
-        MovementAnims[0]='ChargeF';
-    else
-        MovementAnims[0]=default.MovementAnims[0];
+    if (!bHarpoonStunned)
+    {
+        if (bCharging)
+        {
+            MovementAnims[0]='ChargeF';
+        }
+        else
+        {
+            MovementAnims[0]=default.MovementAnims[0];
+        }
+    }
 }
 
 function float NumPlayersHealthModifer()
@@ -91,7 +98,7 @@ simulated function SetBurningBehavior()
 {
     class'PawnHelper'.static.SetBurningBehavior(self, AfflictionData);
 
-    if( Level.NetMode != NM_DedicatedServer )
+    if( Level.NetMode != NM_DedicatedServer && !bHarpoonStunned)
         PostNetReceive();
 }
 
@@ -143,14 +150,35 @@ simulated function SetZappedBehavior()
     if(ProAI != None && ProAI.bForcedRage)
         return;
 
-    Super.SetZappedBehavior();
+    class'PawnHelper'.static.SetZappedBehavior(self, AfflictionData);
 }
+
+simulated function UnSetZappedBehavior()
+{
+    class'PawnHelper'.static.UnSetZappedBehavior(self, AfflictionData);
+}
+
 
 state RunningState
 {
+    simulated function SetBurningBehavior()
+    {
+		Global.SetBurningBehavior();
+    }
+
     simulated function UnSetBurningBehavior()
     {
 		Global.UnSetBurningBehavior();
+    }
+
+    simulated function SetZappedBehavior()
+    {
+		Global.SetZappedBehavior();
+    }
+
+    simulated function UnSetZappedBehavior()
+    {
+		Global.UnSetZappedBehavior();
     }
 
 	function BeginState()
@@ -182,7 +210,7 @@ defaultproperties
     End Object
 
     Begin Object Class=A_Harpoon Name=HarpoonAffliction
-        HarpoonSpeedModifier=0.5f
+        HarpoonSpeedModifier=0.75f
     End Object
 
     AfflictionData=(Burn=A_Burn'BurnAffliction',Zap=A_Zap'ZapAffliction',Harpoon=A_Harpoon'HarpoonAffliction')

@@ -59,8 +59,10 @@ simulated function float GetOriginalGroundSpeed()
 
     BaseSpeed = class'PawnHelper'.static.GetOriginalGroundSpeed(self, AfflictionData);
 
-    if(bChargingPlayer)
-        return BaseSpeed * 2.3;
+    if (bFrustrated || bChargingPlayer)
+    {
+        return BaseSpeed * 2.3f;
+    }
 
     return BaseSpeed;
 }
@@ -83,17 +85,22 @@ function PlayDirectionalHit(Vector HitLoc)
 
 simulated function SetBurningBehavior()
 {
-    if(ProAI != None && ProAI.bForcedRage)
+    if( bFrustrated || bChargingPlayer )
+    {
         return;
+    }
+
+    if(ProAI != None && ProAI.bForcedRage)
+    {
+        return;
+    }
 
     class'PawnHelper'.static.SetBurningBehavior(self, AfflictionData);
-    //BurnRatio = 0.f;
 }
 
 simulated function UnSetBurningBehavior()
 {
     class'PawnHelper'.static.UnSetBurningBehavior(self, AfflictionData);
-    //BurnRatio = 0.f;
 }
 
 simulated function ZombieCrispUp()
@@ -123,7 +130,12 @@ simulated function SetZappedBehavior()
     if(ProAI != None && ProAI.bForcedRage)
         return;
 
-    Super.SetZappedBehavior();
+    class'PawnHelper'.static.SetZappedBehavior(self, AfflictionData);
+}
+
+simulated function UnSetZappedBehavior()
+{
+    class'PawnHelper'.static.UnSetZappedBehavior(self, AfflictionData);
 }
 
 state RageCharging

@@ -2,6 +2,12 @@ class P_Stalker_STA extends P_Stalker;
 
 defaultproperties
 {
+     DefaultSkin(0)=Combiner'KF_Specimens_Trip_T.stalker_cmb'
+     DefaultSkin(1)=FinalBlend'KF_Specimens_Trip_T.stalker_fb'
+
+     CloakedSkin(0)=Shader'KF_Specimens_Trip_T.stalker_invisible'
+     CloakedSkin(1)=Shader'KF_Specimens_Trip_T.stalker_invisible'
+
      MoanVoice=SoundGroup'KF_EnemiesFinalSnd.Stalker.Stalker_Talk'
      MeleeAttackHitSound=SoundGroup'KF_EnemiesFinalSnd.Stalker.Stalker_HitPlayer'
      JumpSound=SoundGroup'KF_EnemiesFinalSnd.Stalker.Stalker_Jump'

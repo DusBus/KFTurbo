@@ -12,7 +12,62 @@ struct AfflictionData
 	var A_Harpoon Harpoon;
 };
 
-static final function InitializePawnHelper(KFMonster Monster, out AfflictionData Data)
+static final simulated function bool IsPawnBurning(Pawn Pawn)
+{
+	local KFMonster Monster;
+	local KFPawn PlayerPawn;
+
+	if (Pawn == None)
+	{
+		return false;
+	}
+
+	Monster = KFMonster(Pawn);
+
+	if (Monster != None)
+	{
+		return Monster.BurnDown > 0;
+	}
+	
+	PlayerPawn = KFPawn(Pawn);
+
+	if (PlayerPawn != None)
+	{
+		return PlayerPawn.BurnDown > 0;
+	}
+
+	return false;
+}
+
+static final simulated function bool IsPawnZapped(Pawn Pawn)
+{
+	local KFMonster Monster;
+
+	Monster = KFMonster(Pawn);
+
+	if (Monster != None)
+	{
+		return Monster.bZapped;
+	}
+
+	return false;
+}
+
+static final simulated function bool IsPawnHarpoonStunned(Pawn Pawn)
+{
+	local KFMonster Monster;
+
+	Monster = KFMonster(Pawn);
+
+	if (Monster != None)
+	{
+		return Monster.bHarpoonStunned;
+	}
+
+	return false;
+}
+
+static final simulated function InitializePawnHelper(KFMonster Monster, out AfflictionData Data)
 {
 	if (Data.Burn != None)
 	{
@@ -33,7 +88,7 @@ static final function InitializePawnHelper(KFMonster Monster, out AfflictionData
 }
 
 //NOTE: No special destroy code is needed. EZCollision is already destroyed on any zed that has it (not role-dependent).
-static final function SpawnClientExtendedZCollision(KFMonster KFM)
+static final simulated function SpawnClientExtendedZCollision(KFMonster KFM)
 {
 	local vector AttachPos;
 
@@ -60,7 +115,7 @@ static final function SpawnClientExtendedZCollision(KFMonster KFM)
 	}
 }
 
-static final function ZombieCrispUp(KFMonster KFM)
+static final simulated function ZombieCrispUp(KFMonster KFM)
 {
 	KFM.bAshen = true;
 	KFM.bCrispified = true;
@@ -78,7 +133,8 @@ static final function ZombieCrispUp(KFMonster KFM)
 	KFM.Skins[3]=Combiner'PatchTex.Common.BurnSkinEmbers_cmb';
 }
 
-static final function SetBurningBehavior(KFMonster KFM, AfflictionData AD)
+//Handles both Burning and Harpooned (I don't know why TWI did this...)
+static final simulated function SetBurningBehavior(KFMonster KFM, AfflictionData AD)
 {
 	if(KFM == None)
 	{
@@ -87,8 +143,20 @@ static final function SetBurningBehavior(KFMonster KFM, AfflictionData AD)
 
 	if(KFM.bHarpoonStunned)
 	{
-		SetHarpoonedBehaviour(KFM, AD);
-		return;
+		KFM.Intelligence = BRAINS_Retarded;
+
+		if (KFM.MovementAnims[1] != KFM.BurningWalkAnims[0])
+		{
+			KFM.MovementAnims[0] = KFM.BurningWalkFAnims[Rand(3)];
+			KFM.WalkAnims[0]     = KFM.BurningWalkFAnims[Rand(3)];
+
+			KFM.MovementAnims[1] = KFM.BurningWalkAnims[0];
+			KFM.WalkAnims[1]     = KFM.BurningWalkAnims[0];
+			KFM.MovementAnims[2] = KFM.BurningWalkAnims[1];
+			KFM.WalkAnims[2]     = KFM.BurningWalkAnims[1];
+			KFM.MovementAnims[3] = KFM.BurningWalkAnims[2];
+			KFM.WalkAnims[3]     = KFM.BurningWalkAnims[2];
+		}
 	}
 
 	if(KFM.Role == Role_Authority)
@@ -97,15 +165,18 @@ static final function SetBurningBehavior(KFMonster KFM, AfflictionData AD)
 		KFM.AirSpeed = KFM.default.AirSpeed * GetSpeedMultiplier(AD);
 		KFM.WaterSpeed = KFM.default.WaterSpeed * GetSpeedMultiplier(AD);
 
-		if( KFM.Controller != none )
+		if(KFM.bHarpoonStunned && KFM.Controller != none )
 		{
 			MonsterController(KFM.Controller).Accuracy = -20;
 		}
 	}
 }
 
-static final function UnSetBurningBehavior(KFMonster KFM, AfflictionData AD)
+//Handles both Burning and Harpooned (I don't know why TWI did this...)
+static final simulated function UnSetBurningBehavior(KFMonster KFM, AfflictionData AD)
 {
+	local int i;
+
 	if(KFM == None)
 	{
 		return;
@@ -113,87 +184,48 @@ static final function UnSetBurningBehavior(KFMonster KFM, AfflictionData AD)
 
     if(!KFM.bHarpoonStunned)
     {
-    	UnSetHarpoonedBehaviour(KFM, AD);
+		KFM.Intelligence = KFM.default.Intelligence;
+
+    	for ( i = 0; i < 4; i++ )
+		{
+			KFM.MovementAnims[i] = KFM.default.MovementAnims[i];
+			KFM.WalkAnims[i] = KFM.default.WalkAnims[i];
+		}
     }
 
 	if (KFM.Role == Role_Authority )
 	{
-		if( !KFM.bZapped )
-		{
-    		KFM.SetGroundSpeed(KFM.GetOriginalGroundSpeed());
-    		KFM.AirSpeed = KFM.default.AirSpeed * GetSpeedMultiplier(AD);
-    		KFM.WaterSpeed = KFM.default.WaterSpeed * GetSpeedMultiplier(AD);
-        }
-
-		if ( KFM.Controller != none )
-		{
-		   MonsterController(KFM.Controller).Accuracy = MonsterController(KFM.Controller).default.Accuracy;
-		}
-	}
-
-	KFM.bAshen = False;
-}
-
-static final function SetHarpoonedBehaviour(KFMonster KFM, AfflictionData AD)
-{
-	if(KFM == None)
-	{
-		return;
-	}
-
-	if(KFM.Role == Role_Authority)
-	{
-		KFM.Intelligence = BRAINS_Retarded;
-
 		KFM.SetGroundSpeed(KFM.GetOriginalGroundSpeed());
 		KFM.AirSpeed = KFM.default.AirSpeed * GetSpeedMultiplier(AD);
 		KFM.WaterSpeed = KFM.default.WaterSpeed * GetSpeedMultiplier(AD);
 
-		if( KFM.Controller != none )
-		{
-		   MonsterController(KFM.Controller).Accuracy = -20;
-		}
-	}
-
-	KFM.MovementAnims[0] = KFM.BurningWalkFAnims[Rand(3)];
-	KFM.WalkAnims[0] = KFM.BurningWalkFAnims[Rand(3)];
-
-	KFM.MovementAnims[1] = KFM.BurningWalkAnims[0];
-	KFM.WalkAnims[1] = KFM.BurningWalkAnims[0];
-	KFM.MovementAnims[2] = KFM.BurningWalkAnims[1];
-	KFM.WalkAnims[2] = KFM.BurningWalkAnims[1];
-	KFM.MovementAnims[3] = KFM.BurningWalkAnims[2];
-	KFM.WalkAnims[3] = KFM.BurningWalkAnims[2];
-}
-
-static final function UnSetHarpoonedBehaviour(KFMonster KFM, AfflictionData AD)
-{
-	local int i;
-
-	if (KFM.Role == Role_Authority )
-	{
-		KFM.Intelligence = KFM.default.Intelligence;
-
-		if( !KFM.bZapped )
-		{
-    		KFM.SetGroundSpeed(KFM.GetOriginalGroundSpeed());
-    		KFM.AirSpeed = KFM.default.AirSpeed * GetSpeedMultiplier(AD);
-    		KFM.WaterSpeed = KFM.default.WaterSpeed * GetSpeedMultiplier(AD);
-        }
-
-		if ( KFM.Controller != none )
+		if (!KFM.bHarpoonStunned && KFM.Controller != none )
 		{
 		   MonsterController(KFM.Controller).Accuracy = MonsterController(KFM.Controller).default.Accuracy;
 		}
 	}
 
-	for ( i = 0; i < 4; i++ )
-	{
-		KFM.MovementAnims[i] = KFM.default.MovementAnims[i];
-		KFM.WalkAnims[i] = KFM.default.WalkAnims[i];
-	}
-
 	KFM.bAshen = False;
+}
+
+static final simulated function SetZappedBehavior(KFMonster KFM, AfflictionData AD)
+{
+	if( KFM.Role == Role_Authority )
+	{
+		KFM.SetGroundSpeed(KFM.GetOriginalGroundSpeed());
+		KFM.AirSpeed = KFM.default.AirSpeed * GetSpeedMultiplier(AD);
+		KFM.WaterSpeed = KFM.default.WaterSpeed * GetSpeedMultiplier(AD);
+	}
+}
+
+static final simulated function UnSetZappedBehavior(KFMonster KFM, AfflictionData AD)
+{
+	if( KFM.Role == Role_Authority )
+	{
+		KFM.SetGroundSpeed(KFM.GetOriginalGroundSpeed());
+		KFM.AirSpeed = KFM.default.AirSpeed * GetSpeedMultiplier(AD);
+		KFM.WaterSpeed = KFM.default.WaterSpeed * GetSpeedMultiplier(AD);
+	}
 }
 
 static final function bool UpdateStunProperties(KFMonster KFM, float LastStunCount, out float UnstunTime, bool bUnstunTimeReady)

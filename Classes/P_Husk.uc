@@ -58,28 +58,24 @@ function PlayDirectionalHit(Vector HitLoc)
     }
 }
 
-//Husks cannot be burned so this is never a thing.
 simulated function SetBurningBehavior()
 {
-    if(!bHarpoonStunned)
-    {
-        return;
-    }
-
-    class'PawnHelper'.static.SetHarpoonedBehaviour(self, AfflictionData);
-    //BurnRatio = 0.f;        
+    class'PawnHelper'.static.SetBurningBehavior(self, AfflictionData);
 }
 
-//Husks cannot be burned so this is never a thing.
 simulated function UnSetBurningBehavior()
 {
-    if(bHarpoonStunned)
-    {
-        return;
-    }
+    class'PawnHelper'.static.UnSetBurningBehavior(self, AfflictionData);
+}
 
-    class'PawnHelper'.static.UnSetHarpoonedBehaviour(self, AfflictionData);
-    //BurnRatio = 0.f;
+simulated function SetZappedBehavior()
+{
+    class'PawnHelper'.static.SetZappedBehavior(self, AfflictionData);
+}
+
+simulated function UnSetZappedBehavior()
+{
+    class'PawnHelper'.static.UnSetZappedBehavior(self, AfflictionData);
 }
 
 simulated function ZombieCrispUp()
