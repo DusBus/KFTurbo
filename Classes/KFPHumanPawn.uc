@@ -293,4 +293,6 @@ simulated event SetAnimAction(name NewAction)
 defaultproperties
 {
 	bDebugServerBuyWeapon=false
+
+	RequiredEquipment(2)="KFTurbo.W_Frag_Weap"
 }
