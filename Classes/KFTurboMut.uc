@@ -30,6 +30,8 @@ simulated function PostBeginPlay()
 			Level.Game.PlayerControllerClassName = string(class'KFPPlayerController');
 		}
 
+		Level.Game.HUDType = GetHUDReplacementClass(Level.Game.HUDType);
+
 		DeathMatch(Level.Game).LoginMenuClass = string(class'KFPInvasionLoginMenu');
 
 		//Every 5 seconds check if our queued spawn has a replaceable zed.
@@ -38,6 +40,18 @@ simulated function PostBeginPlay()
 		//Manages the creation of KFPRepLink for players joining.
 		RepLinkHandler = Spawn(class'KFPRepLinkHandler', self);
 	}
+}
+
+static function string GetHUDReplacementClass(string HUDClassString)
+{
+	if (HUDClassString ~= string(Class'ServerPerksMut.ServerPerksMut'.default.SRHUDType)
+		|| HUDClassString ~= Class'KFGameType'.Default.HUDType
+		|| HUDClassString ~= Class'KFStoryGameInfo'.Default.HUDType)
+	{
+		HUDClassString = string(class'KFTurbo.KFPHUDKillingFloor');
+	}
+
+	return HUDClassString;
 }
 
 //Apply the monster collections, special squads, and anything else the gamemode needs to know about.

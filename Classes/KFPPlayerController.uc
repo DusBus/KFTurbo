@@ -1,5 +1,17 @@
 class KFPPlayerController extends KFPCServ;
 
+simulated function ClientSetHUD(class<HUD> newHUDClass, class<Scoreboard> newScoringClass )
+{
+	if (class'KFTurboMut'.static.GetHUDReplacementClass(string(newHUDClass)) ~= "KFTurbo.KFPHUDKillingFloor")
+	{
+		Super.ClientSetHUD(class'KFTurbo.KFPHUDKillingFloor', newScoringClass);
+	}
+	else
+	{
+		Super.ClientSetHUD(newHUDClass, newScoringClass);
+	}
+}
+
 event ClientOpenMenu(string Menu, optional bool bDisconnect,optional string Msg1, optional string Msg2)
 {
 	//Attempt fix weird issue where wrong login menu is present.

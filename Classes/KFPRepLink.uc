@@ -46,7 +46,7 @@ Begin:
 
     SetupPlayerInfo();
     Sleep(1.f);
-
+    
     if (NetConnection(OwningController.Player) == None)
     {
         UpdateVariantStatus();
