@@ -66,7 +66,7 @@ static function int AddDamage(KFPlayerReplicationInfo KFPRI, KFMonster Injured, 
 	{
 	case class'W_MAC10_DT' :
 	case class'DamTypeTrenchgun' :
-		return float(InDamage) * Lerp(KFPRI.ClientVeteranSkillLevel, 1.f, 1.15, true);
+		return float(InDamage) * LerpStat(KFPRI, 1.f, 1.15);
 	}
 
 	if (class<DamTypeBurned>(DmgType) != none || class<DamTypeFlamethrower>(DmgType) != none || class<DamTypeHuskGunProjectileImpact>(DmgType) != none || class<W_FlareRevolver_Impact_DT>(DmgType) != none)
