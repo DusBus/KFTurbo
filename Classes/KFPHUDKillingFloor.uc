@@ -1,9 +1,10 @@
 class KFPHUDKillingFloor extends SRHUDKillingFloor;
 
+#exec obj load file="../Textures/KFTurboHUD.utx" package="KFTurboHUD"
+
 var Sound WinSound, LoseSound;
 var float EndGameHUDAnimationDuration;
 var Material EndGameHUDMaterial;
-
 var bool bHasInitializedEndGameHUD;
 var float EndGameHUDAnimationProgress;
 
@@ -16,6 +17,7 @@ simulated function Tick(float DeltaTime)
 		EndGameHUDAnimationProgress += DeltaTime;
 	}
 }
+
 
 simulated function DrawEndGameHUD(Canvas C, bool bVictory)
 {
@@ -34,7 +36,6 @@ simulated function DrawEndGameHUD(Canvas C, bool bVictory)
 	XScalar = YScalar * 2.f;
 
 	C.DrawColor.A = Lerp(FadeAlpha, 0, 255);
-	log(C.DrawColor.A);
 
 	C.CurX = C.ClipX / 2 - XScalar / 2;
 	C.CurY = C.ClipY / 2 - YScalar / 2;
@@ -58,12 +59,12 @@ simulated function InitializeEndGameUI(bool bVictory)
 
 	if ( bVictory )
 	{
-		EndGameHUDMaterial = Texture'KFTurbo.HUD.You_Won_D';
+		EndGameHUDMaterial = Texture'KFTurboHUD.EndGame.You_Won_D';
 		PlayerOwner.PlaySound(WinSound,,255.0,,,,False);
 	}
 	else
 	{
-		EndGameHUDMaterial = Texture'KFTurbo.HUD.You_Died_D';
+		EndGameHUDMaterial = Texture'KFTurboHUD.EndGame.You_Died_D';
 		PlayerOwner.PlaySound(LoseSound,,255.0,,,,False);
 	}
 }
