@@ -4,6 +4,7 @@
 //========
 class WeaponHelper extends Object;
 
+#exec obj load file="..\Animations\KFTurboExtra.ukx" package=KFTurbo
 
 enum ETraceResult
 {
@@ -72,15 +73,6 @@ static final function ETraceResult WeaponTrace(Vector TraceStart, Vector TraceEn
 	local KFPawn HitPawn;
 	local Vector HitNormal;
 	local array<int> HitPoints;
-
-/*	out vector      HitLocation,
-	out vector      HitNormal,
-	vector          TraceEnd,
-	out array<int>  HitPoints,
-	optional vector TraceStart,
-	optional vector Extent,
-	optional int WhizType,
-	optional out material Material*/
 
 	HitActor = Fire.Instigator.HitPointTrace(HitLocation, HitNormal, TraceEnd, HitPoints, TraceStart, vect(0,0,0), 1);
 

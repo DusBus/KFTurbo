@@ -4,6 +4,7 @@ struct MeshDefinition
 {
     var Mesh WeaponMesh;
     var int ArmUVIndex;
+    var array<Material> WeaponMeshMaterialList;
     var class<InventoryAttachment> AttachmentClass;
     //Potentially add material list here... kinda sucks if that's what's necessary though.
 };
@@ -69,10 +70,16 @@ simulated function bool UpdateMeshDefinition()
     switch (NewDesiredProjectileClass)
     {
         case class'KFMod.Nade':
-        case class'KFMod.FlameNade':
-        case class'KFMod.MedicNade':
-        case class'KFTurbo.V_Berserker_Grenade':
             CurrentGrenadeDefinition = DefaultGrenadeDefinition;
+            break;
+        case class'KFMod.FlameNade':
+            CurrentGrenadeDefinition = FirebugGrenadeDefinition;
+            break;
+        case class'KFMod.MedicNade':
+            CurrentGrenadeDefinition = MedicGrenadeDefinition;
+            break;
+        case class'KFTurbo.V_Berserker_Grenade':
+            CurrentGrenadeDefinition = BerserkerGrenadeDefinition;
             break;
     }
     return true;
@@ -80,10 +87,9 @@ simulated function bool UpdateMeshDefinition()
 
 simulated function UpdateWeaponMesh()
 {
-    Skins.Length = 0; //Clear list.
     LinkMesh(CurrentGrenadeDefinition.WeaponMesh, true);
-    //TODO: We don't have a nice way to figure out what the original mesh's materials were.
-    //For now non-sleeve UVs will show null material.
+    Skins = CurrentGrenadeDefinition.WeaponMeshMaterialList;
+    ShowGrenadeMesh();
 }
 
 simulated function UpdateSleeveTexture()
@@ -109,11 +115,39 @@ simulated function UpdateSleeveTexture()
     }
 }
 
+//=============
+//RepNotifies
+
+simulated function HideGrenadeMesh()
+{
+    if (Level.NetMode == NM_DedicatedServer)
+    {
+        return;
+    }
+
+    //int Slot, optional float BoneScale, optional name BoneName
+    SetBoneScale(0, 0.f, 'Frag');
+}
+
+simulated function ShowGrenadeMesh()
+{
+    if (Level.NetMode == NM_DedicatedServer)
+    {
+        return;
+    }
+
+    SetBoneScale(0, 1.f, 'Frag');
+}
+
 defaultproperties
 {
     LastThrownGrenadeClass = None
     LastSpeciesTypeClass = None
-    DefaultGrenadeDefinition=(WeaponMesh=SkeletalMesh'KF_Weapons_Trip.Frag_Trip',ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
+    
+    DefaultGrenadeDefinition=(WeaponMesh=SkeletalMesh'KF_Weapons_Trip.Frag_Trip',WeaponMeshMaterialList=(Shader'KillingFloorWeapons.Frag_Grenade.FragShader'),ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
+    FirebugGrenadeDefinition=(WeaponMesh=SkeletalMesh'KFTurbo.FirebugGrenade',WeaponMeshMaterialList=(Texture'KFTurbo.FP7.FP7Grenade'),ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
+    MedicGrenadeDefinition=(WeaponMesh=SkeletalMesh'KFTurbo.MedicGrenade',WeaponMeshMaterialList=(Texture'KFTurbo.G28.G28MedicGrenade'),ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
+    BerserkerGrenadeDefinition=(WeaponMesh=SkeletalMesh'KFTurbo.ZerkNade',WeaponMeshMaterialList=(Shader'KFTurbo.XM84.XM84-Glow'),ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
 
     //Might as well incorporate the frag fix while we're here.
     FireModeClass(0)=Class'FragFireFix'
