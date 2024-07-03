@@ -43,19 +43,12 @@ simulated function HitWall( vector HitNormal, actor Wall )
     Velocity = -VNorm * DampenFactor + (Velocity - VNorm) * DampenFactorParallel;
 
     RandSpin(100000);
-    DesiredRotation.Roll = 0;
-    RotationRate.Roll = 0;
     Speed = VSize(Velocity);
 
-    if ( Speed < 20 )
+    if ( Speed < 10 )
     {
         bBounce = False;
-        PrePivot.Z = -1.5;
-		SetPhysics(PHYS_None);
-		DesiredRotation = Rotation;
-		DesiredRotation.Roll = 0;
-		DesiredRotation.Pitch = 0;
-		SetRotation(DesiredRotation);
+		class'WeaponHelper'.static.BeginGrenadeSmoothRotation(self);
 
         if ( Trail != None )
             Trail.mRegen = false; // stop the emitter from regenerating
@@ -63,14 +56,10 @@ simulated function HitWall( vector HitNormal, actor Wall )
     else
     {
 		if ( (Level.NetMode != NM_DedicatedServer) && (Speed > 50) )
-			PlaySound(ImpactSound, SLOT_Misc );
-		else
 		{
-			bFixedRotationDir = false;
-			bRotateToDesired = true;
-			DesiredRotation.Pitch = 0;
-			RotationRate.Pitch = 50000;
+			PlaySound(ImpactSound, SLOT_Misc );
 		}
+
         if ( !Level.bDropDetail && (Level.DetailMode != DM_Low) && (Level.TimeSeconds - LastSparkTime > 0.5) && EffectIsRelevant(Location,false) )
         {
 			PC = Level.GetLocalPlayerController();
@@ -208,11 +197,10 @@ defaultproperties
     ExplodeTimer=2.0
     Damage=0 //Doesn't do damage.
     DamageRadius=260.0
-    MyDamageType=Class'KFMod.DamTypeFrag'
 	ZapAmount = 1.5;
 
-    DampenFactor=0.075000
-    DampenFactorParallel=0.125000
+    DampenFactor=0.150000
+    DampenFactorParallel=0.300000
 	
 	LightType=LT_Pulse
     LightBrightness=128
@@ -222,9 +210,19 @@ defaultproperties
     LightSaturation=64
     bDynamicLight=True
 
-    StaticMesh=StaticMesh'KillingFloorStatics.FragProjectile'
-	Skins(0)=Texture'KFTurbo.Generic.BerserkerGrenade_D'
-    DrawScale=0.3
+    StaticMesh=StaticMesh'KFTurbo.XM84.XM84Projectile'
+	Skins(0)=Shader'KFTurbo.XM84.XM84-Glow'
+    DrawScale=0.75
 
     ExplodeSounds=(sound'KF_FY_ZEDV2SND.WEP_ZEDV2_Secondary_Explode')
+
+	Physics=PHYS_Falling
+	bUseCollisionStaticMesh = false
+	bUseCylinderCollision = false
+	bFixedRotationDir = true
+
+	CollisionRadius=5
+    CollisionHeight=5
+    RotationRate=(Roll=0)
+	PrePivot=(Z=6);
 }

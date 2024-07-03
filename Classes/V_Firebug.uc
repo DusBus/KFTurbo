@@ -105,7 +105,7 @@ static function int ReduceDamage(KFPlayerReplicationInfo KFPRI, KFPawn Injured, 
 
 static function class<Grenade> GetNadeType(KFPlayerReplicationInfo KFPRI)
 {
-	return class'FlameNade';
+	return class'V_Firebug_Grenade';
 }
 
 static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other)

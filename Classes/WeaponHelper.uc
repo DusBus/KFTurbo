@@ -4,6 +4,7 @@
 //========
 class WeaponHelper extends Object;
 
+//KFTurboExtra contains content from Ballistic Weapons Pack. KFTurbo is a non-commercial mod for the game Killing Floor.
 #exec obj load file="..\Animations\KFTurboExtra.ukx" package=KFTurbo
 
 enum ETraceResult
@@ -253,6 +254,25 @@ static final function class<KFVeterancyTypes> GetVeterancyFromWeapon(Weapon Weap
 	}
 
 	return KFPlayerReplicationInfo(Weapon.Instigator.PlayerReplicationInfo).ClientVeteranSkill;
+}
+
+static final function BeginGrenadeSmoothRotation(Nade Grenade)
+{
+	local float Roll;
+	local Vector X, Y, Z;
+	Roll = Grenade.Rotation.Roll;
+	Grenade.DesiredRotation = Rotator(Normal(Vector(Grenade.Rotation) + vect(0, 0, 1000)));
+	Grenade.DesiredRotation.Roll = Roll;
+
+	//TODO: Handle this per-grenade.
+	if (Grenade.Class != class'KFMod.Nade')
+	{
+		Grenade.GetAxes(Grenade.Rotation, X, Y, Z);
+		Grenade.PrePivot += Z * 5.f;
+	}
+
+	Grenade.SetRotation(Grenade.DesiredRotation);
+	Grenade.SetPhysics(PHYS_None);
 }
 
 defaultproperties

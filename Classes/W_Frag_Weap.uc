@@ -18,6 +18,10 @@ var MeshDefinition FirebugGrenadeDefinition;
 var MeshDefinition BerserkerGrenadeDefinition;
 var MeshDefinition MedicGrenadeDefinition;
 
+var() float QuatPitch;
+var() float QuatYaw;
+var() float QuatRoll;
+
 simulated event StartThrow()
 {
     if (Level.NetMode != NM_DedicatedServer)
@@ -72,10 +76,10 @@ simulated function bool UpdateMeshDefinition()
         case class'KFMod.Nade':
             CurrentGrenadeDefinition = DefaultGrenadeDefinition;
             break;
-        case class'KFMod.FlameNade':
+        case class'KFTurbo.V_Firebug_Grenade':
             CurrentGrenadeDefinition = FirebugGrenadeDefinition;
             break;
-        case class'KFMod.MedicNade':
+        case class'KFTurbo.V_FieldMedic_Grenade':
             CurrentGrenadeDefinition = MedicGrenadeDefinition;
             break;
         case class'KFTurbo.V_Berserker_Grenade':
@@ -150,8 +154,12 @@ defaultproperties
     BerserkerGrenadeDefinition=(WeaponMesh=SkeletalMesh'KFTurbo.ZerkNade',WeaponMeshMaterialList=(Shader'KFTurbo.XM84.XM84-Glow'),ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
 
     //Might as well incorporate the frag fix while we're here.
-    FireModeClass(0)=Class'FragFireFix'
+    FireModeClass(0)=Class'W_Frag_Fire'
 
     AttachmentClass=Class'KFMod.FragAttachment'
     Mesh=SkeletalMesh'KF_Weapons_Trip.Frag_Trip'
+
+    QuatPitch=-0.5f
+    QuatYaw=0.25
+    QuatRoll=0.8
 }

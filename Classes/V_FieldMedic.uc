@@ -41,7 +41,7 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 
 static function class<Grenade> GetNadeType(KFPlayerReplicationInfo KFPRI)
 {
-	return Super.GetNadeType(KFPRI);
+	return class'V_FieldMedic_Grenade';
 }
 
 static function float GetSyringeChargeRate(KFPlayerReplicationInfo KFPRI)
