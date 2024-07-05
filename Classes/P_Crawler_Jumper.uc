@@ -142,7 +142,7 @@ defaultproperties
 {
     PounceWindupDuration=1.f
     bDidPounceWindupAnim = false;
-    PounceSpeed=1500.f
+    PounceSpeed=1650.f
 
     Begin Object Class=A_Burn Name=BurnAffliction
         BurnDurationModifier=1.f
@@ -159,4 +159,5 @@ defaultproperties
     AfflictionData=(Burn=A_Burn'BurnAffliction',Zap=A_Zap'ZapAffliction',Harpoon=A_Harpoon'HarpoonAffliction')
     
     ControllerClass=class'KFTurbo.AI_Crawler_Jumper'
+    MenuName="Raptor"
 }
