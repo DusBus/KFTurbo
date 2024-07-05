@@ -42,6 +42,24 @@ simulated function Tick(float DeltaTime)
     }
 }
 
+simulated function AnimEnd(int Channel)
+{
+    local name  Sequence;
+	local float Frame, Rate;
+    
+	GetAnimParams(1, Sequence, Frame, Rate);
+
+    Super.AnimEnd(Channel);
+
+    if (!bShotAnim || Sequence != 'Siren_Scream')
+    {
+        return;
+    }
+    
+    //If the anim that ended was Siren_Scream, make sure we set this to false.
+    bShotAnim = false;
+}
+
 function float NumPlayersHealthModifer()
 {
     return class'PawnHelper'.static.GetBodyHealthModifier(self, Level);
@@ -66,11 +84,7 @@ function PlayDirectionalHit(Vector HitLoc)
     if(class'PawnHelper'.static.ShouldPlayDirectionalHit(self))
         Super.PlayDirectionalHit(HitLoc);
 
-    if(LastStunCount != StunsRemaining)
-    {
-        UnstunTime = Level.TimeSeconds + StunTime;
-        bUnstunTimeReady = true;
-    }
+	bUnstunTimeReady = class'PawnHelper'.static.UpdateStunProperties(self, LastStunCount, UnstunTime, bUnstunTimeReady);
 }
 
 simulated function SetBurningBehavior()
@@ -115,14 +129,15 @@ simulated function Timer()
     }
 }
 
-
 function RangedAttack(Actor A)
 {
     local int LastFireTime;
     local float Dist;
 
     if ( bShotAnim )
+    {
         return;
+    }
 
     Dist = VSize(A.Location - Location);
 
