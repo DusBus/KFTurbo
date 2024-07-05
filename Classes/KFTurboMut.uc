@@ -9,7 +9,7 @@ var array<KFGameType.SpecialSquad> ShortSpecialSquads;		// The special squad arr
 var array<KFGameType.SpecialSquad> NormalSpecialSquads;	// The special squad array for a normal game
 var array<KFGameType.SpecialSquad> LongSpecialSquads;		// The special squad array for a long game
 
-var KFPClassyGorefastHandler ClassyGorefastHandler;
+var KFPCustomZedHandler CustomZedHandler;
 var KFPRepLinkHandler RepLinkHandler;
 
 var config String RepLinkSettingsClassString;
@@ -35,7 +35,7 @@ simulated function PostBeginPlay()
 		DeathMatch(Level.Game).LoginMenuClass = string(class'KFPInvasionLoginMenu');
 
 		//Every 5 seconds check if our queued spawn has a replaceable zed.
-		ClassyGorefastHandler = Spawn(class'KFPClassyGorefastHandler', self);
+		CustomZedHandler = Spawn(class'KFPCustomZedHandler', self);
 
 		//Manages the creation of KFPRepLink for players joining.
 		RepLinkHandler = Spawn(class'KFPRepLinkHandler', self);
