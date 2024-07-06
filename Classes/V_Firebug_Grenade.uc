@@ -71,7 +71,7 @@ defaultproperties
     bDynamicLight=True
 
     StaticMesh=StaticMesh'KFTurbo.FP7.FP7Proj'
-	Skins(0)=Texture'KFTurbo.FP7.FP7Grenade'
+	Skins(0)=Shader'KFTurbo.FP7.FP7_SHDR'
     DrawScale=0.35
 	
 	Physics=PHYS_Falling

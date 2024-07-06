@@ -30,7 +30,7 @@ defaultproperties
 	PlayerIronSightFOV=65
 
      PlayerViewOffset=(X=24.000000,Y=26.000000,Z=-12.000000)
-     PlayerViewPivot=(Roll=-2000)
+     PlayerViewPivot=(Roll=-1000)
 
      SleeveNum=0
      MeshRef="KFTurbo.SterlingSMG_1st"

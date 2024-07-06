@@ -149,7 +149,7 @@ defaultproperties
     LastSpeciesTypeClass = None
     
     DefaultGrenadeDefinition=(WeaponMesh=SkeletalMesh'KF_Weapons_Trip.Frag_Trip',WeaponMeshMaterialList=(Shader'KillingFloorWeapons.Frag_Grenade.FragShader'),ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
-    FirebugGrenadeDefinition=(WeaponMesh=SkeletalMesh'KFTurbo.FirebugGrenade',WeaponMeshMaterialList=(Texture'KFTurbo.FP7.FP7Grenade'),ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
+    FirebugGrenadeDefinition=(WeaponMesh=SkeletalMesh'KFTurbo.FirebugGrenade',WeaponMeshMaterialList=(Shader'KFTurbo.FP7.FP7_SHDR'),ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
     MedicGrenadeDefinition=(WeaponMesh=SkeletalMesh'KFTurbo.MedicGrenade',WeaponMeshMaterialList=(Texture'KFTurbo.G28.G28MedicGrenade'),ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
     BerserkerGrenadeDefinition=(WeaponMesh=SkeletalMesh'KFTurbo.ZerkNade',WeaponMeshMaterialList=(Shader'KFTurbo.XM84.XM84-Glow'),ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
 
