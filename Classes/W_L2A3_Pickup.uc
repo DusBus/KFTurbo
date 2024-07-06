@@ -2,8 +2,11 @@ class W_L2A3_Pickup extends W_AK47_Pickup;
 
 defaultproperties
 {
+     VariantClasses=()
+
      Weight=6.000000
      cost=1250
+	CorrespondingPerkIndex=5
      AmmoCost=15
      //BuyClipSize=
      PowerValue=40
