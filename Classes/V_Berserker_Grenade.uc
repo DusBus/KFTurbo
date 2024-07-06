@@ -48,7 +48,7 @@ simulated function HitWall( vector HitNormal, actor Wall )
     if ( Speed < 10 )
     {
         bBounce = False;
-		class'WeaponHelper'.static.BeginGrenadeSmoothRotation(self);
+		class'WeaponHelper'.static.BeginGrenadeSmoothRotation(self, 5);
 
         if ( Trail != None )
             Trail.mRegen = false; // stop the emitter from regenerating
@@ -199,7 +199,7 @@ defaultproperties
     DamageRadius=260.0
 	ZapAmount = 1.5;
 
-    DampenFactor=0.150000
+    DampenFactor=0.200000
     DampenFactorParallel=0.300000
 	
 	LightType=LT_Pulse

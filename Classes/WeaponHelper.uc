@@ -256,22 +256,20 @@ static final function class<KFVeterancyTypes> GetVeterancyFromWeapon(Weapon Weap
 	return KFPlayerReplicationInfo(Weapon.Instigator.PlayerReplicationInfo).ClientVeteranSkill;
 }
 
-static final function BeginGrenadeSmoothRotation(Nade Grenade)
+static final function BeginGrenadeSmoothRotation(Nade Grenade, float DownwardOffset)
 {
 	local float Roll;
 	local Vector X, Y, Z;
-	Roll = Grenade.Rotation.Roll;
 	Grenade.DesiredRotation = Rotator(Normal(Vector(Grenade.Rotation) + vect(0, 0, 1000)));
 	Grenade.DesiredRotation.Roll = Roll;
-
-	//TODO: Handle this per-grenade.
+	Grenade.SetRotation(Grenade.DesiredRotation);
+	
 	if (Grenade.Class != class'KFMod.Nade')
 	{
-		Grenade.GetAxes(Grenade.Rotation, X, Y, Z);
-		Grenade.PrePivot += Z * 5.f;
+		GetUnAxes(Grenade.Rotation, X, Y, Z);
+		Grenade.PrePivot += Z * DownwardOffset;
 	}
 
-	Grenade.SetRotation(Grenade.DesiredRotation);
 	Grenade.SetPhysics(PHYS_None);
 }
 

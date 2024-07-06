@@ -31,7 +31,7 @@ simulated function HitWall( vector HitNormal, actor Wall )
     {
         bBounce = False;
 
-		class'WeaponHelper'.static.BeginGrenadeSmoothRotation(self);
+		class'WeaponHelper'.static.BeginGrenadeSmoothRotation(self, 12);
 
 		if( Fear == none )
 		{
@@ -63,7 +63,7 @@ simulated function HitWall( vector HitNormal, actor Wall )
 defaultproperties
 {	
 	LightType=LT_Pulse
-    LightBrightness=128
+    LightBrightness=64
 	LightPeriod=16
     LightRadius=0.500000
     LightHue=15
@@ -72,7 +72,7 @@ defaultproperties
 
     StaticMesh=StaticMesh'KFTurbo.FP7.FP7Proj'
 	Skins(0)=Texture'KFTurbo.FP7.FP7Grenade'
-    DrawScale=0.45
+    DrawScale=0.35
 	
 	Physics=PHYS_Falling
 	bUseCollisionStaticMesh = false

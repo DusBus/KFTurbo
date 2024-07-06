@@ -1,5 +1,13 @@
 class V_FieldMedic_Grenade extends KFMod.MedicNade;
 
+simulated function Explode(vector HitLocation, vector HitNormal)
+{
+    Super.Explode(HitLocation, HitNormal);
+
+    LightType = LT_None;
+    bDynamicLight = false;
+}
+
 simulated function HitWall( vector HitNormal, actor Wall )
 {
     local Vector VNorm;
@@ -30,7 +38,7 @@ simulated function HitWall( vector HitNormal, actor Wall )
         Timer();
         SetTimer(0.0,False);
 
-		class'WeaponHelper'.static.BeginGrenadeSmoothRotation(self);
+		class'WeaponHelper'.static.BeginGrenadeSmoothRotation(self, 20);
 
 		if( Fear == none )
 		{
@@ -63,16 +71,19 @@ simulated function HitWall( vector HitNormal, actor Wall )
 defaultproperties
 {
 	LightType=LT_Pulse
-    LightBrightness=128
+    LightBrightness=64
 	LightPeriod=16
     LightRadius=0.500000
     LightHue=62
-    LightSaturation=100
+    LightSaturation=150
     bDynamicLight=True
+
+    DampenFactor=0.250000
+    DampenFactorParallel=0.35
 
     StaticMesh=StaticMesh'KFTurbo.T10.T10Projectile'
 	Skins(0)=Texture'KFTurbo.G28.G28MedicGrenade'
-    DrawScale=0.3
+    DrawScale=0.2
 	
 	Physics=PHYS_Falling
 	bUseCollisionStaticMesh = false
