@@ -43,25 +43,7 @@ static function int GetPerkProgressInt( ClientPerkRepLink StatOther, out int Fin
 
 static function int AddCarryMaxWeight(KFPlayerReplicationInfo KFPRI)
 {
-	switch (KFPRI.ClientVeteranSkillLevel)
-	{
-	case 0:
-		return 0;
-	case 1:
-		return 2;
-	case 2:
-		return 3;
-	case 3:
-		return 4;
-	case 4:
-		return 5;
-	case 5:
-		return 8;
-	default:
-		return 9;
-	}
-
-	return 0;
+	return 9;
 }
 
 static function float GetWeldSpeedModifier(KFPlayerReplicationInfo KFPRI)
@@ -141,13 +123,7 @@ static function float GetShotgunPenetrationDamageMulti(KFPlayerReplicationInfo K
 
 	PenDamageInverse = 1.0 - FMax(0, DefaultPenDamageReduction);
 
-	switch (KFPRI.ClientVeteranSkillLevel)
-	{
-	case 0:
-		return DefaultPenDamageReduction + (PenDamageInverse / 10.0);
-	default:
-		return DefaultPenDamageReduction + ((PenDamageInverse / 5.5555) * float(Min(KFPRI.ClientVeteranSkillLevel, 5)));
-	}
+	return DefaultPenDamageReduction + ((PenDamageInverse / 5.5555) * float(Min(6, 5)));
 }
 
 static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)
