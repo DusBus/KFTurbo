@@ -82,6 +82,8 @@ function SetupPlayerInfo()
     bHasPerformedSetup = true;
 
     PlayerID = OwningController.GetPlayerIDHash();
+    
+	KFTurboMutator.InitializeKFPRepLinkSettings();
     KFTurboMutator.RepLinkSettings.GeneratePlayerVariantData(PlayerID, PlayerVariantList);
 }
 

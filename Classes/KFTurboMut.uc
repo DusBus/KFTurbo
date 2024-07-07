@@ -116,6 +116,7 @@ function InitializeKFPRepLinkSettings()
 		return;
 	}
 
+	log("Attempting setup of RepLinkSettingsClass with"@RepLinkSettingsClassString, 'KFTurbo');
 	RepLinkSettingsClass = class<KFTurboRepLinkSettings>(DynamicLoadObject(RepLinkSettingsClassString, class'Class'));
 
 	if (RepLinkSettingsClass == none)
