@@ -56,7 +56,7 @@ simulated function PerformMeshUpdate()
 simulated function bool UpdateMeshDefinition()
 {
     local class<Projectile> NewDesiredProjectileClass;
-    NewDesiredProjectileClass = FragFireFix(FireMode[0]).GetDesiredProjectileClass();
+    NewDesiredProjectileClass = W_Frag_Fire(FireMode[0]).GetDesiredProjectileClass();
     if (LastThrownGrenadeClass == NewDesiredProjectileClass)
     {
         return false;

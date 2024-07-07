@@ -10,7 +10,6 @@ var array<KFGameType.SpecialSquad> NormalSpecialSquads;	// The special squad arr
 var array<KFGameType.SpecialSquad> LongSpecialSquads;		// The special squad array for a long game
 
 var KFPCustomZedHandler CustomZedHandler;
-var KFPRepLinkHandler RepLinkHandler;
 
 var config String RepLinkSettingsClassString;
 var class<KFTurboRepLinkSettings> RepLinkSettingsClass;
@@ -36,15 +35,12 @@ simulated function PostBeginPlay()
 
 		//Every 5 seconds check if our queued spawn has a replaceable zed.
 		CustomZedHandler = Spawn(class'KFPCustomZedHandler', self);
-
-		//Manages the creation of KFPRepLink for players joining.
-		RepLinkHandler = Spawn(class'KFPRepLinkHandler', self);
 	}
 }
 
 static function string GetHUDReplacementClass(string HUDClassString)
 {
-	if (HUDClassString ~= string(Class'ServerPerksMut.ServerPerksMut'.default.SRHUDType)
+	if (HUDClassString ~= string(Class'ServerPerks.SRHUDKillingFloor')
 		|| HUDClassString ~= Class'KFGameType'.Default.HUDType
 		|| HUDClassString ~= Class'KFStoryGameInfo'.Default.HUDType)
 	{
@@ -110,6 +106,11 @@ static final function UpdateSpecialSquadList(out array<KFGameType.SpecialSquad> 
 //Called every time a ServerStStats is made (but we only want to do this once).
 function InitializeKFPRepLinkSettings()
 {
+	if (Role != ROLE_Authority)
+	{
+		return;
+	}
+
 	if (RepLinkSettings != none)
 	{
 		return;
@@ -131,12 +132,6 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 	if (KFRandomItemSpawn(Other) != None)
 	{
 		UpdateRandomItemPickup(KFRandomItemSpawn(Other));
-	}
-
-	if (RepLinkHandler != none && ServerStStats(Other) != None)
-	{
-		InitializeKFPRepLinkSettings();
-		RepLinkHandler.OnServerStatsAdded(ServerStStats(Other));
 	}
 
 	return true;

@@ -1,4 +1,17 @@
-class W_Frag_Fire extends FragFireFix;
+class W_Frag_Fire extends FragFire;
+
+var float PrevAmmo;
+
+function DoFireEffect()
+{
+	local float MaxAmmo,CurAmmo;
+
+	Weapon.GetAmmoCount(MaxAmmo,CurAmmo);
+	if (CurAmmo==0 && PrevAmmo==0)
+		return;
+	PrevAmmo=CurAmmo;
+	Super.DoFireEffect();
+}
 
 function projectile SpawnProjectile(Vector Start, Rotator Dir)
 {
