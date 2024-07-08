@@ -175,7 +175,7 @@ function RangedAttack(Actor A)
 
 simulated function SpawnTwoShots()
 {
-    if( bDecapitated )
+    if( bDecapitated || bZapped || bHarpoonStunned )
     {
         return;
     }
