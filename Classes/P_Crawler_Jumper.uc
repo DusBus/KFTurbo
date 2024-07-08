@@ -6,6 +6,11 @@ var bool bDidPounceWindupAnim;
 
 function bool CanPounce()
 {
+    if (Controller == None || Controller.Target == None)
+    {
+        return false;
+    }
+
     if ( bZapped || bDecapitated || bIsCrouched || bWantsToCrouch || (Physics != PHYS_Walking) || VSize(Location - Controller.Target.Location) > (MeleeRange * 25) )
     {
         return false;
@@ -21,8 +26,24 @@ function bool DoPounce()
         return false;
     }
 
+    if ( !IsPouncePathClear() )
+    {
+        return false;
+    }
+
     GotoState('PounceWindup');
     return true;
+}
+
+function bool IsPouncePathClear()
+{
+    local Vector HitLocation, HitNormal;
+    local Actor Target, HitActor;
+    Target = Controller.Target;
+
+    HitActor = Trace(HitLocation, HitNormal, Target.Location,Location,true,vect(3,3,3));
+
+    return HitActor == Target || HitActor.Base == Target || HitActor == None;
 }
 
 simulated event SetAnimAction(name NewAction)

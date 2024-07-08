@@ -22,7 +22,7 @@ simulated function PostBeginPlay()
 function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
 {
 	local int OldHealth;
-	local Vector X,Y,Z, Dir;
+	local Vector X,Y,Z;
 	local bool bIsHeadShot;
 	local float HeadShotCheckScale;
     local class<KFWeaponDamageType> WeaponDamageType;
