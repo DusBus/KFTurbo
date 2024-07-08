@@ -156,7 +156,7 @@ function RangedAttack(Actor A)
         Controller.bPreparingMove = true;
         Acceleration = vect(0,0,0);
     }
-    else if( Dist <= ScreamRadius && !bDecapitated && !bZapped && BurnDown <= 0)
+    else if( Dist <= ScreamRadius && !bDecapitated && !bZapped && !bHarpoonStunned)
     {
         bShotAnim=true;
         SetAnimAction('Siren_Scream');
