@@ -220,16 +220,16 @@ function bool ServerBuyAmmo(Class<Ammunition> AClass, bool bOnlyClip)
 		UsedMagCapacity = KW.default.MagCapacity;
 	}
 
-	if (KW.PickupClass == class'HuskGunPickup')
+	if ( class<W_Huskgun_Pickup>(KW.PickupClass) != None )
 	{
-		UsedMagCapacity = class<HuskGunPickup>(KW.PickupClass).default.BuyClipSize;
+		UsedMagCapacity = class<W_Huskgun_Pickup>(KW.PickupClass).default.BuyClipSize;
 	}
 
 	if (bOnlyClip)
 	{
 		if (KFPlayerReplicationInfo(PlayerReplicationInfo) != none && KFPlayerReplicationInfo(PlayerReplicationInfo).ClientVeteranSkill != none)
 		{
-			if (KW.PickupClass == class'HuskGunPickup')
+			if ( class<W_Huskgun_Pickup>(KW.PickupClass) != None )
 			{
 				c = UsedMagCapacity * KFPlayerReplicationInfo(PlayerReplicationInfo).ClientVeteranSkill.static.AddExtraAmmoFor(KFPlayerReplicationInfo(PlayerReplicationInfo), AM.Class);
 			}

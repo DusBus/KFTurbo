@@ -66,9 +66,15 @@ function UpdateMyBuyables()
 		MyBuyable.ItemCost		= (float(MyPickup.default.Cost) * KFV.static.GetCostScaling(PRI, AdjustedPickup)) / DualDivider;
 		MyBuyable.ItemAmmoCost		= MyPrimaryPickup.default.AmmoCost * KFV.static.GetAmmoCostScaling(PRI, AdjustedPickup)
 										  * KFV.static.GetMagCapacityMod(PRI, KFWeapon(CurInv));
-		if( MyPickup==class'HuskGunPickup' )
+		if( class<W_Huskgun_Pickup>(MyPickup) != None )
+		{
 			MyBuyable.ItemFillAmmoCost	= (int(((MaxAmmo - CurAmmo) * float(MyPrimaryPickup.default.AmmoCost)) / float(MyPrimaryPickup.default.BuyClipSize))) * KFV.static.GetAmmoCostScaling(PRI, MyPrimaryPickup);
-		else MyBuyable.ItemFillAmmoCost		= (int(((MaxAmmo - CurAmmo) * float(MyPrimaryPickup.default.AmmoCost)) / float(KFWeapon(CurInv).default.MagCapacity))) * KFV.static.GetAmmoCostScaling(PRI, MyPrimaryPickup);
+		}
+		else
+		{
+			MyBuyable.ItemFillAmmoCost	= (int(((MaxAmmo - CurAmmo) * float(MyPrimaryPickup.default.AmmoCost)) / float(KFWeapon(CurInv).default.MagCapacity))) * KFV.static.GetAmmoCostScaling(PRI, MyPrimaryPickup);
+		}
+
 		MyBuyable.ItemWeight		= KFWeapon(CurInv).Weight;
 		MyBuyable.ItemPower		= MyPickup.default.PowerValue;
 		MyBuyable.ItemRange		= MyPickup.default.RangeValue;
