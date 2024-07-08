@@ -1,4 +1,4 @@
-class KFPGUIBuyWeaponInfoPanel extends GUIBuyWeaponInfoPanel;
+class KFPGUIBuyWeaponInfoPanel extends SRGUIBuyWeaponInfoPanel;
 
 function Display(GUIBuyable NewBuyable)
 {
