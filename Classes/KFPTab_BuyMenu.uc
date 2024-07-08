@@ -119,14 +119,14 @@ function SetInfoText()
 
 defaultproperties
 {
-     Begin Object Class=SRKFBuyMenuInvListBox Name=InventoryBox
+     Begin Object Class=KFPBuyMenuInvListBox Name=InventoryBox
          OnCreateComponent=InventoryBox.InternalOnCreateComponent
          WinTop=0.070841
          WinLeft=0.000108
          WinWidth=0.328204
          WinHeight=0.521856
      End Object
-     InvSelect=SRKFBuyMenuInvListBox'KFTurbo.KFPTab_BuyMenu.InventoryBox'
+     InvSelect=KFPBuyMenuInvListBox'KFTurbo.KFPTab_BuyMenu.InventoryBox'
 
      Begin Object Class=KFPGUIBuyWeaponInfoPanel Name=KFPItemInfoPanel
          WinTop=0.193730

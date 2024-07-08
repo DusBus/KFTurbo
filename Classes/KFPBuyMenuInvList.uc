@@ -51,8 +51,13 @@ function UpdateMyBuyables()
 		KFWeapon(CurInv).GetAmmoCount(MaxAmmo, CurAmmo);
 
 		if ( KFWeapon(CurInv).bHasSecondaryAmmo )
+		{
 			MyPrimaryPickup = MyPickup.default.PrimaryWeaponPickup;
-		else MyPrimaryPickup = MyPickup;
+		}
+		else
+		{
+			MyPrimaryPickup = MyPickup;
+		} 
 
 		MyBuyable = AllocateEntry(KFLR);
 
@@ -66,6 +71,7 @@ function UpdateMyBuyables()
 		MyBuyable.ItemCost		= (float(MyPickup.default.Cost) * KFV.static.GetCostScaling(PRI, AdjustedPickup)) / DualDivider;
 		MyBuyable.ItemAmmoCost		= MyPrimaryPickup.default.AmmoCost * KFV.static.GetAmmoCostScaling(PRI, AdjustedPickup)
 										  * KFV.static.GetMagCapacityMod(PRI, KFWeapon(CurInv));
+										  
 		if( class<W_Huskgun_Pickup>(MyPickup) != None )
 		{
 			MyBuyable.ItemFillAmmoCost	= (int(((MaxAmmo - CurAmmo) * float(MyPrimaryPickup.default.AmmoCost)) / float(MyPrimaryPickup.default.BuyClipSize))) * KFV.static.GetAmmoCostScaling(PRI, MyPrimaryPickup);
