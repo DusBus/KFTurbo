@@ -4,7 +4,6 @@ class KFTurboRepLinkSettingsUser extends Object
 
 var() String PlayerSteamID;
 var() String DisplayName;
-var() array<String> GroupIDList;
 
 var() array<String> VariantIDList;
 
