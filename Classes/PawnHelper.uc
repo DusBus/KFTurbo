@@ -329,12 +329,7 @@ static final function int GetFakedPlayerAdjustedCount(LevelInfo Level)
         }
     }
 
-    if(FakedPlayers > PlayerCount)
-    {
-    	PlayerCount = FakedPlayers;
-    }
-
-	return PlayerCount;
+	return Max(FakedPlayers, PlayerCount);
 }
 
 static final function float GetBodyHealthModifier(KFMonster KFM, LevelInfo Level)

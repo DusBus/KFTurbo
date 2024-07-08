@@ -1,17 +1,14 @@
 class KFProGameType extends KFGameType
     config (KFPro);
 
-var config int DTFStandardMaxZombiesOnce;
-var config int DTFStartingCash;
-var config int DTFMinRespawnCash;
-var config float DTFZedTimeDuration;
-var config float DTFZedTimeSlomoScale;
-var config float DTFNextSpawnTime;
-var config int FakedPlayerHealth;
+var int DTFStandardMaxZombiesOnce;
+var int DTFStartingCash;
+var int DTFMinRespawnCash;
+var float DTFNextSpawnTime;
+var int FakedPlayerHealth;
 
 var bool bIsHighDifficulty;
 
-//Modify pause inbetween spawns
 function PreBeginPlay()
 {
     local ZombieVolume ZV;
@@ -26,7 +23,6 @@ function PreBeginPlay()
    }
 }
 
-//Modify StartingCash, RespawnCash and StandardMaxZombiesOnce
 function PostBeginPlay()
 {
     local KFLevelRules KFLR;
@@ -56,48 +52,6 @@ function PostBeginPlay()
     }
 }
 
-//Copy & Paste of TWI's function which, filled with values configurable via INI, is supposed to modify the duration and scale of the Zedtime
-event Tick(float DeltaTime)
-{
-    local float TrueTimeFactor;
-    local Controller C;
-
-    if( bZEDTimeActive )
-    {
-        TrueTimeFactor = 1.1/Level.TimeDilation;
-        CurrentZEDTimeDuration -= DeltaTime * TrueTimeFactor;
-
-        if( CurrentZEDTimeDuration < (DTFZedTimeDuration*0.166) && CurrentZEDTimeDuration > 0 )
-        {
-            if( !bSpeedingBackUp )
-            {
-                bSpeedingBackUp = true;
-
-                for( C=Level.ControllerList;C!=None;C=C.NextController )
-                {
-                    if (KFPlayerController(C)!= none)
-                    {
-                        KFPlayerController(C).ClientExitZedTime();
-                    }
-                }
-            }
-
-            SetGameSpeed(Lerp( (CurrentZEDTimeDuration/(DTFZedTimeDuration*0.166)), 1.0, DTFZedTimeSlomoScale ));
-        }
-
-
-        if( CurrentZEDTimeDuration <= 0 )
-        {
-            bZEDTimeActive = false;
-            bSpeedingBackUp = false;
-            SetGameSpeed(1.0);
-            ZedTimeExtensionsUsed = 0;
-        }
-    }
-}
-
-
-//Copy & Paste of TWI's trash, adjusted so that wave 0 is a trader wave
 State MatchInProgress
 {
     function BeginState()
@@ -109,64 +63,6 @@ State MatchInProgress
     }
 }
 
-//Copy & Paste of TWI's function which, filled with values configurable via INI, is supposed to modify the duration of the Zedtime
-function DramaticEvent(float BaseZedTimePossibility, optional float DesiredZedTimeDuration)
-{
-    local float RandChance;
-    local float TimeSinceLastEvent;
-    local Controller C;
-
-    TimeSinceLastEvent = Level.TimeSeconds - LastZedTimeEvent;
-
-    if( TimeSinceLastEvent < 10.0 && BaseZedTimePossibility != 1.0 )
-    {
-        return;
-    }
-
-    if( TimeSinceLastEvent > 60 )
-    {
-        BaseZedTimePossibility *= 4.0;
-    }
-    else if( TimeSinceLastEvent > 30 )
-    {
-        BaseZedTimePossibility *= 2.0;
-    }
-
-    RandChance = FRand();
-
-    if( RandChance <= BaseZedTimePossibility )
-    {
-        bZEDTimeActive =  true;
-        bSpeedingBackUp = false;
-        LastZedTimeEvent = Level.TimeSeconds;
-
-        if ( DesiredZedTimeDuration != 0.0 )
-        {
-            CurrentZEDTimeDuration = DesiredZedTimeDuration;
-        }
-        else
-        {
-            CurrentZEDTimeDuration = DTFZedTimeDuration;
-        }
-
-        SetGameSpeed(DTFZedTimeSlomoScale);
-
-        for ( C = Level.ControllerList; C != none; C = C.NextController )
-        {
-            if (KFPlayerController(C)!= none)
-            {
-                KFPlayerController(C).ClientEnterZedTime();
-            }
-
-            if ( C.PlayerReplicationInfo != none && KFSteamStatsAndAchievements(C.PlayerReplicationInfo.SteamStatsAndAchievements) != none )
-            {
-                KFSteamStatsAndAchievements(C.PlayerReplicationInfo.SteamStatsAndAchievements).AddZedTime(ZEDTimeDuration);
-            }
-        }
-    }
-}
-
-//Overwrites Sine Wave altogether, linear and faster spawns, configurable static pause between spawns
 simulated function float CalcNextSquadSpawnTime()
 {
     return DTFNextSpawnTime;
@@ -174,6 +70,13 @@ simulated function float CalcNextSquadSpawnTime()
 
 defaultproperties
 {
+    DTFStartingCash=42069
+    DTFMinRespawnCash=42069
+    DTFStandardMaxZombiesOnce=48
+    DTFNextSpawnTime=1.f
+    FakedPlayerHealth=0
+    bIsHighDifficulty=true
+
     ShortWaves(0)=(WaveMask=37748732,WaveMaxMonsters=15,WaveDifficulty=2.000000)
     ShortWaves(1)=(WaveMask=100250113,WaveMaxMonsters=35,WaveDifficulty=2.000000)
     ShortWaves(2)=(WaveMask=100250113,WaveMaxMonsters=50,WaveDifficulty=2.000000)
@@ -233,8 +136,6 @@ defaultproperties
     SpecialEventMonsterCollections(1)=Class'KFTurbo.MC_SUM'
     SpecialEventMonsterCollections(2)=Class'KFTurbo.MC_HAL'
     SpecialEventMonsterCollections(3)=Class'KFTurbo.MC_XMA'
-
-    bIsHighDifficulty=true
 
     GameName="Killing Floor Turbo+ Mode"
     Description="Turbo+ mode of the vanilla Killing Floor Game Type."

@@ -69,7 +69,7 @@ static function bool ShowStalkers(KFPlayerReplicationInfo KFPRI)
 
 static function float GetStalkerViewDistanceMulti(KFPlayerReplicationInfo KFPRI)
 {
-	return LerpStat(KFPRI, 0.0625f, 1.f);
+	return LerpStat(KFPRI, 0.25f, 2.f);
 }
 
 //GetMagCapacityMod

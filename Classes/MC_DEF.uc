@@ -36,4 +36,5 @@ defaultproperties
      FinalSquads(0)=(ZedClass=("KFTurbo.P_Clot_STA"))
      FinalSquads(1)=(ZedClass=("KFTurbo.P_Clot_STA","KFTurbo.P_Crawler_STA"))
      FinalSquads(2)=(ZedClass=("KFTurbo.P_Clot_STA","KFTurbo.P_Stalker_STA","KFTurbo.P_Crawler_STA"))
+     EndGameBossClass="KFTurbo.ZombieBoss_STA"
 }
