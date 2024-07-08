@@ -65,6 +65,7 @@ function bool AlreadyReplacedZedInSquad()
             case class'P_Gorefast_Classy':
             case class'P_Crawler_Jumper':
             case class'P_Bloat_Fathead':
+            case class'P_Siren_Caroler':
                 return true;
         }
     }
