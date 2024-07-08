@@ -6,6 +6,19 @@ var     class<Emitter> FlameTrailEmitterClass;
 
 var		string	AmbientSoundRef;
 
+var bool bDudExplosionTimerStarted;
+
+
+simulated function PostNetReceive()
+{
+    Super.PostNetReceive();
+
+    if (bDud)
+    {
+        StartDudExplosionTimer();
+    }
+}
+
 static function PreloadAssets()
 {
 	default.ExplosionSound = sound(DynamicLoadObject(default.ExplosionSoundRef, class'Sound', true));
@@ -28,6 +41,12 @@ static function bool UnloadAssets()
 
 simulated function StartDudExplosionTimer()
 {
+    if (bDudExplosionTimerStarted)
+    {
+        return;
+    }
+
+    bDudExplosionTimerStarted = true;
     SetTimer(2,false);
 }
 
@@ -123,7 +142,7 @@ simulated function ProcessTouch(Actor Other, Vector HitLocation)
 	}
 }
 
-function Timer()
+simulated function Timer()
 {
     if(bDisintegrated || bHasExploded)
     {
@@ -180,10 +199,6 @@ simulated function Landed( vector HitNormal )
 	{
 	   Explode(Location,HitNormal);
 	}
-	else
-	{
-
-	}
 }
 
 simulated function Destroyed()
@@ -199,6 +214,8 @@ simulated function Destroyed()
 
 defaultproperties
 {
+    bDudExplosionTimerStarted = false
+
      RotMag=(X=350.000000,Y=350.000000,Z=350.000000)
      RotRate=(X=7500.000000,Y=7500.000000,Z=7500.000000)
      RotTime=3.000000
