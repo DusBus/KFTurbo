@@ -2,3 +2,5 @@
 
 # KFTurbo
 KFTurbo is a balance overhaul for Killing Floor.
+
+[Changelog](./changelog.md)
