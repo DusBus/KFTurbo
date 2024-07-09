@@ -176,19 +176,9 @@ function AddChatWatcher(Pawn Other)
 	Other.AddInventory(ChatWatcherInv);
 }
 
-function GetServerDetails(out GameInfo.ServerResponseLine ServerState)
+simulated function String GetHumanReadableName()
 {
-	local int i;
-
-	Super.GetServerDetails(ServerState);
-
-	for (i = ServerState.ServerInfo.Length - 1; i >= 00; i--)
-	{
-		if (ServerState.ServerInfo[i].Key == "Veterancy" || Left(ServerState.ServerInfo[i].Key, 9) == "SP: Perk ")
-		{
-			ServerState.ServerInfo.Remove(i, 1);
-		}
-	}
+	return FriendlyName;
 }
 
 defaultproperties
@@ -209,6 +199,6 @@ defaultproperties
 	LongSpecialSquads(9)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_SC_STA","KFTurbo.P_FP_STA"),NumZeds=(1,2,1,2))
 	bAddToServerPackages=True
 	GroupName="KF-KFTurboMut"
-	FriendlyName="Killing Floor Turbo Mut"
+	FriendlyName="Killing Floor Turbo Mutator"
 	Description="Mutator for KFTurbo."
 }
