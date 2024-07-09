@@ -1,6 +1,7 @@
 class KFPHUDKillingFloor extends SRHUDKillingFloor;
 
 #exec obj load file="../Textures/KFTurboHUD.utx" package="KFTurbo"
+#exec obj load file="SkeletonHUDFonts.utx" package="KFTurbo"
 
 var Sound WinSound, LoseSound;
 var float EndGameHUDAnimationDuration;
@@ -18,6 +19,118 @@ simulated function Tick(float DeltaTime)
 	}
 }
 
+simulated function DrawHud(Canvas C)
+{
+	RenderDelta = Level.TimeSeconds - LastHUDRenderTime;
+    LastHUDRenderTime = Level.TimeSeconds;
+
+	if ( FontsPrecached < 2 )
+	{
+		PrecacheFonts(C);
+	}
+
+	UpdateHud();
+
+	PassStyle = STY_Modulated;
+	DrawModOverlay(C);
+
+	if ( bUseBloom )
+	{
+		PlayerOwner.PostFX_SetActive(0, true);
+	}
+
+	if ( bHideHud )
+	{
+		// Draw fade effects even if the hud is hidden so poeple can't just turn off thier hud
+		C.Style = ERenderStyle.STY_Alpha;
+		DrawFadeEffect(C);
+		return;
+	}
+
+	if ( !KFPlayerReplicationInfo(PlayerOwner.PlayerReplicationInfo).bViewingMatineeCinematic )
+	{
+		DrawGameHud(C);
+	}
+	else
+	{
+		PassStyle = STY_Alpha;
+		DrawCinematicHUD(C);
+	}
+
+	if ( bShowNotification )
+	{
+		DrawPopupNotification(C);
+	}
+}
+
+simulated function DrawGameHud(Canvas C)
+{
+	local KFGameReplicationInfo CurrentGame;
+	local vector CamPos, ViewDir, ScreenPos;
+	local rotator CamRot;
+	local KFPawn KFBuddy;
+
+	CurrentGame = KFGameReplicationInfo(Level.GRI);
+
+	if ( bShowTargeting )
+	{
+		DrawTargeting(C);
+	}
+
+	// Grab our View Direction
+	C.GetCameraLocation(CamPos,CamRot);
+	ViewDir = vector(CamRot);
+
+	// Draw the Name, Health, Armor, and Veterancy above other players (using this way to fix portal's beacon errors).
+	foreach VisibleCollidingActors(Class'KFPawn', KFBuddy, 1000.f, CamPos)
+	{
+		KFBuddy.bNoTeamBeacon = true;
+
+		if ( KFBuddy != PawnOwner && KFBuddy.PlayerReplicationInfo != None && KFBuddy.Health > 0 && ((KFBuddy.Location - CamPos) Dot ViewDir) > 0.8 )
+		{
+			ScreenPos = C.WorldToScreen(KFBuddy.Location + (vect(0,0,1) * KFBuddy.CollisionHeight));
+			
+			if( ScreenPos.X>=0 && ScreenPos.Y>=0 && ScreenPos.X<=C.ClipX && ScreenPos.Y<=C.ClipY )
+			{
+				DrawPlayerInfo(C, KFBuddy, ScreenPos.X, ScreenPos.Y);
+			}
+		}
+	}
+
+	PassStyle = STY_Alpha;
+	DrawDamageIndicators(C);
+	DrawHudPassA(C);
+	DrawHudPassC(C);
+
+	if ( KFPlayerController(PlayerOwner) != None && KFPlayerController(PlayerOwner).ActiveNote != None )
+	{
+		if( PlayerOwner.Pawn == none )
+		{
+			KFPlayerController(PlayerOwner).ActiveNote = None;
+		}
+		else
+		{
+			KFPlayerController(PlayerOwner).ActiveNote.RenderNote(C);
+		}
+	}
+
+	PassStyle = STY_None;
+	DisplayLocalMessages(C);
+	DrawWeaponName(C);
+	DrawVehicleName(C);
+
+	PassStyle = STY_Alpha;
+
+	if ( CurrentGame!=None && CurrentGame.EndGameType > 0 )
+	{
+		DrawEndGameHUD(C, (CurrentGame.EndGameType==2));
+		return;
+	}
+
+	RenderFlash(C);
+	C.Style = PassStyle;
+	DrawKFHUDTextElements(C);
+}
 
 simulated function DrawEndGameHUD(Canvas C, bool bVictory)
 {
@@ -60,12 +173,12 @@ simulated function InitializeEndGameUI(bool bVictory)
 	if ( bVictory )
 	{
 		EndGameHUDMaterial = Texture'KFTurbo.EndGame.You_Won_D';
-		PlayerOwner.PlaySound(WinSound,,255.0,,,,False);
+		PlayerOwner.PlaySound(WinSound, SLOT_Talk, 255.0,,,, false);
 	}
 	else
 	{
 		EndGameHUDMaterial = Texture'KFTurbo.EndGame.You_Died_D';
-		PlayerOwner.PlaySound(LoseSound,,255.0,,,,False);
+		PlayerOwner.PlaySound(LoseSound, SLOT_Talk,255.0,,,, false);
 	}
 }
 
@@ -77,4 +190,35 @@ defaultproperties
 
 	bHasInitializedEndGameHUD=false
 	EndGameHUDAnimationProgress=0.f
+	/*
+	SmallFontArrayNames(0)="KFTurbo.BahnschriftText24"
+	SmallFontArrayNames(1)="KFTurbo.BahnschriftText24"
+	SmallFontArrayNames(2)="KFTurbo.BahnschriftText18"
+	SmallFontArrayNames(3)="KFTurbo.BahnschriftText18"
+	SmallFontArrayNames(4)="KFTurbo.BahnschriftText14"
+	SmallFontArrayNames(5)="KFTurbo.BahnschriftText14"
+	SmallFontArrayNames(6)="KFTurbo.BahnschriftText12"
+	SmallFontArrayNames(7)="KFTurbo.BahnschriftText12"
+	SmallFontArrayNames(8)="KFTurbo.BahnschriftText9"
+
+	MenuFontArrayNames(0)="KFTurbo.BahnschriftText18"
+	MenuFontArrayNames(1)="KFTurbo.BahnschriftText14"
+	MenuFontArrayNames(2)="KFTurbo.BahnschriftText12"
+	MenuFontArrayNames(3)="KFTurbo.BahnschriftText9"
+	MenuFontArrayNames(4)="KFTurbo.BahnschriftText9"
+
+	WaitingFontArrayNames(0)="KFTurbo.FalenaTitle60"
+	WaitingFontArrayNames(1)="KFTurbo.FalenaTitle48"
+	WaitingFontArrayNames(2)="KFTurbo.FalenaTitle36"
+
+	FontArrayNames(0)="KFTurbo.BahnschriftText36"
+	FontArrayNames(1)="KFTurbo.BahnschriftText36"
+	FontArrayNames(2)="KFTurbo.BahnschriftText24"
+	FontArrayNames(3)="KFTurbo.BahnschriftText24"
+	FontArrayNames(4)="KFTurbo.BahnschriftText18"
+	FontArrayNames(5)="KFTurbo.BahnschriftText18"
+	FontArrayNames(6)="KFTurbo.BahnschriftText14"
+	FontArrayNames(7)="KFTurbo.BahnschriftText12"
+	FontArrayNames(8)="KFTurbo.BahnschriftText9"
+	*/
 }

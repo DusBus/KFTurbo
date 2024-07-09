@@ -17,7 +17,7 @@ simulated function Tick(float DeltaTime)
 
 defaultproperties
 {
-     Texture=Texture'KFTurbo.Generic.ChatIcon_D'
-     DrawScale=0.125
+     Texture=Texture'KFTurbo.Generic.ChatIcon_a00'
+     DrawScale=0.05
      Style=STY_Masked
 }

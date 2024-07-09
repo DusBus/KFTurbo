@@ -141,12 +141,12 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 function UpdateRandomItemPickup(KFRandomItemSpawn PickupSpawner)
 {
 	//PickupSpawner.PickupClasses[0]=Class'KFTurbo.DualiesPickup'
-	PickupSpawner.PickupClasses[1] = Class'W_Shotgun_Pickup';
-	//PickupSpawner.PickupClasses[2]=Class'KFTurbo.BullpupPickup'
-	PickupSpawner.PickupClasses[3] = Class'W_Deagle_Pickup';
-	//PickupSpawner.PickupClasses[4]=Class'KFTurbo.WinchesterPickup'
-	PickupSpawner.PickupClasses[5] = Class'W_Axe_Pickup';
-	//PickupSpawner.PickupClasses[6]=Class'KFTurbo.MachetePickup'
+	PickupSpawner.PickupClasses[1] = Class'KFTurbo.W_Shotgun_Pickup';
+	PickupSpawner.PickupClasses[2] = Class'KFTurbo.W_Bullpup_Pickup';
+	PickupSpawner.PickupClasses[3] = Class'KFTurbo.W_Deagle_Pickup';
+	PickupSpawner.PickupClasses[4] = Class'KFTurbo.W_LAR_Pickup';
+	PickupSpawner.PickupClasses[5] = Class'KFTurbo.W_Axe_Pickup';
+	//PickupSpawner.PickupClasses[6] = Class'KFTurbo.W_Machete_Pickup';
 	//PickupSpawner.PickupClasses[7]=Class'KFTurbo.Vest'
 }
 
