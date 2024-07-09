@@ -1,4 +1,4 @@
-class KFPCustomZedHandler extends Actor;
+class KFPCustomZedHandler extends Info;
 
 struct MonsterReplacement
 {

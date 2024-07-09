@@ -198,7 +198,7 @@ defaultproperties
 	LongSpecialSquads(8)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_SC_STA","KFTurbo.P_FP_STA"),NumZeds=(1,2,1,1))
 	LongSpecialSquads(9)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_SC_STA","KFTurbo.P_FP_STA"),NumZeds=(1,2,1,2))
 	bAddToServerPackages=True
-	GroupName="KF-KFTurboMut"
-	FriendlyName="Killing Floor Turbo Mutator"
+	GroupName="KF-KFTurbo"
+	FriendlyName="Killing Floor Turbo"
 	Description="Mutator for KFTurbo."
 }
