@@ -54,10 +54,7 @@ event Timer()
     }
 
     DebugLog("Applying Replacement");
-    StopWatch(false);
     ApplyReplacementList(KFGT.NextSpawnSquad);
-    StopWatch(true);
-    DebugLog("- Above time is for replacement check.");
 }
 
 function bool ApplyReplacementList(out array< class<KFMonster> > NextSpawnSquad)
