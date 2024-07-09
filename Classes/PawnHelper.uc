@@ -365,6 +365,11 @@ static final function float GetHeadHealthModifier(KFMonster KFM, LevelInfo Level
 
 static final function PreTickAfflictionData(float DeltaTime, KFMonster KFM, out AfflictionData AD)
 {
+	if (KFM == None)
+	{
+		return;
+	}
+
 	if (AD.Burn != None)
 	{
 		AD.Burn.PreTick(DeltaTime);
@@ -383,6 +388,11 @@ static final function PreTickAfflictionData(float DeltaTime, KFMonster KFM, out 
 
 static final function TickAfflictionData(float DeltaTime, KFMonster KFM, out AfflictionData AD)
 {
+	if (KFM == None)
+	{
+		return;
+	}
+
 	if (AD.Burn != None)
 	{
 		AD.Burn.Tick(DeltaTime);
@@ -401,6 +411,11 @@ static final function TickAfflictionData(float DeltaTime, KFMonster KFM, out Aff
 
 static final function DisablePawnCollision(Pawn P)
 {
+	if (P == None)
+	{
+		return;
+	}
+
 	P.bBlockActors = false;
 	P.bBlockPlayers = false;
 	P.bBlockProjectiles = false;

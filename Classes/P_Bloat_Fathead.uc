@@ -47,7 +47,7 @@ defaultproperties
      HeadScale=2.500000
      ColOffset=(Z=60.000000)
      ColRadius=27.000000
-     ColHeight=26.000000
+     ColHeight=30.000000
      
      HeadHealth=1182.000000
 }
