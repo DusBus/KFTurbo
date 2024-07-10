@@ -2,7 +2,9 @@ class W_SPGrenade_Proj extends SPGrenadeProjectile;
 
 var int TrickBounceCount;
 var int MaxTrickBounceCount;
-var float TickBounceMultiplier;
+var float TrickBounceMultiplier;
+var float TrickBounceBonusCoefficient; // by how much it should increase the bounce multiplier after bouncing
+var float CurrentCoefficient;
 
 simulated function ProcessTouch(Actor Other, Vector HitLocation)
 {
@@ -49,8 +51,10 @@ simulated function HitWall( vector HitNormal, actor Wall )
     if (Speed > default.Speed * 0.33f )
     {
         TrickBounceCount++;
-        Damage = default.Damage * (TickBounceMultiplier ** float(Min(TrickBounceCount, MaxTrickBounceCount)));
-    }
+        CurrentCoefficient = (TrickBounceBonusCoefficient ** (float(Min(TrickBounceCount-1, MaxTrickBounceCount-1))));
+        Damage = default.Damage * ((CurrentCoefficient * TrickBounceMultiplier) ** float(Min(TrickBounceCount, MaxTrickBounceCount)));
+    } 
+    // first bounce: damage*multiplier, second: damage*(multiplier*coef)*(multiplier*coef), third:damage*(multiplier*coef*coef)*(multiplier*coef*coef)*(multiplier*coef*coef)
 
     VNorm = (Velocity dot HitNormal) * HitNormal;
     Velocity = -VNorm * DampenFactor + (Velocity - VNorm) * DampenFactorParallel;
@@ -79,5 +83,6 @@ defaultproperties
 {
     MaxTrickBounceCount=3
     TrickBounceCount=0
-    TickBounceMultiplier=1.5f
+    TrickBounceMultiplier=1.5f
+    TrickBounceBonusCoefficient=1.1f
 }
