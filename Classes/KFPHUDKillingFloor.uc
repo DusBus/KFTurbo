@@ -9,6 +9,15 @@ var Material EndGameHUDMaterial;
 var bool bHasInitializedEndGameHUD;
 var float EndGameHUDAnimationProgress;
 
+var KFPHUDObject PlayerInfoHUD;
+
+simulated function PostBeginPlay()
+{
+	Super.PostBeginPlay();
+
+	PlayerInfoHUD = new(self) class'KFPHUDPlayerInfo';
+}
+
 simulated function Tick(float DeltaTime)
 {
 	Super.Tick(DeltaTime);
@@ -16,6 +25,11 @@ simulated function Tick(float DeltaTime)
 	if (bHasInitializedEndGameHUD)
 	{
 		EndGameHUDAnimationProgress += DeltaTime;
+	}
+	
+	if (PlayerInfoHUD != None)
+	{
+		PlayerInfoHUD.Tick(DeltaTime);
 	}
 }
 
@@ -66,9 +80,6 @@ simulated function DrawHud(Canvas C)
 simulated function DrawGameHud(Canvas C)
 {
 	local KFGameReplicationInfo CurrentGame;
-	local vector CamPos, ViewDir, ScreenPos;
-	local rotator CamRot;
-	local KFPawn KFBuddy;
 
 	CurrentGame = KFGameReplicationInfo(Level.GRI);
 
@@ -77,24 +88,9 @@ simulated function DrawGameHud(Canvas C)
 		DrawTargeting(C);
 	}
 
-	// Grab our View Direction
-	C.GetCameraLocation(CamPos,CamRot);
-	ViewDir = vector(CamRot);
-
-	// Draw the Name, Health, Armor, and Veterancy above other players (using this way to fix portal's beacon errors).
-	foreach VisibleCollidingActors(Class'KFPawn', KFBuddy, 1000.f, CamPos)
+	if (PlayerInfoHUD != None)
 	{
-		KFBuddy.bNoTeamBeacon = true;
-
-		if ( KFBuddy != PawnOwner && KFBuddy.PlayerReplicationInfo != None && KFBuddy.Health > 0 && ((KFBuddy.Location - CamPos) Dot ViewDir) > 0.8 )
-		{
-			ScreenPos = C.WorldToScreen(KFBuddy.Location + (vect(0,0,1) * KFBuddy.CollisionHeight));
-			
-			if( ScreenPos.X>=0 && ScreenPos.Y>=0 && ScreenPos.X<=C.ClipX && ScreenPos.Y<=C.ClipY )
-			{
-				DrawPlayerInfo(C, KFBuddy, ScreenPos.X, ScreenPos.Y);
-			}
-		}
+		PlayerInfoHUD.Draw(C);
 	}
 
 	PassStyle = STY_Alpha;
@@ -190,7 +186,7 @@ defaultproperties
 
 	bHasInitializedEndGameHUD=false
 	EndGameHUDAnimationProgress=0.f
-	/*
+
 	SmallFontArrayNames(0)="KFTurbo.BahnschriftText24"
 	SmallFontArrayNames(1)="KFTurbo.BahnschriftText24"
 	SmallFontArrayNames(2)="KFTurbo.BahnschriftText18"
@@ -220,5 +216,4 @@ defaultproperties
 	FontArrayNames(6)="KFTurbo.BahnschriftText14"
 	FontArrayNames(7)="KFTurbo.BahnschriftText12"
 	FontArrayNames(8)="KFTurbo.BahnschriftText9"
-	*/
 }
