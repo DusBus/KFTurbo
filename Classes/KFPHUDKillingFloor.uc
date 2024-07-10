@@ -187,6 +187,9 @@ defaultproperties
 	bHasInitializedEndGameHUD=false
 	EndGameHUDAnimationProgress=0.f
 
+	BarLength=70.000000
+	BarHeight=10.000000
+
 	SmallFontArrayNames(0)="KFTurbo.BahnschriftText24"
 	SmallFontArrayNames(1)="KFTurbo.BahnschriftText24"
 	SmallFontArrayNames(2)="KFTurbo.BahnschriftText18"
