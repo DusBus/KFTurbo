@@ -1,5 +1,4 @@
-class KFPHUDObject extends Object
-	within KFPHUDKillingFloor;
+class KFPHUDObject extends Object;
 
 struct Vector2D
 {
@@ -9,9 +8,11 @@ struct Vector2D
 
 var Vector2D LastKnownClipSize;
 
-simulated function Initialize()
+var KFPHUDKillingFloor KFPHUD;
+
+simulated function Initialize(KFPHUDKillingFloor OwnerHUD)
 {
-	
+	KFPHUD = OwnerHUD;
 }
 
 simulated function Tick(float DeltaTime)

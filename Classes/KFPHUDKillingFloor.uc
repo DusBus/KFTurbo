@@ -1,7 +1,7 @@
 class KFPHUDKillingFloor extends SRHUDKillingFloor;
 
 #exec obj load file="../Textures/KFTurboHUD.utx" package="KFTurbo"
-#exec obj load file="SkeletonHUDFonts.utx" package="KFTurbo"
+//#exec obj load file="SkeletonHUDFonts.utx" package="KFTurbo"
 
 var	localized string HUDLargeNumberFontNames[9];
 var	Font HUDLargeNumberFonts[9];
@@ -12,10 +12,6 @@ var Material EndGameHUDMaterial;
 var bool bHasInitializedEndGameHUD;
 var float EndGameHUDAnimationProgress;
 
-//List of generic HUDObjects that are ticked/drawn before or after the KF HUD is. Any HUDObjects added to either of these lists must get KFPHUDObject::Initialize() called by the creator.
-var array<KFPHUDObject> PreHUDObjectList;
-var array<KFPHUDObject> PostHUDObjectList;
-
 var KFPHUDObject PlayerInfoHUD;
 var KFPHUDObject WaveInfoHUD;
 
@@ -24,21 +20,13 @@ simulated function PostBeginPlay()
 	Super.PostBeginPlay();
 
 	PlayerInfoHUD = new(self) class'KFPHUDPlayerInfo';
-	PlayerInfoHUD.Initialize();
+	PlayerInfoHUD.Initialize(Self);
 	WaveInfoHUD = new(self) class'KFPHUDWaveInfo';
-	WaveInfoHUD.Initialize();
+	WaveInfoHUD.Initialize(Self);
 }
 
 simulated function Tick(float DeltaTime)
 {
-	local int Index;
-
-	Index = PreHUDObjectList.Length - 1;
-	while(Index >= 0)
-	{
-		PreHUDObjectList[Index].Tick(DeltaTime);
-	}
-	
 	Super.Tick(DeltaTime);
 
 	if (bHasInitializedEndGameHUD)
@@ -55,18 +43,10 @@ simulated function Tick(float DeltaTime)
 	{
 		WaveInfoHUD.Tick(DeltaTime);
 	}
-
-	Index = PostHUDObjectList.Length - 1;
-	while(Index >= 0)
-	{
-		PostHUDObjectList[Index].Tick(DeltaTime);
-	}
 }
 
 simulated function DrawHud(Canvas C)
 {
-	local int Index;
-
 	RenderDelta = Level.TimeSeconds - LastHUDRenderTime;
     LastHUDRenderTime = Level.TimeSeconds;
 
@@ -76,13 +56,6 @@ simulated function DrawHud(Canvas C)
 	}
 
 	UpdateHud();
-
-	Index = PreHUDObjectList.Length - 1;
-	while(Index >= 0)
-	{
-		PreHUDObjectList[Index].Draw(C);
-	}
-
 
 	PassStyle = STY_Modulated;
 	DrawModOverlay(C);
@@ -114,12 +87,6 @@ simulated function DrawHud(Canvas C)
 	{
 		DrawPopupNotification(C);
 	}
-	
-	Index = PostHUDObjectList.Length - 1;
-	while(Index >= 0)
-	{
-		PostHUDObjectList[Index].Draw(C);
-	}
 }
 
 simulated function DrawGameHud(Canvas C)
@@ -136,6 +103,7 @@ simulated function DrawGameHud(Canvas C)
 	if (PlayerInfoHUD != None)
 	{
 		PlayerInfoHUD.Draw(C);
+		log ("PlayerInfoHUD Complete");
 	}
 
 	PassStyle = STY_Alpha;
@@ -307,14 +275,14 @@ simulated function InitializeEndGameUI(bool bVictory)
 
 static function Font LoadLargeNumberFont(int i)
 {
-	if (default.HUDLargeNumberFonts[i] == none)
+	if (default.MenuFontArrayFonts[i] == none)
 	{
-		default.HUDLargeNumberFonts[i] = Font(DynamicLoadObject(default.HUDLargeNumberFontNames[i], class'Font'));
-		if (default.HUDLargeNumberFonts[i] == none)
-			Log("Warning: "$default.Class$" Couldn't dynamically load font "$default.HUDLargeNumberFontNames[i]);
+		default.MenuFontArrayFonts[i] = Font(DynamicLoadObject(default.MenuFontArrayNames[i], class'Font'));
+		if (default.MenuFontArrayFonts[i] == none)
+			Log("Warning: "$default.Class$" Couldn't dynamically load font "$default.MenuFontArrayNames[i]);
 	}
 
-	return default.HUDLargeNumberFonts[i];
+	return default.MenuFontArrayFonts[i];
 }
 
 defaultproperties
@@ -329,6 +297,7 @@ defaultproperties
 	BarLength=70.000000
 	BarHeight=10.000000
 
+	/*
 	HUDLargeNumberFontNames(0)="KFTurbo.FalenaText72Numbers"
 	HUDLargeNumberFontNames(1)="KFTurbo.FalenaText72Numbers"
 	HUDLargeNumberFontNames(2)="KFTurbo.FalenaText60Numbers"
@@ -338,7 +307,7 @@ defaultproperties
 	HUDLargeNumberFontNames(6)="KFTurbo.FalenaText36"
 	HUDLargeNumberFontNames(7)="KFTurbo.FalenaText36"
 	HUDLargeNumberFontNames(8)="KFTurbo.FalenaText24"
-
+	
 	SmallFontArrayNames(0)="KFTurbo.BahnschriftText24"
 	SmallFontArrayNames(1)="KFTurbo.BahnschriftText24"
 	SmallFontArrayNames(2)="KFTurbo.BahnschriftText18"
@@ -368,4 +337,5 @@ defaultproperties
 	FontArrayNames(6)="KFTurbo.BahnschriftText14"
 	FontArrayNames(7)="KFTurbo.BahnschriftText12"
 	FontArrayNames(8)="KFTurbo.BahnschriftText9"
+	*/
 }
