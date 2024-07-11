@@ -3,7 +3,7 @@ class P_Siren_Caroler_Scream extends SirenScream;
 defaultproperties
 {
     Begin Object Class=MeshEmitter Name=MeshEmitter1
-        StaticMesh=StaticMesh'KFTurbo.siren.caroler_scream_ball'
+        StaticMesh=StaticMesh'KFTurboContent.siren.caroler_scream_ball'
         UseParticleColor=True
         FadeOut=True
         FadeIn=True

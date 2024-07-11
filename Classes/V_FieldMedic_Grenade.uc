@@ -81,8 +81,8 @@ defaultproperties
     DampenFactor=0.250000
     DampenFactorParallel=0.35
 
-    StaticMesh=StaticMesh'KFTurbo.T10.T10Projectile'
-	Skins(0)=Texture'KFTurbo.G28.G28MedicGrenade'
+    StaticMesh=StaticMesh'KFTurboExtra.T10.T10Projectile'
+	Skins(0)=Texture'KFTurboExtra.G28.G28MedicGrenade'
     DrawScale=0.2
 	
 	Physics=PHYS_Falling

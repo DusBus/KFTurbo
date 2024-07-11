@@ -2,7 +2,8 @@
 class KFTurboMut extends Mutator
 	config(KFPro);
 
-#exec obj load file="..\Animations\KFTurboContent.ukx" package=KFTurbo
+#exec obj load file="..\Animations\KFTurboContent.ukx"
+#exec obj load file="..\Animations\KFTurboExtra.ukx"
 
 var array<KFGameType.SpecialSquad> FinalSquads;			// Squads that spawn with the Patriarch
 var array<KFGameType.SpecialSquad> ShortSpecialSquads;		// The special squad array for a short game

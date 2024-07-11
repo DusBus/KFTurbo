@@ -1,8 +1,5 @@
 class KFPHUDKillingFloor extends SRHUDKillingFloor;
 
-//#exec obj load file="../Textures/KFTurboHUD.utx" package="KFTurbo"
-//#exec obj load file="SkeletonHUDFonts.utx" package="KFTurbo"
-
 var	localized string HUDLargeNumberFontNames[9];
 var	Font HUDLargeNumberFonts[9];
 
@@ -263,12 +260,12 @@ simulated function InitializeEndGameUI(bool bVictory)
 
 	if ( bVictory )
 	{
-		//EndGameHUDMaterial = Texture'KFTurbo.EndGame.You_Won_D';
+		//EndGameHUDMaterial = Texture'KFTurboContent.EndGame.You_Won_D';
 		//PlayerOwner.PlaySound(WinSound, SLOT_Talk, 255.0,,,, false);
 	}
 	else
 	{
-		//EndGameHUDMaterial = Texture'KFTurbo.EndGame.You_Died_D';
+		//EndGameHUDMaterial = Texture'KFTurboContent.EndGame.You_Died_D';
 		//PlayerOwner.PlaySound(LoseSound, SLOT_Talk,255.0,,,, false);
 	}
 }

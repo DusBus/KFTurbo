@@ -5,28 +5,28 @@ function Texture GetIconForPickup(String VariantID)
     switch (VariantID)
     {
         case "DEF":
-            return Texture'KFTurbo.HUD.NoSkinIcon_D';
+            return Texture'KFTurboContent.HUD.NoSkinIcon_D';
         case "GOLD":
-            return Texture'KFTurbo.HUD.GoldIcon_D';
+            return Texture'KFTurboContent.HUD.GoldIcon_D';
         case "CAMO":
-            return Texture'KFTurbo.HUD.CamoIcon_D';
+            return Texture'KFTurboContent.HUD.CamoIcon_D';
         case "TURBO":
-            return Texture'KFTurbo.HUD.TurboIcon_D';
+            return Texture'KFTurboContent.HUD.TurboIcon_D';
         case "VM":
-            return Texture'KFTurbo.HUD.VMIcon_D';
+            return Texture'KFTurboContent.HUD.VMIcon_D';
         case "WEST":
-            return Texture'KFTurbo.HUD.WestLondonIcon_D';
+            return Texture'KFTurboContent.HUD.WestLondonIcon_D';
         case "RET":
-            return Texture'KFTurbo.HUD.LevelIcon_D';
+            return Texture'KFTurboContent.HUD.LevelIcon_D';
         case "SCUD":
-            return Texture'KFTurbo.HUD.ScrubblesIcon_D';
+            return Texture'KFTurboContent.HUD.ScrubblesIcon_D';
         case "CUBIC":
-            return Texture'KFTurbo.HUD.SkellIcon_D';
+            return Texture'KFTurboContent.HUD.SkellIcon_D';
         case "SHOWME":
-            return Texture'KFTurbo.HUD.ShowMeProIcon_D';
+            return Texture'KFTurboContent.HUD.ShowMeProIcon_D';
     }
 
-    return Texture'KFTurbo.HUD.StickerIcon_D';
+    return Texture'KFTurboContent.HUD.StickerIcon_D';
 }
 
 function String GetHintForPickup(String VariantID)

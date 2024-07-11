@@ -4,9 +4,6 @@
 //========
 class WeaponHelper extends Object;
 
-//KFTurboExtra contains content from Ballistic Weapons Pack. KFTurbo is a non-commercial mod for the game Killing Floor.
-#exec obj load file="..\Animations\KFTurboExtra.ukx" package=KFTurbo
-
 enum ETraceResult
 {
 	TR_Block,

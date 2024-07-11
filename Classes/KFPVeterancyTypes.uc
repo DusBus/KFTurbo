@@ -144,7 +144,7 @@ static function byte PreDrawPerk(Canvas C, byte Level, out Material PerkIcon, ou
 defaultproperties
 {
      LevelRankRequirement=10
-     StarTexture=Texture'KFTurbo.Perks.PerkStar_D'
+     StarTexture=Texture'KFTurboContent.Perks.PerkStar_D'
      LevelNames(1)="Experienced"
      LevelNames(2)="Skilled"
      LevelNames(3)="Adept"

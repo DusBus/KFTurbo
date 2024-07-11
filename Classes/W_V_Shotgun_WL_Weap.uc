@@ -6,5 +6,5 @@ defaultproperties
      PickupClass=Class'KFTurbo.W_V_Shotgun_WL_Pickup'
      AttachmentClass=Class'KFTurbo.W_V_Shotgun_WL_Attachment'
      ItemName="WestLondon Shotgun"
-     Skins(0)=Combiner'KFTurbo.WestLondon.Pump_WL_CMB'
+     Skins(0)=Combiner'KFTurboContent.WestLondon.Pump_WL_CMB'
 }

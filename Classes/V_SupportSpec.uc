@@ -155,5 +155,5 @@ static function string GetCustomLevelInfo(byte Level)
 
 defaultproperties
 {
-     OnHUDGoldIcon=Texture'KFTurbo.Perks.Support_D'
+     OnHUDGoldIcon=Texture'KFTurboContent.Perks.Support_D'
 }
