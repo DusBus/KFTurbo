@@ -12,6 +12,10 @@ var Material EndGameHUDMaterial;
 var bool bHasInitializedEndGameHUD;
 var float EndGameHUDAnimationProgress;
 
+//List of generic HUDObjects that are ticked/drawn before or after the KF HUD is. Any HUDObjects added to either of these lists must get KFPHUDObject::Initialize() called by the creator.
+var array<KFPHUDObject> PreHUDObjectList;
+var array<KFPHUDObject> PostHUDObjectList;
+
 var KFPHUDObject PlayerInfoHUD;
 var KFPHUDObject WaveInfoHUD;
 
@@ -27,6 +31,14 @@ simulated function PostBeginPlay()
 
 simulated function Tick(float DeltaTime)
 {
+	local int Index;
+
+	Index = PreHUDObjectList.Length - 1;
+	while(Index >= 0)
+	{
+		PreHUDObjectList[Index].Tick(DeltaTime);
+	}
+	
 	Super.Tick(DeltaTime);
 
 	if (bHasInitializedEndGameHUD)
@@ -43,10 +55,18 @@ simulated function Tick(float DeltaTime)
 	{
 		WaveInfoHUD.Tick(DeltaTime);
 	}
+
+	Index = PostHUDObjectList.Length - 1;
+	while(Index >= 0)
+	{
+		PostHUDObjectList[Index].Tick(DeltaTime);
+	}
 }
 
 simulated function DrawHud(Canvas C)
 {
+	local int Index;
+
 	RenderDelta = Level.TimeSeconds - LastHUDRenderTime;
     LastHUDRenderTime = Level.TimeSeconds;
 
@@ -56,6 +76,13 @@ simulated function DrawHud(Canvas C)
 	}
 
 	UpdateHud();
+
+	Index = PreHUDObjectList.Length - 1;
+	while(Index >= 0)
+	{
+		PreHUDObjectList[Index].Draw(C);
+	}
+
 
 	PassStyle = STY_Modulated;
 	DrawModOverlay(C);
@@ -86,6 +113,12 @@ simulated function DrawHud(Canvas C)
 	if ( bShowNotification )
 	{
 		DrawPopupNotification(C);
+	}
+	
+	Index = PostHUDObjectList.Length - 1;
+	while(Index >= 0)
+	{
+		PostHUDObjectList[Index].Draw(C);
 	}
 }
 
