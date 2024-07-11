@@ -3,6 +3,9 @@ class KFPHUDKillingFloor extends SRHUDKillingFloor;
 #exec obj load file="../Textures/KFTurboHUD.utx" package="KFTurbo"
 #exec obj load file="SkeletonHUDFonts.utx" package="KFTurbo"
 
+var	localized string HUDLargeNumberFontNames[9];
+var	Font HUDLargeNumberFonts[9];
+
 var Sound WinSound, LoseSound;
 var float EndGameHUDAnimationDuration;
 var Material EndGameHUDMaterial;
@@ -10,12 +13,16 @@ var bool bHasInitializedEndGameHUD;
 var float EndGameHUDAnimationProgress;
 
 var KFPHUDObject PlayerInfoHUD;
+var KFPHUDObject WaveInfoHUD;
 
 simulated function PostBeginPlay()
 {
 	Super.PostBeginPlay();
 
 	PlayerInfoHUD = new(self) class'KFPHUDPlayerInfo';
+	PlayerInfoHUD.Initialize();
+	WaveInfoHUD = new(self) class'KFPHUDWaveInfo';
+	WaveInfoHUD.Initialize();
 }
 
 simulated function Tick(float DeltaTime)
@@ -30,6 +37,11 @@ simulated function Tick(float DeltaTime)
 	if (PlayerInfoHUD != None)
 	{
 		PlayerInfoHUD.Tick(DeltaTime);
+	}
+	
+	if (WaveInfoHUD != None)
+	{
+		WaveInfoHUD.Tick(DeltaTime);
 	}
 }
 
@@ -128,6 +140,88 @@ simulated function DrawGameHud(Canvas C)
 	DrawKFHUDTextElements(C);
 }
 
+
+simulated function DrawKFHUDTextElements(Canvas C)
+{
+	local vector Pos, FixedZPos;
+	local rotator  ShopDirPointerRotation;
+	local float    CircleSize;
+	local float    ResScale;
+
+	if ( PlayerOwner == none || KFGRI == none || !KFGRI.bMatchHasBegun || KFPlayerController(PlayerOwner).bShopping )
+	{
+		return;
+	}
+
+	if (WaveInfoHUD != None)
+	{
+		WaveInfoHUD.Draw(C);
+	}
+
+    ResScale =  C.SizeX / 1024.0;
+    CircleSize = FMin(128 * ResScale,128);
+	C.FontScaleX = FMin(ResScale,1.f);
+	C.FontScaleY = FMin(ResScale,1.f);
+
+	C.FontScaleX = 1;
+	C.FontScaleY = 1;
+
+
+	if ( KFPRI == none || KFPRI.Team == none || KFPRI.bOnlySpectator || PawnOwner == none )
+	{
+		return;
+	}
+
+	// Draw the shop pointer
+	if ( ShopDirPointer == None )
+	{
+		ShopDirPointer = Spawn(Class'KFShopDirectionPointer');
+		ShopDirPointer.bHidden = bHideHud;
+	}
+
+	Pos.X = C.SizeX / 18.0;
+	Pos.Y = C.SizeX / 18.0;
+	Pos = PlayerOwner.Player.Console.ScreenToWorld(Pos) * 10.f * (PlayerOwner.default.DefaultFOV / PlayerOwner.FovAngle) + PlayerOwner.CalcViewLocation;
+	ShopDirPointer.SetLocation(Pos);
+
+	if ( KFGRI.CurrentShop != none )
+	{
+		// Let's check for a real Z difference (i.e. different floor) doesn't make sense to rotate the arrow
+		// only because the trader is a midget or placed slightly wrong
+		if ( KFGRI.CurrentShop.Location.Z > PawnOwner.Location.Z + 50.f || KFGRI.CurrentShop.Location.Z < PawnOwner.Location.Z - 50.f )
+		{
+		    ShopDirPointerRotation = rotator(KFGRI.CurrentShop.Location - PawnOwner.Location);
+		}
+		else
+		{
+		    FixedZPos = KFGRI.CurrentShop.Location;
+		    FixedZPos.Z = PawnOwner.Location.Z;
+		    ShopDirPointerRotation = rotator(FixedZPos - PawnOwner.Location);
+		}
+	}
+	else
+	{
+		ShopDirPointer.bHidden = true;
+		return;
+	}
+
+   	ShopDirPointer.SetRotation(ShopDirPointerRotation);
+
+	if ( Level.TimeSeconds > Hint_45_Time && Level.TimeSeconds < Hint_45_Time + 2 )
+	{
+		if ( KFPlayerController(PlayerOwner) != none )
+		{
+			KFPlayerController(PlayerOwner).CheckForHint(45);
+		}
+	}
+
+	C.DrawActor(None, False, True); // Clear Z.
+	ShopDirPointer.bHidden = false;
+	C.DrawActor(ShopDirPointer, False, false);
+	ShopDirPointer.bHidden = true;
+	DrawTraderDistance(C);
+}
+
 simulated function DrawEndGameHUD(Canvas C, bool bVictory)
 {
 	local float YScalar, XScalar, FadeAlpha, ScaleAlpha;
@@ -178,6 +272,18 @@ simulated function InitializeEndGameUI(bool bVictory)
 	}
 }
 
+static function Font LoadLargeNumberFont(int i)
+{
+	if (default.HUDLargeNumberFonts[i] == none)
+	{
+		default.HUDLargeNumberFonts[i] = Font(DynamicLoadObject(default.HUDLargeNumberFontNames[i], class'Font'));
+		if (default.HUDLargeNumberFonts[i] == none)
+			Log("Warning: "$default.Class$" Couldn't dynamically load font "$default.HUDLargeNumberFontNames[i]);
+	}
+
+	return default.HUDLargeNumberFonts[i];
+}
+
 defaultproperties
 {
 	WinSound=Sound'KFTurbo.YouWin_S'
@@ -189,6 +295,16 @@ defaultproperties
 
 	BarLength=70.000000
 	BarHeight=10.000000
+
+	HUDLargeNumberFontNames(0)="KFTurbo.FalenaText72Numbers"
+	HUDLargeNumberFontNames(1)="KFTurbo.FalenaText72Numbers"
+	HUDLargeNumberFontNames(2)="KFTurbo.FalenaText60Numbers"
+	HUDLargeNumberFontNames(3)="KFTurbo.FalenaText60Numbers"
+	HUDLargeNumberFontNames(4)="KFTurbo.FalenaText48"
+	HUDLargeNumberFontNames(5)="KFTurbo.FalenaText48"
+	HUDLargeNumberFontNames(6)="KFTurbo.FalenaText36"
+	HUDLargeNumberFontNames(7)="KFTurbo.FalenaText36"
+	HUDLargeNumberFontNames(8)="KFTurbo.FalenaText24"
 
 	SmallFontArrayNames(0)="KFTurbo.BahnschriftText24"
 	SmallFontArrayNames(1)="KFTurbo.BahnschriftText24"
