@@ -35,6 +35,16 @@ simulated function Initialize()
 
 simulated function Tick(float DeltaTime)
 {
+	if (KFGRI == None)
+	{
+		KFGRI = KFGameReplicationInfo(Level.GRI);
+
+		if (KFGRI == None)
+		{
+			return;
+		}
+	}
+
 	if (!KFGRI.bWaveInProgress)
 	{
 		TickTraderWave(DeltaTime);
@@ -100,6 +110,11 @@ simulated function Draw(Canvas C)
 	local Vector2D BackplateACenter, BackplateBCenter;
 	
 	Super.Draw(C);
+
+	if (KFGRI == None)
+	{
+		return;
+	}
 
 	DrawGameBackplate(C, BackplateACenter, BackplateBCenter);
 	DrawCurrentWave(C, BackplateACenter);
