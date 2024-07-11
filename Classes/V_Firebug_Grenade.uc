@@ -70,8 +70,8 @@ defaultproperties
     LightSaturation=50
     bDynamicLight=True
 
-    StaticMesh=StaticMesh'KFTurboExtra.FP7.FP7Proj'
-	Skins(0)=Shader'KFTurboExtra.FP7.FP7_SHDR'
+    StaticMesh=StaticMesh'KFTurbo.FP7.FP7Proj'
+	Skins(0)=Shader'KFTurbo.FP7.FP7_SHDR'
     DrawScale=0.35
 	
 	Physics=PHYS_Falling

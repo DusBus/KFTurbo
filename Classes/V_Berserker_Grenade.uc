@@ -210,8 +210,8 @@ defaultproperties
     LightSaturation=64
     bDynamicLight=True
 
-    StaticMesh=StaticMesh'KFTurboExtra.XM84.XM84Projectile'
-	Skins(0)=Shader'KFTurboExtra.XM84.XM84-Glow'
+    StaticMesh=StaticMesh'KFTurbo.XM84.XM84Projectile'
+	Skins(0)=Shader'KFTurbo.XM84.XM84-Glow'
     DrawScale=0.75
 
     ExplodeSounds=(sound'KF_FY_ZEDV2SND.WEP_ZEDV2_Secondary_Explode')

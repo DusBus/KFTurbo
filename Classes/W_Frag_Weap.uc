@@ -149,9 +149,9 @@ defaultproperties
     LastSpeciesTypeClass = None
     
     DefaultGrenadeDefinition=(WeaponMesh=SkeletalMesh'KF_Weapons_Trip.Frag_Trip',WeaponMeshMaterialList=(Shader'KillingFloorWeapons.Frag_Grenade.FragShader'),ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
-    FirebugGrenadeDefinition=(WeaponMesh=SkeletalMesh'KFTurboExtra.FirebugGrenade',WeaponMeshMaterialList=(Shader'KFTurboExtra.FP7.FP7_SHDR'),ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
-    MedicGrenadeDefinition=(WeaponMesh=SkeletalMesh'KFTurboExtra.MedicGrenade',WeaponMeshMaterialList=(Texture'KFTurboExtra.G28.G28MedicGrenade'),ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
-    BerserkerGrenadeDefinition=(WeaponMesh=SkeletalMesh'KFTurboExtra.ZerkNade',WeaponMeshMaterialList=(Shader'KFTurboExtra.XM84.XM84-Glow'),ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
+    FirebugGrenadeDefinition=(WeaponMesh=SkeletalMesh'KFTurbo.FirebugGrenade',WeaponMeshMaterialList=(Shader'KFTurbo.FP7.FP7_SHDR'),ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
+    MedicGrenadeDefinition=(WeaponMesh=SkeletalMesh'KFTurbo.MedicGrenade',WeaponMeshMaterialList=(Texture'KFTurbo.G28.G28MedicGrenade'),ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
+    BerserkerGrenadeDefinition=(WeaponMesh=SkeletalMesh'KFTurbo.ZerkNade',WeaponMeshMaterialList=(Shader'KFTurbo.XM84.XM84-Glow'),ArmUVIndex=1,AttachmentClass=Class'KFMod.FragAttachment')
 
     //Might as well incorporate the frag fix while we're here.
     FireModeClass(0)=Class'W_Frag_Fire'

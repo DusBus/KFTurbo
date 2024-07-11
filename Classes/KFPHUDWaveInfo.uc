@@ -276,6 +276,6 @@ defaultproperties
 	BackplateSize=(X=0.075f,Y=0.05f)
 	BackplateSpacing=(X=0.01f,Y=0.02f)
 	
-	//RoundedContainer=Texture'KFTurboContent.HUD.ContainerRounded_D'
-	//SquareContainer=Texture'KFTurboContent.HUD.ContainerSquare_D'
+	//RoundedContainer=Texture'KFTurbo.HUD.ContainerRounded_D'
+	//SquareContainer=Texture'KFTurbo.HUD.ContainerSquare_D'
 }

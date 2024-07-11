@@ -2,8 +2,8 @@
 class KFTurboMut extends Mutator
 	config(KFPro);
 
-#exec obj load file="..\Animations\KFTurboContent.ukx"
-#exec obj load file="..\Animations\KFTurboExtra.ukx"
+#exec obj load file="..\Animations\KFTurboContent.ukx" package=KFTurbo
+#exec obj load file="..\Animations\KFTurboExtra.ukx" package=KFTurbo
 
 var array<KFGameType.SpecialSquad> FinalSquads;			// Squads that spawn with the Patriarch
 var array<KFGameType.SpecialSquad> ShortSpecialSquads;		// The special squad array for a short game
@@ -36,6 +36,37 @@ simulated function PostBeginPlay()
 
 		//Every 5 seconds check if our queued spawn has a replaceable zed.
 		CustomZedHandler = Spawn(class'KFPCustomZedHandler', self);
+	}
+}
+
+function Mutate(string MutateString, PlayerController Sender)
+{
+	local KFSoldierFriendly Soldier;
+	local KFPlayerReplicationInfo Player;
+	Super.Mutate(MutateString, Sender);
+	log (MutateString);
+
+	if (MutateString ~= "HelpPlease")
+	{
+		Soldier = Sender.Spawn(class'KFmod.KFSoldierFriendly',,, Sender.Pawn.Location + vect(0,0,32));
+		Soldier.PlayerReplicationInfo.Team.TeamIndex = Sender.PlayerReplicationInfo.Team.TeamIndex;
+	}
+	
+	if (MutateString ~= "RemoveHelp")
+	{
+		foreach DynamicActors(class'KFSoldierFriendly', Soldier)
+		{
+			Soldier.Controller.Destroy();
+			Soldier.Destroy();
+		}
+
+		foreach DynamicActors(class'KFPlayerReplicationInfo', Player)
+		{
+			if (Player.bBot)
+			{
+				Player.Destroy();
+			}
+		}
 	}
 }
 

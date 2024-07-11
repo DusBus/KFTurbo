@@ -213,5 +213,5 @@ defaultproperties
 {
      StartingWeaponSellPriceLevel5=255.000000
      StartingWeaponSellPriceLevel6=255.000000
-     OnHUDGoldIcon=Texture'KFTurboContent.Perks.Sharp_D'
+     OnHUDGoldIcon=Texture'KFTurbo.Perks.Sharp_D'
 }

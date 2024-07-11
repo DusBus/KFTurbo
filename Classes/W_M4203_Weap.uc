@@ -171,7 +171,7 @@ defaultproperties
      InventoryGroup=3
      PickupClass=Class'KFTurbo.W_M4203_Pickup'
      AttachmentClass=Class'KFTurbo.W_M4203_Attachment'
-     Mesh=SkeletalMesh'KFTurboContent.M4M203Aimpoint_1st'
+     Mesh=SkeletalMesh'KFTurbo.M4M203Aimpoint_1st'
      Skins(0)=Combiner'KF_Weapons4_Trip_T.Weapons.m4_cmb'
      Skins(1)=Shader'KF_Weapons2_Trip_T.Special.Aimpoint_sight_shdr'
 }

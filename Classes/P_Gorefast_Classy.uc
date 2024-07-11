@@ -15,7 +15,7 @@ function PlayDyingSound()
 
 static simulated function PreCacheMaterials(LevelInfo myLevel)
 {
-	myLevel.AddPrecacheMaterial(Combiner'KFTurboContent.ClassyFast.gorefastHat_cmb');
+	myLevel.AddPrecacheMaterial(Combiner'KFTurbo.ClassyFast.gorefastHat_cmb');
 }
 
 defaultproperties
@@ -36,6 +36,6 @@ defaultproperties
      ChallengeSound(3)=SoundGroup'KF_EnemiesFinalSnd_Xmas.GoreFast.Gorefast_Challenge'
      MenuName="Classy Gorefast"
      AmbientSound=SoundGroup'KF_EnemiesFinalSnd_Xmas.GoreFast.Gorefast_Idle'
-     Mesh=SkeletalMesh'KFTurboContent.classyfast_mesh'
-     Skins(0)=Combiner'KFTurboContent.ClassyFast.gorefastHat_cmb'
+     Mesh=SkeletalMesh'KFTurbo.classyfast_mesh'
+     Skins(0)=Combiner'KFTurbo.ClassyFast.gorefastHat_cmb'
 }
