@@ -404,7 +404,7 @@ function DrawPlayerInfo(Canvas C, out PlayerInfoData PlayerInfo, float ScreenLoc
 		C.DrawColor = HealthHitBarColor;
 		C.DrawColor.A = (LastHitAlpha * 255.f);
 		C.SetPos(((ScreenLocX - OffsetX) - 0.5 * BarLength) + (BarLength * FClamp(PlayerInfo.CurrentHealth, 0, 1)), ((ScreenLocY - YL) - 0.4 * BarHeight) - (0.5 * BarHeight * LastHitScale * 1.5f));
-		C.DrawTileStretched(WhiteMaterial, (BarLength * PlayerInfo.LastHit.HitAmount * Lerp(LastHitScale, 0.75f, 1.f)) + ((BarLength * 0.05f) / PlayerInfo.LastHit.FadeRate), BarHeight * LastHitScale * 1.5f);
+		C.DrawTileStretched(WhiteMaterial, (BarLength * PlayerInfo.LastHit.HitAmount * Lerp(LastHitScale, 1.f, 1.2f)) + ((BarLength * 0.05f) / PlayerInfo.LastHit.FadeRate), BarHeight * (1.f + (LastHitScale * 0.5f)));
 	}
 
 	C.Z = OldZ;
