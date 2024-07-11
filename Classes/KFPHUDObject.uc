@@ -1,6 +1,14 @@
 class KFPHUDObject extends Object
 	within KFPHUDKillingFloor;
 
+struct Vector2D
+{
+	var float X;
+	var float Y;
+};
+
+var Vector2D LastKnownClipSize;
+
 simulated function Initialize()
 {
 	
@@ -11,9 +19,20 @@ simulated function Tick(float DeltaTime)
 	
 }
 
+//If you want screensize updates (or initial call), always call Super.Draw(C) on subclasses.
 simulated function Draw(Canvas C)
 {
+	if (LastKnownClipSize.X != C.ClipX || LastKnownClipSize.Y != C.ClipY)
+	{
+		OnScreenSizeChange(C);
+		LastKnownClipSize.X = C.ClipX;
+		LastKnownClipSize.Y = C.ClipY;
+	}
+}
 
+simulated function OnScreenSizeChange(Canvas C)
+{
+	
 }
 
 static function String GetStringOfZeroes(int NumberOfDigits)

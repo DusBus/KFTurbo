@@ -17,12 +17,6 @@ var float ActiveWaveFadeRate;
 var float NumberZedsRemaining;
 var float NumberZedsInterpRate;
 
-struct Vector2D
-{
-	var float X;
-	var float Y;
-};
-
 var Vector2D BackplateSize;
 var Vector2D BackplateSpacing; //Distance from top and middle.
 
@@ -104,6 +98,9 @@ simulated function TickActiveWave(float DeltaTime)
 simulated function Draw(Canvas C)
 {
 	local Vector2D BackplateACenter, BackplateBCenter;
+	
+	Super.Draw(C);
+
 	DrawGameBackplate(C, BackplateACenter, BackplateBCenter);
 	DrawCurrentWave(C, BackplateACenter);
 	DrawTraderWave(C, BackplateBCenter);

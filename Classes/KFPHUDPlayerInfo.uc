@@ -270,6 +270,8 @@ simulated function Draw(Canvas C)
 	local rotator CamRot;
 	local KFHumanPawn HumanPawn;
 
+	Super.Draw(C);
+
 	// Grab our View Direction
 	C.GetCameraLocation(CamPos,CamRot);
 	ViewDir = vector(CamRot);
