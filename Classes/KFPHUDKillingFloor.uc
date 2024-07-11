@@ -1,6 +1,6 @@
 class KFPHUDKillingFloor extends SRHUDKillingFloor;
 
-#exec obj load file="../Textures/KFTurboHUD.utx" package="KFTurbo"
+//#exec obj load file="../Textures/KFTurboHUD.utx" package="KFTurbo"
 //#exec obj load file="SkeletonHUDFonts.utx" package="KFTurbo"
 
 var	localized string HUDLargeNumberFontNames[9];
@@ -263,13 +263,13 @@ simulated function InitializeEndGameUI(bool bVictory)
 
 	if ( bVictory )
 	{
-		EndGameHUDMaterial = Texture'KFTurbo.EndGame.You_Won_D';
-		PlayerOwner.PlaySound(WinSound, SLOT_Talk, 255.0,,,, false);
+		//EndGameHUDMaterial = Texture'KFTurbo.EndGame.You_Won_D';
+		//PlayerOwner.PlaySound(WinSound, SLOT_Talk, 255.0,,,, false);
 	}
 	else
 	{
-		EndGameHUDMaterial = Texture'KFTurbo.EndGame.You_Died_D';
-		PlayerOwner.PlaySound(LoseSound, SLOT_Talk,255.0,,,, false);
+		//EndGameHUDMaterial = Texture'KFTurbo.EndGame.You_Died_D';
+		//PlayerOwner.PlaySound(LoseSound, SLOT_Talk,255.0,,,, false);
 	}
 }
 
@@ -287,8 +287,8 @@ static function Font LoadLargeNumberFont(int i)
 
 defaultproperties
 {
-	WinSound=Sound'KFTurbo.YouWin_S'
-	LoseSound=Sound'KFTurbo.YouLose_S'
+	//WinSound=Sound'KFTurbo.YouWin_S'
+	//LoseSound=Sound'KFTurbo.YouLose_S'
 	EndGameHUDAnimationDuration=8.f
 
 	bHasInitializedEndGameHUD=false
@@ -307,7 +307,7 @@ defaultproperties
 	HUDLargeNumberFontNames(6)="KFTurbo.FalenaText36"
 	HUDLargeNumberFontNames(7)="KFTurbo.FalenaText36"
 	HUDLargeNumberFontNames(8)="KFTurbo.FalenaText24"
-	
+
 	SmallFontArrayNames(0)="KFTurbo.BahnschriftText24"
 	SmallFontArrayNames(1)="KFTurbo.BahnschriftText24"
 	SmallFontArrayNames(2)="KFTurbo.BahnschriftText18"

@@ -140,14 +140,22 @@ simulated function DrawGameBackplate(Canvas C, out Vector2D BackplateACenter, ou
 	C.SetPos(TempX, TempY);
 	BackplateACenter.X = TempX + (C.ClipX * BackplateSize.X * 0.5f);
 	BackplateACenter.Y = TempY + (C.ClipY * BackplateSize.Y * 0.5f);
-	C.DrawTileStretched(RoundedContainer, C.ClipX * BackplateSize.X, C.ClipY * BackplateSize.Y);
+
+	if (RoundedContainer != None)
+	{
+		C.DrawTileStretched(RoundedContainer, C.ClipX * BackplateSize.X, C.ClipY * BackplateSize.Y);
+	}
 	
 	TempX = CenterX + (C.ClipX * BackplateSpacing.X);
 
 	C.SetPos(TempX, TempY);
 	BackplateBCenter.X = TempX + (C.ClipX * BackplateSize.X * 0.5f);
 	BackplateBCenter.Y = BackplateACenter.Y;
-	C.DrawTileStretched(RoundedContainer, C.ClipX * BackplateSize.X, C.ClipY * BackplateSize.Y);
+
+	if (RoundedContainer != None)
+	{
+		C.DrawTileStretched(RoundedContainer, C.ClipX * BackplateSize.X, C.ClipY * BackplateSize.Y);
+	}
 }
 
 simulated function DrawCurrentWave(Canvas C, Vector2D Center)
@@ -268,6 +276,6 @@ defaultproperties
 	BackplateSize=(X=0.075f,Y=0.05f)
 	BackplateSpacing=(X=0.01f,Y=0.02f)
 	
-	RoundedContainer=Texture'KFTurbo.HUD.ContainerRounded_D'
-	SquareContainer=Texture'KFTurbo.HUD.ContainerSquare_D'
+	//RoundedContainer=Texture'KFTurbo.HUD.ContainerRounded_D'
+	//SquareContainer=Texture'KFTurbo.HUD.ContainerSquare_D'
 }
