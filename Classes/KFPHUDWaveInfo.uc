@@ -32,7 +32,7 @@ simulated function Initialize(KFPHUDKillingFloor OwnerHUD)
 
 	KFGRI = KFGameReplicationInfo(KFPHUD.Level.GRI);
 	
-	KFPHUD.LoadLargeNumberFont(4);
+	class'KFTurboFonts'.static.LoadLargeNumberFont(0);
 }
 
 simulated function Tick(float DeltaTime)
@@ -170,7 +170,7 @@ simulated function DrawCurrentWave(Canvas C, Vector2D Center)
 	
 	C.FontScaleX = 1.f;
 	C.FontScaleY = 1.f;
-	C.Font = KFPHUD.LoadLargeNumberFont(4);
+	C.Font = class'KFTurboFonts'.static.LoadLargeNumberFont(0);
 	C.TextSize(GetStringOfZeroes(Len(CurrentWaveString)), TextSizeX, TextSizeY);
 	
 	TextScale = (C.ClipY * BackplateSize.Y) / TextSizeY;
@@ -219,7 +219,7 @@ simulated function DrawTraderWave(Canvas C, Vector2D Center)
 	
 	C.FontScaleX = 1.f;
 	C.FontScaleY = 1.f;
-	C.Font = KFPHUD.LoadLargeNumberFont(4);
+	C.Font = class'KFTurboFonts'.static.LoadLargeNumberFont(0);
 	C.TextSize(GetStringOfZeroes(Len(TraderTime)), TextSizeX, TextSizeY);
 	
 	TextScale = (C.ClipY * BackplateSize.Y) / TextSizeY;
@@ -249,7 +249,7 @@ simulated function DrawActiveWave(Canvas C, Vector2D Center)
 
 	C.FontScaleX = 1.f;
 	C.FontScaleY = 1.f;
-	C.Font = KFPHUD.LoadLargeNumberFont(4);
+	C.Font = class'KFTurboFonts'.static.LoadLargeNumberFont(0);
 	C.TextSize(GetStringOfZeroes(Len(ActiveWaveString)), TextSizeX, TextSizeY);
 	
 	TextScale = (C.ClipY * BackplateSize.Y) / TextSizeY;
@@ -276,6 +276,6 @@ defaultproperties
 	BackplateSize=(X=0.075f,Y=0.05f)
 	BackplateSpacing=(X=0.01f,Y=0.02f)
 	
-	//RoundedContainer=Texture'KFTurbo.HUD.ContainerRounded_D'
-	//SquareContainer=Texture'KFTurbo.HUD.ContainerSquare_D'
+	RoundedContainer=Texture'KFTurbo.HUD.ContainerRounded_D'
+	SquareContainer=Texture'KFTurbo.HUD.ContainerSquare_D'
 }

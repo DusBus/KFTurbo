@@ -4,6 +4,7 @@ class KFTurboMut extends Mutator
 
 #exec obj load file="..\Animations\KFTurboContent.ukx" package=KFTurbo
 #exec obj load file="..\Animations\KFTurboExtra.ukx" package=KFTurbo
+#exec obj load file="..\Textures\KFTurboHUD.utx" package=KFTurbo
 
 var array<KFGameType.SpecialSquad> FinalSquads;			// Squads that spawn with the Patriarch
 var array<KFGameType.SpecialSquad> ShortSpecialSquads;		// The special squad array for a short game
@@ -37,6 +38,9 @@ simulated function PostBeginPlay()
 		//Every 5 seconds check if our queued spawn has a replaceable zed.
 		CustomZedHandler = Spawn(class'KFPCustomZedHandler', self);
 	}
+
+	//Make sure fonts are added to server packages.
+	AddToPackageMap("KFTurboFonts");
 }
 
 static function string GetHUDReplacementClass(string HUDClassString)

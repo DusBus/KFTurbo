@@ -1,8 +1,5 @@
 class KFPHUDKillingFloor extends SRHUDKillingFloor;
 
-var	localized string HUDLargeNumberFontNames[9];
-var	Font HUDLargeNumberFonts[9];
-
 var Sound WinSound, LoseSound;
 var float EndGameHUDAnimationDuration;
 var Material EndGameHUDMaterial;
@@ -100,7 +97,6 @@ simulated function DrawGameHud(Canvas C)
 	if (PlayerInfoHUD != None)
 	{
 		PlayerInfoHUD.Draw(C);
-		log ("PlayerInfoHUD Complete");
 	}
 
 	PassStyle = STY_Alpha;
@@ -260,32 +256,20 @@ simulated function InitializeEndGameUI(bool bVictory)
 
 	if ( bVictory )
 	{
-		//EndGameHUDMaterial = Texture'KFTurbo.EndGame.You_Won_D';
-		//PlayerOwner.PlaySound(WinSound, SLOT_Talk, 255.0,,,, false);
+		EndGameHUDMaterial = Texture'KFTurbo.EndGame.You_Won_D';
+		PlayerOwner.PlaySound(WinSound, SLOT_Talk, 255.0,,,, false);
 	}
 	else
 	{
-		//EndGameHUDMaterial = Texture'KFTurbo.EndGame.You_Died_D';
-		//PlayerOwner.PlaySound(LoseSound, SLOT_Talk,255.0,,,, false);
+		EndGameHUDMaterial = Texture'KFTurbo.EndGame.You_Died_D';
+		PlayerOwner.PlaySound(LoseSound, SLOT_Talk,255.0,,,, false);
 	}
-}
-
-static function Font LoadLargeNumberFont(int i)
-{
-	if (default.MenuFontArrayFonts[i] == none)
-	{
-		default.MenuFontArrayFonts[i] = Font(DynamicLoadObject(default.MenuFontArrayNames[i], class'Font'));
-		if (default.MenuFontArrayFonts[i] == none)
-			Log("Warning: "$default.Class$" Couldn't dynamically load font "$default.MenuFontArrayNames[i]);
-	}
-
-	return default.MenuFontArrayFonts[i];
 }
 
 defaultproperties
 {
-	//WinSound=Sound'KFTurbo.YouWin_S'
-	//LoseSound=Sound'KFTurbo.YouLose_S'
+	WinSound=Sound'KFTurbo.YouWin_S'
+	LoseSound=Sound'KFTurbo.YouLose_S'
 	EndGameHUDAnimationDuration=8.f
 
 	bHasInitializedEndGameHUD=false
@@ -293,46 +277,4 @@ defaultproperties
 
 	BarLength=70.000000
 	BarHeight=10.000000
-
-	/*
-	HUDLargeNumberFontNames(0)="KFTurbo.FalenaText72Numbers"
-	HUDLargeNumberFontNames(1)="KFTurbo.FalenaText72Numbers"
-	HUDLargeNumberFontNames(2)="KFTurbo.FalenaText60Numbers"
-	HUDLargeNumberFontNames(3)="KFTurbo.FalenaText60Numbers"
-	HUDLargeNumberFontNames(4)="KFTurbo.FalenaText48"
-	HUDLargeNumberFontNames(5)="KFTurbo.FalenaText48"
-	HUDLargeNumberFontNames(6)="KFTurbo.FalenaText36"
-	HUDLargeNumberFontNames(7)="KFTurbo.FalenaText36"
-	HUDLargeNumberFontNames(8)="KFTurbo.FalenaText24"
-
-	SmallFontArrayNames(0)="KFTurbo.BahnschriftText24"
-	SmallFontArrayNames(1)="KFTurbo.BahnschriftText24"
-	SmallFontArrayNames(2)="KFTurbo.BahnschriftText18"
-	SmallFontArrayNames(3)="KFTurbo.BahnschriftText18"
-	SmallFontArrayNames(4)="KFTurbo.BahnschriftText14"
-	SmallFontArrayNames(5)="KFTurbo.BahnschriftText14"
-	SmallFontArrayNames(6)="KFTurbo.BahnschriftText12"
-	SmallFontArrayNames(7)="KFTurbo.BahnschriftText12"
-	SmallFontArrayNames(8)="KFTurbo.BahnschriftText9"
-
-	MenuFontArrayNames(0)="KFTurbo.BahnschriftText18"
-	MenuFontArrayNames(1)="KFTurbo.BahnschriftText14"
-	MenuFontArrayNames(2)="KFTurbo.BahnschriftText12"
-	MenuFontArrayNames(3)="KFTurbo.BahnschriftText9"
-	MenuFontArrayNames(4)="KFTurbo.BahnschriftText9"
-
-	WaitingFontArrayNames(0)="KFTurbo.FalenaTitle60"
-	WaitingFontArrayNames(1)="KFTurbo.FalenaTitle48"
-	WaitingFontArrayNames(2)="KFTurbo.FalenaTitle36"
-
-	FontArrayNames(0)="KFTurbo.BahnschriftText36"
-	FontArrayNames(1)="KFTurbo.BahnschriftText36"
-	FontArrayNames(2)="KFTurbo.BahnschriftText24"
-	FontArrayNames(3)="KFTurbo.BahnschriftText24"
-	FontArrayNames(4)="KFTurbo.BahnschriftText18"
-	FontArrayNames(5)="KFTurbo.BahnschriftText18"
-	FontArrayNames(6)="KFTurbo.BahnschriftText14"
-	FontArrayNames(7)="KFTurbo.BahnschriftText12"
-	FontArrayNames(8)="KFTurbo.BahnschriftText9"
-	*/
 }
