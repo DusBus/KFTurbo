@@ -1,5 +1,7 @@
 class KFPPlayerController extends KFPCServ;
 
+var class<WeaponRemappingSettings> WeaponRemappingSettings;
+
 simulated function ClientSetHUD(class<HUD> newHUDClass, class<Scoreboard> newScoringClass )
 {
 	if (class'KFTurboMut'.static.GetHUDReplacementClass(string(newHUDClass)) ~= "KFTurbo.KFPHUDKillingFloor")
@@ -121,8 +123,20 @@ function ServerInitializeSteamStatInt(byte Index, int Value)
 	Progress.ValueUpdated();
 }
 
+exec function GetWeapon(class<Weapon> NewWeaponClass )
+{
+	if (WeaponRemappingSettings != None)
+	{
+		NewWeaponClass = WeaponRemappingSettings.static.GetRemappedWeapon(Self, NewWeaponClass);
+	}
+	
+	Super.GetWeapon(NewWeaponClass);
+}
+
 defaultproperties
 {
 	LobbyMenuClassString="KFTurbo.KFPLobbyMenu"
 	PawnClass=Class'KFTurbo.KFPHumanPawn'
+
+	WeaponRemappingSettings=class'WeaponRemappingSettingsImpl'
 }
