@@ -49,5 +49,10 @@ defaultproperties
      ColRadius=27.000000
      ColHeight=30.000000
      
-     HeadHealth=1182.000000
+     HealthMax=1500.000000
+     Health=1500.000000
+     HeadHealth=1500.000000
+
+     GroundSpeed=60.000000
+     WaterSpeed=80.000000
 }
