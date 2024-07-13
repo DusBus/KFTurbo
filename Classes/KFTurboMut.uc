@@ -145,14 +145,31 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 
 function UpdateRandomItemPickup(KFRandomItemSpawn PickupSpawner)
 {
-	//PickupSpawner.PickupClasses[0]=Class'KFTurbo.DualiesPickup'
-	PickupSpawner.PickupClasses[1] = Class'KFTurbo.W_Shotgun_Pickup';
-	PickupSpawner.PickupClasses[2] = Class'KFTurbo.W_Bullpup_Pickup';
-	PickupSpawner.PickupClasses[3] = Class'KFTurbo.W_Deagle_Pickup';
-	PickupSpawner.PickupClasses[4] = Class'KFTurbo.W_LAR_Pickup';
-	PickupSpawner.PickupClasses[5] = Class'KFTurbo.W_Axe_Pickup';
-	//PickupSpawner.PickupClasses[6] = Class'KFTurbo.W_Machete_Pickup';
-	//PickupSpawner.PickupClasses[7]=Class'KFTurbo.Vest'
+	//Randomizer may have set these to none - so try to respect that.
+	if (PickupSpawner.PickupClasses[1] == PickupSpawner.default.PickupClasses[1])
+	{
+		PickupSpawner.PickupClasses[1] = Class'KFTurbo.W_Shotgun_Pickup';
+	}
+
+	if (PickupSpawner.PickupClasses[2] == PickupSpawner.default.PickupClasses[2])
+	{
+		PickupSpawner.PickupClasses[2] = Class'KFTurbo.W_Bullpup_Pickup';
+	}
+
+	if (PickupSpawner.PickupClasses[3] == PickupSpawner.default.PickupClasses[3])
+	{
+		PickupSpawner.PickupClasses[3] = Class'KFTurbo.W_Deagle_Pickup';
+	}
+
+	if (PickupSpawner.PickupClasses[4] == PickupSpawner.default.PickupClasses[4])
+	{
+		PickupSpawner.PickupClasses[4] = Class'KFTurbo.W_LAR_Pickup';
+	}
+
+	if (PickupSpawner.PickupClasses[5] == PickupSpawner.default.PickupClasses[5])
+	{
+		PickupSpawner.PickupClasses[5] = Class'KFTurbo.W_Axe_Pickup';
+	}
 }
 
 function ModifyPlayer(Pawn Other)
