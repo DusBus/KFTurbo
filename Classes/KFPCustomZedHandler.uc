@@ -8,7 +8,6 @@ struct MonsterReplacement
 };
 
 var array<MonsterReplacement> ReplacementList; //List of KFMonster parent classes, their replacement, and individual chance to be applied.
-var float ReplacementChance; //Chance for ReplacementList to be applied to a new pending squad.
 
 var KFGameType KFGT;
 var float LastCheckedNextMonsterTime;
@@ -48,11 +47,6 @@ event Timer()
 
     LastCheckedNextMonsterTime = KFGT.NextMonsterTime + 0.15f;
 
-    if (FRand() < ReplacementChance)
-    {
-        return;
-    }
-
     DebugLog("Applying Replacement");
     ApplyReplacementList(KFGT.NextSpawnSquad);
 }
@@ -91,7 +85,6 @@ defaultproperties
 {
     bDebugReplacement = false
 
-    ReplacementChance=0.5f
     ReplacementList(0)=(TargetParentClass=class'P_Gorefast',ReplacementClass=class'P_Gorefast_Classy',ChanceToReplace=0.25f)
     ReplacementList(1)=(TargetParentClass=class'P_Crawler',ReplacementClass=class'P_Crawler_Jumper',ChanceToReplace=0.1f)
     ReplacementList(2)=(TargetParentClass=class'P_Bloat',ReplacementClass=class'P_Bloat_Fathead',ChanceToReplace=0.1f)
