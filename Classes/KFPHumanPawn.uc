@@ -1,6 +1,48 @@
 class KFPHumanPawn extends SRHumanPawn;
 
+var int HealthHealingTo;
+
+replication
+{
+    reliable if(Role == ROLE_Authority)
+        HealthHealingTo;
+}
+
 var bool bDebugServerBuyWeapon;
+
+simulated function Tick(float DeltaTime)
+{
+	Super.Tick(DeltaTime);
+
+	UpdateHealthHealingTo();
+}
+
+simulated function UpdateHealthHealingTo()
+{
+	local int NewHealthHealingTo;
+	if (Role != ROLE_Authority)
+	{
+		return;
+	}
+	
+	if (HealthToGive <= 0 || Health >= int(HealthMax))
+	{
+		HealthHealingTo = -1;
+		return;
+	}
+
+	NewHealthHealingTo = int(float(Health) + HealthToGive);
+	NewHealthHealingTo = Min(NewHealthHealingTo, int(HealthMax));
+
+	if (Health == NewHealthHealingTo)
+	{
+		HealthHealingTo = -1;
+	}
+	else if (NewHealthHealingTo != HealthHealingTo)
+	{
+		HealthHealingTo = NewHealthHealingTo;
+	}
+}
 
 simulated function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> damageType, optional int HitIndex)
 {
@@ -293,6 +335,7 @@ simulated event SetAnimAction(name NewAction)
 defaultproperties
 {
 	bDebugServerBuyWeapon=false
+	HealthHealingTo = 0
 
 	RequiredEquipment(2)="KFTurbo.W_Frag_Weap"
 }
