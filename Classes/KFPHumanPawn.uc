@@ -17,6 +17,22 @@ simulated function Tick(float DeltaTime)
 	UpdateHealthHealingTo();
 }
 
+simulated function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
+{
+	local Inventory InventoryItem;
+	Super.DisplayDebug(Canvas, YL, YPos);
+
+	InventoryItem = Inventory;
+	while (InventoryItem != None)
+	{
+		if (Weapon(InventoryItem) != None)
+		{
+			Weapon(InventoryItem).DisplayDebug(Canvas, YL, YPos);
+		}
+		InventoryItem = InventoryItem.Inventory;
+	}
+}
+
 simulated function UpdateHealthHealingTo()
 {
 	local int NewHealthHealingTo;
