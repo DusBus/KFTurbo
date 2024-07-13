@@ -34,5 +34,5 @@ defaultproperties
      FinalSquads(0)=(ZedClass=("KFTurbo.P_Clot_SUM"))
      FinalSquads(1)=(ZedClass=("KFTurbo.P_Clot_SUM","KFTurbo.P_Crawler_SUM"))
      FinalSquads(2)=(ZedClass=("KFTurbo.P_Clot_SUM","KFTurbo.P_Stalker_SUM","KFTurbo.P_Crawler_SUM"))
-     EndGameBossClass="KFTurbo.ZombieBoss_SUM"
+     EndGameBossClass="KFTurbo.P_ZombieBoss_SUM"
 }
