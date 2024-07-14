@@ -6,16 +6,28 @@ var Material EndGameHUDMaterial;
 var bool bHasInitializedEndGameHUD;
 var float EndGameHUDAnimationProgress;
 
-var KFPHUDObject PlayerInfoHUD;
-var KFPHUDObject WaveInfoHUD;
+var class<KFPHUDOverlay> PlayerInfoHUDClass;
+var KFPHUDOverlay PlayerInfoHUD;
+var class<KFPHUDOverlay> WaveInfoHUDClass;
+var KFPHUDOverlay WaveInfoHUD;
 
 simulated function PostBeginPlay()
 {
 	Super.PostBeginPlay();
 
-	PlayerInfoHUD = new(self) class'KFPHUDPlayerInfo';
+	if (PlayerInfoHUDClass == None)
+	{
+		PlayerInfoHUDClass = class'KFPHUDPlayerInfo';
+	}
+
+	if (WaveInfoHUDClass == None)
+	{
+		WaveInfoHUDClass = class'KFPHUDWaveInfo';
+	}
+
+	PlayerInfoHUD = Spawn(PlayerInfoHUDClass, Self);
 	PlayerInfoHUD.Initialize(Self);
-	WaveInfoHUD = new(self) class'KFPHUDWaveInfo';
+	WaveInfoHUD = Spawn(WaveInfoHUDClass, Self);
 	WaveInfoHUD.Initialize(Self);
 }
 
@@ -26,16 +38,6 @@ simulated function Tick(float DeltaTime)
 	if (bHasInitializedEndGameHUD)
 	{
 		EndGameHUDAnimationProgress += DeltaTime;
-	}
-	
-	if (PlayerInfoHUD != None)
-	{
-		PlayerInfoHUD.Tick(DeltaTime);
-	}
-	
-	if (WaveInfoHUD != None)
-	{
-		WaveInfoHUD.Tick(DeltaTime);
 	}
 }
 
@@ -96,7 +98,7 @@ simulated function DrawGameHud(Canvas C)
 
 	if (PlayerInfoHUD != None)
 	{
-		PlayerInfoHUD.Draw(C);
+		PlayerInfoHUD.Render(C);
 	}
 
 	PassStyle = STY_Alpha;
@@ -149,7 +151,7 @@ simulated function DrawKFHUDTextElements(Canvas C)
 
 	if (WaveInfoHUD != None)
 	{
-		WaveInfoHUD.Draw(C);
+		WaveInfoHUD.Render(C);
 	}
 
     ResScale =  C.SizeX / 1024.0;
@@ -264,6 +266,16 @@ simulated function InitializeEndGameUI(bool bVictory)
 		EndGameHUDMaterial = Texture'KFTurbo.EndGame.You_Died_D';
 		PlayerOwner.PlaySound(LoseSound, SLOT_Talk,255.0,,,, false);
 	}
+}
+
+static function Font LoadFontStatic(int i)
+{
+	return class'KFTurboFonts'.static.LoadFontStatic(i);
+}
+
+simulated function Font LoadFont(int i)
+{
+	return class'KFTurboFonts'.static.LoadFontStatic(i);
 }
 
 defaultproperties

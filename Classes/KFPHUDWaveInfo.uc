@@ -1,4 +1,4 @@
-class KFPHUDWaveInfo extends KFPHUDObject;
+class KFPHUDWaveInfo extends KFPHUDOverlay;
 
 var KFGameReplicationInfo KFGRI;
 
@@ -107,11 +107,11 @@ simulated function TickActiveWave(float DeltaTime)
 	}
 }
 
-simulated function Draw(Canvas C)
+simulated function Render(Canvas C)
 {
 	local Vector2D BackplateACenter, BackplateBCenter;
 	
-	Super.Draw(C);
+	Super.Render(C);
 
 	if (KFGRI == None)
 	{

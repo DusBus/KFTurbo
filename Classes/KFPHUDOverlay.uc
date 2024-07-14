@@ -1,4 +1,4 @@
-class KFPHUDObject extends Object;
+class KFPHUDOverlay extends HudOverlay;
 
 struct Vector2D
 {
@@ -15,14 +15,14 @@ simulated function Initialize(KFPHUDKillingFloor OwnerHUD)
 	KFPHUD = OwnerHUD;
 }
 
-simulated function Tick(float DeltaTime)
+//If you want screensize updates (or initial call), always call Super.Render(C) on subclasses.
+simulated function Render(Canvas C)
 {
-	
-}
+	if (KFPHUD == None)
+	{
+		return;
+	}
 
-//If you want screensize updates (or initial call), always call Super.Draw(C) on subclasses.
-simulated function Draw(Canvas C)
-{
 	if (LastKnownClipSize.X != C.ClipX || LastKnownClipSize.Y != C.ClipY)
 	{
 		OnScreenSizeChange(C);
