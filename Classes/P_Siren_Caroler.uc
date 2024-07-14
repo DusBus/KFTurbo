@@ -65,8 +65,7 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
           {
                MomentumVector.Z = FMax(MomentumVector.Z, 4.f);
           }
-
-          log ("Pulling:"@HumanPawn@"with scale"@MomentumScale);
+          
           HumanPawn.AddVelocity( MomentumVector );
      }
 
