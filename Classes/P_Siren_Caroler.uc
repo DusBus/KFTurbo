@@ -34,11 +34,49 @@ simulated function SpawnExtraSirenScreamEffect()
      ExtraEffect.AttachToBone(self, 'Collision_Attach');
 }
 
+simulated function HurtRadius( float DamageAmount, float DamageRadius, class<DamageType> DamageType, float Momentum, vector HitLocation )
+{
+	local KFHumanPawn HumanPawn;
+	local Vector PullDirection;
+	local float Distance;
+     local Vector MomentumVector;
+     local float MomentumScale;
+
+	if( bHurtEntry )
+     {
+		return;
+     }
+
+     Super.HurtRadius(DamageAmount, DamageRadius, DamageType, Momentum, HitLocation);
+
+     bHurtEntry = true;
+
+	foreach VisibleCollidingActors( class'KFHumanPawn', HumanPawn, DamageRadius, HitLocation )
+	{
+          PullDirection = HitLocation - HumanPawn.Location;
+          Distance = FMax(1.f, VSize(PullDirection));
+          PullDirection = PullDirection / Distance;
+
+          MomentumScale = 300000.f;
+          MomentumScale = MomentumScale / HumanPawn.Mass;
+          MomentumVector = PullDirection * (Distance / DamageRadius) * MomentumScale;
+
+          if (HumanPawn.Physics == PHYS_Walking)
+          {
+               MomentumVector.Z = FMax(MomentumVector.Z, 4.f);
+          }
+
+          log ("Pulling:"@HumanPawn@"with scale"@MomentumScale);
+          HumanPawn.AddVelocity( MomentumVector );
+     }
+
+     bHurtEntry = false;
+}
+
 defaultproperties
 {
      MenuName="Caroler"
      
-     ScreamForce=-3000000
      ScreamDamage=4
 
      ExtraEffectCooldownTime=4.5f
