@@ -27,10 +27,38 @@ simulated function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
 	{
 		if (Weapon(InventoryItem) != None)
 		{
-			Weapon(InventoryItem).DisplayDebug(Canvas, YL, YPos);
+			DisplayInventoryDebug(Canvas, Weapon(InventoryItem), YL, YPos);
 		}
 		InventoryItem = InventoryItem.Inventory;
 	}
+}
+
+simulated function DisplayInventoryDebug(Canvas Canvas, Weapon Weapon, out float YL, out float YPos)
+{
+    local string T;
+
+    Canvas.SetDrawColor(0,255,0);
+    if ( (Pawn(Weapon.Owner) != None) && (Pawn(Weapon.Owner).PlayerReplicationInfo != None) )
+		Canvas.DrawText("WEAPON "$Weapon.GetItemName(string(Weapon))$" Owner "$Pawn(Weapon.Owner).PlayerReplicationInfo.PlayerName);
+    else
+		Canvas.DrawText("WEAPON "$Weapon.GetItemName(string(Weapon))$" Owner "$Weapon.Owner);
+    YPos += YL;
+    Canvas.SetPos(4,YPos);
+
+    T = "     STATE: "$Weapon.GetStateName()$" Timer: "$Weapon.TimerCounter$" Client State ";
+	
+	Switch( Weapon.ClientState )
+	{
+		case WS_None: T=T$"None"; break;
+		case WS_Hidden: T=T$"Hidden"; break;
+		case WS_BringUp: T=T$"BringUp"; break;
+		case WS_PutDown: T=T$"PutDown"; break;
+		case WS_ReadyToFire: T=T$"ReadyToFire"; break;
+	}
+
+    Canvas.DrawText(T, false);
+    YPos += YL;
+    Canvas.SetPos(4,YPos);
 }
 
 simulated function UpdateHealthHealingTo()
@@ -343,9 +371,24 @@ function bool ServerBuyAmmo(Class<Ammunition> AClass, bool bOnlyClip)
 	return true;
 }
 
-simulated event SetAnimAction(name NewAction)
+exec function TossCash( int Amount )
 {
-	Super.SetAnimAction(NewAction);
+	// Relax the fix to cash tossing exploit.
+	if( CashTossTimer < Level.TimeSeconds && (LongTossCashTimer < Level.TimeSeconds || LongTossCashCount < 20) )
+	{
+		Super(KFHumanPawn_Story).TossCash(Amount);
+		CashTossTimer = Level.TimeSeconds + 0.1f;
+
+		if( LongTossCashTimer < Level.TimeSeconds )
+		{
+			LongTossCashTimer = Level.TimeSeconds + 5.f;
+			LongTossCashCount = 0;
+		}
+		else
+		{
+			LongTossCashCount++;
+		} 
+	}
 }
 
 defaultproperties
