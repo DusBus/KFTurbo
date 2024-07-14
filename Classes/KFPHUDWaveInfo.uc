@@ -14,10 +14,15 @@ var int WaveTimeSecondsRemaining;
 var bool bNeedActiveWaveInitialization;
 var float ActiveWaveFadeRatio;
 var float ActiveWaveFadeRate;
+
+var float ActiveWaveSizeRate;
+var float DesiredXSize, DesiredYSize;
+
 var float NumberZedsRemaining;
 var float NumberZedsInterpRate;
 
 var Vector2D BackplateSize;
+var Vector2D ActiveBackplateSize;
 var Vector2D BackplateSpacing; //Distance from top and middle.
 
 var Color BackplateColor;
@@ -32,7 +37,9 @@ simulated function Initialize(KFPHUDKillingFloor OwnerHUD)
 
 	KFGRI = KFGameReplicationInfo(KFPHUD.Level.GRI);
 	
-	class'KFTurboFonts'.static.LoadLargeNumberFont(0);
+	class'KFTurboFonts'.static.LoadLargeNumberFont(1);
+
+	ActiveBackplateSize = BackplateSize;
 }
 
 simulated function Tick(float DeltaTime)
@@ -47,64 +54,159 @@ simulated function Tick(float DeltaTime)
 		}
 	}
 
-	if (!KFGRI.bWaveInProgress)
+	if (KFGRI.bWaveInProgress)
 	{
-		TickTraderWave(DeltaTime);
+		GotoState('ActiveWave');
 	}
 	else
 	{
+		GotoState('WaitingWave');
+	}
+}
+
+simulated function DrawWaveData(Canvas C, Vector2D Center)
+{
+
+}
+
+state ActiveWave
+{
+	simulated function BeginState()
+	{
+		NumberZedsRemaining = KFGRI.MaxMonsters;
+		ActiveWaveFadeRatio = 0.f;
+	}
+
+	simulated function Tick(float DeltaTime)
+	{
+		if (KFGRI == None)
+		{
+			return;
+		}
+
 		TickActiveWave(DeltaTime);
+
+		if (!KFGRI.bWaveInProgress)
+		{
+			TickActiveFadeOut(DeltaTime);
+		}
+		else
+		{
+			TickActiveFadeIn(DeltaTime);
+		}
+	}
+
+	simulated function DrawWaveData(Canvas C, Vector2D Center)
+	{
+		DrawActiveWave(C, Center);
+	}
+}
+
+simulated function TickActiveFadeOut(float DeltaTime)
+{
+	ActiveWaveFadeRatio = FMax(ActiveWaveFadeRatio - (ActiveWaveFadeRate * DeltaTime), 0.f);
+
+	ActiveBackplateSize.X = Lerp(2.f * ActiveWaveSizeRate * DeltaTime, ActiveBackplateSize.X, BackplateSize.X);
+
+	if (ActiveWaveFadeRatio <= 0.001f)
+	{
+		ActiveWaveFadeRatio = 0.f;
+	}
+
+	if (Abs(BackplateSize.X - ActiveBackplateSize.X) > 0.0001f)
+	{
+		return;
+	}
+
+	ActiveBackplateSize.X = BackplateSize.X;
+	
+	GotoState('WaitingWave');
+}
+
+simulated function TickActiveFadeIn(float DeltaTime)
+{
+	if (Abs(DesiredXSize - ActiveBackplateSize.X) > 0.0001f)
+	{
+		ActiveBackplateSize.X = Lerp(ActiveWaveSizeRate * DeltaTime, ActiveBackplateSize.X, DesiredXSize);
+		return;
+	}
+
+	ActiveBackplateSize.X = DesiredXSize;
+
+	if (ActiveWaveFadeRatio >= 0.999f)
+	{
+		ActiveWaveFadeRatio = 1.f;
+		return;
+	}
+
+	ActiveWaveFadeRatio = FMin(ActiveWaveFadeRatio + (ActiveWaveFadeRate * DeltaTime), 1.f);
+}
+
+simulated function TickActiveWave(float DeltaTime)
+{
+	NumberZedsRemaining = Lerp(DeltaTime * NumberZedsInterpRate, NumberZedsRemaining, float(KFGRI.MaxMonsters));
+}
+
+state WaitingWave
+{
+	simulated function BeginState()
+	{
+		WaveTimeSecondsRemaining = KFGRI.TimeToNextWave;
+		TraderFadeRatio = 0.f;
+	}
+
+	simulated function Tick(float DeltaTime)
+	{
+		if (KFGRI == None)
+		{
+			return;
+		}
+
+		TickTraderWave(DeltaTime);
+
+		if (KFGRI.bWaveInProgress)
+		{
+			TickTraderFadeOut(DeltaTime);
+		}
+		else
+		{
+			TickTraderFadeIn(DeltaTime);
+		}
+	}
+	
+	simulated function DrawWaveData(Canvas C, Vector2D Center)
+	{
+		DrawTraderWave(C, Center);
 	}
 }
 
 simulated function TickTraderWave(float DeltaTime)
 {
-	if (bNeedTraderWaveInitialization || KFGRI.TimeToNextWave != WaveTimeSecondsRemaining)
+	if (KFGRI.TimeToNextWave != WaveTimeSecondsRemaining && Abs(WaveTimeRemaining - float(KFGRI.TimeToNextWave)) > 0.15f)
 	{
-		bNeedTraderWaveInitialization = false;
-		bNeedActiveWaveInitialization = true;
-
 		WaveTimeSecondsRemaining = KFGRI.TimeToNextWave;
-
-		//Received a wave time update, check if we're aligned.
-		if (Abs(WaveTimeRemaining - float(KFGRI.TimeToNextWave)) > 0.1f)
-		{
-			WaveTimeRemaining = KFGRI.TimeToNextWave;
-		}
+		WaveTimeRemaining = (float(KFGRI.TimeToNextWave) - 0.0001f);
 	}
-
-	if (ActiveWaveFadeRatio > 0.f)
+	else
 	{
-		ActiveWaveFadeRatio = FMax(ActiveWaveFadeRatio - (ActiveWaveFadeRate * DeltaTime * 0.5f), 0.f);
+		WaveTimeRemaining -= DeltaTime * 0.95f;
 	}
-	else if (TraderFadeRatio < 1.f)
-	{
-		TraderFadeRatio = FMin(TraderFadeRatio + (TraderFadeRate * DeltaTime), 1.f);
-	}
-	
-	WaveTimeRemaining -= DeltaTime * 0.95f;
 }
 
-simulated function TickActiveWave(float DeltaTime)
+simulated function TickTraderFadeOut(float DeltaTime)
 {
-	if (bNeedActiveWaveInitialization)
-	{
-		bNeedActiveWaveInitialization = false;
-		bNeedTraderWaveInitialization = true;
+	TraderFadeRatio = FMax(TraderFadeRatio - (TraderFadeRate * DeltaTime), 0.f);
 
-		NumberZedsRemaining = KFGRI.MaxMonsters;
+	if (TraderFadeRatio <= 0.001f)
+	{
+		TraderFadeRatio = 0.f;
+		GotoState('ActiveWave');
 	}
+}
 
-	NumberZedsRemaining = Lerp(DeltaTime * NumberZedsInterpRate, NumberZedsRemaining, float(KFGRI.MaxMonsters));
-	
-	if (TraderFadeRatio > 0.f)
-	{
-		TraderFadeRatio = FMax(TraderFadeRatio - (TraderFadeRate * DeltaTime * 0.5f), 0.f);
-	}
-	else if (ActiveWaveFadeRatio < 1.f)
-	{
-		ActiveWaveFadeRatio = FMin(ActiveWaveFadeRatio + (ActiveWaveFadeRate * DeltaTime), 1.f);
-	}
+simulated function TickTraderFadeIn(float DeltaTime)
+{
+	TraderFadeRatio = FMin(TraderFadeRatio + (TraderFadeRate * DeltaTime), 1.f);
 }
 
 simulated function Render(Canvas C)
@@ -120,8 +222,7 @@ simulated function Render(Canvas C)
 	
 	DrawGameBackplate(C, BackplateACenter, BackplateBCenter);
 	DrawCurrentWave(C, BackplateACenter);
-	DrawTraderWave(C, BackplateBCenter);
-	DrawActiveWave(C, BackplateBCenter);
+	DrawWaveData(C, BackplateBCenter);
 }
 
 simulated function DrawGameBackplate(Canvas C, out Vector2D BackplateACenter, out Vector2D BackplateBCenter)
@@ -149,12 +250,12 @@ simulated function DrawGameBackplate(Canvas C, out Vector2D BackplateACenter, ou
 	TempX = CenterX + (C.ClipX * BackplateSpacing.X);
 
 	C.SetPos(TempX, TempY);
-	BackplateBCenter.X = TempX + (C.ClipX * BackplateSize.X * 0.5f);
+	BackplateBCenter.X = TempX + (C.ClipX * ActiveBackplateSize.X * 0.5f);
 	BackplateBCenter.Y = BackplateACenter.Y;
 
 	if (RoundedContainer != None)
 	{
-		C.DrawTileStretched(RoundedContainer, C.ClipX * BackplateSize.X, C.ClipY * BackplateSize.Y);
+		C.DrawTileStretched(RoundedContainer, C.ClipX * ActiveBackplateSize.X, C.ClipY * ActiveBackplateSize.Y);
 	}
 }
 
@@ -170,7 +271,7 @@ simulated function DrawCurrentWave(Canvas C, Vector2D Center)
 	
 	C.FontScaleX = 1.f;
 	C.FontScaleY = 1.f;
-	C.Font = class'KFTurboFonts'.static.LoadLargeNumberFont(0);
+	C.Font = class'KFTurboFonts'.static.LoadLargeNumberFont(1);
 	C.TextSize(GetStringOfZeroes(Len(CurrentWaveString)), TextSizeX, TextSizeY);
 	
 	TextScale = (C.ClipY * BackplateSize.Y) / TextSizeY;
@@ -194,7 +295,7 @@ simulated function DrawTraderWave(Canvas C, Vector2D Center)
 		return;
 	}
 
-	C.DrawColor = C.MakeColor(255, 255, 255, byte(float(220) * TraderFadeRatio));
+	C.MakeColor(255, 255, 255, byte(Lerp(TraderFadeRatio, 0, 255)));
 
 	if ( WaveTimeSecondsRemaining > 10.f)
 	{
@@ -219,7 +320,7 @@ simulated function DrawTraderWave(Canvas C, Vector2D Center)
 	
 	C.FontScaleX = 1.f;
 	C.FontScaleY = 1.f;
-	C.Font = class'KFTurboFonts'.static.LoadLargeNumberFont(0);
+	C.Font = class'KFTurboFonts'.static.LoadLargeNumberFont(1);
 	C.TextSize(GetStringOfZeroes(Len(TraderTime)), TextSizeX, TextSizeY);
 	
 	TextScale = (C.ClipY * BackplateSize.Y) / TextSizeY;
@@ -237,26 +338,30 @@ simulated function DrawActiveWave(Canvas C, Vector2D Center)
 	local float TextSizeX, TextSizeY, TextScale;
 	local string ActiveWaveString;
 
+	ActiveWaveString = string(int(NumberZedsRemaining));
+	C.FontScaleX = 1.f;
+	C.FontScaleY = 1.f;
+	C.Font = class'KFTurboFonts'.static.LoadLargeNumberFont(1);
+	C.TextSize(GetStringOfZeroes(Len(ActiveWaveString)), TextSizeX, TextSizeY);
+	TextScale = (C.ClipY * BackplateSize.Y) / TextSizeY;
+	C.FontScaleX = TextScale;
+	C.FontScaleY = TextScale;
+	C.TextSize(GetStringOfZeroes(Len(ActiveWaveString)), TextSizeX, TextSizeY);
+
+	DesiredXSize = TextSizeX + 20.f;
+	DesiredXSize /= C.ClipX;
+
+	if (ActiveBackplateSize.X < DesiredXSize)
+	{
+		ActiveBackplateSize.X = DesiredXSize;
+	}
+
 	if (ActiveWaveFadeRatio <= 0.001f)
 	{
 		return;
 	}
 
-	ActiveWaveString = string(int(NumberZedsRemaining));
-	ActiveWaveString = FillStringWithZeroes(ActiveWaveString, 4);
-
-	C.DrawColor = C.MakeColor(255, 255, 255, byte(float(220) * ActiveWaveFadeRatio));
-
-	C.FontScaleX = 1.f;
-	C.FontScaleY = 1.f;
-	C.Font = class'KFTurboFonts'.static.LoadLargeNumberFont(0);
-	C.TextSize(GetStringOfZeroes(Len(ActiveWaveString)), TextSizeX, TextSizeY);
-	
-	TextScale = (C.ClipY * BackplateSize.Y) / TextSizeY;
-	C.FontScaleX = TextScale;
-	C.FontScaleY = TextScale;
-	
-	C.TextSize(GetStringOfZeroes(Len(ActiveWaveString)), TextSizeX, TextSizeY);
+	C.MakeColor(255, 255, 255, byte(Lerp(ActiveWaveFadeRatio, 0, 255)));
 
 	C.SetPos(Center.X - (TextSizeX * 0.5f), Center.Y - (TextSizeY * 0.5f));
 	DrawTextMeticulous(C, ActiveWaveString, TextSizeX);
@@ -269,9 +374,10 @@ defaultproperties
 
 	bNeedActiveWaveInitialization=false
 	ActiveWaveFadeRate=2.f
-	NumberZedsInterpRate=1.f
+	ActiveWaveSizeRate=4.f
+	NumberZedsInterpRate=2.f
 
-	BackplateColor=(R=0,G=0,B=0,A=220)
+	BackplateColor=(R=0,G=0,B=0,A=140)
 
 	BackplateSize=(X=0.075f,Y=0.05f)
 	BackplateSpacing=(X=0.01f,Y=0.02f)
