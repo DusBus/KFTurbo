@@ -297,16 +297,13 @@ simulated function DrawTraderWave(Canvas C, Vector2D Center)
 
 	C.MakeColor(255, 255, 255, byte(Lerp(TraderFadeRatio, 0, 255)));
 
-	if ( WaveTimeSecondsRemaining > 10.f)
+	if (WaveTimeSecondsRemaining >= 60.f)
 	{
-		if (WaveTimeSecondsRemaining >= 60.f)
-		{
-			TraderTime = "01:" $ FillStringWithZeroes(string(Max(WaveTimeSecondsRemaining - 60, 0)), 2);
-		}
-		else
-		{
-			TraderTime = "00:" $ FillStringWithZeroes(string(Max(WaveTimeSecondsRemaining,0)), 2);
-		}
+		TraderTime = "01:" $ FillStringWithZeroes(string(Max(WaveTimeSecondsRemaining - 60, 0)), 2);
+	}
+	else if ( WaveTimeSecondsRemaining > 10.f)
+	{
+		TraderTime = "00:" $ FillStringWithZeroes(string(Max(WaveTimeSecondsRemaining,0)), 2);
 	}
 	else
 	{
