@@ -1,7 +1,8 @@
 class KFTurboGameType extends KFGameType;
 
 var protected bool bIsHighDifficulty;
-var protected bool bAchievementsEnabled;
+var protected bool bStatsAndAchievementsEnabled;
+var protected bool bIsTestGameType;
 
 static function bool IsHighDifficulty()
 {
@@ -26,12 +27,12 @@ static final function bool StaticIsHighDifficulty( Actor Actor )
 	return GameClass.static.IsHighDifficulty();
 }
 
-static function bool CanUnlockAchievements()
+static function bool AreStatsAndAchievementsEnabled()
 {
-    return default.bAchievementsEnabled;
+    return default.bStatsAndAchievementsEnabled;
 }
 
-static final function bool StaticCanUnlockAchievements( Actor Actor )
+static final function bool StaticAreStatsAndAchievementsEnabled( Actor Actor )
 {
 	local class<KFTurboGameType> GameClass;
 	if(Actor == None || Actor.Level == None)
@@ -46,13 +47,37 @@ static final function bool StaticCanUnlockAchievements( Actor Actor )
 		return false;
 	}
 
-	return GameClass.static.CanUnlockAchievements();
+	return GameClass.static.AreStatsAndAchievementsEnabled();
+}
+
+static function bool IsTestGameType()
+{
+    return default.bIsTestGameType;
+}
+
+static final function bool StaticIsTestGameType( Actor Actor )
+{
+	local class<KFTurboGameType> GameClass;
+	if(Actor == None || Actor.Level == None)
+	{
+		return false;
+	}
+
+	GameClass = class<KFTurboGameType>(Actor.Level.GetGameClass());
+	
+	if (GameClass == none)
+	{
+		return false;
+	}
+
+	return GameClass.static.IsTestGameType();
 }
 
 defaultproperties
 {
     bIsHighDifficulty=false
-    bAchievementsEnabled=true
+    bStatsAndAchievementsEnabled=true
+	bIsTestGameType=false
 
     MonsterClasses(0)=(MClassName="KFTurbo.P_Clot_STA",Mid="A")
     MonsterClasses(1)=(MClassName="KFTurbo.P_Crawler_STA",Mid="B")
