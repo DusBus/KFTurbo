@@ -1,13 +1,10 @@
-class KFProGameType extends KFGameType
-    config (KFPro);
+class KFTurboGameTypePlus extends KFTurboGameType;
 
 var int DTFStandardMaxZombiesOnce;
 var int DTFStartingCash;
 var int DTFMinRespawnCash;
 var float DTFNextSpawnTime;
 var int FakedPlayerHealth;
-
-var bool bIsHighDifficulty;
 
 function PreBeginPlay()
 {
@@ -61,6 +58,20 @@ State MatchInProgress
         WaveCountDown = 60;
         OpenShops();
     }
+
+    function CloseShops()
+    {
+        local Controller C;
+        Super.CloseShops();
+
+        for ( C = Level.ControllerList; C != None; C = C.NextController )
+        {
+            if (KFPPlayerController(C) != None)
+            {
+                KFPPlayerController(C).ClientCloseBuyMenu();
+            }
+        }
+    }
 }
 
 simulated function float CalcNextSquadSpawnTime()
@@ -70,12 +81,13 @@ simulated function float CalcNextSquadSpawnTime()
 
 defaultproperties
 {
+    bIsHighDifficulty=true
+
     DTFStartingCash=42069
     DTFMinRespawnCash=42069
     DTFStandardMaxZombiesOnce=48
     DTFNextSpawnTime=1.f
     FakedPlayerHealth=0
-    bIsHighDifficulty=true
 
     ShortWaves(0)=(WaveMask=37748732,WaveMaxMonsters=15,WaveDifficulty=2.000000)
     ShortWaves(1)=(WaveMask=100250113,WaveMaxMonsters=35,WaveDifficulty=2.000000)
@@ -132,12 +144,13 @@ defaultproperties
     FinalSquads(0)=(ZedClass=("KFTurbo.P_Siren_HAL"),NumZeds=(4))
     FinalSquads(1)=(ZedClass=("KFTurbo.P_SC_HAL","KFTurbo.P_Crawler_STA"),NumZeds=(3,1))
     FinalSquads(2)=(ZedClass=("KFTurbo.P_Siren_XMA","KFTurbo.P_Stalker_STA","KFTurbo.P_FP_HAL"),NumZeds=(3,1,1))
+    
     SpecialEventMonsterCollections(0)=Class'KFTurbo.MC_DEF'
     SpecialEventMonsterCollections(1)=Class'KFTurbo.MC_SUM'
     SpecialEventMonsterCollections(2)=Class'KFTurbo.MC_HAL'
     SpecialEventMonsterCollections(3)=Class'KFTurbo.MC_XMA'
 
-    GameName="Killing Floor Turbo+ Mode"
+    GameName="Killing Floor Turbo+ Game Type"
     Description="Turbo+ mode of the vanilla Killing Floor Game Type."
     ScreenShotName="KFTurbo.Generic.KFTurbo_FB"
 }

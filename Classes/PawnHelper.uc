@@ -316,9 +316,9 @@ static final function int GetFakedPlayerAdjustedCount(LevelInfo Level)
 	FakedPlayers = 0;
 	PlayerCount = 0;
 
-	if(KFProGameType(Level.Game) != None)
+	if(KFTurboGameTypePlus(Level.Game) != None)
 	{
-		FakedPlayers = KFProGameType(Level.Game).FakedPlayerHealth;
+		FakedPlayers = KFTurboGameTypePlus(Level.Game).FakedPlayerHealth;
 	}
 
 	for( C=Level.ControllerList; C!=None; C=C.NextController )

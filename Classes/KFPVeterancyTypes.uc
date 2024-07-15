@@ -5,23 +5,10 @@ var int LevelRankRequirement; //Denotes levels between new rank names.
 
 var	Texture StarTexture;
 
-//Are we playing KFPro+? Fixed to be callable by clients.
+//Are we playing KFTurbo+? Fixed to be callable by clients.
 static final function bool IsHighDifficulty( Actor Actor )
 {
-	local class<KFProGameType> GameClass;
-	if(Actor == None || Actor.Level == None)
-	{
-		return false;
-	}
-
-	GameClass = class<KFProGameType>(Actor.Level.GetGameClass());
-	
-	if (GameClass == none)
-	{
-		return false;
-	}
-
-	return GameClass.default.bIsHighDifficulty;
+	return class'KFTurboGameType'.static.StaticIsHighDifficulty(Actor);
 }
 
 //Default behaviour for increasing extra ammo is 50% more than perk bonus.

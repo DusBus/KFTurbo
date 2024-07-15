@@ -17,6 +17,23 @@ simulated function Tick(float DeltaTime)
 	UpdateHealthHealingTo();
 }
 
+
+function bool CanBuyNow()
+{
+	if (!class'KFTurboGameType'.static.StaticIsHighDifficulty(Self))
+	{
+		return Super.CanBuyNow();
+	}
+
+	//High difficulty can trade anywhere during trader wave.
+    if( KFGameType(Level.Game) == None || KFGameType(Level.Game).bWaveInProgress || PlayerReplicationInfo == None )
+	{
+		return false;
+	}
+	
+	return true;
+}
+
 simulated function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
 {
 	local Inventory InventoryItem;

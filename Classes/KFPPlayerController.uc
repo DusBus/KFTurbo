@@ -1,6 +1,14 @@
 class KFPPlayerController extends KFPCServ;
 
 var class<WeaponRemappingSettings> WeaponRemappingSettings;
+var config bool bHasInitializedTraderBinding;
+
+replication
+{
+	reliable if( Role==ROLE_Authority )
+		ClientCloseBuyMenu;
+}
+
 
 simulated function ClientSetHUD(class<HUD> newHUDClass, class<Scoreboard> newScoringClass )
 {
@@ -30,10 +38,78 @@ event ClientOpenMenu(string Menu, optional bool bDisconnect,optional string Msg1
 	Super.ClientOpenMenu(Menu, bDisconnect, Msg1, Msg2);	
 }
 
+exec function Trade()
+{
+	if (!class'KFTurboGameType'.static.StaticIsHighDifficulty(Self))
+	{
+		return;
+	}
+
+	if (KFHumanPawn(Pawn) == None || Pawn.Health <= 0.f)
+	{
+		return;
+	}
+
+	if (KFGameReplicationInfo(Level.GRI) == None || KFGameReplicationInfo(Level.GRI).bWaveInProgress)
+	{
+		return;
+	}
+
+	Player.GUIController.CloseMenu();
+	ShowBuyMenu("WeaponLocker", KFHumanPawn(Pawn).maxCarryWeight);
+}
+
+function ClientCloseBuyMenu()
+{
+	local GUIController GUIController;
+	local KFPGUIBuyMenu BuyMenu;
+
+	if (Player == None || GUIController(Player.GUIController) == None)
+	{
+		return;
+	}
+	
+	GUIController = GUIController(Player.GUIController);
+
+	BuyMenu = KFPGUIBuyMenu(GUIController.FindMenuByClass(Class'KFPGUIBuyMenu'));
+	
+	if (BuyMenu != None)
+	{
+		BuyMenu.CloseSale(false);
+	}
+}
+
 function ShowBuyMenu(string wlTag,float maxweight)
 {
 	StopForceFeedback();
 	ClientOpenMenu(string(Class'KFPGUIBuyMenu'),,wlTag,string(maxweight));
+}
+
+function AcknowledgePossession(Pawn P)
+{
+	Super.AcknowledgePossession(P);
+
+	if (!class'KFTurboGameType'.static.StaticIsHighDifficulty(Self))
+	{
+		return;
+	}
+
+	if (!bHasInitializedTraderBinding)
+	{
+		bHasInitializedTraderBinding = false;
+		ConsoleCommand("set input h Trade");
+		ClientMessage("Welcome to KFTurbo+. Your keybind to open trader has been initialized to H.");
+	}
+}
+
+function ServerSetWantsTraderPath(bool bNewWantsTraderPath)
+{
+	if (class'KFTurboGameType'.static.StaticIsHighDifficulty(Self))
+	{
+		return;
+	}
+
+	Super.ServerSetWantsTraderPath(bNewWantsTraderPath);
 }
 
 simulated function ClientReceiveLoginMenu(string MenuClass, bool bForce)

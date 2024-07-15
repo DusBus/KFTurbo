@@ -6,11 +6,6 @@ class KFTurboMut extends Mutator
 #exec obj load file="..\Animations\KFTurboExtra.ukx" package=KFTurbo
 #exec obj load file="..\Textures\KFTurboHUD.utx" package=KFTurbo
 
-var array<KFGameType.SpecialSquad> FinalSquads;			// Squads that spawn with the Patriarch
-var array<KFGameType.SpecialSquad> ShortSpecialSquads;		// The special squad array for a short game
-var array<KFGameType.SpecialSquad> NormalSpecialSquads;	// The special squad array for a normal game
-var array<KFGameType.SpecialSquad> LongSpecialSquads;		// The special squad array for a long game
-
 var KFPCustomZedHandler CustomZedHandler;
 
 var config String RepLinkSettingsClassString;
@@ -23,8 +18,6 @@ simulated function PostBeginPlay()
 
 	if(Role == ROLE_Authority)
 	{
-		UpdateMonsters();
-
 		if (!ClassIsChildOf(Level.Game.PlayerControllerClass, class'KFPPlayerController'))
 		{
 			Level.Game.PlayerControllerClass = class'KFPPlayerController';
@@ -53,59 +46,6 @@ static function string GetHUDReplacementClass(string HUDClassString)
 	}
 
 	return HUDClassString;
-}
-
-//Apply the monster collections, special squads, and anything else the gamemode needs to know about.
-function UpdateMonsters()
-{
-	local KFGameType GameType;
-
-	GameType = KFGameType(Level.Game);
-
-	if(GameType == None)
-	{
-		return;
-	}
-
-	//If KFProGameType is being used, these operations can be ignored.
-	if(KFProGameType(GameType) != None)
-	{
-		return;
-	}
-
-	GameType.SpecialEventMonsterCollections[0] = class'MC_DEF';
-    GameType.SpecialEventMonsterCollections[1] = class'MC_SUM';
-    GameType.SpecialEventMonsterCollections[2] = class'MC_HAL';
-    GameType.SpecialEventMonsterCollections[3] = class'MC_XMA';
-
-    GameType.MonsterCollection = GameType.SpecialEventMonsterCollections[GameType.GetSpecialEventType()];
-
-    //I don't know why these squads are configured in KFProGameType but we'll do it.
-    UpdateSpecialSquadList(GameType.ShortSpecialSquads, ShortSpecialSquads);
-    UpdateSpecialSquadList(GameType.NormalSpecialSquads, NormalSpecialSquads);
-    UpdateSpecialSquadList(GameType.LongSpecialSquads, LongSpecialSquads);
-    UpdateSpecialSquadList(GameType.FinalSquads, FinalSquads);
-}
-
-//Helper function to adapt KFPro squad changes.
-static final function UpdateSpecialSquadList(out array<KFGameType.SpecialSquad> ModifiedSquadList,  array<KFGameType.SpecialSquad> TargetSquadList)
-{
-	local int Index;
-
-	if(ModifiedSquadList.Length < TargetSquadList.Length)
-    {
-		ModifiedSquadList.Length = TargetSquadList.Length;
-    }
-
-	for(Index = 0; Index < TargetSquadList.Length; Index++)
-	{
-		if(TargetSquadList[Index].ZedClass.Length == 0)
-		{
-			continue;
-		}
-
-		ModifiedSquadList[Index] = TargetSquadList[Index];
-	}
 }
 
 //Called every time a ServerStStats is made (but we only want to do this once).
@@ -205,20 +145,6 @@ simulated function String GetHumanReadableName()
 
 defaultproperties
 {
-	FinalSquads(0)=(ZedClass=("KFTurbo.P_Clot_STA"),NumZeds=(4))
-	FinalSquads(1)=(ZedClass=("KFTurbo.P_Clot_STA","KFTurbo.P_Crawler_STA"),NumZeds=(3,1))
-	FinalSquads(2)=(ZedClass=("KFTurbo.P_Clot_STA","KFTurbo.P_Stalker_STA","KFTurbo.P_Crawler_STA"),NumZeds=(3,1,1))
-	ShortSpecialSquads(2)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_SC_STA","KFTurbo.P_FP_STA"),NumZeds=(1,2,1,1))
-	ShortSpecialSquads(3)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_SC_STA","KFTurbo.P_FP_STA"),NumZeds=(1,2,1,2))
-	NormalSpecialSquads(3)=(ZedClass=("KFTurbo.P_FP_HAL"),NumZeds=(1))
-	NormalSpecialSquads(4)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_FP_STA"),NumZeds=(1,1,1))
-	NormalSpecialSquads(5)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_SC_STA","KFTurbo.P_FP_STA"),NumZeds=(1,2,1,1))
-	NormalSpecialSquads(6)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_SC_STA","KFTurbo.P_FP_STA"),NumZeds=(1,2,1,2))
-	LongSpecialSquads(4)=(ZedClass=("KFTurbo.P_Crawler_STA","KFTurbo.P_Gorefast_XMA","KFTurbo.P_Stalker_STA","KFTurbo.P_SC_HAL"),NumZeds=(2,2,1,1))
-	LongSpecialSquads(6)=(ZedClass=("KFTurbo.P_FP_HAL"),NumZeds=(1))
-	LongSpecialSquads(7)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_FP_STA"),NumZeds=(1,1,1))
-	LongSpecialSquads(8)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_SC_STA","KFTurbo.P_FP_STA"),NumZeds=(1,2,1,1))
-	LongSpecialSquads(9)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_SC_STA","KFTurbo.P_FP_STA"),NumZeds=(1,2,1,2))
 	bAddToServerPackages=True
 	GroupName="KF-KFTurbo"
 	FriendlyName="Killing Floor Turbo"
