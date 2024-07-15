@@ -75,6 +75,7 @@ function bool AttemptReplaceMonster(out class<KFMonster> Monster)
             Monster = ReplacementList[ReplacementIndex].ReplacementClass;
             DebugLog("- Successful Replacement"@ReplacementList[ReplacementIndex].ReplacementClass);
             bReplacedMonster = true;
+            break;
         }
     }
 
@@ -85,8 +86,9 @@ defaultproperties
 {
     bDebugReplacement = false
 
-    ReplacementList(0)=(TargetParentClass=class'P_Gorefast',ReplacementClass=class'P_Gorefast_Classy',ChanceToReplace=0.25f)
-    ReplacementList(1)=(TargetParentClass=class'P_Crawler',ReplacementClass=class'P_Crawler_Jumper',ChanceToReplace=0.1f)
-    ReplacementList(2)=(TargetParentClass=class'P_Bloat',ReplacementClass=class'P_Bloat_Fathead',ChanceToReplace=0.1f)
-    ReplacementList(3)=(TargetParentClass=class'P_Siren',ReplacementClass=class'P_Siren_Caroler',ChanceToReplace=0.1f)
+    ReplacementList(0)=(TargetParentClass=class'P_Gorefast',ReplacementClass=class'P_Gorefast_Classy',ChanceToReplace=0.2f)
+    ReplacementList(1)=(TargetParentClass=class'P_Gorefast',ReplacementClass=class'P_Gorefast_Assassin',ChanceToReplace=0.1f)
+    ReplacementList(2)=(TargetParentClass=class'P_Crawler',ReplacementClass=class'P_Crawler_Jumper',ChanceToReplace=0.1f)
+    ReplacementList(3)=(TargetParentClass=class'P_Bloat',ReplacementClass=class'P_Bloat_Fathead',ChanceToReplace=0.1f)
+    ReplacementList(4)=(TargetParentClass=class'P_Siren',ReplacementClass=class'P_Siren_Caroler',ChanceToReplace=0.1f)
 }

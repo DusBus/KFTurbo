@@ -10,6 +10,7 @@ struct AfflictionData
 	var A_Burn Burn;
 	var A_Zap Zap;
 	var A_Harpoon Harpoon;
+	var bool bBlockPlayDirectionalHit;
 };
 
 static final simulated function bool IsPawnBurning(Pawn Pawn)
@@ -260,16 +261,24 @@ static final function bool UpdateStunProperties(KFMonster KFM, float LastStunCou
 	return bUnstunTimeReady;
 }
 
-static final function bool ShouldPlayDirectionalHit(KFMonster KFM)
+static final function BlockPlayDirectionalHit(out AfflictionData AD)
 {
-	return !static.IsFireDamageType(KFM.LastDamagedByType);
+	AD.bBlockPlayDirectionalHit = true;
 }
 
-static final function bool IsFireDamageType(class<DamageType> DT)
+static final function UnblockPlayDirectionalHit(out AfflictionData AD)
 {
-	return ClassIsChildOf(DT, class'DamTypeBurned')
-		|| DT == class'DamTypeTrenchgun' || DT == class'DamTypeMAC10MPInc'
-		|| DT == class'DamTypeFlamethrower' || DT == class'DamTypeHuskGunProjectileImpact';
+	AD.bBlockPlayDirectionalHit = false;
+}
+
+static final function bool ShouldPlayDirectionalHit(KFMonster KFM, AfflictionData AD)
+{
+	if (AD.bBlockPlayDirectionalHit)
+	{
+		return false;
+	}
+
+	return true;
 }
 
 static final function float GetOriginalGroundSpeed(KFMonster KFM, AfflictionData AD)

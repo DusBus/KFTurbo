@@ -22,6 +22,15 @@ function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Mo
 	Super.TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitIndex);
 }
 
+function TakeFireDamage(int Damage, pawn DamageInstigator)
+{
+    class'PawnHelper'.static.BlockPlayDirectionalHit(AfflictionData);
+    
+    Super.TakeFireDamage(Damage, DamageInstigator);
+
+    class'PawnHelper'.static.UnblockPlayDirectionalHit(AfflictionData);
+}
+
 function bool MeleeDamageTarget(int HitDamage, vector PushDirection)
 {
     return class'PawnHelper'.static.MeleeDamageTarget(Self, HitDamage, PushDirection);
@@ -63,7 +72,7 @@ function PlayDirectionalHit(Vector HitLoc)
 
     LastStunCount = StunsRemaining;
 
-    if(class'PawnHelper'.static.ShouldPlayDirectionalHit(self))
+    if(class'PawnHelper'.static.ShouldPlayDirectionalHit(self, AfflictionData))
         Super.PlayDirectionalHit(HitLoc);
 
     if(LastStunCount != StunsRemaining)
