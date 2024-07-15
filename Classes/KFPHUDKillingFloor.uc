@@ -10,6 +10,8 @@ var class<KFPHUDOverlay> PlayerInfoHUDClass;
 var KFPHUDOverlay PlayerInfoHUD;
 var class<KFPHUDOverlay> WaveInfoHUDClass;
 var KFPHUDOverlay WaveInfoHUD;
+var class<KFPHUDOverlay> PlayerHealthHUDClass;
+var KFPHUDOverlay PlayerHealthHUD;
 
 simulated function PostBeginPlay()
 {
@@ -25,10 +27,19 @@ simulated function PostBeginPlay()
 		WaveInfoHUDClass = class'KFPHUDWaveInfo';
 	}
 
+	if (PlayerHealthHUDClass == None)
+	{
+		PlayerHealthHUDClass = class'KFPHUDPlayerHealth';
+	}
+
 	PlayerInfoHUD = Spawn(PlayerInfoHUDClass, Self);
 	PlayerInfoHUD.Initialize(Self);
+	
 	WaveInfoHUD = Spawn(WaveInfoHUDClass, Self);
 	WaveInfoHUD.Initialize(Self);
+
+	PlayerHealthHUD = Spawn(PlayerHealthHUDClass, Self);
+	PlayerHealthHUD.Initialize(Self);
 }
 
 simulated function Tick(float DeltaTime)
@@ -266,6 +277,18 @@ simulated function InitializeEndGameUI(bool bVictory)
 		EndGameHUDMaterial = Texture'KFTurbo.EndGame.You_Died_D';
 		PlayerOwner.PlaySound(LoseSound, SLOT_Talk,255.0,,,, false);
 	}
+}
+
+simulated function DrawHudPassA(Canvas C)
+{
+	Super.DrawHudPassA(C);
+
+	/*
+	if (PlayerHealthHUD != None)
+	{
+		PlayerHealthHUD.Render(C);
+	}
+	*/
 }
 
 static function Font LoadFontStatic(int i)
