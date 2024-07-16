@@ -297,7 +297,7 @@
 - 20% increase to grenade capacity 🟢
 - Stun grenades cannot be disintegrated by siren screams 🟢
 - Melee movement speed bonus 30% -> 20% 🔻
-- Damage resistance 40% -> 5% 🔻
+- Damage resistance 40% -> 10% 🔻
 - Patriarch can never deal more than 95 damage to the Berserker ⚠️
 - Bloat bile damage reduction 80% -> 60% 🔻
 - 20% siren scream damage reduction 🆕
