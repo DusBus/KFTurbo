@@ -20,20 +20,21 @@ function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Mo
     }
 
     Super.TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitIndex);
+
+    if (Role == ROLE_Authority)
+    {
+        class'PawnHelper'.static.PostTakeDamage(Self, Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitIndex, AfflictionData);
+    }
 }
 
 function TakeFireDamage(int Damage, pawn DamageInstigator)
 {
-    class'PawnHelper'.static.BlockPlayDirectionalHit(AfflictionData);
-
-    Super.TakeFireDamage(Damage, DamageInstigator);
-
-    class'PawnHelper'.static.UnblockPlayDirectionalHit(AfflictionData);
+    class'PawnHelper'.static.TakeFireDamage(Self, Damage, DamageInstigator, AfflictionData);
 }
 
 function bool MeleeDamageTarget(int HitDamage, vector PushDirection)
 {
-    return class'PawnHelper'.static.MeleeDamageTarget(Self, HitDamage, PushDirection);
+    return class'PawnHelper'.static.MeleeDamageTarget(Self, HitDamage, PushDirection, AfflictionData);
 }
 
 simulated function Tick(float DeltaTime)

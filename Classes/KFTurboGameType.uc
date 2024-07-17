@@ -4,6 +4,9 @@ var protected bool bIsHighDifficulty;
 var protected bool bStatsAndAchievementsEnabled;
 var protected bool bIsTestGameType;
 
+//Event handler stored here so we have an easy way to find it.
+var array< class<KFTurboEventHandler> > EventHandlerList;
+
 static function bool IsHighDifficulty()
 {
     return default.bIsHighDifficulty;

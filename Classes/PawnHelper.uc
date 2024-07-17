@@ -10,7 +10,6 @@ struct AfflictionData
 	var A_Burn Burn;
 	var A_Zap Zap;
 	var A_Harpoon Harpoon;
-	var bool bBlockPlayDirectionalHit;
 };
 
 static final simulated function bool IsPawnBurning(Pawn Pawn)
@@ -34,7 +33,7 @@ static final simulated function bool IsPawnBurning(Pawn Pawn)
 
 	if (PlayerPawn != None)
 	{
-		return PlayerPawn.BurnDown > 0;
+		return PlayerPawn.bBurnified;
 	}
 
 	return false;
@@ -263,17 +262,23 @@ static final function bool UpdateStunProperties(KFMonster KFM, float LastStunCou
 
 static final function BlockPlayDirectionalHit(out AfflictionData AD)
 {
-	AD.bBlockPlayDirectionalHit = true;
+	if (AD.Burn != None)
+	{
+		AD.Burn.bBlockPlayDirectionalHit = true;
+	}
 }
 
 static final function UnblockPlayDirectionalHit(out AfflictionData AD)
 {
-	AD.bBlockPlayDirectionalHit = false;
+	if (AD.Burn != None)
+	{
+		AD.Burn.bBlockPlayDirectionalHit = false;
+	}
 }
 
 static final function bool ShouldPlayDirectionalHit(KFMonster KFM, AfflictionData AD)
 {
-	if (AD.bBlockPlayDirectionalHit)
+	if (AD.Burn != None && AD.Burn.bBlockPlayDirectionalHit)
 	{
 		return false;
 	}
@@ -317,6 +322,48 @@ static simulated function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLo
 	}
 }
 
+static simulated function PostTakeDamage(KFMonster Monster, int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Momentum, class<DamageType> DamageType, int HitIndex, out AfflictionData AD)
+{
+	if (AD.Burn != None)
+	{
+		//Inform the Burn affliction about who did this and with what damage type.
+		if (Monster.FireDamageClass != AD.Burn.LastBurnDamageType)
+		{
+			AD.Burn.LastBurnDamageType = Monster.FireDamageClass;
+			AD.Burn.LastBurnDamageInstigator = InstigatedBy;
+		}
+	}
+}
+
+static final function TakeFireDamage(KFMonster Monster, int Damage, Pawn Instigator, out AfflictionData AD)
+{
+	if (AD.Burn != None && AD.Burn.LastBurnDamageInstigator != None)
+	{
+		Instigator = AD.Burn.LastBurnDamageInstigator;
+	}
+
+   	BlockPlayDirectionalHit(AD);
+	Monster.TakeDamage(Damage, Instigator, vect(0,0,0), vect(0,0,0), Monster.FireDamageClass);
+   	UnblockPlayDirectionalHit(AD);
+
+	if ( Monster.BurnDown > 0 )
+	{
+		Monster.BurnDown--;
+	}
+
+	if ( Monster.BurnDown < Monster.CrispUpThreshhold )
+	{
+		Monster.ZombieCrispUp();
+	}
+
+	if ( Monster.BurnDown <= 0 )
+	{
+		Monster.bBurnified = false;
+        
+		Monster.SetGroundSpeed(Monster.GetOriginalGroundSpeed());
+	}
+}
+
 static final function int GetFakedPlayerAdjustedCount(LevelInfo Level)
 {
 	local Controller C;
@@ -327,7 +374,7 @@ static final function int GetFakedPlayerAdjustedCount(LevelInfo Level)
 
 	if(KFTurboGameTypePlus(Level.Game) != None)
 	{
-		FakedPlayers = KFTurboGameTypePlus(Level.Game).FakedPlayerHealth;
+		FakedPlayers = KFTurboGameTypePlus(Level.Game).FAKED_P_HEALTH;
 	}
 
 	for( C=Level.ControllerList; C!=None; C=C.NextController )
@@ -434,7 +481,7 @@ static final function DisablePawnCollision(Pawn P)
 	P.bBlockHitPointTraces = false;
 }
 
-static function bool MeleeDamageTarget(KFMonster Monster, int HitDamage, vector PushDirection)
+static function bool MeleeDamageTarget(KFMonster Monster, int HitDamage, vector PushDirection, out AfflictionData AD)
 {
 	local vector HitLocation, HitNormal;
 	local Actor ControllerTarget, HitActor;
@@ -496,6 +543,11 @@ static function bool MeleeDamageTarget(KFMonster Monster, int HitDamage, vector 
 
 	if ( HumanPawn != none )
 	{
+		if (IsPawnBurning(Monster) && AD.Burn != None)
+		{
+			HitDamage = float(HitDamage) * AD.Burn.BurnMonsterDamageModifier;
+		}
+
 		HumanPawn.TakeDamage(HitDamage, Monster, HitLocation, PushDirection, Monster.CurrentDamType);
 
 		if (HumanPawn.Health <= 0.f)

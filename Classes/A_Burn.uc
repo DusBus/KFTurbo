@@ -3,8 +3,10 @@ class A_Burn extends A_BaseAffliction;
 var bool bHasCompleted;
 var float BurnRatio;
 
+//Speed modifiers
 var float BurnPrimaryModifier;
 var float BurnSecondaryModifier;
+
 var float BurnDurationModifier;
 
 struct BurnParameters
@@ -23,6 +25,12 @@ struct AfflictionBurnPriorityData
 };
 var array<AfflictionBurnPriorityData> FirePriorityList;
 
+//Damage modifier
+var float BurnMonsterDamageModifier;
+
+var bool bBlockPlayDirectionalHit;
+var Pawn LastBurnDamageInstigator;
+var class<DamageType> LastBurnDamageType;
 
 simulated function PreTick(float DeltaTime)
 {
@@ -96,6 +104,8 @@ defaultproperties
 	BurnSecondaryModifier=1.f
 	BurnDurationModifier=1.f
 	
+	BurnMonsterDamageModifier=0.8f;
+
 	//Default parameter for burn does nothing.
 	Parameters=(BurnPrimaryModifier=1.f,BurnSecondaryModifier=1.f,BurnDuration=4.f,Priority=-1)
 

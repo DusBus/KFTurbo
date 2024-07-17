@@ -107,13 +107,7 @@ simulated function UpdateHealthHealingTo()
 
 simulated function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> damageType, optional int HitIndex)
 {
-	local int ModifiedDamage;
-	ModifiedDamage = Damage;
-	if (class'PawnHelper'.static.IsPawnBurning(InstigatedBy))
-	{
-		ModifiedDamage = float(ModifiedDamage) * 0.8f;
-	}
-	Super.TakeDamage(ModifiedDamage, InstigatedBy, HitLocation, Momentum, DamageType, HitIndex);
+	Super.TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitIndex);
 }
 
 final function DebugServerBuyWeapon(Class<Weapon> WClass, float Weight)
