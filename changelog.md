@@ -71,6 +71,7 @@
     - **VLAD-9000**: Reworked
         - Fires a single nail that deals high damage and pierces multiple zeds 🆕
         - Alternate fire toggles a laser aim module 🆕
+        - Has no spread and inaccuracy 🟢
         - 11 Weight 🔻
         - Great for stunning scrakes or taking out long range threats ⚠️
 ### Sharpshooter
@@ -81,7 +82,7 @@
     - 1.8x bonus headshot multiplier for the VLAD 9000
     - 1.5x bonus headshot multiplier for off-perk weapons
 - 60% faster reload speed with perk weapons 🟦
-- 25% faster reload speed with the 44 Magnum and Dual Magnum. 🔻
+- 40% faster reload speed with the 44 Magnum and Dual Magnum. 🔻
 - 15% faster reload speed with the M99. 🔻
 - Spawn with a Lever Action Rifle ⚠️
 - Crossbow and M99 no longer get a purchase cost discount 🔻
@@ -143,8 +144,9 @@
         - Now penetrates up to 2 zeds with a damage loss of 25% 🆕
         - Weight 6 -> 5 🟢
         - 8% increased damage 🟢
-        - 10% tighter spread 🟢
+        - Has no spread and inaccuracy 🟢
 
+        - Horizontal Recoil increased by 133% 🔻
         - Magazine capacity 40 -> 20 🔻
         - 25% more expensive 🔻
         - 35% less maximum and starting ammo 🔻
@@ -228,11 +230,13 @@
         - 28% slower fire rate 🔻
     - **Orca Bomb Propeller**
         - High speed bounces multiply the damage output of the projectile 🆕
+        - 33% less maximum ammo 🔻
     - **SealSqueal Harpoon Bomber**
         - Sticking a zed with a harpoon now inflicts [**Harpooned**](#afflictions) ⚠️
         - It deals double damage if attached to a ZED ⚠️
         - It deals triple damage if attached to a ZED's head ⚠️
         - 25% faster fire rate 🟢
+        - Has no spread and inaccuracy 🟢
 
         - 43% reduced damage 🔻
         - 38% reduced explosion radius 🔻
@@ -358,7 +362,8 @@
         - 30% more expensive 🔻
     - **Flare Revolver**
         - Has a new alternate fire that shoots a grenade-like flare that's affected by gravity and explodes after 2.5 seconds 🆕
-
+        
+        - Alternate fire shoots 75% slower than primary 🔻
         - 25% reduced maximum and starting ammo 🔻
     - **Trenchgun**
         - Weight 8 -> 7 🟢
