@@ -1,11 +1,11 @@
 class KFTurboGameTypePlus extends KFTurboGameType;
 
 // Constants for initial game setup
-const int INITIAL_CASH = 42069;
-const float SPAWN_TIME = 1.0;
-const int WAVE_COUNTDOWN = 60;
-const int STD_MAX_ZOMBIES = 48;
-const int FAKED_P_HEALTH = 0;
+const INITIAL_CASH = 42069;
+const SPAWN_TIME = 1.0;
+const WAVE_COUNTDOWN = 60;
+const STD_MAX_ZOMBIES = 48;
+const FAKED_P_HEALTH = 0;
 
 // Function called before the game begins
 function PreBeginPlay()
@@ -103,16 +103,16 @@ defaultproperties
     // Wave 10
     // Squads: 1, 2, 3, 4, 8, 14, 15, 16, 17, 18, 19, 20
 
-    LongWaves(0) = (WaveMask = 7614, WaveMaxMonsters = 35, WaveDifficulty = 2.000000)
-    LongWaves(1) = (WaveMask = 16091, WaveMaxMonsters = 35, WaveDifficulty = 2.000000)
-    LongWaves(2) = (WaveMask = 16091, WaveMaxMonsters = 40, WaveDifficulty = 2.000000)
-    LongWaves(3) = (WaveMask = 16091, WaveMaxMonsters = 40, WaveDifficulty = 2.000000)
-    LongWaves(4) = (WaveMask = 16091, WaveMaxMonsters = 45, WaveDifficulty = 2.000000)
-    LongWaves(5) = (WaveMask = 16091, WaveMaxMonsters = 45, WaveDifficulty = 2.000000)
-    LongWaves(6) = (WaveMask = 16091, WaveMaxMonsters = 50, WaveDifficulty = 2.000000)
-    LongWaves(7) = (WaveMask = 508180, WaveMaxMonsters = 50, WaveDifficulty = 2.000000)
-    LongWaves(8) = (WaveMask = 508180, WaveMaxMonsters = 55, WaveDifficulty = 2.000000)
-    LongWaves(9) = (WaveMask = 2081042, WaveMaxMonsters = 60, WaveDifficulty = 2.000000)
+    LongWaves(0)=(WaveMask=7614,WaveMaxMonsters=35,WaveDifficulty=2.000000)
+    LongWaves(1)=(WaveMask=16091,WaveMaxMonsters=35,WaveDifficulty=2.000000)
+    LongWaves(2)=(WaveMask=16091,WaveMaxMonsters=40,WaveDifficulty=2.000000)
+    LongWaves(3)=(WaveMask=16091,WaveMaxMonsters=40,WaveDifficulty=2.000000)
+    LongWaves(4)=(WaveMask=16091,WaveMaxMonsters=45,WaveDifficulty=2.000000)
+    LongWaves(5)=(WaveMask=16091,WaveMaxMonsters=45,WaveDifficulty=2.000000)
+    LongWaves(6)=(WaveMask=16091,WaveMaxMonsters=50,WaveDifficulty=2.000000)
+    LongWaves(7)=(WaveMask=508180,WaveMaxMonsters=50,WaveDifficulty=2.000000)
+    LongWaves(8)=(WaveMask=508180,WaveMaxMonsters=55,WaveDifficulty=2.000000)
+    LongWaves(9)=(WaveMask=2081042,WaveMaxMonsters=60,WaveDifficulty=2.000000)
 
     MonsterCollection = Class'KFTurbo.MC_DEF'
     StandardMonsterSquads(0) = "2B2I"
@@ -137,15 +137,15 @@ defaultproperties
     StandardMonsterSquads(19) = "2F2H"
     StandardMonsterSquads(20) = "2E2I"
 
-    LongSpecialSquads(4) = (ZedClass = ("KFTurbo.P_Crawler_STA", "KFTurbo.P_Gorefast_XMA", "KFTurbo.P_Stalker_STA", "KFTurbo.P_SC_HAL"), NumZeds = (2, 2, 1, 1))
-    LongSpecialSquads(6) = (ZedClass = ("KFTurbo.P_FP_HAL"), NumZeds = (1))
-    LongSpecialSquads(7) = (ZedClass = ("KFTurbo.P_Bloat_STA", "KFTurbo.P_Siren_STA", "KFTurbo.P_FP_STA"), NumZeds = (1, 1, 1))
-    LongSpecialSquads(8) = (ZedClass = ("KFTurbo.P_Bloat_STA", "KFTurbo.P_Siren_STA", "KFTurbo.P_SC_STA", "KFTurbo.P_FP_STA"), NumZeds = (1, 2, 1, 1))
-    LongSpecialSquads(9) = (ZedClass = ("KFTurbo.P_Bloat_STA", "KFTurbo.P_Siren_STA", "KFTurbo.P_SC_STA", "KFTurbo.P_FP_STA"), NumZeds = (1, 2, 1, 2))
+    LongSpecialSquads(4)=(ZedClass=("KFTurbo.P_Crawler_STA","KFTurbo.P_Gorefast_XMA","KFTurbo.P_Stalker_STA","KFTurbo.P_SC_HAL"),NumZeds=(2,2,1,1))
+    LongSpecialSquads(6)=(ZedClass=("KFTurbo.P_FP_HAL"),NumZeds=(1))
+    LongSpecialSquads(7)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_FP_STA"),NumZeds=(1,1,1))
+    LongSpecialSquads(8)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_SC_STA","KFTurbo.P_FP_STA"),NumZeds=(1,2,1,1))
+    LongSpecialSquads(9)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_SC_STA","KFTurbo.P_FP_STA"),NumZeds=(1,2,1,2))
 
-    FinalSquads(0) = (ZedClass = ("KFTurbo.P_Siren_HAL"), NumZeds = (4))
-    FinalSquads(1) = (ZedClass = ("KFTurbo.P_SC_HAL", "KFTurbo.P_Crawler_STA"), NumZeds = (3, 1))
-    FinalSquads(2) = (ZedClass = ("KFTurbo.P_Siren_XMA", "KFTurbo.P_Stalker_STA", "KFTurbo.P_FP_HAL"), NumZeds = (3, 1, 1))
+    FinalSquads(0)=(ZedClass=("KFTurbo.P_Siren_HAL"),NumZeds=(4))
+    FinalSquads(1)=(ZedClass=("KFTurbo.P_SC_HAL","KFTurbo.P_Crawler_STA"),NumZeds=(3,1))
+    FinalSquads(2)=(ZedClass=("KFTurbo.P_Siren_XMA","KFTurbo.P_Stalker_STA","KFTurbo.P_FP_HAL"),NumZeds=(3,1,1))
 
     SpecialEventMonsterCollections(0) = Class'KFTurbo.MC_DEF'
     SpecialEventMonsterCollections(1) = Class'KFTurbo.MC_SUM'
