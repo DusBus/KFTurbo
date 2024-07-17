@@ -43,6 +43,11 @@ static final function bool StaticAreStatsAndAchievementsEnabled( Actor Actor )
 		return false;
 	}
 
+	if (KFTurboGameType(Actor.Level.Game) != None)
+	{
+		return KFTurboGameType(Actor.Level.Game).bStatsAndAchievementsEnabled;
+	}
+
 	GameClass = class<KFTurboGameType>(Actor.Level.GetGameClass());
 	
 	if (GameClass == none)
@@ -51,6 +56,19 @@ static final function bool StaticAreStatsAndAchievementsEnabled( Actor Actor )
 	}
 
 	return GameClass.static.AreStatsAndAchievementsEnabled();
+}
+
+static final function StaticDisableStatsAndAchievements( Actor Actor )
+{
+	if(Actor == None || Actor.Level == None)
+	{
+		return;
+	}
+
+	if (KFTurboGameType(Actor.Level.Game) != None)
+	{
+		KFTurboGameType(Actor.Level.Game).bStatsAndAchievementsEnabled = false;
+	}
 }
 
 static function bool IsTestGameType()

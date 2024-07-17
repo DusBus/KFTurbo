@@ -7,8 +7,9 @@ replication
 {
 	reliable if( Role==ROLE_Authority )
 		ClientCloseBuyMenu;
+	reliable if( Role<ROLE_Authority )
+		ServerDebugSkipWave, ServerDebugSkipTrader;
 }
-
 
 simulated function ClientSetHUD(class<HUD> newHUDClass, class<Scoreboard> newScoringClass )
 {
@@ -207,6 +208,42 @@ exec function GetWeapon(class<Weapon> NewWeaponClass )
 	}
 	
 	Super.GetWeapon(NewWeaponClass);
+}
+
+exec function ServerDebugSkipWave()
+{
+	if (PlayerReplicationInfo == None || !PlayerReplicationInfo.bAdmin)
+	{
+		return;
+	}
+
+	if (KFGameType(Level.Game) == None || !KFGameType(Level.Game).bWaveInProgress)
+	{
+		return;
+	}
+
+	class'KFTurboGameType'.static.StaticDisableStatsAndAchievements(Self);
+
+	KFGameType(Level.Game).TotalMaxMonsters = 0;
+	KFGameType(Level.Game).NextSpawnSquad.Length = 0;
+	KFGameType(Level.Game).KillZeds();
+}
+
+exec function ServerDebugSkipTrader()
+{
+	if (PlayerReplicationInfo == None || !PlayerReplicationInfo.bAdmin)
+	{
+		return;
+	}
+
+	if (KFGameType(Level.Game) == None || KFGameType(Level.Game).bWaveInProgress)
+	{
+		return;
+	}
+	
+	class'KFTurboGameType'.static.StaticDisableStatsAndAchievements(Self);
+
+	KFGameType(Level.Game).WaveCountDown = 10;
 }
 
 defaultproperties
