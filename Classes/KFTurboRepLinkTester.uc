@@ -100,3 +100,9 @@ simulated function Timer()
         Destroy();
     }
 }
+
+defaultproperties
+{
+    bAlwaysRelevant=True
+    RemoteRole=ROLE_SimulatedProxy
+}

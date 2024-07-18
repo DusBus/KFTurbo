@@ -32,11 +32,11 @@ simulated function PostBeginPlay()
 
 		//Every 5 seconds check if our queued spawn has a replaceable zed.
 		CustomZedHandler = Spawn(class'KFPCustomZedHandler', self);
-	}
 
-	if (bDebugClientPerkRepLink)
-	{
-		Spawn(class'KFTurboRepLinkTester', Self);
+		if (bDebugClientPerkRepLink)
+		{
+			Spawn(class'KFTurboRepLinkTester', Self);
+		}
 	}
 
 	//Make sure fonts are added to server packages.
