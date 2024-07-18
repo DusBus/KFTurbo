@@ -107,6 +107,7 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 	local array<Pawn> CheckedPawns;
 	local int i;
 	local bool bAlreadyChecked;
+	local bool bWasZapped;
 
 	if ( bHurtEntry )
 	{
@@ -169,7 +170,9 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 			// Zap zeds only
 			if( Role == ROLE_Authority )
 			{
+				bWasZapped = KFMonsterVictim.bZapped;
 				KFMonsterVictim.SetZapped(ZapAmount, Instigator);
+				class'KFTurboEventHandler'.static.BroadcastPawnZapped(Instigator, KFMonsterVictim, ZapAmount, bWasZapped != KFMonsterVictim.bZapped);
 				NumKilled++;
 			}
 		}

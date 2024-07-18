@@ -1,6 +1,6 @@
 class KFTurboEventHandler extends Object;
 
-static function OnPawnIgnited(Pawn Instigator, Pawn Target, int BurnDamage);
+static function OnPawnIgnited(Pawn Instigator, Pawn Target, class<KFWeaponDamageType> DamageType, int BurnDamage);
 static function OnPawnZapped(Pawn Instigator, Pawn Target, float ZapAmount, bool bCausedZapped);
 static function OnPawnHarpooned(Pawn Instigator, Pawn Target, int CurrentHarpoonCount);
 
@@ -44,7 +44,7 @@ static final function RegisterHandler(Actor Context, class<KFTurboEventHandler> 
 }
 
 //Event broadcasting.
-static final function BroadcastPawnIgnited(Pawn Instigator, Pawn Target, int BurnDamage)
+static final function BroadcastPawnIgnited(Pawn Instigator, Pawn Target, class<KFWeaponDamageType> DamageType, int BurnDamage)
 {
     local KFTurboGameType KFTurboGameType;
     local int Index;
@@ -63,7 +63,7 @@ static final function BroadcastPawnIgnited(Pawn Instigator, Pawn Target, int Bur
 
     for (Index = KFTurboGameType.EventHandlerList.Length - 1; Index < KFTurboGameType.EventHandlerList.Length; Index--)
     {
-        KFTurboGameType.EventHandlerList[Index].static.OnPawnIgnited(Instigator, Target, BurnDamage);
+        KFTurboGameType.EventHandlerList[Index].static.OnPawnIgnited(Instigator, Target, DamageType, BurnDamage);
     }
 }
 
@@ -133,6 +133,7 @@ static final function BroadcastPawnDartHealed(Pawn Instigator, Pawn Target, int 
     for (Index = KFTurboGameType.EventHandlerList.Length - 1; Index < KFTurboGameType.EventHandlerList.Length; Index--)
     {
         KFTurboGameType.EventHandlerList[Index].static.OnPawnDartHealed(Instigator, Target, HealingAmount, HealDart);
+        KFTurboGameType.EventHandlerList[Index].static.OnPawnHealed(Instigator, Target, HealingAmount);
     }
 }
 
@@ -156,6 +157,7 @@ static final function BroadcastPawnSyringeHealed(Pawn Instigator, Pawn Target, i
     for (Index = KFTurboGameType.EventHandlerList.Length - 1; Index < KFTurboGameType.EventHandlerList.Length; Index--)
     {
         KFTurboGameType.EventHandlerList[Index].static.OnPawnSyringeHealed(Instigator, Target, HealingAmount);
+        KFTurboGameType.EventHandlerList[Index].static.OnPawnHealed(Instigator, Target, HealingAmount);
     }
 }
 
@@ -179,6 +181,7 @@ static final function BroadcastPawnGrenadeHealed(Pawn Instigator, Pawn Target, i
     for (Index = KFTurboGameType.EventHandlerList.Length - 1; Index < KFTurboGameType.EventHandlerList.Length; Index--)
     {
         KFTurboGameType.EventHandlerList[Index].static.OnPawnGrenadeHealed(Instigator, Target, HealingAmount);
+        KFTurboGameType.EventHandlerList[Index].static.OnPawnHealed(Instigator, Target, HealingAmount);
     }
 }
 

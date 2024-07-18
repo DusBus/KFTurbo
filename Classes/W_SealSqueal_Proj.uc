@@ -123,6 +123,8 @@ simulated function StickToPawn(Pawn HitPawn, Vector HitLocation, Vector HitDirec
 		}
 
 		KFM.NumHarpoonsAttached++;
+		
+		class'KFTurboEventHandler'.static.BroadcastPawnHarpooned(Instigator, KFM, KFM.NumHarpoonsAttached);
 	}
 }
 

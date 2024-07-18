@@ -332,6 +332,11 @@ static simulated function PostTakeDamage(KFMonster Monster, int Damage, Pawn Ins
 			AD.Burn.LastBurnDamageType = Monster.FireDamageClass;
 			AD.Burn.LastBurnDamageInstigator = InstigatedBy;
 		}
+
+		if (Monster.bBurnified && AD.Burn.BurnRatio <= 0.f)
+		{
+			class'KFTurboEventHandler'.static.BroadcastPawnIgnited(AD.Burn.LastBurnDamageInstigator, Monster, class<KFWeaponDamageType>(AD.Burn.LastBurnDamageType), Monster.LastBurnDamage);
+		}
 	}
 }
 
