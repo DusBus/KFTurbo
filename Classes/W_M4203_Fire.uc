@@ -245,4 +245,5 @@ defaultproperties
      FireAnim="FireLast_Secondary"
      FireRate=0.250000
      AmmoClass=Class'KFTurbo.W_M4203_Ammo'
+     ProjectileClass=Class'KFTurbo.W_M4203_Proj'
 }
