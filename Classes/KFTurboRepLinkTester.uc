@@ -1,14 +1,10 @@
 class KFTurboRepLinkTester extends Info;
 
-var KFTurboMut KFTurboMutator;
 var ClientPerkRepLink ClientPerkRepLink;
 var PlayerController LocalPlayerController;
 
 simulated function PostBeginPlay()
 {
-    foreach DynamicActors(class'KFTurboMut', KFTurboMutator)
-        break;
-
     SetTimer(1.f, true);
 
     if (Level.GetLocalPlayerController() != None)
@@ -35,29 +31,20 @@ simulated function Timer()
     local ClientPerkRepLink CPRL;
     local int NumCPRL;
 
-    if (Level.Game == None)
+    if (Level.GRI == None)
     {
         return;
     }
 
-    if (Level.Game.bWaitingToStartMatch)
+    if (!Level.GRI.bMatchHasBegun)
     {
-        return;
-    }
-
-    foreach DynamicActors(class'KFTurboMut', KFTurboMutator)
-        break;
-
-    if (KFTurboMutator == None)
-    {
-        DebugPrint("NO KFTURBO MUTATOR PRESENT", bIsAuthority);
         return;
     }
 
     foreach DynamicActors(class'ClientPerkRepLink', CPRL)
         break;
 
-    bIsAuthority = KFTurboMutator.Role == ROLE_Authority;
+    bIsAuthority = Role == ROLE_Authority;
 
     if (CPRL == None)
     {
@@ -103,6 +90,7 @@ simulated function Timer()
 
 defaultproperties
 {
+    bSkipActorPropertyReplication=true
     bAlwaysRelevant=True
     RemoteRole=ROLE_SimulatedProxy
 }
