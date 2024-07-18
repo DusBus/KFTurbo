@@ -59,6 +59,7 @@ simulated function Timer()
     foreach DynamicActors(class'ClientPerkRepLink', CPRL)
     {
         DebugPrint(NumCPRL$":"@CPRL, bIsAuthority);
+        NumCPRL++;
 
         if (CPRL.OwnerPRI == None || PlayerController(CPRL.OwnerPRI.Owner) == None)
         {
@@ -67,8 +68,6 @@ simulated function Timer()
 
         DebugPrint(" - Ownership:"@CPRL.OwnerPRI@"("$CPRL.OwnerPRI.PlayerName$")", bIsAuthority);
         DebugPrint(" - Rep Complete:"@CPRL.bRepCompleted@"( Perks:"@CPRL.CachePerks.Length@"| Shop:"@CPRL.ShopInventory.Length@")", bIsAuthority);
-        
-        NumCPRL++;
     }
 
     DebugPrint("-> FOUND"@NumCPRL, bIsAuthority);
