@@ -1,6 +1,6 @@
 //Core of the KFTurbo mod. Needed for UI changes (as well as some other functionality).
 class KFTurboMut extends Mutator
-	config(KFPro);
+	config(KFTurbo);
 
 #exec obj load file="..\Animations\KFTurboContent.ukx" package=KFTurbo
 #exec obj load file="..\Animations\KFTurboExtra.ukx" package=KFTurbo
@@ -11,6 +11,8 @@ var KFPCustomZedHandler CustomZedHandler;
 var config String RepLinkSettingsClassString;
 var class<KFTurboRepLinkSettings> RepLinkSettingsClass;
 var KFTurboRepLinkSettings RepLinkSettings;
+
+var config bool bDebugClientPerkRepLink;
 
 simulated function PostBeginPlay()
 {
@@ -30,6 +32,11 @@ simulated function PostBeginPlay()
 
 		//Every 5 seconds check if our queued spawn has a replaceable zed.
 		CustomZedHandler = Spawn(class'KFPCustomZedHandler', self);
+	}
+
+	if (bDebugClientPerkRepLink)
+	{
+		Spawn(class'KFTurboRepLinkTester', Self);
 	}
 
 	//Make sure fonts are added to server packages.
@@ -145,6 +152,7 @@ simulated function String GetHumanReadableName()
 
 defaultproperties
 {
+	bDebugClientPerkRepLink = true
 	bAddToServerPackages=True
 	GroupName="KF-KFTurbo"
 	FriendlyName="Killing Floor Turbo"
