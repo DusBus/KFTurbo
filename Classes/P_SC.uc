@@ -64,6 +64,11 @@ simulated function Tick(float DeltaTime)
     {
         bSTUNNED = false;
         bUnstunTimeReady = false;
+
+        if (CanAttack(Controller.Enemy))
+        {
+            GotoState('SawingLoop');
+        }
     }
 }
 
