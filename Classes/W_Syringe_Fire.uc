@@ -53,7 +53,7 @@ function Timer()
 		KFSteamStatsAndAchievements(PRI.SteamStatsAndAchievements).AddDamageHealed(MedicReward);
 	}
 
-	MedicReward = int((float(MedicReward) / Healed.HealthMax ) * 60.f);
+	MedicReward = int((MedicReward / Healed.HealthMax) * 60.f);
 
 	PRI.ReceiveRewardForHealing( MedicReward, Healed );
 

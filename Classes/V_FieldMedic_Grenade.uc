@@ -77,8 +77,7 @@ function HealOrHurt(float DamageAmount, float DamageRadius, class<DamageType> Da
 	local KFPawn KFPawnTarget;
 
 	local float DamageScale;
-
-	local vector dir;
+    
 	local int NumKilled;
 	local array<Pawn> CheckedPawns;
 	local int i;
@@ -159,7 +158,7 @@ function HealOrHurt(float DamageAmount, float DamageRadius, class<DamageType> Da
             DamageScale *= KFPawnTarget.GetExposureTo(Location + 15 * -Normal(PhysicsVolume.Gravity));
         }
 
-        CheckedPawns[CheckedPawns.Length] = P;
+        CheckedPawns[CheckedPawns.Length] = PawnTarget;
 
         PawnTarget = none;
 
@@ -196,7 +195,7 @@ function HealOrHurt(float DamageAmount, float DamageRadius, class<DamageType> Da
         HealSum = MedicReward;
         MedicReward = Min(MedicReward, FMax((KFPawnTarget.HealthMax - float(KFPawnTarget.Health)) - KFPawnTarget.HealthToGive, 0.f)); 
         
-        KFPawnTarget.GiveHealth(HealSum, KFP.HealthMax);
+        KFPawnTarget.GiveHealth(HealSum, KFPawnTarget.HealthMax);
 
         class'KFTurboEventHandler'.static.BroadcastPawnGrenadeHealed(Instigator, KFPawnTarget, MedicReward);
 
@@ -211,9 +210,9 @@ function HealOrHurt(float DamageAmount, float DamageRadius, class<DamageType> Da
         }
 
         // Give the medic reward money as a percentage of how much of the person's health they healed
-        MedicReward = int((float(MedicReward) / KFP.HealthMax) * 60.f);
+        MedicReward = int((float(MedicReward) / KFPawnTarget.HealthMax) * 60.f);
 
-        PRI.ReceiveRewardForHealing( MedicReward, KFP );
+        PRI.ReceiveRewardForHealing( MedicReward, KFPawnTarget );
 
         if ( KFHumanPawn(Instigator) != none )
         {
@@ -222,7 +221,7 @@ function HealOrHurt(float DamageAmount, float DamageRadius, class<DamageType> Da
 
         if( PlayerController(Instigator.Controller) != none )
         {
-            PlayerController(Instigator.Controller).ClientMessage(SuccessfulHealMessage$KFP.GetPlayerName(), 'CriticalEvent');
+            PlayerController(Instigator.Controller).ClientMessage(SuccessfulHealMessage$KFPawnTarget.GetPlayerName(), 'CriticalEvent');
         }
 	}
 
