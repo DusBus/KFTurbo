@@ -408,4 +408,5 @@ defaultproperties
 	HealthHealingTo = 0
 
 	RequiredEquipment(2)="KFTurbo.W_Frag_Weap"
+    RequiredEquipment(3)="KFTurbo.W_Syringe_Weap"
 }

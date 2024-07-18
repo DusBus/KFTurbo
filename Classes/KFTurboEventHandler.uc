@@ -9,7 +9,7 @@ static function OnPawnSyringeHealed(Pawn Instigator, Pawn Target, int HealingAmo
 static function OnPawnGrenadeHealed(Pawn Instigator, Pawn Target, int HealingAmount);
 static function OnPawnHealed(Pawn Instigator, Pawn Target, int HealingAmount);
 
-static function OnMitigatedPawnDamage(Pawn Instigator, KFPHumanPawn Target, int Damage, int MitigatedDamage);
+static function OnMitigatedBurnedPawnDamage(Pawn Instigator, KFPHumanPawn Target, int Damage, int MitigatedDamage);
 
 static function OnPawnPushedWithMCZThrower(Pawn Instigator, Pawn Target, Vector VelocityAdded);
 
@@ -208,7 +208,7 @@ static final function BroadcastPawnHealed(Pawn Instigator, Pawn Target, int Heal
     }
 }
 
-static final function BroadcastMitigatedPawnDamage(Pawn Instigator, KFPHumanPawn Target, int Damage, int MitigatedDamage)
+static final function BroadcastMitigatedBurnedPawnDamage(Pawn Instigator, KFPHumanPawn Target, int Damage, int MitigatedDamage)
 {
     local KFTurboGameType KFTurboGameType;
     local int Index;
@@ -227,7 +227,7 @@ static final function BroadcastMitigatedPawnDamage(Pawn Instigator, KFPHumanPawn
 
     for (Index = KFTurboGameType.EventHandlerList.Length - 1; Index < KFTurboGameType.EventHandlerList.Length; Index--)
     {
-        KFTurboGameType.EventHandlerList[Index].static.OnMitigatedPawnDamage(Instigator, Target, Damage, MitigatedDamage);
+        KFTurboGameType.EventHandlerList[Index].static.OnMitigatedBurnedPawnDamage(Instigator, Target, Damage, MitigatedDamage);
     }
 }
 

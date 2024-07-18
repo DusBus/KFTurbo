@@ -68,6 +68,172 @@ simulated function HitWall( vector HitNormal, actor Wall )
     }
 }
 
+
+function HealOrHurt(float DamageAmount, float DamageRadius, class<DamageType> DamageType, float Momentum, vector HitLocation)
+{
+	local Actor Target;
+	local Pawn PawnTarget;
+	local KFMonster MonsterTarget;
+	local KFPawn KFPawnTarget;
+
+	local float DamageScale;
+
+	local vector dir;
+	local int NumKilled;
+	local array<Pawn> CheckedPawns;
+	local int i;
+	local bool bAlreadyChecked;
+	// Healing
+	local KFPlayerReplicationInfo PRI;
+	local int MedicReward;
+	local float HealSum; // for modifying based on perks
+	local int PlayersHealed;
+
+	if ( bHurtEntry )
+    {
+		return;
+    }
+
+    NextHealTime = Level.TimeSeconds + HealInterval;
+
+	bHurtEntry = true;
+
+	if( Fear != none )
+	{
+		Fear.StartleBots();
+	}
+
+    if( Instigator == None || Instigator.Health <= 0 )
+    {
+        return;
+    }
+
+    PRI = KFPlayerReplicationInfo(Instigator.PlayerReplicationInfo);
+
+	foreach CollidingActors (class 'Actor', Target, DamageRadius, HitLocation)
+	{
+        if (Target == Self || Target == Hurtwall || Target.Role != ROLE_Authority || Target.IsA('FluidSurfaceInfo') )
+        {
+            continue;
+        }
+			
+        DamageScale = 1.0;
+
+        if ( Instigator == None || Instigator.Controller == None )
+        {
+            Target.SetDelayedDamageInstigatorController( InstigatorController );
+        }
+
+		PawnTarget = Pawn(Target);
+
+        if (PawnTarget == None || PawnTarget.Health <= 0)
+        {
+            continue;
+        }
+
+        for (i = 0; i < CheckedPawns.Length; i++)
+        {
+            if (CheckedPawns[i] == PawnTarget)
+            {
+                bAlreadyChecked = true;
+                break;
+            }
+        }
+
+        if( bAlreadyChecked )
+        {
+            bAlreadyChecked = false;
+            PawnTarget = none;
+            continue;
+        }
+
+        MonsterTarget = KFMonster(Target);
+        KFPawnTarget = KFPawn(Target);
+
+        if( MonsterTarget != none )
+        {
+            DamageScale *= MonsterTarget.GetExposureTo(Location + 15 * -Normal(PhysicsVolume.Gravity));
+        }
+        else if( KFPawnTarget != none )
+        {
+            DamageScale *= KFPawnTarget.GetExposureTo(Location + 15 * -Normal(PhysicsVolume.Gravity));
+        }
+
+        CheckedPawns[CheckedPawns.Length] = P;
+
+        PawnTarget = none;
+
+        if ( DamageScale <= 0 )
+        {
+            continue;
+        }
+
+        if( MonsterTarget != None )
+        {
+            MonsterTarget.TakeDamage(DamageScale * DamageAmount, Instigator, Target.Location, vect(0,0,0), DamageType);
+
+            if( MonsterTarget.Health <= 0 )
+            {
+                NumKilled++;
+            }
+            
+            continue;
+        }
+
+        if( KFPawnTarget.Health >= KFPawnTarget.HealthMax || !KFPawnTarget.bCanBeHealed )
+        {
+            continue;
+        }
+        
+        PlayersHealed += 1;
+        MedicReward = HealBoostAmount;
+
+        if ( PRI != none && PRI.ClientVeteranSkill != none )
+        {
+            MedicReward *= PRI.ClientVeteranSkill.Static.GetHealPotency(PRI);
+        }
+
+        HealSum = MedicReward;
+        MedicReward = Min(MedicReward, FMax((KFPawnTarget.HealthMax - float(KFPawnTarget.Health)) - KFPawnTarget.HealthToGive, 0.f)); 
+        
+        KFPawnTarget.GiveHealth(HealSum, KFP.HealthMax);
+
+        class'KFTurboEventHandler'.static.BroadcastPawnGrenadeHealed(Instigator, KFPawnTarget, MedicReward);
+
+        if ( PRI == None || MedicReward <= 0 )
+        {
+            continue;
+        }
+
+        if ( KFSteamStatsAndAchievements(PRI.SteamStatsAndAchievements) != none )
+        {
+            KFSteamStatsAndAchievements(PRI.SteamStatsAndAchievements).AddDamageHealed(MedicReward, false, false);
+        }
+
+        // Give the medic reward money as a percentage of how much of the person's health they healed
+        MedicReward = int((float(MedicReward) / KFP.HealthMax) * 60.f);
+
+        PRI.ReceiveRewardForHealing( MedicReward, KFP );
+
+        if ( KFHumanPawn(Instigator) != none )
+        {
+            KFHumanPawn(Instigator).AlphaAmount = 255;
+        }
+
+        if( PlayerController(Instigator.Controller) != none )
+        {
+            PlayerController(Instigator.Controller).ClientMessage(SuccessfulHealMessage$KFP.GetPlayerName(), 'CriticalEvent');
+        }
+	}
+
+    if (PRI != none && PlayersHealed >= MaxNumberOfPlayers)
+    {
+        KFSteamStatsAndAchievements(PRI.SteamStatsAndAchievements).HealedTeamWithMedicGrenade();
+    }
+
+	bHurtEntry = false;
+}
+
 defaultproperties
 {
 	LightType=LT_Pulse

@@ -494,6 +494,7 @@ static function bool MeleeDamageTarget(KFMonster Monster, int HitDamage, vector 
 	local Name TearBone;
 	local float dummy;
 	local Emitter BloodHit;
+	local int OriginalDamage;
 
 	if(Monster.Role != ROLE_Authority || Monster.Controller == None)
 	{
@@ -545,12 +546,14 @@ static function bool MeleeDamageTarget(KFMonster Monster, int HitDamage, vector 
 	}
 
 	HumanPawn = KFHumanPawn(ControllerTarget);
+	OriginalDamage = HitDamage;
 
 	if ( HumanPawn != none )
 	{
 		if (IsPawnBurning(Monster) && AD.Burn != None)
 		{
-			HitDamage = float(HitDamage) * AD.Burn.BurnMonsterDamageModifier;
+			HitDamage = float(OriginalDamage) * AD.Burn.BurnMonsterDamageModifier;
+			class'KFTurboEventHandler'.static.BroadcastMitigatedBurnedPawnDamage(AD.Burn.LastBurnDamageInstigator, HumanPawn, HitDamage, OriginalDamage - HitDamage);
 		}
 
 		HumanPawn.TakeDamage(HitDamage, Monster, HitLocation, PushDirection, Monster.CurrentDamType);
