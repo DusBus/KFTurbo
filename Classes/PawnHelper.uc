@@ -553,7 +553,7 @@ static function bool MeleeDamageTarget(KFMonster Monster, int HitDamage, vector 
 		if (IsPawnBurning(Monster) && AD.Burn != None)
 		{
 			HitDamage = float(OriginalDamage) * AD.Burn.BurnMonsterDamageModifier;
-			class'KFTurboEventHandler'.static.BroadcastMitigatedBurnedPawnDamage(AD.Burn.LastBurnDamageInstigator, HumanPawn, HitDamage, OriginalDamage - HitDamage);
+			class'KFTurboEventHandler'.static.BroadcastBurnMitigatedDamage(AD.Burn.LastBurnDamageInstigator, HumanPawn, HitDamage, OriginalDamage - HitDamage);
 		}
 
 		HumanPawn.TakeDamage(HitDamage, Monster, HitLocation, PushDirection, Monster.CurrentDamType);
