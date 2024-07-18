@@ -6,11 +6,11 @@ class KFTurboMut extends Mutator
 #exec obj load file="..\Animations\KFTurboExtra.ukx" package=KFTurbo
 #exec obj load file="..\Textures\KFTurboHUD.utx" package=KFTurbo
 
-var KFPCustomZedHandler CustomZedHandler;
+var TurboCustomZedHandler CustomZedHandler;
 
 var config String RepLinkSettingsClassString;
-var class<KFTurboRepLinkSettings> RepLinkSettingsClass;
-var KFTurboRepLinkSettings RepLinkSettings;
+var class<TurboRepLinkSettings> RepLinkSettingsClass;
+var TurboRepLinkSettings RepLinkSettings;
 
 var config bool bDebugClientPerkRepLink;
 
@@ -20,22 +20,27 @@ simulated function PostBeginPlay()
 
 	if(Role == ROLE_Authority)
 	{
-		if (!ClassIsChildOf(Level.Game.PlayerControllerClass, class'KFPPlayerController'))
+		if (!ClassIsChildOf(Level.Game.PlayerControllerClass, class'TurboPlayerController'))
 		{
-			Level.Game.PlayerControllerClass = class'KFPPlayerController';
-			Level.Game.PlayerControllerClassName = string(class'KFPPlayerController');
+			Level.Game.PlayerControllerClass = class'TurboPlayerController';
+			Level.Game.PlayerControllerClassName = string(class'TurboPlayerController');
 		}
 
 		Level.Game.HUDType = GetHUDReplacementClass(Level.Game.HUDType);
 
-		DeathMatch(Level.Game).LoginMenuClass = string(class'KFPInvasionLoginMenu');
+		DeathMatch(Level.Game).LoginMenuClass = string(class'TurboInvasionLoginMenu');
 
 		//Every 5 seconds check if our queued spawn has a replaceable zed.
-		CustomZedHandler = Spawn(class'KFPCustomZedHandler', self);
+		CustomZedHandler = Spawn(class'TurboCustomZedHandler', self);
 
 		if (bDebugClientPerkRepLink)
 		{
-			Spawn(class'KFTurboRepLinkTester', Self);
+			Spawn(class'TurboRepLinkTester', Self);
+		}
+
+		if (KFGameType(Level.Game) != None)
+		{
+			
 		}
 	}
 
@@ -49,14 +54,14 @@ static function string GetHUDReplacementClass(string HUDClassString)
 		|| HUDClassString ~= Class'KFGameType'.Default.HUDType
 		|| HUDClassString ~= Class'KFStoryGameInfo'.Default.HUDType)
 	{
-		HUDClassString = string(class'KFTurbo.KFPHUDKillingFloor');
+		HUDClassString = string(class'KFTurbo.TurboHUDKillingFloor');
 	}
 
 	return HUDClassString;
 }
 
 //Called every time a ServerStStats is made (but we only want to do this once).
-function InitializeKFPRepLinkSettings()
+function InitializeRepLinkSettings()
 {
 	if (Role != ROLE_Authority)
 	{
@@ -69,11 +74,11 @@ function InitializeKFPRepLinkSettings()
 	}
 
 	log("Attempting setup of RepLinkSettingsClass with"@RepLinkSettingsClassString, 'KFTurbo');
-	RepLinkSettingsClass = class<KFTurboRepLinkSettings>(DynamicLoadObject(RepLinkSettingsClassString, class'Class'));
+	RepLinkSettingsClass = class<TurboRepLinkSettings>(DynamicLoadObject(RepLinkSettingsClassString, class'Class'));
 
 	if (RepLinkSettingsClass == none)
 	{
-		RepLinkSettingsClass = class'KFTurboRepLinkSettings';
+		RepLinkSettingsClass = class'TurboRepLinkSettings';
 	}
 
 	RepLinkSettings = new(self) RepLinkSettingsClass;

@@ -106,7 +106,7 @@ function AddDamagedHealStats( int MedicReward )
 	 	KFSteamStats.AddDamageHealed(MedicReward, bIsMP7Projectile, bIsMP5Projectile);
 	}
 
-     class'KFTurboEventHandler'.static.BroadcastPawnDartHealed(Instigator, HitHumanPawn, MedicReward, Self);
+     class'TurboEventHandler'.static.BroadcastPawnDartHealed(Instigator, HitHumanPawn, MedicReward, Self);
 }
 
 defaultproperties

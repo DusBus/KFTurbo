@@ -7,9 +7,9 @@ class PawnHelper extends Object;
 //Master container for all afflictions.
 struct AfflictionData
 {
-	var A_Burn Burn;
-	var A_Zap Zap;
-	var A_Harpoon Harpoon;
+	var AfflictionBurn Burn;
+	var AfflictionZap Zap;
+	var AfflictionHarpoon Harpoon;
 };
 
 static final simulated function bool IsPawnBurning(Pawn Pawn)
@@ -335,7 +335,7 @@ static simulated function PostTakeDamage(KFMonster Monster, int Damage, Pawn Ins
 
 		if (Monster.bBurnified && AD.Burn.BurnRatio <= 0.f)
 		{
-			class'KFTurboEventHandler'.static.BroadcastPawnIgnited(AD.Burn.LastBurnDamageInstigator, Monster, class<KFWeaponDamageType>(AD.Burn.LastBurnDamageType), Monster.LastBurnDamage);
+			class'TurboEventHandler'.static.BroadcastPawnIgnited(AD.Burn.LastBurnDamageInstigator, Monster, class<KFWeaponDamageType>(AD.Burn.LastBurnDamageType), Monster.LastBurnDamage);
 		}
 	}
 }
@@ -553,7 +553,7 @@ static function bool MeleeDamageTarget(KFMonster Monster, int HitDamage, vector 
 		if (IsPawnBurning(Monster) && AD.Burn != None)
 		{
 			HitDamage = float(OriginalDamage) * AD.Burn.BurnMonsterDamageModifier;
-			class'KFTurboEventHandler'.static.BroadcastBurnMitigatedDamage(AD.Burn.LastBurnDamageInstigator, HumanPawn, HitDamage, OriginalDamage - HitDamage);
+			class'TurboEventHandler'.static.BroadcastBurnMitigatedDamage(AD.Burn.LastBurnDamageInstigator, HumanPawn, HitDamage, OriginalDamage - HitDamage);
 		}
 
 		HumanPawn.TakeDamage(HitDamage, Monster, HitLocation, PushDirection, Monster.CurrentDamType);

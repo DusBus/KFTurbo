@@ -241,18 +241,18 @@ function float NumPlayersHeadHealthModifer()
 defaultproperties
 {
     //NOTE: Affliction move speed modifiers are not used by the boss. They exist, but are not used.
-    Begin Object Class=A_Burn Name=BurnAffliction
+    Begin Object Class=AfflictionBurn Name=BurnAffliction
     End Object
 
-    Begin Object Class=A_Zap Name=ZapAffliction
+    Begin Object Class=AfflictionZap Name=ZapAffliction
         ZapDischargeDelay=2.f
         ZapDischargeRate=0.25f
     End Object
 
-    Begin Object Class=A_Harpoon Name=HarpoonAffliction
+    Begin Object Class=AfflictionHarpoon Name=HarpoonAffliction
     End Object
 
-    AfflictionData=(Burn=A_Burn'BurnAffliction',Zap=A_Zap'ZapAffliction',Harpoon=A_Harpoon'HarpoonAffliction')
+    AfflictionData=(Burn=AfflictionBurn'BurnAffliction',Zap=AfflictionZap'ZapAffliction',Harpoon=AfflictionHarpoon'HarpoonAffliction')
 
 	CloakedSkinList(0) = Shader'KF_Specimens_Trip_T.patriarch_invisible_gun'
 	CloakedSkinList(1) = Shader'KF_Specimens_Trip_T.patriarch_invisible'

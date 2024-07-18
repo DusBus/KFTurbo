@@ -172,7 +172,7 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 			{
 				bWasZapped = KFMonsterVictim.bZapped;
 				KFMonsterVictim.SetZapped(ZapAmount, Instigator);
-				class'KFTurboEventHandler'.static.BroadcastPawnZapped(Instigator, KFMonsterVictim, ZapAmount, bWasZapped != KFMonsterVictim.bZapped);
+				class'TurboEventHandler'.static.BroadcastPawnZapped(Instigator, KFMonsterVictim, ZapAmount, bWasZapped != KFMonsterVictim.bZapped);
 				NumKilled++;
 			}
 		}

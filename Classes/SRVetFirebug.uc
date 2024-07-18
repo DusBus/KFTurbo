@@ -1,4 +1,4 @@
-class SRVetFirebug extends KFPVeterancyTypes
+class SRVetFirebug extends TurboVeterancyTypes
 	abstract;
 
 static function int GetPerkProgressInt( ClientPerkRepLink StatOther, out int FinalInt, byte CurLevel, byte ReqNum )

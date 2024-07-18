@@ -157,13 +157,13 @@ ignores AnimEnd, Trigger, Bump, HitWall, HeadVolumeChange, PhysicsVolumeChange, 
 
 defaultproperties
 {
-    Begin Object Class=A_Zap Name=ZapAffliction
+    Begin Object Class=AfflictionZap Name=ZapAffliction
         ZapDischargeRate=0.5f
     End Object
 
-    Begin Object Class=A_Harpoon Name=HarpoonAffliction
+    Begin Object Class=AfflictionHarpoon Name=HarpoonAffliction
         HarpoonSpeedModifier=0.5f
     End Object
 
-    AfflictionData=(Burn=None,Zap=A_Zap'ZapAffliction',Harpoon=A_Harpoon'HarpoonAffliction')
+    AfflictionData=(Burn=None,Zap=AfflictionZap'ZapAffliction',Harpoon=AfflictionHarpoon'HarpoonAffliction')
 }

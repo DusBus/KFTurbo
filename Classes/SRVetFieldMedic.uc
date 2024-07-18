@@ -1,4 +1,4 @@
-class SRVetFieldMedic extends KFPVeterancyTypes
+class SRVetFieldMedic extends TurboVeterancyTypes
 	abstract;
 
 static function int GetPerkProgressInt( ClientPerkRepLink StatOther, out int FinalInt, byte CurLevel, byte ReqNum )

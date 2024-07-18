@@ -13,7 +13,7 @@ function HandleAchievement( Pawn Victim )
     VelocityAdded = Normal((Victim.Location + Victim.EyePosition()) - Instigator.Location);
     VelocityAdded = VelocityAdded * InterpCurveEval(AppliedMomentumCurve, Victim.Mass) / Victim.Mass;
 
-    class'KFTurboEventHandler'.static.BroadcastPawnPushedWithMCZThrower(Instigator, Victim, VelocityAdded);
+    class'TurboEventHandler'.static.BroadcastPawnPushedWithMCZThrower(Instigator, Victim, VelocityAdded);
 }
 
 defaultproperties

@@ -127,17 +127,17 @@ simulated function Timer()
 
 defaultproperties
 {
-    Begin Object Class=A_Burn Name=BurnAffliction
+    Begin Object Class=AfflictionBurn Name=BurnAffliction
         BurnDurationModifier=1.f
     End Object
 
-    Begin Object Class=A_Zap Name=ZapAffliction
+    Begin Object Class=AfflictionZap Name=ZapAffliction
         ZapDischargeRate=0.5f
     End Object
 
-    Begin Object Class=A_Harpoon Name=HarpoonAffliction
+    Begin Object Class=AfflictionHarpoon Name=HarpoonAffliction
         HarpoonSpeedModifier=0.5f
     End Object
 
-    AfflictionData=(Burn=A_Burn'BurnAffliction',Zap=A_Zap'ZapAffliction',Harpoon=A_Harpoon'HarpoonAffliction')
+    AfflictionData=(Burn=AfflictionBurn'BurnAffliction',Zap=AfflictionZap'ZapAffliction',Harpoon=AfflictionHarpoon'HarpoonAffliction')
 }

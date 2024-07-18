@@ -1,4 +1,4 @@
-class SRVetSupportSpec extends KFPVeterancyTypes
+class SRVetSupportSpec extends TurboVeterancyTypes
 	abstract;
 
 static function int GetPerkProgressInt( ClientPerkRepLink StatOther, out int FinalInt, byte CurLevel, byte ReqNum )

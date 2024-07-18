@@ -75,9 +75,9 @@ State MatchInProgress
         // Close buy menu for all players
         for (C = Level.ControllerList; C != None; C = C.NextController)
         {
-            if (KFPPlayerController(C) != None)
+            if (TurboPlayerController(C) != None)
             {
-                KFPPlayerController(C).ClientCloseBuyMenu();
+                TurboPlayerController(C).ClientCloseBuyMenu();
             }
         }
     }
@@ -142,14 +142,14 @@ defaultproperties
 
     // Not using those for now
     // LongSpecialSquads(4)=(ZedClass=("KFTurbo.P_Crawler_STA","KFTurbo.P_Gorefast_XMA","KFTurbo.P_Stalker_STA"),NumZeds=(2,2,1))
-    // LongSpecialSquads(6)=(ZedClass=("KFTurbo.P_FP_HAL"),NumZeds=(1))
-    // LongSpecialSquads(7)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_FP_STA"),NumZeds=(1,1,1))
-    // LongSpecialSquads(8)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_SC_STA","KFTurbo.P_FP_STA"),NumZeds=(1,1,1,1))
-    // LongSpecialSquads(9)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_SC_STA","KFTurbo.P_FP_STA"),NumZeds=(1,1,1,1))
+    // LongSpecialSquads(6)=(ZedClass=("KFTurbo.P_Fleshpound_HAL"),NumZeds=(1))
+    // LongSpecialSquads(7)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_Fleshpound_STA"),NumZeds=(1,1,1))
+    // LongSpecialSquads(8)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_Scrake_STA","KFTurbo.P_Fleshpound_STA"),NumZeds=(1,1,1,1))
+    // LongSpecialSquads(9)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_Scrake_STA","KFTurbo.P_Fleshpound_STA"),NumZeds=(1,1,1,1))
 
     FinalSquads(0)=(ZedClass=("KFTurbo.P_Crawler_HAL","KFTurbo.P_Clot_STA","KFTurbo.P_Siren_HAL"),NumZeds=(3,3,1))
-    FinalSquads(1)=(ZedClass=("KFTurbo.P_SC_HAL","KFTurbo.P_Crawler_STA","KFTurbo.P_Clot_STA","KFTurbo.P_Husk_STA"),NumZeds=(1,3,3,1))
-    FinalSquads(2)=(ZedClass=("KFTurbo.P_Siren_XMA","KFTurbo.P_Stalker_STA","KFTurbo.P_FP_HAL","KFTurbo.P_SC_HAL","KFTurbo.P_Clot_STA","KFTurbo.P_Bloat_HAL"),NumZeds=(1,3,1,1,3,1))
+    FinalSquads(1)=(ZedClass=("KFTurbo.P_Scrake_HAL","KFTurbo.P_Crawler_STA","KFTurbo.P_Clot_STA","KFTurbo.P_Husk_STA"),NumZeds=(1,3,3,1))
+    FinalSquads(2)=(ZedClass=("KFTurbo.P_Siren_XMA","KFTurbo.P_Stalker_STA","KFTurbo.P_Fleshpound_HAL","KFTurbo.P_Scrake_HAL","KFTurbo.P_Clot_STA","KFTurbo.P_Bloat_HAL"),NumZeds=(1,3,1,1,3,1))
 
     SpecialEventMonsterCollections(0) = Class'KFTurbo.MC_DEF'
     SpecialEventMonsterCollections(1) = Class'KFTurbo.MC_SUM'

@@ -197,7 +197,7 @@ function HealOrHurt(float DamageAmount, float DamageRadius, class<DamageType> Da
         
         KFPawnTarget.GiveHealth(HealSum, KFPawnTarget.HealthMax);
 
-        class'KFTurboEventHandler'.static.BroadcastPawnGrenadeHealed(Instigator, KFPawnTarget, MedicReward);
+        class'TurboEventHandler'.static.BroadcastPawnGrenadeHealed(Instigator, KFPawnTarget, MedicReward);
 
         if ( PRI == None || MedicReward <= 0 )
         {
