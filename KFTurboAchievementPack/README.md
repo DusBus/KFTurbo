@@ -1,1 +1,1 @@
-Contains achievement packs for KFTurbo.
+KFTurbo's achievement packs.
