@@ -1,1 +1,0 @@
-class W_Syringe_Fire_Alt extends KFMod.SyringeAltFire;
