@@ -2,6 +2,9 @@ class KFTurboGameTypePlus extends KFTurboGameType;
 
 var TurboMonsterCollection TurboMonsterCollection;
 
+//Refers to the last squad we used to fill out NextSpawnSquad.
+var TurboMonsterCollectionSquad CurrentSquad;
+
 // Constants for initial game setup
 const INITIAL_CASH = 42069;
 const SPAWN_TIME = 1.0;
@@ -169,6 +172,7 @@ function BuildNextSquad()
     }
 
     NextSpawnSquad = Squad.MonsterList;
+    CurrentSquad = Squad;
 }
 
 // Default properties for the game type

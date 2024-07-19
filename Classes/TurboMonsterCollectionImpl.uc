@@ -12,6 +12,7 @@ defaultproperties
 	Begin Object Class=TurboPlusWaveEarly Name=Wave2
           MaxMonsters=35
           TotalMonsters=35
+          BeatSize=1
 	End Object
 	WaveList(1)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave2'
 
@@ -19,6 +20,7 @@ defaultproperties
           MaxMonsters=40
           TotalMonsters=40
           RegularSequenceSize=7
+          BeatSize=1
 	End Object
 	WaveList(2)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave3'
 
@@ -27,7 +29,7 @@ defaultproperties
           MaxMonsters=45
           TotalMonsters=45
           RegularSequenceSize=7
-          BeatSize=2
+          BeatSize=1
 	End Object
 	WaveList(3)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave4'
 
@@ -51,7 +53,7 @@ defaultproperties
           MaxMonsters=50
           TotalMonsters=50
           RegularSequenceSize=6
-          BeatSize=3
+          BeatSize=2
 	End Object
 	WaveList(6)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave7'
      
@@ -67,7 +69,7 @@ defaultproperties
 	Begin Object Class=TurboPlusWaveLateGame Name=Wave9
           MaxMonsters=55
           TotalMonsters=55
-          RegularSequenceSize=5
+          RegularSequenceSize=6
           BeatSize=3
 	End Object
 	WaveList(8)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave9'
@@ -75,7 +77,7 @@ defaultproperties
 	Begin Object Class=TurboPlusWaveLateGame Name=Wave10
           MaxMonsters=60
           TotalMonsters=60
-          RegularSequenceSize=5
+          RegularSequenceSize=6
           BeatSize=3
 	End Object
 	WaveList(9)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave10'
