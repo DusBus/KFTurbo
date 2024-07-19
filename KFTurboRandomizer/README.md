@@ -1,1 +1,1 @@
-Contains client-side content for KFTurbo's Randomizer.
+KFTurbo's Randomizer Mutator.
