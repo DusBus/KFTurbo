@@ -1,5 +1,7 @@
 class KFTurboGameTypePlus extends KFTurboGameType;
 
+var TurboMonsterCollection TurboMonsterCollection;
+
 // Constants for initial game setup
 const INITIAL_CASH = 42069;
 const SPAWN_TIME = 1.0;
@@ -89,6 +91,86 @@ simulated function float CalcNextSquadSpawnTime()
     return SPAWN_TIME;
 }
 
+function ResetZombieVolumes()
+{
+    local int Index;
+    for(Index = ZedSpawnList.Length; Index >= 0; Index-- )
+    {
+        ZedSpawnList[Index].Reset();
+    }
+}
+
+function LoadUpMonsterList()
+{
+    local int Index;
+    for( Index = Index; Index < MonsterCollection.default.MonsterClasses.Length; Index++ )
+    {
+        TurboMonsterCollection.LoadedMonsterList[TurboMonsterCollection.LoadedMonsterList.Length] = Class<KFMonster>(DynamicLoadObject(MonsterCollection.default.MonsterClasses[Index].MClassName,Class'Class', false));
+        TurboMonsterCollection.LoadedMonsterList[TurboMonsterCollection.LoadedMonsterList.Length - 1].static.PreCacheAssets(Level);
+    }
+
+    TurboMonsterCollection.InitializeWaves();
+}
+
+function SetupWave()
+{
+    TraderProblemLevel = 0;
+    ZombiesKilled=0;
+    WaveMonsters = 0;
+    WaveNumClasses = 0;
+
+    MaxMonsters = TurboMonsterCollection.GetWaveMaxMonsters(WaveNum, GameDifficulty, NumPlayers + NumBots);
+    TotalMaxMonsters = TurboMonsterCollection.GetWaveTotalMonsters(WaveNum, GameDifficulty, NumPlayers + NumBots);
+
+    KFGameReplicationInfo(Level.Game.GameReplicationInfo).MaxMonsters = TotalMaxMonsters;
+    KFGameReplicationInfo(Level.Game.GameReplicationInfo).MaxMonstersOn = true;
+
+    WaveEndTime = Level.TimeSeconds + 255;
+    AdjustedDifficulty = GameDifficulty + TurboMonsterCollection.GetWaveDifficulty(WaveNum);
+
+    ResetZombieVolumes();
+    SquadsToUse.Length = 0;
+
+    TurboMonsterCollection.InitializeForWave(WaveNum);
+
+    BuildNextSquad();
+}
+
+function AddSpecialSquad()
+{
+    BuildNextSquad();
+}
+
+function BuildNextSquad()
+{
+    local TurboMonsterCollectionSquad Squad;
+
+    if (NextSpawnSquad.Length == 0)
+    {
+        return;
+    }
+
+    TurboMonsterCollection.PrepareSequence(WaveNum);
+
+    if (TurboMonsterCollection.CurrentSequence.Length > 0)
+    {
+        Squad = TurboMonsterCollection.CurrentSequence[0];
+        TurboMonsterCollection.CurrentSequence.Remove(0, 1);
+    }
+    else if (TurboMonsterCollection.CurrentBeat.Length > 0)
+    {
+        Squad = TurboMonsterCollection.CurrentBeat[0];
+        TurboMonsterCollection.CurrentBeat.Remove(0, 1);
+    }
+
+    if (Squad == None)
+    {
+        return;
+    }
+
+    NextSpawnSquad = Squad.MonsterList;
+}
+
 // Default properties for the game type
 defaultproperties
 {
@@ -140,21 +222,15 @@ defaultproperties
     StandardMonsterSquads(22) = "2B4D2H2I1G"
     StandardMonsterSquads(23) = "2A2D2H1I2E3F"
 
-    // Not using those for now
-    // LongSpecialSquads(4)=(ZedClass=("KFTurbo.P_Crawler_STA","KFTurbo.P_Gorefast_XMA","KFTurbo.P_Stalker_STA"),NumZeds=(2,2,1))
-    // LongSpecialSquads(6)=(ZedClass=("KFTurbo.P_Fleshpound_HAL"),NumZeds=(1))
-    // LongSpecialSquads(7)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_Fleshpound_STA"),NumZeds=(1,1,1))
-    // LongSpecialSquads(8)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_Scrake_STA","KFTurbo.P_Fleshpound_STA"),NumZeds=(1,1,1,1))
-    // LongSpecialSquads(9)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_Scrake_STA","KFTurbo.P_Fleshpound_STA"),NumZeds=(1,1,1,1))
+    StandardMonsterSquads=()
+    MonsterSquad=()
+    FinalSquads=()
+    MonsterClasses=()
 
-    FinalSquads(0)=(ZedClass=("KFTurbo.P_Crawler_HAL","KFTurbo.P_Clot_STA","KFTurbo.P_Siren_HAL"),NumZeds=(3,3,1))
-    FinalSquads(1)=(ZedClass=("KFTurbo.P_Scrake_HAL","KFTurbo.P_Crawler_STA","KFTurbo.P_Clot_STA","KFTurbo.P_Husk_STA"),NumZeds=(1,3,3,1))
-    FinalSquads(2)=(ZedClass=("KFTurbo.P_Siren_XMA","KFTurbo.P_Stalker_STA","KFTurbo.P_Fleshpound_HAL","KFTurbo.P_Scrake_HAL","KFTurbo.P_Clot_STA","KFTurbo.P_Bloat_HAL"),NumZeds=(1,3,1,1,3,1))
-
-    SpecialEventMonsterCollections(0) = Class'KFTurbo.MC_DEF'
-    SpecialEventMonsterCollections(1) = Class'KFTurbo.MC_SUM'
-    SpecialEventMonsterCollections(2) = Class'KFTurbo.MC_HAL'
-    SpecialEventMonsterCollections(3) = Class'KFTurbo.MC_XMA'
+    SpecialEventMonsterCollections(0) = Class'KFTurbo.MC_Turbo'
+    SpecialEventMonsterCollections(1) = Class'KFTurbo.MC_Turbo'
+    SpecialEventMonsterCollections(2) = Class'KFTurbo.MC_Turbo'
+    SpecialEventMonsterCollections(3) = Class'KFTurbo.MC_Turbo'
 
     GameName = "Killing Floor Turbo+ Game Type"
     Description = "Turbo+ mode of the vanilla Killing Floor Game Type."

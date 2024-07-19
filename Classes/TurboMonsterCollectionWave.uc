@@ -29,6 +29,41 @@ var int MaxMixInSquadCount;
 //Number of Beat squads to use for beats between sequences.
 var int BeatSize;
 
+final function InitializeSquads(TurboMonsterCollection TurboCollection)
+{
+     local int Index;
+
+     for (Index = ArrayCount(RegularSquad) - 1; Index >= 0; Index--)
+     {
+          if (RegularSquad[Index] == None)
+          {
+               continue;
+          }
+
+          RegularSquad[Index].InitializeSquad(TurboCollection);
+     }
+
+     for (Index = ArrayCount(MixInSquad) - 1; Index >= 0; Index--)
+     {
+          if (MixInSquad[Index] == None)
+          {
+               continue;
+          }
+
+          MixInSquad[Index].InitializeSquad(TurboCollection);
+     }
+
+     for (Index = ArrayCount(BeatSquad) - 1; Index >= 0; Index--)
+     {
+          if (BeatSquad[Index] == None)
+          {
+               continue;
+          }
+
+          BeatSquad[Index].InitializeSquad(TurboCollection);
+     }
+}
+
 defaultproperties
 {
      MaxMonsters=32
