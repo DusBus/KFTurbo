@@ -8,18 +8,19 @@ var int MaxMonsters;
 var int TotalMonsters;
 
 var float WaveDifficulty;
+var float NextSquadSpawnTime;
 
 //Squads that are shuffled in between "beats".
-var TurboMonsterCollectionSquad RegularSquad[31];
-var int RegularWaveMask; //Allows for a "base" class to define a bunch of squads and then use a wave mask to filter.
+var TurboMonsterCollectionSquad RegularSquad[30];
+var int RegularWaveMask; //Allows for a "base" class to define a bunch of squads and then use a wave mask to filter. Defaults to MaxInt (all).
 
 //Squads that are randomly placed into squads between "beats". 
-var TurboMonsterCollectionSquad MixInSquad[31];
-var int MixInWaveMask; //Allows for a "base" class to define a bunch of squads and then use a wave mask to filter.
+var TurboMonsterCollectionSquad MixInSquad[30];
+var int MixInWaveMask; //Allows for a "base" class to define a bunch of squads and then use a wave mask to filter. Defaults to MaxInt (all).
 
 //Squads that can be used for "beats".
-var TurboMonsterCollectionSquad BeatSquad[31];
-var int BeatWaveMask; //Allows for a "base" class to define a bunch of squads and then use a wave mask to filter.
+var TurboMonsterCollectionSquad BeatSquad[30];
+var int BeatWaveMask; //Allows for a "base" class to define a bunch of squads and then use a wave mask to filter. Defaults to MaxInt (all).
 
 //Number of regular squads to "roll" for a sequence between beats.
 var int RegularSequenceSize;
@@ -29,9 +30,24 @@ var int MaxMixInSquadCount;
 //Number of Beat squads to use for beats between sequences.
 var int BeatSize;
 
-final function InitializeSquads(TurboMonsterCollection TurboCollection)
+final function Initialize(TurboMonsterCollection TurboCollection)
 {
      local int Index;
+
+     if (RegularWaveMask == -1)
+     {
+          RegularWaveMask = MaxInt;
+     }
+     
+     if (MixInWaveMask == -1)
+     {
+          MixInWaveMask = MaxInt;
+     }
+
+     if (BeatWaveMask == -1)
+     {
+          BeatWaveMask = MaxInt;
+     }
 
      for (Index = ArrayCount(RegularSquad) - 1; Index >= 0; Index--)
      {
@@ -68,10 +84,16 @@ defaultproperties
 {
      MaxMonsters=32
      TotalMonsters=32
+     
      WaveDifficulty=1.f
+     NextSquadSpawnTime=-1.f
 
      RegularSequenceSize=8
      MinMixInSquadCount=2
      MaxMixInSquadCount=4
      BeatSize=1
+
+     RegularWaveMask=-1
+     MixInWaveMask=-1
+     BeatWaveMask=-1
 }

@@ -25,7 +25,7 @@ final function InitializeWaves()
      local int Index;
      for (Index = ArrayCount(WaveList) - 1; Index >= 0; Index--)
      {
-          WaveList[Index].InitializeSquads(Self);
+          WaveList[Index].Initialize(Self);
      }
      
      for (Index = ArrayCount(BossSquadList) - 1; Index >= 0; Index--)
@@ -73,6 +73,14 @@ final function InitializeForWave(int WaveNumber)
      RemainingRegularSquadList = RegularSquadList;
      RemainingMixInSquadList = MixInSquadList;
      RemainingBeatSquadList = BeatSquadList;
+
+     log("Initialized For Wave:");
+     log(" - WaveObject.RegularSquad:"@WaveObject.RegularWaveMask);
+     log(" - WaveObject.MixInSquad:"@WaveObject.MixInWaveMask);
+     log(" - WaveObject.BeatSquad:"@WaveObject.BeatWaveMask);
+     log(" - RegularSquadList:"@RegularSquadList.Length);
+     log(" - MixInSquadList:"@MixInSquadList.Length);
+     log(" - BeatSquadList:"@BeatSquadList.Length);
 }
 
 final function TurboMonsterCollectionSquad GetSequenceSquad()
@@ -141,6 +149,8 @@ final function PrepareSequence(int WaveNumber)
           return;
      }
 
+     log ("Building Sequence");
+
      WaveObject = WaveList[WaveNumber];
 
      SequenceSize = WaveObject.RegularSequenceSize;
@@ -151,6 +161,7 @@ final function PrepareSequence(int WaveNumber)
      while(SequenceSize > 0 && RegularSquadList.Length != 0)
      {
           CurrentSequence[CurrentSequence.Length] = GetSequenceSquad();
+          log ("- Added"@CurrentSequence[CurrentSequence.Length - 1]);
           SequenceSize--;
      }
      
@@ -160,6 +171,7 @@ final function PrepareSequence(int WaveNumber)
           RandomIndex = Rand(CurrentSequence.Length);
           CurrentSequence.Insert(RandomIndex, 1);
           CurrentSequence[RandomIndex] = GetMixInSquad();
+          log ("- Added"@CurrentSequence[RandomIndex]);
           MixInCount--;
      }
      
@@ -167,6 +179,7 @@ final function PrepareSequence(int WaveNumber)
      while(BeatSize > 0 && BeatSquadList.Length != 0)
      {
           CurrentBeat[CurrentBeat.Length] = GetBeatSquad();
+          log ("- Added"@CurrentSequence[CurrentSequence.Length - 1]);
           BeatSize--;
      }
 }
@@ -227,6 +240,11 @@ final function int GetWaveMaxMonsters(int WaveNumber, float GameDifficulty, int 
 final function float GetWaveDifficulty(int WaveNumber)
 {
      return WaveList[Clamp(WaveNumber, 0, 9)].WaveDifficulty;
+}
+
+final function float GetNextSquadSpawnTime(int WaveNumber)
+{
+     return WaveList[Clamp(WaveNumber, 0, 9)].NextSquadSpawnTime;
 }
 
 defaultproperties

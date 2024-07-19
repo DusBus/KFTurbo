@@ -7,8 +7,8 @@ defaultproperties
      WaveDifficulty=1.f
 
      RegularSequenceSize=8
-     MinMixInSquadCount=2
-     MaxMixInSquadCount=4
+     MinMixInSquadCount=1
+     MaxMixInSquadCount=2
 
      BeatSize=0
 
@@ -44,5 +44,5 @@ defaultproperties
 	Begin Object Class=TurboMonsterCollectionSquad Name=EarlyBeatSquad0
           Squad(0)=(Monster=Fleshpound,Count=1)
 	End Object
-	BeatSquad(1)=TurboMonsterCollectionSquad'KFTurbo.TurboPlusWaveEarly.EarlyBeatSquad0'
+	BeatSquad(0)=TurboMonsterCollectionSquad'KFTurbo.TurboPlusWaveEarly.EarlyBeatSquad0'
 }

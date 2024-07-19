@@ -6,6 +6,7 @@ defaultproperties
 	Begin Object Class=TurboPlusWaveEarly Name=Wave1
           MaxMonsters=35
           TotalMonsters=35
+          BeatSize=1
 	End Object
 	WaveList(0)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave1'
 
@@ -62,7 +63,7 @@ defaultproperties
           MaxMonsters=55
           TotalMonsters=55
           RegularSequenceSize=6
-          BeatSize=3
+          BeatSize=2
 	End Object
 	WaveList(7)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave8'
      

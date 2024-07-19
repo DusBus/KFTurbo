@@ -9,7 +9,7 @@ simulated function PostBeginPlay()
     
     Super.PostBeginPlay();
 
-    SetTimer(1.f, true);
+    SetTimer(5.f, true);
 
     bIsAuthority = Role == ROLE_Authority;
 

@@ -4,6 +4,7 @@ var TurboMonsterCollection TurboMonsterCollection;
 
 //Refers to the last squad we used to fill out NextSpawnSquad.
 var TurboMonsterCollectionSquad CurrentSquad;
+var float WaveNextSquadSpawnTime;
 
 // Constants for initial game setup
 const INITIAL_CASH = 42069;
@@ -32,7 +33,6 @@ function PreBeginPlay()
 function PostBeginPlay()
 {
     local KFLevelRules KFLR;
-    local KFGameType KFGT;
 
     Super.PostBeginPlay();
 
@@ -50,15 +50,10 @@ function PostBeginPlay()
     // Set wave spawn period
     KFLR.WaveSpawnPeriod = SPAWN_TIME;
 
-    // Set game type parameters
-    KFGT = KFGameType(Level.Game);
-
-    if (KFGT != None)
-    {
-        KFGT.StartingCash = INITIAL_CASH;
-        KFGT.MinRespawnCash = INITIAL_CASH;
-        KFGT.StandardMaxZombiesOnce = STD_MAX_ZOMBIES;
-    }
+    StartingCash = INITIAL_CASH;
+    MinRespawnCash = INITIAL_CASH;
+    StandardMaxZombiesOnce = STD_MAX_ZOMBIES;
+    WaveNextSquadSpawnTime = SPAWN_TIME;
 }
 
 // State to handle match progress
@@ -91,13 +86,13 @@ State MatchInProgress
 // Calculate next squad spawn time
 simulated function float CalcNextSquadSpawnTime()
 {
-    return SPAWN_TIME;
+    return WaveNextSquadSpawnTime;
 }
 
 function ResetZombieVolumes()
 {
     local int Index;
-    for(Index = ZedSpawnList.Length; Index >= 0; Index-- )
+    for(Index = ZedSpawnList.Length - 1; Index >= 0; Index-- )
     {
         ZedSpawnList[Index].Reset();
     }
@@ -125,6 +120,12 @@ function SetupWave()
     MaxMonsters = TurboMonsterCollection.GetWaveMaxMonsters(WaveNum, GameDifficulty, NumPlayers + NumBots);
     TotalMaxMonsters = TurboMonsterCollection.GetWaveTotalMonsters(WaveNum, GameDifficulty, NumPlayers + NumBots);
 
+    WaveNextSquadSpawnTime = TurboMonsterCollection.GetNextSquadSpawnTime(WaveNum);
+    if (WaveNextSquadSpawnTime == -1.f)
+    {
+        WaveNextSquadSpawnTime = SPAWN_TIME;
+    }
+
     KFGameReplicationInfo(Level.Game.GameReplicationInfo).MaxMonsters = TotalMaxMonsters;
     KFGameReplicationInfo(Level.Game.GameReplicationInfo).MaxMonstersOn = true;
 
@@ -148,7 +149,7 @@ function BuildNextSquad()
 {
     local TurboMonsterCollectionSquad Squad;
 
-    if (NextSpawnSquad.Length == 0)
+    if (NextSpawnSquad.Length != 0)
     {
         return;
     }
