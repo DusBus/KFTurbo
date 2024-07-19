@@ -1,4 +1,4 @@
-![](./readme/TurboSticker.png)
+![](./KFTurbo/readme/TurboSticker.png)
 
 # KFTurbo
 
