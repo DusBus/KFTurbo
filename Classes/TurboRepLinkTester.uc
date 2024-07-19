@@ -84,10 +84,19 @@ simulated function Timer()
 
         DebugPrint(" - Ownership:"@CPRL.OwnerPRI@"("$CPRL.OwnerPRI.PlayerName$")", bIsAuthority);
         DebugPrint(" - Rep Complete:"@CPRL.bRepCompleted@"( Perks:"@CPRL.CachePerks.Length@"| Shop:"@CPRL.ShopInventory.Length@")", bIsAuthority);
+
+        if (CPRL.StatObject != None)
+        {
+            DebugPrint(" - Stats Object Ready Now:"@CPRL.StatObject.bStatsReadyNow, bIsAuthority);
+        }
+        else
+        {
+            DebugPrint(" - Stats Object None", bIsAuthority);
+        }
+
     }
 
     DebugPrint("-> FOUND"@NumCPRL, bIsAuthority);
-
     if (bIsAuthority)
     {
         return;

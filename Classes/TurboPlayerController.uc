@@ -141,13 +141,11 @@ simulated function ShowLoginMenu()
 	}
 }
 
-function ServerInitializeSteamStatInt(byte Index, int Value)
+function InitializeSteamStatInt(byte Index, int Value)
 {
 	local ClientPerkRepLink CPRL;
 	local SRCustomProgressInt Progress;
 	local class<SRCustomProgressInt> ProgressClass;
-
-	Super.ServerInitializeSteamStatInt(Index, Value);
 
 	CPRL = class'ClientPerkRepLink'.static.FindStats(self);
 

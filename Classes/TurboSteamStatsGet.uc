@@ -83,41 +83,48 @@ simulated event OnStatsAndAchievementsReady()
 //Since we don't push these anymore, we need to do so now.
 simulated function UpdatePerkStats()
 {
+	local TurboPlayerController PlayerController;
+	PlayerController = TurboPlayerController(PCOwner);
+	if (PlayerController == None)
+	{
+		return;
+	}
+
 	GetStatInt(DamageHealedStat, SteamNameStat[0]);
 	SavedDamageHealedStat = DamageHealedStat.Value;
-	PCOwner.ServerInitializeSteamStatInt(0, DamageHealedStat.Value);
+	PlayerController.InitializeSteamStatInt(0, DamageHealedStat.Value);
 
 	GetStatInt(WeldingPointsStat, SteamNameStat[1]);
 	SavedWeldingPointsStat = WeldingPointsStat.Value;
-	PCOwner.ServerInitializeSteamStatInt(1, WeldingPointsStat.Value);
+	PlayerController.InitializeSteamStatInt(1, WeldingPointsStat.Value);
 
 	GetStatInt(ShotgunDamageStat, SteamNameStat[2]);
 	SavedShotgunDamageStat = ShotgunDamageStat.Value;
-	PCOwner.ServerInitializeSteamStatInt(2, ShotgunDamageStat.Value);
+	PlayerController.InitializeSteamStatInt(2, ShotgunDamageStat.Value);
 
 	GetStatInt(HeadshotKillsStat, SteamNameStat[3]);
 	SavedHeadshotKillsStat = HeadshotKillsStat.Value;
-	PCOwner.ServerInitializeSteamStatInt(3, HeadshotKillsStat.Value);
+	PlayerController.InitializeSteamStatInt(3, HeadshotKillsStat.Value);
 
 	GetStatInt(StalkerKillsStat, SteamNameStat[4]);
 	SavedStalkerKillsStat = StalkerKillsStat.Value;
-	PCOwner.ServerInitializeSteamStatInt(4, StalkerKillsStat.Value);
+	PlayerController.InitializeSteamStatInt(4, StalkerKillsStat.Value);
 
 	GetStatInt(BullpupDamageStat, SteamNameStat[5]);
 	SavedBullpupDamageStat = BullpupDamageStat.Value;
-	PCOwner.ServerInitializeSteamStatInt(5, BullpupDamageStat.Value);
+	PlayerController.InitializeSteamStatInt(5, BullpupDamageStat.Value);
 
 	GetStatInt(MeleeDamageStat, SteamNameStat[6]);
 	SavedMeleeDamageStat = MeleeDamageStat.Value;
-	PCOwner.ServerInitializeSteamStatInt(6, MeleeDamageStat.Value);
+	PlayerController.InitializeSteamStatInt(6, MeleeDamageStat.Value);
 
 	GetStatInt(FlameThrowerDamageStat, SteamNameStat[7]);
 	SavedFlameThrowerDamageStat = FlameThrowerDamageStat.Value;
-	PCOwner.ServerInitializeSteamStatInt(7, FlameThrowerDamageStat.Value);
+	PlayerController.InitializeSteamStatInt(7, FlameThrowerDamageStat.Value);
 
 	GetStatInt(ExplosivesDamageStat, SteamNameStat[21]);
 	SavedExplosivesDamageStat = ExplosivesDamageStat.Value;
-	PCOwner.ServerInitializeSteamStatInt(21, ExplosivesDamageStat.Value);
+	PlayerController.InitializeSteamStatInt(21, ExplosivesDamageStat.Value);
 }
 
 defaultproperties
