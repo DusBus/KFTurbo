@@ -1,41 +1,108 @@
-class TurboMonsterCollection extends KFMonstersCollection;
+class TurboMonsterCollection extends Object
+     editinlinenew;
 
+var TurboMonsterCollectionWave WaveList[10];
+var TurboMonsterCollectionSquad BossSquadList[3];
+
+//These arrays are a cached list of a wave's squads. We construct sequences with them using them to reset squad lists once they're empty.
+var array<TurboMonsterCollectionSquad> RegularSquadList;
+var array<TurboMonsterCollectionSquad> MixInList;
+var array<TurboMonsterCollectionSquad> BeatSquadList;
+
+final function InitializeForWave(int WaveNumber)
+{
+     local int Index, WaveMask;
+     local TurboMonsterCollectionWave WaveObject;
+
+     RegularSquadList.Length = 0;
+     MixInList.Length = 0;
+     BeatSquadList.Length = 0;
+
+     WaveMask = 1;
+     
+     WaveObject = WaveList[WaveNumber];
+
+     //All arrays are the same size.
+     for (Index = 0; Index < ArrayCount(WaveObject.RegularSquad); Index++)
+     {
+          if ((WaveObject.RegularWaveMask & WaveMask) != 0)
+          {
+               RegularSquadList[RegularSquadList.Length] = WaveObject.RegularSquad[Index];
+          }
+
+          if ((WaveObject.MixInWaveMask & WaveMask) != 0)
+          {
+               MixInList[MixInList.Length] = WaveObject.MixInSquad[Index];
+          }
+
+          if ((WaveObject.BeatWaveMask & WaveMask) != 0)
+          {
+               BeatSquadList[BeatSquadList.Length] = WaveObject.BeatSquad[Index];
+          }
+
+          WaveMask *= 2;
+     }
+}
+
+final function float GetDifficultModifier(float GameDifficulty)
+{
+    if ( GameDifficulty >= 7.0 ) // Hell on Earth
+    {
+        return 1.7f;
+    }
+    else if ( GameDifficulty >= 5.0 ) // Suicidal
+    {
+        return 1.5f;
+    }
+    else if ( GameDifficulty >= 4.0 ) // Hard
+    {
+        return 1.3f;
+    }
+    else if ( GameDifficulty >= 2.0 ) // Normal
+    {
+        return 1.0f;
+    }
+    
+    return 0.7f;
+}
+
+final function float GetPlayerCountModifier(int PlayerCount)
+{
+    switch ( PlayerCount )
+    {
+        case 1:
+            return 1.f;
+        case 2:
+            return 2.f;
+        case 3:
+            return 2.75f;
+        case 4:
+            return 3.5f;
+        case 5:
+            return 4.f;
+        case 6:
+            return 4.5f;
+    }
+
+    return float(PlayerCount) *0.8f;
+}
+
+final function int GetWaveTotalMonsters(int WaveNumber, float GameDifficulty, int PlayerCount )
+{
+     return float(WaveList[Clamp(WaveNumber, 0, 9)].TotalMonsters) * GetDifficultModifier(GameDifficulty) * GetPlayerCountModifier(PlayerCount);
+}
+
+final function int GetWaveMaxMonsters(int WaveNumber, float GameDifficulty, int PlayerCount)
+{
+     return WaveList[Clamp(WaveNumber, 0, 9)].MaxMonsters;
+}
+
+final function float GetWaveDifficulty(int WaveNumber)
+{
+     return WaveList[Clamp(WaveNumber, 0, 9)].WaveDifficulty;
+}
 
 defaultproperties
 {
-     MonsterClasses(0)=(MClassName="KFTurbo.P_Clot_STA")
-     MonsterClasses(1)=(MClassName="KFTurbo.P_Crawler_STA")
-     MonsterClasses(2)=(MClassName="KFTurbo.P_Gorefast_STA")
-     MonsterClasses(3)=(MClassName="KFTurbo.P_Stalker_STA")
-     MonsterClasses(4)=(MClassName="KFTurbo.P_Scrake_STA")
-     MonsterClasses(5)=(MClassName="KFTurbo.P_Fleshpound_STA")
-     MonsterClasses(6)=(MClassName="KFTurbo.P_Bloat_STA")
-     MonsterClasses(7)=(MClassName="KFTurbo.P_Siren_STA")
-     MonsterClasses(8)=(MClassName="KFTurbo.P_Husk_STA")
-     MonsterClasses(9)=(MClassName="KFTurbo.P_Gorefast_Classy",Mid="J")
-     StandardMonsterClasses(0)=(MClassName="KFTurbo.P_Clot_STA")
-     StandardMonsterClasses(1)=(MClassName="KFTurbo.P_Crawler_STA")
-     StandardMonsterClasses(2)=(MClassName="KFTurbo.P_Gorefast_STA")
-     StandardMonsterClasses(3)=(MClassName="KFTurbo.P_Stalker_STA")
-     StandardMonsterClasses(4)=(MClassName="KFTurbo.P_Scrake_STA")
-     StandardMonsterClasses(5)=(MClassName="KFTurbo.P_Fleshpound_STA")
-     StandardMonsterClasses(6)=(MClassName="KFTurbo.P_Bloat_STA")
-     StandardMonsterClasses(7)=(MClassName="KFTurbo.P_Siren_STA")
-     StandardMonsterClasses(8)=(MClassName="KFTurbo.P_Husk_STA")
-     ShortSpecialSquads(2)=(ZedClass=("KFTurbo.P_Crawler_STA","KFTurbo.P_Gorefast_STA","KFTurbo.P_Stalker_STA","KFTurbo.P_Scrake_STA"))
-     ShortSpecialSquads(3)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_Fleshpound_STA"))
-     NormalSpecialSquads(3)=(ZedClass=("KFTurbo.P_Crawler_STA","KFTurbo.P_Gorefast_STA","KFTurbo.P_Stalker_STA","KFTurbo.P_Scrake_STA"))
-     NormalSpecialSquads(4)=(ZedClass=("KFTurbo.P_Fleshpound_STA"))
-     NormalSpecialSquads(5)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_Fleshpound_STA"))
-     NormalSpecialSquads(6)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_Fleshpound_STA"))
-     LongSpecialSquads(4)=(ZedClass=("KFTurbo.P_Crawler_STA","KFTurbo.P_Gorefast_STA","KFTurbo.P_Stalker_STA","KFTurbo.P_Scrake_STA"))
-     LongSpecialSquads(6)=(ZedClass=("KFTurbo.P_Fleshpound_STA"))
-     LongSpecialSquads(7)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_Fleshpound_STA"))
-     LongSpecialSquads(8)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_Scrake_STA","KFTurbo.P_Fleshpound_STA"))
-     LongSpecialSquads(9)=(ZedClass=("KFTurbo.P_Bloat_STA","KFTurbo.P_Siren_STA","KFTurbo.P_Scrake_STA","KFTurbo.P_Fleshpound_STA"))
-     FinalSquads(0)=(ZedClass=("KFTurbo.P_Clot_STA"))
-     FinalSquads(1)=(ZedClass=("KFTurbo.P_Clot_STA","KFTurbo.P_Crawler_STA"))
-     FinalSquads(2)=(ZedClass=("KFTurbo.P_Clot_STA","KFTurbo.P_Stalker_STA","KFTurbo.P_Crawler_STA"))
-     FallbackMonsterClass="KFTurbo.P_Stalker_STA"
-     EndGameBossClass="KFTurbo.P_ZombieBoss_STA"
+
 }

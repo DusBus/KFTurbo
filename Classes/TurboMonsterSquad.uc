@@ -1,1 +1,0 @@
-class TurboMonsterSquad extends Object;

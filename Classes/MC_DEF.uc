@@ -1,4 +1,4 @@
-class MC_DEF extends TurboMonsterCollection;
+class MC_DEF extends KFMonstersCollection;
 
 defaultproperties
 {

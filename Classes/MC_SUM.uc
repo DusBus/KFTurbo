@@ -1,4 +1,4 @@
-class MC_SUM extends TurboMonsterCollection;
+class MC_SUM extends KFMonstersCollection;
 
 defaultproperties
 {

@@ -1,4 +1,4 @@
-class MC_XMA extends TurboMonsterCollection;
+class MC_XMA extends KFMonstersCollection;
 
 defaultproperties
 {

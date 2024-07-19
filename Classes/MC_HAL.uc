@@ -1,4 +1,4 @@
-class MC_HAL extends TurboMonsterCollection;
+class MC_HAL extends KFMonstersCollection;
 
 defaultproperties
 {
