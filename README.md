@@ -12,7 +12,3 @@ KFTurbo's goal is to take underused perks and weapons and bring them inline with
 
 ## Changelog
 KFTurbo has a changelog containing all gameplay changes [here](./changelog.md).
-
-
-## Randomizer
-KFTurbo has a randomizer mutator that can be found [here](https://github.com/KFPilot/KFTurboRandomizer).
