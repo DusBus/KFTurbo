@@ -176,6 +176,9 @@ defaultproperties
 {
     bIsHighDifficulty = true
 
+	Begin Object Class=TurboMonsterCollectionImpl Name=TurboMonsterCollection
+	End Object
+    TurboMonsterCollection=TurboMonsterCollectionImpl'KFTurbo.KFTurboGameTypePlus.TurboMonsterCollection'
     // Wave 1
     // Squads: 0-5
     // Wave 2-7
