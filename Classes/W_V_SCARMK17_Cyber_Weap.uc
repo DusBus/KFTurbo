@@ -1,4 +1,4 @@
-class W_V_MK23_Cyber_Weap extends W_MK23_Weap;
+class W_V_SCARMK17_Cyber_Weap extends W_SCARMK17_Weap;
 
 var array<Material> LoadedStateMaterialList;
 var array<string> LoadedStateMaterialRefList;
@@ -45,7 +45,7 @@ simulated function UpdateSkin()
 
      LastKnownMagAmmo = MagAmmoRemaining;
 
-     if (MagAmmoRemaining > 6)
+     if (MagAmmoRemaining > 10)
      {
           Skins[0] = LoadedStateMaterialList[0];
           return;
@@ -65,23 +65,21 @@ static function PreloadAssets(Inventory Inv, optional bool bSkipRefCount)
 {
      Super.PreloadAssets(Inv, bSkipRefCount);
 
-     W_V_MK23_Cyber_Weap(Inv).LoadedStateMaterialList[0] = Material(DynamicLoadObject(default.LoadedStateMaterialRefList[0], class'Material'));
-     W_V_MK23_Cyber_Weap(Inv).LoadedStateMaterialList[1] = Material(DynamicLoadObject(default.LoadedStateMaterialRefList[1], class'Material'));
-     W_V_MK23_Cyber_Weap(Inv).LoadedStateMaterialList[2] = Material(DynamicLoadObject(default.LoadedStateMaterialRefList[2], class'Material'));
-     W_V_MK23_Cyber_Weap(Inv).LoadedStateMaterialList[3] = Material(DynamicLoadObject(default.LoadedStateMaterialRefList[3], class'Material'));
+     W_V_SCARMK17_Cyber_Weap(Inv).LoadedStateMaterialList[0] = Material(DynamicLoadObject(default.LoadedStateMaterialRefList[0], class'Material'));
+     W_V_SCARMK17_Cyber_Weap(Inv).LoadedStateMaterialList[1] = Material(DynamicLoadObject(default.LoadedStateMaterialRefList[1], class'Material'));
+     W_V_SCARMK17_Cyber_Weap(Inv).LoadedStateMaterialList[2] = Material(DynamicLoadObject(default.LoadedStateMaterialRefList[2], class'Material'));
+     W_V_SCARMK17_Cyber_Weap(Inv).LoadedStateMaterialList[3] = Material(DynamicLoadObject(default.LoadedStateMaterialRefList[3], class'Material'));
 }
 
 defaultproperties
 {
-     LoadedStateMaterialRefList(0)="KFTurbo.Cyber.Cyber_MK23_SHDR"
-     LoadedStateMaterialRefList(1)="KFTurbo.Cyber.Cyber_MK23_Warn_SHDR"
-     LoadedStateMaterialRefList(2)="KFTurbo.Cyber.Cyber_MK23_Empty_SHDR"
-     LoadedStateMaterialRefList(3)="KFTurbo.Cyber.Cyber_MK23_Reload_SHDR"
+     LoadedStateMaterialRefList(0)="KFTurbo.Cyber.Cyber_SCAR_SHDR"
+     LoadedStateMaterialRefList(1)="KFTurbo.Cyber.Cyber_SCAR_Warn_SHDR"
+     LoadedStateMaterialRefList(2)="KFTurbo.Cyber.Cyber_SCAR_Empty_SHDR"
+     LoadedStateMaterialRefList(3)="KFTurbo.Cyber.Cyber_SCAR_Reload_SHDR"
 
-     ReloadAnim="Reload"
-
-     SkinRefs(0)="KFTurbo.Turbo.MK23_Turbo_SHDR"
-     PickupClass=Class'KFTurbo.W_V_MK23_Cyber_Pickup'
-     AttachmentClass=Class'KFTurbo.W_V_MK23_Cyber_Attachment'
-     Skins(0)=Shader'KFTurbo.Turbo.MK23_Turbo_SHDR'
+     SkinRefs(0)="KFTurbo.Cyber.Cyber_SCAR_SHDR"
+     PickupClass=Class'KFTurbo.W_V_SCARMK17_Cyber_Pickup'
+     AttachmentClass=Class'KFTurbo.W_V_SCARMK17_Cyber_Attachment'
+     Skins(0)=Shader'KFTurbo.Cyber.Cyber_SCAR_SHDR'
 }
