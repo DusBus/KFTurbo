@@ -1,0 +1,33 @@
+#Exclude all.
+/*
+
+#Necessary git files. 
+!.gitignore
+!README.md
+!changelog.md
+
+#KFTurbo's source code packages.
+!KFTurboFonts/
+!KFTurbo/
+!KFTurboRandomizer/
+!KFTurboAchievementPack/
+!KFTurboTestMut/
+!KFTurboServer/
+
+#Important config files.
+!System
+/System/*
+/System/**/*
+!/System/ServerPerks.ini
+!/System/ServerAchievements.ini
+
+#Animation packages.
+!Animations
+/Animations/**
+!Animations/KFTurboContent.ukx
+!Animations/KFTurboExtra.ukx
+
+#Texture packages.
+!Textures
+/Textures/**
+!Textures/KFTurboHUD.utx
