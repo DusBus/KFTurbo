@@ -1,7 +1,8 @@
 class TurboPlayerController extends KFPCServ;
 
 var class<WeaponRemappingSettings> WeaponRemappingSettings;
-var config bool bHasInitializedTraderBinding;
+var config bool bTraderBindingInitialized;
+var config bool bMarkActorBindingInitialized;
 
 replication
 {
@@ -86,20 +87,108 @@ function ShowBuyMenu(string wlTag,float maxweight)
 	ClientOpenMenu(string(Class'TurboGUIBuyMenu'),,wlTag,string(maxweight));
 }
 
-function AcknowledgePossession(Pawn P)
+
+
+function Possess(Pawn P)
+{
+	Super.Possess(P);
+
+	if (Level.NetMode == NM_Standalone)
+	{
+		ApplyTurboKeybinds(P);
+	}
+}
+
+simulated function AcknowledgePossession(Pawn P)
 {
 	Super.AcknowledgePossession(P);
 
-	if (!class'KFTurboGameType'.static.StaticIsHighDifficulty(Self))
+	if (Level.NetMode != NM_DedicatedServer)
+	{
+		ApplyTurboKeybinds(P);
+	}
+}
+
+simulated function ApplyTurboKeybinds(Pawn P)
+{
+	if (class'KFTurboGameType'.static.StaticIsHighDifficulty(Self))
+	{
+		ApplyTraderKeybind();
+	}
+
+	ApplyMarkActorKeybind();
+}
+
+final function bool SetOrAppendCommandToKey(String Key, String Command)
+{
+	local String GetInputResult, CapsGetInputResult;
+
+	GetInputResult = ConsoleCommand("get input"@Key);
+	CapsGetInputResult = Caps(GetInputResult);
+
+	while (CapsGetInputResult != "" && Left(CapsGetInputResult, 1) == " ")
+	{
+		CapsGetInputResult = Right(CapsGetInputResult, Len(CapsGetInputResult) - 1);
+	}
+
+	while (CapsGetInputResult != "" && Right(CapsGetInputResult, 1) == " ")
+	{
+		CapsGetInputResult = Left(CapsGetInputResult, Len(CapsGetInputResult) - 1);
+	}
+
+	if (CapsGetInputResult == Caps(Command))
+	{
+		return false;
+	}
+
+	if (InStr(CapsGetInputResult, Caps(Command)@"|") == 0 || InStr(CapsGetInputResult, "|"@Caps(Command)) != -1)
+	{
+		return false;
+	}
+	
+	ConsoleCommand("set input"@Key@GetInputResult@"|"@Command);
+	
+	return true;
+}
+
+simulated function ApplyTraderKeybind()
+{
+	if (bTraderBindingInitialized)
 	{
 		return;
 	}
 
-	if (!bHasInitializedTraderBinding)
+	bTraderBindingInitialized = true;
+
+	if (!SetOrAppendCommandToKey("H", "Trade"))
 	{
-		bHasInitializedTraderBinding = false;
-		ConsoleCommand("set input h Trade");
-		ClientMessage("Welcome to KFTurbo+. Your keybind to open trader has been initialized to H.");
+		return;
+	}
+
+	ClientMessage("Welcome to KFTurbo+. Your keybind to open trader has been initialized to the H key.");
+}
+
+simulated function ApplyMarkActorKeybind()
+{
+	if (bMarkActorBindingInitialized)
+	{
+		return;
+	}
+
+	bMarkActorBindingInitialized = true;
+
+	if (!SetOrAppendCommandToKey("X", "MarkActor"))
+	{
+		return;
+	}
+
+	if (class'KFTurboGameType'.static.StaticIsHighDifficulty(Self))
+	{
+		ClientMessage("Welcome to KFTurbo+. Your keybind to mark actors has been initialized to the X key.");
+	}
+	else
+	{
+		ClientMessage("Welcome to KFTurbo. Your keybind to mark actors has been initialized to the X key.");
 	}
 }
 
