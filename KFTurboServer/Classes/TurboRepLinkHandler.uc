@@ -1,4 +1,4 @@
-class TurboRepLinkHandler extends Actor;
+class TurboRepLinkHandler extends Info;
 
 var KFTurboMut KFTurboMutator;
 var array<ServerStStats> PendingReplicationLinkList;
