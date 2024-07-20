@@ -2,14 +2,15 @@ class TurboPlusWaveEarly extends TurboMonsterCollectionWave;
 
 defaultproperties
 {
-     MaxMonsters=32
-     TotalMonsters=32
+     MaxMonsters=35
+     TotalMonsters=35
      WaveDifficulty=1.f
 
      RegularSequenceSize=8
      MinMixInSquadCount=1
      MaxMixInSquadCount=2
 
+     //No "beats" for early wave.
      BeatSize=0
 
      //Here is an example of a squad with 2 clots and 3 crawlers.
