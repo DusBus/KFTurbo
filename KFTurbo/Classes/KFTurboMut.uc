@@ -157,7 +157,7 @@ simulated function String GetHumanReadableName()
 
 defaultproperties
 {
-	bDebugClientPerkRepLink = true
+	bDebugClientPerkRepLink=false
 	bAddToServerPackages=True
 	GroupName="KF-KFTurbo"
 	FriendlyName="Killing Floor Turbo"
