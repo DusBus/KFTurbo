@@ -2,20 +2,15 @@ class TurboPlayerReplicationInfo extends LinkedReplicationInfo;
 
 var KFPlayerReplicationInfo OwningReplicationInfo;
 
-struct MarkedActorInfo
-{
-    var Vector Location;
-
-    var class<Actor> ActorClass;
-    var class<Object> DataClass;
-    var Object DataObject;
-
-    var float MarkTime;
-    var float MarkDuration;
-};
-
 var Actor MarkedActor;
-var MarkedActorInfo MarkInfo;
+var class<Actor> MarkActorClass;
+
+var Vector MarkLocation;
+var class<Object> DataClass;
+var Object DataObject;
+
+var float MarkTime;
+var float MarkDuration;
 
 enum EMarkColor{
 	Invalid,
@@ -56,7 +51,7 @@ replication
     reliable if( bNetInitial && ROLE == ROLE_Authority)
         OwningReplicationInfo;
 	reliable if( Role==ROLE_Authority )
-		MarkedActor, MarkInfo, MarkerColor;
+		MarkedActor, MarkActorClass, MarkLocation, DataClass, DataObject, MarkDuration, MarkerColor;
 }
 
 simulated function PostBeginPlay()
@@ -85,6 +80,16 @@ static function Color GetMarkerColor(EMarkColor Color)
     return default.MarkerColorList[Color];
 }
 
+simulated function final vector GetMarkLocation()
+{
+    if (MarkedActor != None)
+    {
+        return MarkedActor.Location;
+    }
+
+    return MarkLocation;
+}
+
 function MarkActor(Actor Target)
 {
     if (Target == None)
@@ -99,21 +104,21 @@ function MarkActor(Actor Target)
 
     if (MarkedActor == Target)
     {
-        MarkInfo.MarkTime = Level.TimeSeconds;
+        MarkTime = Level.TimeSeconds;
         return;
     }
 
     ClearMarkedActor();
 
     MarkedActor = Target;
-    MarkInfo.Location = Target.Location;
+    MarkActorClass = Target.Class;
 
-    MarkInfo.ActorClass = Target.Class;
-    MarkInfo.DataClass = GetRelevantDataClass(Target);
-    MarkInfo.DataObject = GetRelevantDataObject(Target);
+    MarkLocation = Target.Location;
+    DataClass = GetRelevantDataClass(Target);
+    DataObject = GetRelevantDataObject(Target);
 
-    MarkInfo.MarkTime = Level.TimeSeconds;
-    MarkInfo.MarkDuration = GetMarkDuration(Target);
+    MarkTime = Level.TimeSeconds;
+    MarkDuration = GetMarkDuration(Target);
 
     Enable('Tick');
 
@@ -128,10 +133,10 @@ function MarkActor(Actor Target)
 function ClearMarkedActor()
 {
     MarkedActor = None;
-    MarkInfo.ActorClass = None;
-    MarkInfo.DataClass = None;
-    MarkInfo.MarkTime = -1;
-    MarkInfo.MarkDuration = -1;
+    MarkActorClass = None;
+    DataClass = None;
+    MarkTime = -1;
+    MarkDuration = -1;
 
     MarkDisplayString = "";
     WorldZOffset = 0;
@@ -206,12 +211,12 @@ function Tick(float DeltaTime)
         return;
     }
     
-    MarkInfo.Location = MarkedActor.Location;
+    MarkLocation = MarkedActor.Location;
 }
 
 simulated function bool HasMarkUpdate()
 {
-    if (MarkInfo.ActorClass == LastReceivedActorClass && MarkInfo.MarkTime == LastReceivedMarkTime)
+    if (MarkActorClass == LastReceivedActorClass && MarkTime == LastReceivedMarkTime)
     {
         return false;
     }
@@ -221,32 +226,30 @@ simulated function bool HasMarkUpdate()
 
 simulated function OnReceivedMark()
 {
-    if (MarkInfo.MarkTime == -1.f)
-    {
-        ClearMarkedActor();
-    }
-
     MarkDisplayString = GenerateDisplayString();
     WorldZOffset = GetWorldZOffset();
+
+    LastReceivedActorClass = MarkActorClass;
+    LastReceivedMarkTime = MarkTime;
 }
 
 simulated function String GenerateDisplayString()
 {
-    if (Pickup(MarkedActor) != None || class<Pickup>(MarkInfo.ActorClass) != None)
+    if (Pickup(MarkedActor) != None || class<Pickup>(MarkActorClass) != None)
     {
-        return GeneratePickupDisplayString(Pickup(MarkedActor), class<Pickup>(MarkInfo.ActorClass));
+        return GeneratePickupDisplayString(Pickup(MarkedActor), class<Pickup>(MarkActorClass));
     }
 
-    if (KFMonster(MarkedActor) != None || class<KFMonster>(MarkInfo.ActorClass) != None)
+    if (KFMonster(MarkedActor) != None || class<KFMonster>(MarkActorClass) != None)
     {
-        return GenerateMonsterDisplayString(KFMonster(MarkedActor), class<KFMonster>(MarkInfo.ActorClass));
+        return GenerateMonsterDisplayString(KFMonster(MarkedActor), class<KFMonster>(MarkActorClass));
     }
 
-    if (KFHumanPawn(MarkedActor) != None || class<KFHumanPawn>(MarkInfo.ActorClass) != None)
+    if (KFHumanPawn(MarkedActor) != None || class<KFHumanPawn>(MarkActorClass) != None)
     {
-        if (KFPlayerReplicationInfo(MarkInfo.DataObject) != None)
+        if (KFPlayerReplicationInfo(DataObject) != None)
         {
-            return KFPlayerReplicationInfo(MarkInfo.DataObject).PlayerName;
+            return KFPlayerReplicationInfo(DataObject).PlayerName;
         }
     }
 
@@ -279,7 +282,7 @@ simulated function String GeneratePickupDisplayString(Pickup PickupActor, class<
         return PickupStringLeft$GUILabel(class'GUIInvHeaderTabPanel'.default.Controls[1]).Caption$PickupStringRight; //This text is "ammo".
     }
 
-    return PickupStringLeft$class<Inventory>(MarkInfo.DataClass).default.ItemName$PickupStringRight;
+    return PickupStringLeft$class<Inventory>(DataClass).default.ItemName$PickupStringRight;
 }
 
 simulated function String GenerateMonsterDisplayString(KFMonster Monster, class<KFMonster> MonsterClass)
@@ -294,9 +297,9 @@ simulated function String GenerateMonsterDisplayString(KFMonster Monster, class<
 
 simulated function float GetWorldZOffset()
 {
-    if (KFMonster(MarkedActor) != None || class<KFMonster>(MarkInfo.ActorClass) != None)
+    if (KFMonster(MarkedActor) != None || class<KFMonster>(MarkActorClass) != None)
     {
-        return GetMonsterZOffset(KFMonster(MarkedActor), class<KFMonster>(MarkInfo.ActorClass));
+        return GetMonsterZOffset(KFMonster(MarkedActor), class<KFMonster>(MarkActorClass));
     }
 
     if (MarkedActor != None)
@@ -304,9 +307,9 @@ simulated function float GetWorldZOffset()
         return MarkedActor.CollisionHeight;
     }
 
-    if (MarkInfo.ActorClass != None)
+    if (MarkActorClass != None)
     {
-        return MarkInfo.ActorClass.default.CollisionHeight;
+        return MarkActorClass.default.CollisionHeight;
     }
 
     return 0.f;
