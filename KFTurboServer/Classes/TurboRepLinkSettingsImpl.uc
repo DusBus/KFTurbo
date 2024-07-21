@@ -267,7 +267,7 @@ function SetupVariantWeaponEntry(out VariantWeapon Entry)
     }
     else if (IsGenericSteamPunkSkin(Entry.VariantClass))
     {
-        Entry.VariantID = SteamPunkVariantID;
+        Entry.VariantID = SteampunkVariantID;
         Entry.ItemStatus = 0;
     }
 }
