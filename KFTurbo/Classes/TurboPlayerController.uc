@@ -15,6 +15,17 @@ replication
 		ServerDebugSkipWave, ServerDebugSkipTrader, ServerMarkActor;
 }
 
+simulated function PostBeginPlay()
+{
+	Super.PostBeginPlay();
+
+	if (Role != ROLE_Authority)
+	{
+		//Spin up CPRL fixer
+		Spawn(class'TurboRepLinkFix', Self);
+	}
+}
+
 simulated function ClientSetHUD(class<HUD> newHUDClass, class<Scoreboard> newScoringClass )
 {
 	if (class'KFTurboMut'.static.GetHUDReplacementClass(string(newHUDClass)) ~= string(class'KFTurbo.TurboHUDKillingFloor'))

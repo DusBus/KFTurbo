@@ -37,11 +37,6 @@ simulated function PostBeginPlay()
 		{
 			Spawn(class'TurboRepLinkTester', Self);
 		}
-
-		if (KFGameType(Level.Game) != None)
-		{
-			
-		}
 	}
 
 	//Make sure fonts are added to server packages.
@@ -112,27 +107,27 @@ function AddTurboPlayerReplicationInfo(KFPlayerReplicationInfo PlayerReplication
 function UpdateRandomItemPickup(KFRandomItemSpawn PickupSpawner)
 {
 	//Randomizer may have set these to none - so try to respect that.
-	if (PickupSpawner.PickupClasses[1] == PickupSpawner.default.PickupClasses[1])
+	if (PickupSpawner.PickupClasses[1] == Class'KFMod.ShotgunPickup')
 	{
 		PickupSpawner.PickupClasses[1] = Class'KFTurbo.W_Shotgun_Pickup';
 	}
 
-	if (PickupSpawner.PickupClasses[2] == PickupSpawner.default.PickupClasses[2])
+	if (PickupSpawner.PickupClasses[2] == Class'KFMod.BullpupPickup')
 	{
 		PickupSpawner.PickupClasses[2] = Class'KFTurbo.W_Bullpup_Pickup';
 	}
 
-	if (PickupSpawner.PickupClasses[3] == PickupSpawner.default.PickupClasses[3])
+	if (PickupSpawner.PickupClasses[3] == Class'KFMod.DeaglePickup')
 	{
 		PickupSpawner.PickupClasses[3] = Class'KFTurbo.W_Deagle_Pickup';
 	}
 
-	if (PickupSpawner.PickupClasses[4] == PickupSpawner.default.PickupClasses[4])
+	if (PickupSpawner.PickupClasses[4] == Class'KFMod.WinchesterPickup')
 	{
 		PickupSpawner.PickupClasses[4] = Class'KFTurbo.W_LAR_Pickup';
 	}
 
-	if (PickupSpawner.PickupClasses[5] == PickupSpawner.default.PickupClasses[5])
+	if (PickupSpawner.PickupClasses[5] == Class'KFMod.AxePickup')
 	{
 		PickupSpawner.PickupClasses[5] = Class'KFTurbo.W_Axe_Pickup';
 	}
@@ -171,7 +166,7 @@ simulated function String GetHumanReadableName()
 
 defaultproperties
 {
-	bDebugClientPerkRepLink=false
+	bDebugClientPerkRepLink=true
 	bAddToServerPackages=True
 	GroupName="KF-KFTurbo"
 	FriendlyName="Killing Floor Turbo"
