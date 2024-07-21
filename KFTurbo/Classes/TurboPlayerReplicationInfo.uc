@@ -82,7 +82,7 @@ static function Color GetMarkerColor(EMarkColor Color)
 
 simulated function final vector GetMarkLocation()
 {
-    if (MarkedActor != None)
+    if (MarkedActor != None && CanMarkReceiveLocationUpdate())
     {
         return MarkedActor.Location;
     }
@@ -124,6 +124,8 @@ function MarkActor(Actor Target)
 
     NetUpdateTime = Level.TimeSeconds - 2.f;
 
+    TryVoiceLine();
+
     if (Level.NetMode != NM_DedicatedServer)
     {
         PostNetReceive();
@@ -155,7 +157,7 @@ function bool CanMarkActor(Actor TargetActor)
 
     if (Pickup(TargetActor) != None)
     {
-        return Pickup(TargetActor).InventoryType != None || Vest(TargetActor) != None;
+        return Pickup(TargetActor).InventoryType != None || CashPickup(TargetActor) != None || Vest(TargetActor) != None;
     }
 
     if (Pawn(TargetActor) != None)
@@ -211,7 +213,21 @@ function Tick(float DeltaTime)
         return;
     }
     
-    MarkLocation = MarkedActor.Location;
+    if (CanMarkReceiveLocationUpdate())
+    {
+        MarkLocation = MarkedActor.Location;
+    }
+}
+
+simulated function bool CanMarkReceiveLocationUpdate()
+{
+    //If we're marking a zed, make sure if it's cloaked we're not providing locational updates.
+    if (KFMonster(MarkedActor) != None)
+    {
+        return !KFMonster(MarkedActor).bCloaked;
+    }
+
+    return true;
 }
 
 simulated function bool HasMarkUpdate()
@@ -269,6 +285,20 @@ simulated function String GeneratePickupDisplayString(Pickup PickupActor, class<
         {
             return PickupStringLeft$GUILabel(class'GUIInvHeaderTabPanel'.default.Controls[1]).Caption$PickupStringRight; //This text is "ammo".
         }
+        else if (CashPickup(MarkedActor) != None)
+        {
+            return PickupStringLeft$CashPickup(MarkedActor).CashAmount@class'KFTab_BuyMenu'.default.MoneyCaption$PickupStringRight; 
+        }
+
+        if (Pickup(MarkedActor).InventoryType == None)
+        {
+            if (DataClass != None)
+            {
+                return PickupStringLeft$class<Inventory>(DataClass).default.ItemName$PickupStringRight;
+            }
+
+            return "";
+        }
     
         return PickupStringLeft$Pickup(MarkedActor).InventoryType.default.ItemName$PickupStringRight;
     }
@@ -281,8 +311,17 @@ simulated function String GeneratePickupDisplayString(Pickup PickupActor, class<
     {
         return PickupStringLeft$GUILabel(class'GUIInvHeaderTabPanel'.default.Controls[1]).Caption$PickupStringRight; //This text is "ammo".
     }
+    else if (class<CashPickup>(PickupClass) != None)
+    {
+        return class'KFTab_BuyMenu'.default.MoneyCaption;
+    }
 
-    return PickupStringLeft$class<Inventory>(DataClass).default.ItemName$PickupStringRight;
+    if (class<Inventory>(DataClass) != None)
+    {
+        return PickupStringLeft$class<Inventory>(DataClass).default.ItemName$PickupStringRight;
+    }
+
+    return "";
 }
 
 simulated function String GenerateMonsterDisplayString(KFMonster Monster, class<KFMonster> MonsterClass)
@@ -297,19 +336,28 @@ simulated function String GenerateMonsterDisplayString(KFMonster Monster, class<
 
 simulated function float GetWorldZOffset()
 {
+    local float ExtraOffset;
+
     if (KFMonster(MarkedActor) != None || class<KFMonster>(MarkActorClass) != None)
     {
         return GetMonsterZOffset(KFMonster(MarkedActor), class<KFMonster>(MarkActorClass));
     }
 
+    ExtraOffset = 0.f;
+
+    if (KFHumanPawn(MarkedActor) != None || class<KFHumanPawn>(MarkActorClass) != None)
+    {
+        ExtraOffset = 16.f;
+    }
+
     if (MarkedActor != None)
     {
-        return MarkedActor.CollisionHeight;
+        return MarkedActor.CollisionHeight + ExtraOffset;
     }
 
     if (MarkActorClass != None)
     {
-        return MarkActorClass.default.CollisionHeight;
+        return MarkActorClass.default.CollisionHeight + ExtraOffset;
     }
 
     return 0.f;
@@ -317,18 +365,97 @@ simulated function float GetWorldZOffset()
 
 simulated function float GetMonsterZOffset(KFMonster Monster, class<KFMonster> MonsterClass)
 {
+    local float ExtraOffset;
+
+    if (ZombieBoss(MarkedActor) != None || class<ZombieBoss>(MarkActorClass) != None)
+    {
+        ExtraOffset = 16.f;
+    }
+
     if (Monster != None)
     {
-        return Monster.CollisionRadius + Monster.ColHeight + (Monster.ColOffset.Z * 0.5f);
+        return Monster.CollisionRadius + Monster.ColHeight + (Monster.ColOffset.Z * 0.5f) + ExtraOffset;
     }
     else if (MonsterClass != None)
     {
-        return MonsterClass.default.CollisionRadius + MonsterClass.default.ColHeight + (MonsterClass.default.ColOffset.Z * 0.5f);
+        return MonsterClass.default.CollisionRadius + MonsterClass.default.ColHeight + (MonsterClass.default.ColOffset.Z * 0.5f) + ExtraOffset;
     }
     else
     {
         return 0.f;
     }
+}
+
+function TryVoiceLine()
+{
+    local PlayerController PlayerController;
+
+    PlayerController = PlayerController(Owner);
+
+    if (PlayerController == None || FRand() < 0.25f)
+    {
+        return;
+    }
+    
+    if (KFMonster(MarkedActor) != None)
+    {
+        TryMonsterVoiceLine(KFMonster(MarkedActor));
+        return;
+    }
+    
+    if (Pickup(MarkedActor) != None)
+    {
+        TryPickupVoiceLine(Pickup(MarkedActor));
+        return;
+    }
+}
+
+function TryMonsterVoiceLine(KFMonster MarkedMonster)
+{
+    if (ZombieFleshPound(MarkedActor) != None)
+    {
+        PlayerController(Owner).Speech('AUTO', 12, "");
+    }
+    else if (ZombieScrake(MarkedActor) != None)
+    {
+        PlayerController(Owner).Speech('AUTO', 14, "");
+    }
+}
+
+function TryPickupVoiceLine(Pickup MarkedPickup)
+{
+    if (CashPickup(MarkedActor) != None)
+    {
+        PlayerController(Owner).Speech('AUTO', 4, "");
+        return;
+    }
+    
+    if (MarkedPickup.InventoryType != None)
+    {
+        if (FRand() < 0.25f)
+        {
+            return;
+        }
+
+        if (class<W_Boomstick_Weap>(MarkedPickup.InventoryType) != None)
+        {
+            PlayerController(Owner).Speech('AUTO', 21, "");
+        }
+        else if (class<W_DualDeagle_Weap>(MarkedPickup.InventoryType) != None)
+        {
+            PlayerController(Owner).Speech('AUTO', 22, "");
+        }
+        else if (class<W_LAW_Weap>(MarkedPickup.InventoryType) != None)
+        {
+            PlayerController(Owner).Speech('AUTO', 23, "");
+        }
+        else if (class<W_Axe_Weap>(MarkedPickup.InventoryType) != None)
+        {
+            PlayerController(Owner).Speech('AUTO', 24, "");
+        }
+        return;
+    }
+
 }
 
 static function TurboPlayerReplicationInfo GetTurboPRI(PlayerReplicationInfo PRI)
