@@ -25,7 +25,7 @@ const CamoVariantID = "CAMO"; //Camo skins.
 const TurboVariantID = "TURBO"; //KFTurbo sticker skins.
 const VMVariantID = "VM"; //VM sticker skins.
 const WLVariantID = "WEST"; //Westlondon sticker skins.
-const CyberVariantID = "CYB"; //Westlondon sticker skins.
+const CyberVariantID = "CYB"; //Cyber Weapon skins.
 
 //Special variants - accessible to specific players.
 const RetartVariantID = "RET";
