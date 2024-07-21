@@ -4,7 +4,6 @@ var KFPlayerReplicationInfo OwningReplicationInfo;
 
 struct MarkedActorInfo
 {
-    var Actor MarkedActor;
     var Vector Location;
 
     var class<Actor> ActorClass;
@@ -15,6 +14,7 @@ struct MarkedActorInfo
     var float MarkDuration;
 };
 
+var Actor MarkedActor;
 var MarkedActorInfo MarkInfo;
 
 enum EMarkColor{
@@ -53,8 +53,10 @@ var localized String PlayerStringRight;
 
 replication
 {
+    reliable if( bNetInitial && ROLE == ROLE_Authority)
+        OwningReplicationInfo;
 	reliable if( Role==ROLE_Authority )
-		MarkInfo, MarkerColor;
+		MarkedActor, MarkInfo, MarkerColor;
 }
 
 simulated function PostBeginPlay()
@@ -95,7 +97,7 @@ function MarkActor(Actor Target)
         return;
     }
 
-    if (MarkInfo.MarkedActor == Target)
+    if (MarkedActor == Target)
     {
         MarkInfo.MarkTime = Level.TimeSeconds;
         return;
@@ -103,7 +105,7 @@ function MarkActor(Actor Target)
 
     ClearMarkedActor();
 
-    MarkInfo.MarkedActor = Target;
+    MarkedActor = Target;
     MarkInfo.Location = Target.Location;
 
     MarkInfo.ActorClass = Target.Class;
@@ -125,70 +127,68 @@ function MarkActor(Actor Target)
 
 function ClearMarkedActor()
 {
-    MarkInfo.MarkedActor = None;
+    MarkedActor = None;
     MarkInfo.ActorClass = None;
     MarkInfo.DataClass = None;
     MarkInfo.MarkTime = -1;
     MarkInfo.MarkDuration = -1;
+
+    MarkDisplayString = "";
+    WorldZOffset = 0;
 
     Disable('Tick');
     
     NetUpdateTime = Level.TimeSeconds - 2.f;
 }
 
-function bool CanMarkActor(Actor Target)
+function bool CanMarkActor(Actor TargetActor)
 {
-    if (Target == None)
+    if (TargetActor == None)
     {
         return false;
     }
 
-    if (Pickup(Target) != None)
+    if (Pickup(TargetActor) != None)
     {
-        return Pickup(Target).InventoryType != None;
+        return Pickup(TargetActor).InventoryType != None || Vest(TargetActor) != None;
     }
 
-    if (Pawn(Target) != None)
+    if (Pawn(TargetActor) != None)
     {
-        return Pawn(Target).Health > 0;
+        return Pawn(TargetActor).Health > 0;
     }
 
     return false;
 }
 
-function class<Object> GetRelevantDataClass(Actor Target)
+function class<Object> GetRelevantDataClass(Actor TargetActor)
 {
-    if (Pickup(Target) != None && Pickup(Target).InventoryType != None)
+    if (Pickup(TargetActor) != None && Pickup(TargetActor).InventoryType != None)
     {
-        return Pickup(Target).InventoryType;
+        return Pickup(TargetActor).InventoryType;
     }
 
-    return Target.Class;
+    return TargetActor.Class;
 }
 
-function Object GetRelevantDataObject(Actor Target)
+function Object GetRelevantDataObject(Actor TargetActor)
 {
-    if (Pawn(Target) != None && Pawn(Target).PlayerReplicationInfo != None)
+    if (Pawn(TargetActor) != None && Pawn(TargetActor).PlayerReplicationInfo != None)
     {
-        return Pawn(Target).PlayerReplicationInfo;
+        return Pawn(TargetActor).PlayerReplicationInfo;
     }
 
     return None;
 }
 
-function float GetMarkDuration(Actor Target)
+function float GetMarkDuration(Actor TargetActor)
 {
     return 5.f;
 }
 
-function bool NeedsLocationTickUpdate(Actor Target)
-{
-    return false;
-}
-
 function bool HasMarkData()
 {
-    if (MarkInfo.MarkedActor == None)
+    if (MarkedActor == None)
     {
         return false;
     }
@@ -200,19 +200,13 @@ function Tick(float DeltaTime)
 {
     Super.Tick(DeltaTime);
 
-    if (MarkInfo.MarkedActor == None)
-    {
-        ClearMarkedActor();
-        return;
-    }
-
-    if (!CanMarkActor(MarkInfo.MarkedActor))
+    if (!CanMarkActor(MarkedActor))
     {
         ClearMarkedActor();
         return;
     }
     
-    MarkInfo.Location = MarkInfo.MarkedActor.Location;
+    MarkInfo.Location = MarkedActor.Location;
 }
 
 simulated function bool HasMarkUpdate()
@@ -227,31 +221,28 @@ simulated function bool HasMarkUpdate()
 
 simulated function OnReceivedMark()
 {
+    if (MarkInfo.MarkTime == -1.f)
+    {
+        ClearMarkedActor();
+    }
+
     MarkDisplayString = GenerateDisplayString();
     WorldZOffset = GetWorldZOffset();
 }
 
 simulated function String GenerateDisplayString()
 {
-    if (Pickup(MarkInfo.MarkedActor) != None)
+    if (Pickup(MarkedActor) != None || class<Pickup>(MarkInfo.ActorClass) != None)
     {
-        return PickupStringLeft$Pickup(MarkInfo.MarkedActor).InventoryType.default.ItemName$PickupStringRight;
-    }
-    else if(class<Pickup>(MarkInfo.ActorClass) != None)
-    {
-        return PickupStringLeft$class<Inventory>(MarkInfo.DataClass).default.ItemName$PickupStringRight;
+        return GeneratePickupDisplayString(Pickup(MarkedActor), class<Pickup>(MarkInfo.ActorClass));
     }
 
-    if (KFMonster(MarkInfo.MarkedActor) != None)
+    if (KFMonster(MarkedActor) != None || class<KFMonster>(MarkInfo.ActorClass) != None)
     {
-        return MonsterStringLeft$Caps(KFMonster(MarkInfo.MarkedActor).MenuName)$MonsterStringRight;
-    }
-    else if(class<KFMonster>(MarkInfo.ActorClass) != None)
-    {
-        return MonsterStringLeft$Caps(class<KFMonster>(MarkInfo.ActorClass).default.MenuName)$MonsterStringRight;
+        return GenerateMonsterDisplayString(KFMonster(MarkedActor), class<KFMonster>(MarkInfo.ActorClass));
     }
 
-    if (KFHumanPawn(MarkInfo.MarkedActor) != None || class<KFHumanPawn>(MarkInfo.ActorClass) != None)
+    if (KFHumanPawn(MarkedActor) != None || class<KFHumanPawn>(MarkInfo.ActorClass) != None)
     {
         if (KFPlayerReplicationInfo(MarkInfo.DataObject) != None)
         {
@@ -262,16 +253,55 @@ simulated function String GenerateDisplayString()
     return "";
 }
 
-simulated function float GetWorldZOffset()
+simulated function String GeneratePickupDisplayString(Pickup PickupActor, class<Pickup> PickupClass)
 {
-    if (KFMonster(MarkInfo.MarkedActor) != None || class<KFMonster>(MarkInfo.ActorClass) != None)
+    //Leverage localized values.
+    if (PickupActor != None)
     {
-        return GetMonsterZOffset(KFMonster(MarkInfo.MarkedActor), class<KFMonster>(MarkInfo.ActorClass));
+        if (Vest(MarkedActor) != None)
+        {
+            return PickupStringLeft$class'BuyableVest'.default.ItemName$PickupStringRight; //This text is "Combat armour".
+        }
+        else if (KFAmmoPickup(MarkedActor) != None)
+        {
+            return PickupStringLeft$GUILabel(class'GUIInvHeaderTabPanel'.default.Controls[1]).Caption$PickupStringRight; //This text is "ammo".
+        }
+    
+        return PickupStringLeft$Pickup(MarkedActor).InventoryType.default.ItemName$PickupStringRight;
     }
 
-    if (MarkInfo.MarkedActor != None)
+    if (class<Vest>(PickupClass) != None)
     {
-        return MarkInfo.MarkedActor.CollisionHeight;
+        return PickupStringLeft$class'BuyableVest'.default.ItemName$PickupStringRight; //This text is "Combat armour".
+    }
+    else if (class<KFAmmoPickup>(PickupClass) != None)
+    {
+        return PickupStringLeft$GUILabel(class'GUIInvHeaderTabPanel'.default.Controls[1]).Caption$PickupStringRight; //This text is "ammo".
+    }
+
+    return PickupStringLeft$class<Inventory>(MarkInfo.DataClass).default.ItemName$PickupStringRight;
+}
+
+simulated function String GenerateMonsterDisplayString(KFMonster Monster, class<KFMonster> MonsterClass)
+{
+    if (Monster != None)
+    {
+        return MonsterStringLeft$Caps(Monster.MenuName)$MonsterStringRight;
+    }
+    
+    return MonsterStringLeft$Caps(MonsterClass.default.MenuName)$MonsterStringRight;
+}
+
+simulated function float GetWorldZOffset()
+{
+    if (KFMonster(MarkedActor) != None || class<KFMonster>(MarkInfo.ActorClass) != None)
+    {
+        return GetMonsterZOffset(KFMonster(MarkedActor), class<KFMonster>(MarkInfo.ActorClass));
+    }
+
+    if (MarkedActor != None)
+    {
+        return MarkedActor.CollisionHeight;
     }
 
     if (MarkInfo.ActorClass != None)
@@ -335,7 +365,10 @@ defaultproperties
     MonsterStringLeft="["
     MonsterStringRight="]"
 
-    MarkerColorList(0)=(R=0,G=0,B=0,A=255) //Invalid
+    PickupStringLeft=""
+    PickupStringRight=""
+
+    MarkerColorList(0)=(R=255,G=255,B=255,A=255) //Invalid
     MarkerColorList(1)=(R=255,G=0,B=0,A=255) //Red
     MarkerColorList(2)=(R=0,G=255,B=0,A=255) //Green
     MarkerColorList(3)=(R=0,G=0,B=255,A=255) //Blue
@@ -344,27 +377,8 @@ defaultproperties
     MarkerColorList(6)=(R=0,G=255,B=255,A=255) //Cyan
     MarkerColorList(7)=(R=255,G=128,B=0,A=255) //Orange
     MarkerColorList(8)=(R=255,G=0,B=255,A=255) //Pink
-    MarkerColorList(9)=(R=50,G=255,B=50,A=255) //Lime
+    MarkerColorList(9)=(R=50,G=255,B=100,A=255) //Lime
     MarkerColorList(10)=(R=255,G=255,B=255,A=255) //White
     MarkerColorList(11)=(R=128,G=128,B=128,A=255) //Grey
-    MarkerColorList(12)=(R=255,G=255,B=255,A=255) //Black
+    MarkerColorList(12)=(R=0,G=0,B=0,A=255) //Black
 }
-
-/*
-
-enum EMarkColor{
-	Invalid,
-	Red,
-	Green,
-	Blue,
-	Yellow,
-	Purple,
-    Cyan,
-    Orange,
-    Pink,
-    Line,
-    White,
-    Grey,
-    Black
-};
- */
