@@ -111,7 +111,7 @@ simulated function Timer()
         return;
     }
 
-    if (CPRL.bRepCompleted)
+    if (!CPRL.bRepCompleted)
     {
         DebugPrint("CLIENT REP COMPLETED WAS FALSE", bIsAuthority);
         return;

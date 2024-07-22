@@ -401,7 +401,7 @@ simulated function ShowLoginMenu()
 	}
 }
 
-function InitializeSteamStatInt(byte Index, int Value)
+function ServerInitializeSteamStatInt(byte Index, int Value)
 {
 	local ClientPerkRepLink CPRL;
 	local SRCustomProgressInt Progress;
@@ -454,8 +454,11 @@ function InitializeSteamStatInt(byte Index, int Value)
 		return;
 	}
 
-	Progress.CurrentValue = Value;
-	Progress.ValueUpdated();
+	if (Progress.CurrentValue < Value)
+	{
+		Progress.CurrentValue = Value;
+		Progress.ValueUpdated();
+	}
 }
 
 exec function GetWeapon(class<Weapon> NewWeaponClass )
