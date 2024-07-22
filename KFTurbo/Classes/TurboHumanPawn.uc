@@ -20,24 +20,41 @@ simulated function Tick(float DeltaTime)
 	{
 		return;
 	}
-	
+
 	if (ShowStalkers())
 	{
 		SpotCloakedMonsters();
 	}
 }
 
+simulated function bool ShowStalkers()
+{
+	if ( KFPlayerReplicationInfo(PlayerReplicationInfo) != none && KFPlayerReplicationInfo(PlayerReplicationInfo).ClientVeteranSkill != none )
+	{
+		return KFPlayerReplicationInfo(PlayerReplicationInfo).ClientVeteranSkill.Static.ShowStalkers(KFPlayerReplicationInfo(PlayerReplicationInfo));
+	}
+
+	return false;
+}
+
 simulated function SpotCloakedMonsters()
 {
 	local P_Stalker Stalker;
 	local P_ZombieBoss Boss;
+	local float SpottingRange;
+	SpottingRange = 1600.f;
 
-	foreach CollidingActors(class'P_Stalker', Stalker, 1600.f)
+	if (IsLocallyControlled())
+	{
+		SpottingRange *= 0.25f;
+	}
+
+	foreach CollidingActors(class'P_Stalker', Stalker, SpottingRange)
 	{
 		Stalker.SpotStalker();
 	}
 
-	foreach CollidingActors(class'P_ZombieBoss', Boss, 1600.f)
+	foreach CollidingActors(class'P_ZombieBoss', Boss, SpottingRange)
 	{
 		Boss.SpotBoss();
 	}
