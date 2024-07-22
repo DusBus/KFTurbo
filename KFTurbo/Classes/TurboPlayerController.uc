@@ -170,7 +170,7 @@ function AttemptMarkActor(vector Start, vector End, Actor TargetActor)
 
 	if (TargetActor == None || TargetActor.bWorldGeometry)
 	{
-		foreach CollidingActors(class'Pickup', FoundPickup, 30.f, End)
+		foreach CollidingActors(class'Pickup', FoundPickup, 40.f, End)
 			break;
 
 		if (FoundPickup == None)
@@ -231,6 +231,7 @@ function ServerMarkActor(vector Start, vector End, Actor TargetActor, TurboPlaye
 exec function SetMarkColor(TurboPlayerReplicationInfo.EMarkColor Color)
 {
 	MarkColor = Color;
+	SaveConfig();
 }
 
 function ClientCloseBuyMenu()

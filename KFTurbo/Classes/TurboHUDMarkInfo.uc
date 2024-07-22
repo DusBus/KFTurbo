@@ -8,6 +8,8 @@ struct MarkInfoData
 
 var array<MarkInfoData> MarkInfoDataList;
 
+var Texture MarkBackplate;
+
 simulated function Initialize(TurboHUDKillingFloor OwnerHUD)
 {
 	Super.Initialize(OwnerHUD);
@@ -109,7 +111,7 @@ simulated function Render(Canvas C)
 	{
 		if (KFWeapon(KFPHUD.PawnOwner.Weapon).bAimingRifle)
 		{
-			OpacityScale *= 0.5f;
+			OpacityScale *= 0.33f;
 		}
 	}
 
@@ -142,6 +144,7 @@ function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float ScreenLocX, flo
 	local float BeaconScale;
 	local float OldZ;
 	local Color DrawColor;
+	local float BackplateSize;
 
 	Dist = vsize(MarkInfo.TPRI.GetMarkLocation() - KFPHUD.PlayerOwner.CalcViewLocation);
 	PlayerDistance = Dist;
@@ -162,30 +165,52 @@ function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float ScreenLocX, flo
 	C.Style = KFPHUD.ERenderStyle.STY_Alpha;
 
 	DrawColor = MarkInfo.TPRI.GetMarkerColor(MarkInfo.TPRI.MarkerColor);
-
-	C.Font = KFPHUD.LoadFontStatic(Min(8,BeaconScale));
-
 	C.FontScaleX = 1.f;
 	C.FontScaleY = 1.f;
 
 	DistanceString = int(PlayerDistance / 50.f)$"m";
+
+	TempX = ScreenLocX;
+	TempY = ScreenLocY;
 	
+	C.Font = KFPHUD.LoadFontStatic(Min(8,BeaconScale + 1));
+	C.TextSize(DistanceString, XL, YL);
+	TempY -= YL;
+	BackplateSize = YL * 2.f;
+
+	C.Font = KFPHUD.LoadFontStatic(Min(8,BeaconScale));
+	C.TextSize(MarkInfo.TPRI.MarkDisplayString, XL, YL);
+	TempY -= YL * 0.25f;
+	BackplateSize += YL;
+	BackplateSize *= 1.25f;
+
+	C.SetPos(TempX - (BackplateSize * 0.5f), TempY - (BackplateSize * 0.5f));
+	C.DrawColor = DrawColor;
+	C.DrawColor.A = int(float(BeaconAlpha) * 0.25f);
+	C.DrawTile(MarkBackplate, BackplateSize, BackplateSize, 0, 0, MarkBackplate.MaterialUSize(), MarkBackplate.MaterialVSize());	
+
 	//Draw distance.
+	C.Font = KFPHUD.LoadFontStatic(Min(8,BeaconScale + 1));
 	C.TextSize(DistanceString, XL, YL);
 	TempX = ScreenLocX - (XL * 0.5);
 	TempY = ScreenLocY - (YL * 1.f);
 
-	C.SetPos(TempX + 1.f, TempY + 1.f);
-	C.DrawColor = KFPHUD.BlackColor;
-	C.DrawColor.A = (float(BeaconAlpha) * 0.5f);
-	C.DrawTextClipped(DistanceString, false);
+	if (Min(8,BeaconScale + 1) < 7)
+	{
+		C.SetPos(TempX + 2.f, TempY + 2.f);
+		C.DrawColor = KFPHUD.BlackColor;
+		C.DrawColor.A = (float(BeaconAlpha) * 0.5f);
+		C.DrawTextClipped(DistanceString, false);
+	}
 
 	C.DrawColor = DrawColor;
 	C.DrawColor.A = BeaconAlpha;
+
 	C.SetPos(TempX, TempY);
 	C.DrawTextClipped(DistanceString, false);
 
 	//Draw mark name.
+	C.Font = KFPHUD.LoadFontStatic(Min(8,BeaconScale));
 	C.TextSize(MarkInfo.TPRI.MarkDisplayString, XL, YL);
 
 	TempX = ScreenLocX - (XL * 0.5);
@@ -193,7 +218,7 @@ function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float ScreenLocX, flo
 	TempX = int(TempX);
 	TempY = int(TempY);
 
-	C.SetPos(TempX + 1.f, TempY + 1.f);
+	C.SetPos(TempX + 2.f, TempY + 2.f);
 	C.DrawColor = KFPHUD.BlackColor;
 	C.DrawColor.A = (float(BeaconAlpha) * 0.5f);
 	C.DrawTextClipped(MarkInfo.TPRI.MarkDisplayString, false);
@@ -204,21 +229,24 @@ function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float ScreenLocX, flo
 	C.DrawTextClipped(MarkInfo.TPRI.MarkDisplayString, false);
 
 	//Draw mark instigator.
+	C.Font = KFPHUD.LoadFontStatic(Min(8,BeaconScale + 1));
 	C.TextSize(MarkInfo.PRI.PlayerName, XL, YL);
 
 	TempX = ScreenLocX - (XL * 0.5);
 	TempY = TempY - (YL * 0.75f);
 	TempX = int(TempX);
 	TempY = int(TempY);
-
-	C.SetPos(TempX + 1.f, TempY + 1.f);
-	C.DrawColor = KFPHUD.BlackColor;
-	C.DrawColor.A = (float(BeaconAlpha) * 0.5f);
-	C.DrawTextClipped(MarkInfo.PRI.PlayerName, false);
+	if (Min(8,BeaconScale + 1) < 7)
+	{
+		C.SetPos(TempX + 2.f, TempY + 2.f);
+		C.DrawColor = KFPHUD.BlackColor;
+		C.DrawColor.A = (float(BeaconAlpha) * 0.5f);
+		C.DrawTextClipped(MarkInfo.PRI.PlayerName, false);
+		C.DrawColor = DrawColor;
+		C.DrawColor.A = BeaconAlpha;
+	}
 
 	C.SetPos(TempX, TempY);
-	C.DrawColor = DrawColor;
-	C.DrawColor.A = BeaconAlpha;
 	C.DrawTextClipped(MarkInfo.PRI.PlayerName, false);
 	C.DrawColor = KFPHUD.BlackColor;
 
@@ -228,5 +256,5 @@ function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float ScreenLocX, flo
 
 defaultproperties
 {
-
+	MarkBackplate=Texture'KFTurbo.HUD.PerkBackplate_D'
 }

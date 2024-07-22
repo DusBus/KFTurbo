@@ -148,6 +148,20 @@ function ClearMarkedActor()
     NetUpdateTime = Level.TimeSeconds - 2.f;
 }
 
+final function bool IsAlreadyMarkedActor(Actor TargetActor)
+{
+    local TurboPlayerReplicationInfo TPRI;
+    foreach TargetActor.DynamicActors(class'TurboPlayerReplicationInfo', TPRI)
+    {
+        if (TPRI != Self && TPRI.MarkedActor == TargetActor)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function bool CanMarkActor(Actor TargetActor)
 {
     if (TargetActor == None)
@@ -157,12 +171,22 @@ function bool CanMarkActor(Actor TargetActor)
 
     if (Pickup(TargetActor) != None)
     {
-        return Pickup(TargetActor).InventoryType != None || CashPickup(TargetActor) != None || Vest(TargetActor) != None;
+        if (Pickup(TargetActor).InventoryType != None || CashPickup(TargetActor) != None || Vest(TargetActor) != None)
+        {
+            return !IsAlreadyMarkedActor(TargetActor);
+        }
+
+        return false;
     }
 
     if (Pawn(TargetActor) != None)
     {
-        return Pawn(TargetActor).Health > 0;
+        if (Pawn(TargetActor).Health > 0)
+        {
+            return !IsAlreadyMarkedActor(TargetActor);
+        }
+
+        return false;
     }
 
     return false;
@@ -224,7 +248,7 @@ simulated function bool CanMarkReceiveLocationUpdate()
     //If we're marking a zed, make sure if it's cloaked we're not providing locational updates.
     if (KFMonster(MarkedActor) != None)
     {
-        return !KFMonster(MarkedActor).bCloaked;
+        return !KFMonster(MarkedActor).bCloaked || KFMonster(MarkedActor).bSpotted;
     }
 
     return true;

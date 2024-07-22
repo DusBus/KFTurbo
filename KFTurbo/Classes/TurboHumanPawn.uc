@@ -16,6 +16,11 @@ simulated function Tick(float DeltaTime)
 
 	UpdateHealthHealingTo();
 
+	if (Level.NetMode == NM_DedicatedServer)
+	{
+		return;
+	}
+	
 	if (ShowStalkers())
 	{
 		SpotCloakedMonsters();
