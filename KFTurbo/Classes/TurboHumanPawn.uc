@@ -51,9 +51,9 @@ simulated function SpotCloakedMonsters()
 		return;
 	}
 
-	NextCloakCheckTime = Level.TimeSeconds + 0.75f + (FRand() * 0.25f); //Try to randomize 
+	NextCloakCheckTime = Level.TimeSeconds + 0.125f + (FRand() * 0.125f);
 
-	if (IsLocallyControlled())
+	if (!IsLocallyControlled())
 	{
 		SpottingRange *= 0.25f;
 	}
