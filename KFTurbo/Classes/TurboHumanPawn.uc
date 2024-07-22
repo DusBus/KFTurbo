@@ -10,6 +10,8 @@ replication
 
 var bool bDebugServerBuyWeapon;
 
+var float NextCloakCheckTime;
+
 simulated function Tick(float DeltaTime)
 {
 	Super.Tick(DeltaTime);
@@ -44,6 +46,13 @@ simulated function SpotCloakedMonsters()
 	local float SpottingRange;
 	SpottingRange = 1600.f;
 
+	if (NextCloakCheckTime > Level.TimeSeconds)
+	{
+		return;
+	}
+
+	NextCloakCheckTime = Level.TimeSeconds + 0.75f + (FRand() * 0.25f); //Try to randomize 
+
 	if (IsLocallyControlled())
 	{
 		SpottingRange *= 0.25f;
@@ -51,12 +60,18 @@ simulated function SpotCloakedMonsters()
 
 	foreach CollidingActors(class'P_Stalker', Stalker, SpottingRange)
 	{
-		Stalker.SpotStalker();
+		if (Stalker.Health > 0)
+		{
+			Stalker.SpotStalker();
+		}
 	}
 
 	foreach CollidingActors(class'P_ZombieBoss', Boss, SpottingRange)
 	{
-		Boss.SpotBoss();
+		if (Boss.Health > 0)
+		{
+			Boss.SpotBoss();
+		}
 	}
 }
 
