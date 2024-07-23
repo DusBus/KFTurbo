@@ -12,8 +12,8 @@ var TurboHUDOverlay PlayerInfoHUD;
 var class<TurboHUDOverlay> WaveInfoHUDClass;
 var TurboHUDOverlay WaveInfoHUD;
 
-var class<TurboHUDOverlay> PlayerHealthHUDClass;
-var TurboHUDOverlay PlayerHealthHUD;
+var class<TurboHUDOverlay> PlayerHUDClass;
+var TurboHUDOverlay PlayerHUD;
 
 var class<TurboHUDOverlay> MarkInfoHUDClass;
 var TurboHUDOverlay MarkInfoHUD;
@@ -32,9 +32,9 @@ simulated function PostBeginPlay()
 		WaveInfoHUDClass = class'TurboHUDWaveInfo';
 	}
 
-	if (PlayerHealthHUDClass == None)
+	if (PlayerHUDClass == None)
 	{
-		PlayerHealthHUDClass = class'TurboHUDPlayerHealth';
+		PlayerHUDClass = class'TurboHUDPlayer';
 	}
 
 	if (MarkInfoHUDClass == None)
@@ -48,8 +48,8 @@ simulated function PostBeginPlay()
 	WaveInfoHUD = Spawn(WaveInfoHUDClass, Self);
 	WaveInfoHUD.Initialize(Self);
 
-	PlayerHealthHUD = Spawn(PlayerHealthHUDClass, Self);
-	PlayerHealthHUD.Initialize(Self);
+	PlayerHUD = Spawn(PlayerHUDClass, Self);
+	PlayerHUD.Initialize(Self);
 
 	MarkInfoHUD = Spawn(MarkInfoHUDClass, Self);
 	MarkInfoHUD.Initialize(Self);
@@ -301,12 +301,10 @@ simulated function DrawHudPassA(Canvas C)
 {
 	Super.DrawHudPassA(C);
 
-	/*
-	if (PlayerHealthHUD != None)
+	if (PlayerHUD != None)
 	{
-		PlayerHealthHUD.Render(C);
+		PlayerHUD.Render(C);
 	}
-	*/
 }
 
 static function Font LoadFontStatic(int i)

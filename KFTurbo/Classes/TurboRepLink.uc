@@ -38,7 +38,29 @@ Begin:
         FailureCount++;
         if (FailureCount % 20 == 0)
         {
-            log("WARNING FAILURE LIMIT REACHED " $ FailureCount $ " TIMES ON " $ string(Self) $ ".", 'KFTurbo');
+            log("WARNING FAILURE LIMIT REACHED " $ FailureCount $ " TIMES ON " $ string(Self) $ " WAITING FOR PC.", 'KFTurbo');
+            if (FailureCount > 60)
+            {
+                Destroy();
+                stop;
+            }
+        }
+
+        Sleep(1.f);
+    }
+
+    FailureCount = 0;
+    while (!IsClientPerkRepLinkReady())
+    {
+        FailureCount++;
+        if (FailureCount % 20 == 0)
+        {
+            log("WARNING FAILURE LIMIT REACHED " $ FailureCount $ " TIMES ON " $ string(Self) $ "WAITING FOR CPRL.", 'KFTurbo');
+            if (FailureCount > 60)
+            {
+                Destroy();
+                stop;
+            }
         }
 
         Sleep(1.f);
@@ -65,6 +87,25 @@ Begin:
     Client_Reliable_SendComplete();
 
     Sleep(1.f);
+}
+
+simulated function bool IsClientPerkRepLinkReady()
+{
+    local ClientPerkRepLink CPRL;
+
+    CPRL = class'ClientPerkRepLink'.static.FindStats(OwningController);
+
+    if (CPRL == None)
+    {
+        return false;
+    }
+
+    if (CPRL.IsInState('RepSetup'))
+    {
+        return false;
+    }
+
+    return true;
 }
 
 simulated function InitializeRepSetup()
