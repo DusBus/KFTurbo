@@ -319,6 +319,17 @@ simulated function UnCloakStalker()
 	}
 }
 
+state ZombieDying
+{
+ignores AnimEnd, Trigger, Bump, HitWall, HeadVolumeChange, PhysicsVolumeChange, Falling, BreathTimer, Died, RangedAttack, SpawnTwoShots;
+
+    simulated function BeginState()
+    {
+        class'PawnHelper'.static.MonsterDied(Self, AfflictionData);
+        Super.BeginState();
+    }
+}
+
 defaultproperties
 {
 	CommandoSpotDuration=2.f

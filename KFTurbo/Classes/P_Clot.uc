@@ -125,6 +125,17 @@ simulated function Timer()
     }
 }
 
+state ZombieDying
+{
+ignores AnimEnd, Trigger, Bump, HitWall, HeadVolumeChange, PhysicsVolumeChange, Falling, BreathTimer, Died, RangedAttack, SpawnTwoShots;
+
+    simulated function BeginState()
+    {
+        class'PawnHelper'.static.MonsterDied(Self, AfflictionData);
+        Super.BeginState();
+    }
+}
+
 defaultproperties
 {
     Begin Object Class=AfflictionBurn Name=BurnAffliction
