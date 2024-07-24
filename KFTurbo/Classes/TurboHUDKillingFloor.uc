@@ -149,7 +149,6 @@ simulated function DrawGameHud(Canvas C)
 
 	PassStyle = STY_None;
 	DisplayLocalMessages(C);
-	DrawWeaponName(C);
 	DrawVehicleName(C);
 
 	PassStyle = STY_Alpha;
@@ -298,8 +297,37 @@ simulated function InitializeEndGameUI(bool bVictory)
 }
 
 simulated function DrawHudPassA(Canvas C)
-{
-	Super.DrawHudPassA(C);
+{	
+	DrawStoryHUDInfo(C);
+
+	DrawDoorHealthBars(C);
+
+	if (KFPlayerReplicationInfo(PawnOwnerPRI) != None && Class<SRVeterancyTypes>(KFPlayerReplicationInfo(PawnOwnerPRI).ClientVeteranSkill) != None)
+	{
+		Class<SRVeterancyTypes>(KFPlayerReplicationInfo(PawnOwnerPRI).ClientVeteranSkill).static.SpecialHUDInfo(KFPlayerReplicationInfo(PawnOwnerPRI), C);
+	}
+
+	if ( Level.TimeSeconds - LastVoiceGainTime < 0.333 )
+	{
+		if ( !bUsingVOIP && PlayerOwner != None && PlayerOwner.ActiveRoom != None &&
+			 PlayerOwner.ActiveRoom.GetTitle() == "Team" )
+		{
+			bUsingVOIP = true;
+			PlayerOwner.NotifySpeakingInTeamChannel();
+		}
+
+		DisplayVoiceGain(C);
+	}
+	else
+	{
+		bUsingVOIP = false;
+	}
+
+	if ( bDisplayInventory || bInventoryFadingOut )
+	{
+		DrawInventory(C);
+	}
+		
 
 	if (PlayerHUD != None)
 	{

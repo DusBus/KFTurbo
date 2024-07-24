@@ -103,7 +103,7 @@ static function byte PreDrawPerk(Canvas C, byte Level, out Material PerkIcon, ou
 	switch (Index)
 	{
 	case 0:
-		C.SetDrawColor(255, 64, 64, C.DrawColor.A);
+		C.SetDrawColor(255, 32, 32, C.DrawColor.A);
 		break;
 	case 1:
 		C.SetDrawColor(64, 179, 255, C.DrawColor.A);
