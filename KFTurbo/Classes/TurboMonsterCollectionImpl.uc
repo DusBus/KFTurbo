@@ -6,7 +6,8 @@ defaultproperties
 	Begin Object Class=TurboPlusWaveEarly Name=Wave1
           MaxMonsters=35
           TotalMonsters=35
-          BeatSize=1
+          BeatSize=0
+          MixInWaveMask=1 //Mask will filter out all MixIn squads in the list except for the first one (2^0 = 1).
 	End Object
 	WaveList(0)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave1'
 
