@@ -141,5 +141,4 @@ defaultproperties
      LevelNames(4)="Masterful"
      LevelNames(5)="Inhuman"
      LevelNames(6)="Godlike"
-     LevelNames(7)="Godlike"
 }
