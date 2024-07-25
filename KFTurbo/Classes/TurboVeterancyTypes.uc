@@ -103,25 +103,28 @@ static function byte PreDrawPerk(Canvas C, byte Level, out Material PerkIcon, ou
 	switch (Index)
 	{
 	case 0:
-		C.SetDrawColor(255, 32, 32, C.DrawColor.A);
+		C.SetDrawColor(255, 32, 32, C.DrawColor.A); //Red
 		break;
 	case 1:
-		C.SetDrawColor(64, 179, 255, C.DrawColor.A);
+		C.SetDrawColor(16, 235, 32, C.DrawColor.A); //Green
 		break;
 	case 2:
-		C.SetDrawColor(64, 255, 64, C.DrawColor.A);
+		C.SetDrawColor(16, 160, 255, C.DrawColor.A); //Blue
 		break;
 	case 3:
-		C.SetDrawColor(255, 207, 75, C.DrawColor.A);
+		C.SetDrawColor(120, 0, 255, C.DrawColor.A); //Purple
 		break;
 	case 4:
-		C.SetDrawColor(218, 116, 255, C.DrawColor.A);
+		C.SetDrawColor(255, 100, 255, C.DrawColor.A); //Pink
 		break;
 	case 5:
-		C.SetDrawColor(224, 211, 179, C.DrawColor.A);
+		C.SetDrawColor(255, 140, 0, C.DrawColor.A); //Orange
 		break;
 	case 6:
-		C.SetDrawColor(255, 119, 0, C.DrawColor.A);
+		C.SetDrawColor(255, 200, 0, C.DrawColor.A); //Gold
+		break;
+	case 7:
+		C.SetDrawColor(255, 235, 225, C.DrawColor.A); //Platinum
 		break;
 	}
 
@@ -130,12 +133,13 @@ static function byte PreDrawPerk(Canvas C, byte Level, out Material PerkIcon, ou
 
 defaultproperties
 {
-     LevelRankRequirement=10
-     StarTexture=Texture'KFTurbo.Perks.PerkStar_D'
+     LevelRankRequirement=5
+     StarTexture=Texture'KFTurbo.Perks.Star_D'
      LevelNames(1)="Experienced"
      LevelNames(2)="Skilled"
      LevelNames(3)="Adept"
      LevelNames(4)="Masterful"
      LevelNames(5)="Inhuman"
      LevelNames(6)="Godlike"
+     LevelNames(7)="Godlike"
 }
