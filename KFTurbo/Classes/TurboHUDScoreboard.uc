@@ -56,7 +56,6 @@ simulated event UpdateScoreBoard(Canvas Canvas)
 	local KFPlayerReplicationInfo OwnerPRI, KFPRI;
 	local int Index, PlayerCount;
 	local float EntrySizeY, TempY;
-	local float ScoreboardHeaderCenterX;
 
 	Canvas.Style = ERenderStyle.STY_Alpha;
 
