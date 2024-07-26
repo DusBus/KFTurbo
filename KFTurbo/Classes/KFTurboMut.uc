@@ -37,6 +37,8 @@ simulated function PostBeginPlay()
 		{
 			Spawn(class'TurboRepLinkTester', Self);
 		}
+		
+        class'TurboEventHandler'.static.RegisterHandler(Self, class'TurboEventHandlerImpl');
 	}
 
 	//Make sure fonts are added to server packages.

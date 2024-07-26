@@ -11,6 +11,7 @@ var Object DataObject;
 
 var float MarkTime;
 var float MarkDuration;
+var int HealthHealed;
 
 enum EMarkColor{
 	Invalid,
@@ -51,12 +52,13 @@ replication
     reliable if( bNetInitial && ROLE == ROLE_Authority)
         OwningReplicationInfo;
 	reliable if( Role==ROLE_Authority )
-		MarkedActor, MarkActorClass, MarkLocation, DataClass, DataObject, MarkDuration, MarkerColor;
+		MarkedActor, MarkActorClass, MarkLocation, DataClass, DataObject, MarkDuration, MarkerColor, HealthHealed;
 }
 
 simulated function PostBeginPlay()
 {
     Super.PostBeginPlay();
+
     Disable('Tick');
 }
 
