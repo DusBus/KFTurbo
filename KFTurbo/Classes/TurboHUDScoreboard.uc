@@ -257,7 +257,7 @@ defaultproperties
 {
 	ScoreboardHeaderSize=(X=0.6f,Y=0.1f)
 	ScoreboardSize=(X=0.5f,Y=0.6f)
-	ScoreboardBackplateColor=(R=16,G=16,B=16,A=180)
+	ScoreboardBackplateColor=(R=24,G=24,B=24,A=200)
 	ScoreboardBackplate=Texture'KFTurbo.Scoreboard.ScoreboardBackplate_D'
 	ScoreboardBackplateLeftColor=(R=4,G=4,B=4,A=220)
 	ScoreboardBackplateLeft=Texture'KFTurbo.Scoreboard.ScoreboardBackplateLeft_D'
@@ -273,26 +273,26 @@ defaultproperties
 
 	HealthOffsetX=0.275f
 	HealthSizeY=1.f
-	HealthIconColor=(R=4,G=4,B=4,A=180)
+	HealthIconColor=(R=0,G=0,B=0,A=200)
 	HealthIcon=Texture'KFTurbo.Scoreboard.ScoreboardHealth_D'
 
 	HealedHealthOffsetX=0.625f
-	HealedHealthSizeY=1.f
-	HealedHealthIconColor=(R=4,G=4,B=4,A=180)
+	HealedHealthSizeY=0.925f
+	HealedHealthIconColor=(R=0,G=0,B=0,A=200)
 	HealedHealthIcon=Texture'KFTurbo.Ammo.SyringeIcon_D'
 
 	KillsOffsetX=0.45f
 	KillSizeY=1.f
-	KillIconColor=(R=4,G=4,B=4,A=180)
+	KillIconColor=(R=0,G=0,B=0,A=200)
 	KillIcon=Texture'KFTurbo.Scoreboard.ScoreboardKill_D'
 
 	CashOffsetX=0.8f
-	CashSizeY=1.05f
-	CashIconColor=(R=4,G=4,B=4,A=180)
+	CashSizeY=1.125f
+	CashIconColor=(R=0,G=0,B=0,A=200)
 	CashIcon=Texture'KFTurbo.Scoreboard.ScoreboardCash_D'
 
 	PingOffsetX = 0.975f
-	PingSizeY = 0.9f
-	PingIconColor=(R=4,G=4,B=4,A=180)
+	PingSizeY = 0.95f
+	PingIconColor=(R=0,G=0,B=0,A=200)
 	PingIcon=Texture'KFTurbo.Scoreboard.ScoreboardPing_D'
 }

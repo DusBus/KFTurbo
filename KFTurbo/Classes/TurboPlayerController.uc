@@ -54,6 +54,22 @@ event ClientOpenMenu(string Menu, optional bool bDisconnect,optional string Msg1
 	Super.ClientOpenMenu(Menu, bDisconnect, Msg1, Msg2);	
 }
 
+simulated event ReceiveLocalizedMessage( class<LocalMessage> Message, optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject )
+{
+	switch(Message)
+	{
+		case class'KFMod.WaitingMessage':
+			Message = class'TurboMessageWaiting';
+			break;
+		case class'UnrealGame.PickupMessagePlus':
+			Message = class'TurboMessagePickup';
+			break;
+	}
+
+	log ("Message:"@Message);
+	Super.ReceiveLocalizedMessage(Message, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject);
+}
+
 exec function Trade()
 {
 	if (!class'KFTurboGameType'.static.StaticIsHighDifficulty(Self))

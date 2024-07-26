@@ -243,7 +243,53 @@ simulated function DrawKFHUDTextElements(Canvas C)
 	ShopDirPointer.bHidden = false;
 	C.DrawActor(ShopDirPointer, False, false);
 	ShopDirPointer.bHidden = true;
-	DrawTraderDistance(C);
+	DrawTurboTraderDistance(C);
+}
+
+simulated final function DrawTurboTraderDistance(Canvas C)
+{
+	local int       FontSize;
+	local float     StrWidth, StrHeight;
+	local string    TraderDistanceText;
+
+	if (PawnOwner == None || KFGRI == None)
+	{
+		return;
+	}
+
+	if ( KFGRI.CurrentShop != none )
+	{
+		TraderDistanceText = int(VSize(KFGRI.CurrentShop.Location - PawnOwner.Location) / 50) $ DistanceUnitString;
+	}
+	else
+	{
+		return;
+	}
+
+	if ( C.ClipX <= 800 )
+	{
+		FontSize = 7;
+	}
+	else if ( C.ClipX <= 1024 )
+	{
+		FontSize = 6;
+	}
+	else if ( C.ClipX <= 1280 )
+	{
+		FontSize = 5;
+	}
+	else
+	{
+		FontSize = 4;
+	}
+
+	C.FontScaleX = 1.f;
+	C.FontScaleY = 1.f;
+	C.Font = LoadFont(FontSize);
+	C.SetDrawColor(255, 255, 255, 200);
+	C.StrLen(class'TurboHUDOverlay'.static.GetStringOfZeroes(Len(TraderDistanceText)), StrWidth, StrHeight);
+	C.SetPos((C.SizeX / 18.0) - ((StrWidth + float((Len(TraderDistanceText) - 1) * 4)) / 2.0), C.SizeX / 10.0);
+	class'TurboHUDOverlay'.static.DrawTextMeticulous(C, TraderDistanceText, StrWidth + float((Len(TraderDistanceText) - 1) * 4));
 }
 
 simulated function DrawEndGameHUD(Canvas C, bool bVictory)
@@ -325,9 +371,9 @@ simulated function DrawHudPassA(Canvas C)
 
 	if ( bDisplayInventory || bInventoryFadingOut )
 	{
+		PassStyle = STY_Alpha;
 		DrawInventory(C);
 	}
-		
 
 	if (PlayerHUD != None)
 	{

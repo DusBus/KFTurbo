@@ -39,10 +39,28 @@ simulated function PostBeginPlay()
 		}
 		
         class'TurboEventHandler'.static.RegisterHandler(Self, class'TurboEventHandlerImpl');
+
+		SetupBroadcaster();
 	}
 
 	//Make sure fonts are added to server packages.
 	AddToPackageMap("KFTurboFonts");
+}
+
+function SetupBroadcaster()
+{
+	local TurboBroadcastHandler TurboBroadcastHandler;
+	TurboBroadcastHandler = Spawn(class'TurboBroadcastHandler', Self);
+
+	if(Level.Game.BroadcastHandler != None)
+	{
+		TurboBroadcastHandler.NextBroadcastHandler = Level.Game.BroadcastHandler;
+		Level.Game.BroadcastHandler = TurboBroadcastHandler;
+	}
+	else
+	{
+		Level.Game.BroadcastHandler = TurboBroadcastHandler;
+	}
 }
 
 static function string GetHUDReplacementClass(string HUDClassString)
