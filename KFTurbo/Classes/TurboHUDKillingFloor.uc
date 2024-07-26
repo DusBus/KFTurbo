@@ -55,6 +55,16 @@ simulated function PostBeginPlay()
 	MarkInfoHUD.Initialize(Self);
 }
 
+simulated function SetScoreBoardClass (class<Scoreboard> ScoreBoardClass)
+{
+	if (ScoreBoardClass == class'KFScoreBoard' || ScoreBoardClass == class'SRScoreBoard')
+	{
+		ScoreBoardClass = class'TurboHUDScoreboard';
+	}
+
+	Super.SetScoreboardClass(ScoreBoardClass);
+}
+
 simulated function Tick(float DeltaTime)
 {
 	Super.Tick(DeltaTime);

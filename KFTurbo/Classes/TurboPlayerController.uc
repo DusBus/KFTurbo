@@ -65,8 +65,7 @@ simulated event ReceiveLocalizedMessage( class<LocalMessage> Message, optional i
 			Message = class'TurboMessagePickup';
 			break;
 	}
-
-	log ("Message:"@Message);
+	
 	Super.ReceiveLocalizedMessage(Message, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject);
 }
 
