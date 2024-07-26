@@ -62,7 +62,8 @@ simulated event UpdateScoreBoard(Canvas Canvas)
 
 	PlayerCount = 0;
 	OwnerPRI = KFPlayerReplicationInfo(KFPlayerController(Owner).PlayerReplicationInfo);
-	DrawScoreboardHeader(OwnerPRI);
+	TempY = ((1.f - ScoreboardSize.Y) * 0.3f) * Canvas.ClipY;
+	DrawScoreboardHeader(Canvas, TempY, ((1.f - ScoreboardSize.Y) * 0.25f) * Canvas.ClipY);
 
 	for ( Index = 0; Index < GRI.PRIArray.Length; Index++)
 	{
@@ -95,17 +96,66 @@ simulated event UpdateScoreBoard(Canvas Canvas)
 			continue;
 		}
 
-		DrawPlayerEntry(Canvas, KFPRI, EntrySizeY, TempY);
+		DrawPlayerEntry(Canvas, KFPRI, EntrySizeY, TempY, OwnerPRI == KFPRI);
 		TempY += EntrySizeY * 1.2f;	
 	}
 }
 
-simulated function DrawScoreboardHeader(KFPlayerReplicationInfo KFPRI)
+simulated function DrawScoreboardHeader(Canvas Canvas, float CenterY, float SizeY)
 {
+	local string DrawString;
+	local float TextSizeX, TextSizeY;
+	local float CenterX;
+	local KF_StoryObjective Objective;
 
+	CenterX = Canvas.ClipX * 0.5f;
+
+	Canvas.DrawColor = Canvas.MakeColor(255, 255, 255, 255);
+
+	//Draw Difficulty
+	Canvas.FontScaleX = 1.f;
+	Canvas.FontScaleY = 1.f;
+	Canvas.Font = class'KFTurboFonts'.static.LoadFontStatic(2);
+	DrawString = SkillLevel[Clamp(InvasionGameReplicationInfo(GRI).BaseDifficulty, 0, 7)];
+	Canvas.TextSize(DrawString, TextSizeX, TextSizeY);
+	Canvas.FontScaleY = (SizeY * 0.125f) / (TextSizeY * 0.5f);
+	Canvas.FontScaleX = Canvas.FontScaleY;
+	Canvas.TextSize(DrawString, TextSizeX, TextSizeY);
+	Canvas.SetPos(CenterX - (TextSizeX * 0.5f), CenterY - (SizeY * 0.25f));
+	Canvas.DrawText(DrawString);
+
+	//Draw Map Name
+	DrawString = Level.Title;
+	Canvas.TextSize(DrawString, TextSizeX, TextSizeY);
+	Canvas.SetPos(CenterX - (TextSizeX * 0.5f), CenterY - (SizeY * 0.05f));
+	Canvas.DrawText(DrawString);
+
+	//Draw Wave
+	if(KF_StoryGRI(GRI) != none)
+	{
+		Objective = KF_StoryGRI(GRI).GetCurrentObjective();
+		if(Objective != none)
+		{
+			DrawString = Objective.HUD_Header.Header_Text;
+		}
+	}
+	else
+	{
+		DrawString = WaveString @ (InvasionGameReplicationInfo(GRI).WaveNumber + 1);
+	}
+
+	Canvas.TextSize(DrawString, TextSizeX, TextSizeY);
+	Canvas.SetPos(CenterX - (TextSizeX * 0.5f), CenterY + (SizeY * 0.15f));
+	Canvas.DrawText(DrawString);
+	
+	//Draw Time
+	DrawString = FormatTime(GRI.ElapsedTime);
+	Canvas.TextSize(class'TurboHUDOverlay'.static.GetStringOfZeroes(Len(DrawString)), TextSizeX, TextSizeY);
+	Canvas.SetPos(CenterX - (TextSizeX * 0.5f), CenterY + (SizeY * 0.35f));
+	class'TurboHUDOverlay'.static.DrawCounterTextMeticulous(Canvas, DrawString, TextSizeX, 1.f);
 }
 
-simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI, float SizeY, float PositionY)
+simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI, float SizeY, float PositionY, bool bIsLocalPlayer)
 {
 	local float CenterX, CenterY;
 	local float SizeX;
@@ -124,6 +174,12 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 	
 	TempX = CenterX - (SizeX * 0.5f);
 	Canvas.DrawColor = ScoreboardBackplateColor;
+
+	if (bIsLocalPlayer)
+	{
+		Canvas.DrawColor.A = 220;
+	}
+
 	Canvas.SetPos(TempX, PositionY);
 	Canvas.DrawTileScaled(ScoreboardBackplate, ScoreboardSize.X * Canvas.ClipX / float(ScoreboardBackplate.USize), SizeY / float(ScoreboardBackplate.VSize));
 
@@ -257,7 +313,7 @@ defaultproperties
 {
 	ScoreboardHeaderSize=(X=0.6f,Y=0.1f)
 	ScoreboardSize=(X=0.5f,Y=0.6f)
-	ScoreboardBackplateColor=(R=24,G=24,B=24,A=200)
+	ScoreboardBackplateColor=(R=24,G=24,B=24,A=160)
 	ScoreboardBackplate=Texture'KFTurbo.Scoreboard.ScoreboardBackplate_D'
 	ScoreboardBackplateLeftColor=(R=4,G=4,B=4,A=220)
 	ScoreboardBackplateLeft=Texture'KFTurbo.Scoreboard.ScoreboardBackplateLeft_D'
