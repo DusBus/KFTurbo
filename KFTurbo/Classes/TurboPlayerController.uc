@@ -64,6 +64,9 @@ simulated event ReceiveLocalizedMessage( class<LocalMessage> Message, optional i
 		case class'UnrealGame.PickupMessagePlus':
 			Message = class'TurboMessagePickup';
 			break;
+		case class'ServerPerks.KFVetEarnedMessageSR':
+			Message = class'TurboMessageVeterancy';
+			break;
 	}
 	
 	Super.ReceiveLocalizedMessage(Message, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject);
