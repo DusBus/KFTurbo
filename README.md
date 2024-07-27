@@ -16,8 +16,10 @@ KFTurbo has a changelog containing all gameplay changes [here](./changelog.md).
 To play KFTurbo, make sure [Server Perks](https://forums.tripwireinteractive.com/index.php?threads/mut-per-server-stats.36898/) and [Server Achievements](https://github.com/scaryghost/ServerAchievements) are installed on the server. Once those are installed, download the latest `KFTurbo.zip` from the [releases page](https://github.com/KFPilot/KFTurbo/releases) and drag and drop all the files in the `StagedKFTurboGitHub` folder into the server's `System` folder. Releases come with a `ServerPerks.ini` and `ServerAchievements.ini` which provide the default setup for KFTurbo.
 
 The following are required to be set in a server's launch command for KFTurbo to function properly at startup;
-- `?game=KFTurbo.KFTurboGameType`
-- `?Mutator=ServerPerksMut.ServerPerksMut,ServerAchievements.SAMutator,KFTurbo.KFTurboMut,KFTurboServer.KFTurboServerMut`
+
+`?game=KFTurbo.KFTurboGameType`
+
+`?Mutator=ServerPerksMut.ServerPerksMut,ServerAchievements.SAMutator,KFTurbo.KFTurboMut,KFTurboServer.KFTurboServerMut`
 
 To play with the Randomizer mutator, add `KFTurboRandomizer.KFTurboRandomizerMut` to the list of mutators.
 
