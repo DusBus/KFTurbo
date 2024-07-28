@@ -24,6 +24,10 @@ function Texture GetIconForPickup(String VariantID)
             return Texture'KFTurbo.HUD.SkellIcon_D';
         case "SHOWME":
             return Texture'KFTurbo.HUD.ShowMeProIcon_D';
+        case "CYB":
+            return Texture'KFTurbo.HUD.CyberIcon_D';
+        case "STP":
+            return Texture'KFTurbo.HUD.SteampunkIcon_D';
     }
 
     return Texture'KFTurbo.HUD.StickerIcon_D';
