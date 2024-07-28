@@ -34,6 +34,7 @@ var array<Color> MarkerColorList;
 
 var class<Actor> LastReceivedActorClass;
 var float LastReceivedMarkTime;
+var Object LastKnownDataObject;
 
 var String MarkDisplayString;
 var float WorldZOffset;
@@ -100,6 +101,11 @@ function MarkActor(Actor Target)
     }
     
     if (!CanMarkActor(Target))
+    {
+        return;
+    }
+
+    if (IsAlreadyMarkedActor(Target))
     {
         return;
     }
@@ -175,7 +181,12 @@ function bool CanMarkActor(Actor TargetActor)
     {
         if (Pickup(TargetActor).InventoryType != None || CashPickup(TargetActor) != None || Vest(TargetActor) != None)
         {
-            return !IsAlreadyMarkedActor(TargetActor);
+            return true;
+        }
+
+        if (KFAmmoPickup(TargetActor) != None)
+        {
+            return !TargetActor.bHidden;
         }
 
         return false;
@@ -183,12 +194,7 @@ function bool CanMarkActor(Actor TargetActor)
 
     if (Pawn(TargetActor) != None)
     {
-        if (Pawn(TargetActor).Health > 0)
-        {
-            return !IsAlreadyMarkedActor(TargetActor);
-        }
-
-        return false;
+        return Pawn(TargetActor).Health > 0;
     }
 
     return false;
@@ -258,7 +264,7 @@ simulated function bool CanMarkReceiveLocationUpdate()
 
 simulated function bool HasMarkUpdate()
 {
-    if (MarkActorClass == LastReceivedActorClass && MarkTime == LastReceivedMarkTime)
+    if (MarkActorClass == LastReceivedActorClass && MarkTime == LastReceivedMarkTime && LastKnownDataObject == DataObject)
     {
         return false;
     }
@@ -273,6 +279,7 @@ simulated function OnReceivedMark()
 
     LastReceivedActorClass = MarkActorClass;
     LastReceivedMarkTime = MarkTime;
+    LastKnownDataObject = DataObject;
 }
 
 simulated function String GenerateDisplayString()
@@ -445,6 +452,10 @@ function TryMonsterVoiceLine(KFMonster MarkedMonster)
     else if (ZombieScrake(MarkedActor) != None)
     {
         PlayerController(Owner).Speech('AUTO', 14, "");
+    }
+    else if (ZombieSiren(MarkedActor) != None)
+    {
+        PlayerController(Owner).Speech('AUTO', 15, "");
     }
 }
 
