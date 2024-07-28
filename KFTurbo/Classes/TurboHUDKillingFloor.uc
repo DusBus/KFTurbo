@@ -256,6 +256,80 @@ simulated function DrawKFHUDTextElements(Canvas C)
 	DrawTurboTraderDistance(C);
 }
 
+
+simulated function DrawSpectatingHud(Canvas C)
+{
+	local rotator CamRot;
+	local vector CamPos, ViewDir, ScreenPos;
+	local KFPawn KFBuddy;
+
+	DrawModOverlay(C);
+
+	if( bHideHud )
+	{
+		return;
+	}
+
+	PlayerOwner.PostFX_SetActive(0, false);
+
+	if (MarkInfoHUD != None)
+	{
+		MarkInfoHUD.Render(C);
+	}
+
+	if (PlayerInfoHUD != None)
+	{
+		PlayerInfoHUD.Render(C);
+	}
+
+	if (WaveInfoHUD != None)
+	{
+		WaveInfoHUD.Render(C);
+	}
+
+	DrawFadeEffect(C);
+
+	if ( KFPlayerController(PlayerOwner) != None && KFPlayerController(PlayerOwner).ActiveNote != None )
+	{
+		KFPlayerController(PlayerOwner).ActiveNote = None;
+	}
+
+	if( KFGameReplicationInfo(Level.GRI) != none && KFGameReplicationInfo(Level.GRI).EndGameType > 0 )
+	{
+		if( KFGameReplicationInfo(Level.GRI).EndGameType == 2 )
+		{
+			DrawEndGameHUD(C, True);
+			DrawStoryHUDInfo(C);
+			return;
+		}
+		else
+		{
+			DrawEndGameHUD(C, False);
+		} 
+	}
+
+	DrawKFHUDTextElements(C);
+	DisplayLocalMessages(C);
+
+	if ( bShowScoreBoard && ScoreBoard != None )
+	{
+		ScoreBoard.DrawScoreboard(C);
+	}
+
+	if ( bShowPortrait && Portrait != None )
+	{
+		DrawPortraitX(C);
+	}
+	
+	if ( bDrawHint )
+	{
+		DrawHint(C);
+	}
+	
+	DrawStoryHUDInfo(C);
+}
+
+
 simulated final function DrawTurboTraderDistance(Canvas C)
 {
 	local int       FontSize;
