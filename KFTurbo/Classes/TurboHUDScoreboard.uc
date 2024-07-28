@@ -51,7 +51,7 @@ var(Layout) float PingTextSizeY;
 var(Color) Color PingIconColor;
 var Texture PingIcon;
 
-simulated event UpdateScoreBoard(Canvas Canvas)
+simulated function UpdateScoreBoard(Canvas Canvas)
 {
 	local KFPlayerReplicationInfo OwnerPRI, KFPRI;
 	local int Index, PlayerCount;
@@ -179,8 +179,21 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 		Canvas.DrawColor.A = 220;
 	}
 
-	Canvas.SetPos(TempX, PositionY);
+	Canvas.SetPos(int(TempX), PositionY);
 	Canvas.DrawTileScaled(ScoreboardBackplate, ScoreboardSize.X * Canvas.ClipX / float(ScoreboardBackplate.USize), SizeY / float(ScoreboardBackplate.VSize));
+	
+	Canvas.DrawColor = Canvas.MakeColor(255, 255, 255, 32);
+	Canvas.SetPos(TempX + 1.f, ((PositionY + SizeY) - 1.f) - (SizeY * 0.04f));
+	Canvas.DrawTileScaled(ScoreboardBackplate, ((ScoreboardSize.X * Canvas.ClipX / float(ScoreboardBackplate.USize)) * FClamp((KFPRI.PlayerHealth / 100.f), 0.f, 1.f)) * (((ScoreboardSize.X * Canvas.ClipX) - 2.f) / (ScoreboardSize.X * Canvas.ClipX)), (SizeY / float(ScoreboardBackplate.VSize)) * 0.04f);
+
+	if (bIsLocalPlayer)
+	{
+		Canvas.DrawColor.A = 220;
+	}
+	else
+	{
+		Canvas.DrawColor.A = ScoreboardBackplateColor.A;
+	}
 
 	//Draw Perk
 	TempX += SizeX * PerkIconOffsetX;
@@ -188,7 +201,7 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 	{
 		NumStars = Class<SRVeterancyTypes>(KFPRI.ClientVeteranSkill).static.PreDrawPerk(Canvas, KFPRI.ClientVeteranSkillLevel, PerkIcon, PerkStarIcon);
 
-		Canvas.SetPos(TempX - (SizeX * PerkIconOffsetX), PositionY);
+		Canvas.SetPos(int(TempX - (SizeX * PerkIconOffsetX)), PositionY);
 		Canvas.DrawTileScaled(ScoreboardBackplateLeft, SizeY / float(ScoreboardBackplateLeft.USize), SizeY / float(ScoreboardBackplateLeft.VSize));
 
 		Canvas.SetPos(TempX, CenterY - (SizeY * PerkIconSizeY * 0.5f));
