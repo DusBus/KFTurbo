@@ -1,5 +1,12 @@
 class TurboBuyMenuSettings extends Object;
 
+var localized String HintDefault;
+var localized String GoldDefault;
+var localized String CamoDefault;
+var localized String CyberDefault;
+var localized String SteampunkDefault;
+var localized String StickerDefault;
+
 function Texture GetIconForPickup(String VariantID)
 {
     switch (VariantID)
@@ -38,11 +45,15 @@ function String GetHintForPickup(String VariantID)
     switch (VariantID)
     {
         case "DEF":
-            return "Default";
+            return HintDefault;
         case "GOLD":
-            return "Gold";
+            return GoldDefault;
         case "CAMO":
-            return "Camo";
+            return CamoDefault;
+        case "CYB":
+            return CyberDefault;
+        case "STP":
+            return SteampunkDefault;
         case "TURBO":
         case "VM":
         case "WEST":
@@ -50,8 +61,18 @@ function String GetHintForPickup(String VariantID)
         case "SCUD":
         case "CUBIC":
         case "SHOWME":
-            return "Sticker";
+            return StickerDefault;
     }
     
-    return "Sticker";
+    return StickerDefault;
+}
+
+defaultproperties
+{
+    HintDefault = "Default"
+    GoldDefault = "Gold"
+    CamoDefault = "Camo"
+    CyberDefault = "Cyber"
+    SteampunkDefault = "Steampunk"
+    StickerDefault = "Sticker"
 }

@@ -31,16 +31,16 @@ static function GetPos(int Switch, out EDrawPivot OutDrawPivot, out EStackMode O
 		    OutPosY = 0.4f;
 		    break;
 		case 4:
-			OutPosY = 0.7f;
+			OutPosY = 0.8f;
 			break;
 		case 5:
-			OutPosY = 0.7f;
+			OutPosY = 0.8f;
 			break;
 		case 6:
-			OutPosY = 0.7f;
+			OutPosY = 0.8f;
 			break;
 		case 7:
-			OutPosY = 0.7f;
+			OutPosY = 0.8f;
 			break;
 	}
 }
@@ -63,7 +63,7 @@ static function RenderComplexMessage(
 
 	TempY = Canvas.CurY;
 
-	Canvas.FontScaleX = FMin(Canvas.ClipY / 1080.f, 1.f);
+	Canvas.FontScaleX = FMax(Canvas.ClipY / 2160.f, 0.5f);
 	Canvas.FontScaleY = Canvas.FontScaleX;
 
 	if ( i < 0 )
@@ -89,15 +89,6 @@ static function RenderComplexMessage(
 
 defaultproperties
 {
-	WarningMessage(0)="HereTheyCome5"
-	WarningMessage(1)="HereTheyCome2"
-	WaveInboundMessage="NEXT WAVE INBOUND!"
-	SurvivedMessage="WAVE COMPLETED!|GET TO THE TRADER!"
-	FinalWaveInboundMessage="FINAL WAVE INBOUND"
-	WeldedShutMessage="This door is welded shut.|Use the Welder's alt-fire to unweld."
-	ZEDTimeActiveMessage="ZED TIME ACTIVATED!"
-	DoorMessage="Press '%Use%' to open/close the door.|Use the Welder to seal closed doors."
-	PickupMessage="Press '%Use%' to pick up Z.E.D. gun piece."
 	bComplexString=True
 	DrawColor=(G=0)
 	FontSize=5
