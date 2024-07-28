@@ -9,6 +9,10 @@ var Sound HelpMeSound;
 var float LastCommandoSpotTime;
 var float CommandoSpotDuration;
 
+var int SneakFailureCount;
+var int ChargeDurationIncreaseFailureCount; //How many failures (when trying to cloak charge) do we need before we start increasing charge duration?
+var int ChargeSpeedIncreaseFailureCount; //How many failures (when trying to cloak charge) do we need before we start increasing charge speed?
+
 simulated function PostBeginPlay()
 {
     Super.PostBeginPlay();
@@ -237,9 +241,99 @@ function float NumPlayersHeadHealthModifer()
     return class'PawnHelper'.static.GetHeadHealthModifier(self, Level);
 }
 
+state SneakAround
+{
+	function Tick( float Delta )
+	{
+    	if( Role == ROLE_Authority && bShotAnim)
+    	{
+    		if( bChargingPlayer )
+    		{
+                bChargingPlayer = false;
+
+        		if( Level.NetMode!=NM_DedicatedServer )
+				{
+        			PostNetReceive();
+				}
+    		}
+
+            SetGroundSpeed(GetOriginalGroundSpeed());
+        }
+        else
+        {
+    		if( !bChargingPlayer )
+    		{
+                bChargingPlayer = true;
+
+        		if( Level.NetMode!=NM_DedicatedServer )
+				{
+        			PostNetReceive();
+				}
+    		}
+
+			SetGroundSpeed(OriginalGroundSpeed * GetSneakSpeedMultiplier());
+        }
+
+
+		Global.Tick(Delta);
+	}
+
+Begin:
+	CloakBoss();
+	While( true )
+	{
+		Sleep(0.5);
+
+		if( Level.TimeSeconds - SneakStartTime > GetSneakDuration() )
+		{
+			OnSneakFailed();
+            GoToState('');
+		}
+
+		if( !bCloaked && !bShotAnim )
+		{
+			CloakBoss();
+		}
+
+		if( !Controller.IsInState('ZombieHunt') && !Controller.IsInState('WaitForAnim') )
+		{
+        	Controller.GoToState('ZombieHunt');
+        }
+	}
+}
+
+function float GetSneakDuration()
+{
+	return 10.f * GetSneakDurationMultiplier();
+}
+
+function float GetSneakDurationMultiplier()
+{
+	return 1.f + (float(Max(SneakFailureCount - ChargeDurationIncreaseFailureCount, 0)) * 0.25f);
+}
+
+function float GetSneakSpeedMultiplier()
+{
+	if (bZapped)
+	{
+		return 1.5f + (float(Max(SneakFailureCount - ChargeSpeedIncreaseFailureCount, 0)) * 0.1f);
+	}
+	
+	return 2.5f + (float(Max(SneakFailureCount - ChargeSpeedIncreaseFailureCount, 0)) * 0.1f);
+}
+
+function OnSneakFailed()
+{
+	SneakFailureCount++;
+}
+
 defaultproperties
 {
-    CommandoSpotDuration=2.f;
+    CommandoSpotDuration=2.f
+
+	SneakFailureCount=0
+	ChargeDurationIncreaseFailureCount=1
+	ChargeSpeedIncreaseFailureCount=4
 
     //NOTE: Affliction move speed modifiers are not used by the boss. They exist, but are not used.
     Begin Object Class=AfflictionBurn Name=BurnAffliction
