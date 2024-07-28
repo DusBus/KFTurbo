@@ -18,33 +18,45 @@ simulated function PostBeginPlay()
 {
 	Super.PostBeginPlay();
 
-	if(Role == ROLE_Authority)
-	{
-		if (!ClassIsChildOf(Level.Game.PlayerControllerClass, class'TurboPlayerController'))
-		{
-			Level.Game.PlayerControllerClass = class'TurboPlayerController';
-			Level.Game.PlayerControllerClassName = string(class'TurboPlayerController');
-		}
-
-		Level.Game.HUDType = GetHUDReplacementClass(Level.Game.HUDType);
-
-		DeathMatch(Level.Game).LoginMenuClass = string(class'TurboInvasionLoginMenu');
-
-		//Every 5 seconds check if our queued spawn has a replaceable zed.
-		CustomZedHandler = Spawn(class'TurboCustomZedHandler', self);
-
-		if (bDebugClientPerkRepLink)
-		{
-			Spawn(class'TurboRepLinkTester', Self);
-		}
-		
-        class'TurboEventHandler'.static.RegisterHandler(Self, class'TurboEventHandlerImpl');
-
-		SetupBroadcaster();
-	}
-
 	//Make sure fonts are added to server packages.
 	AddToPackageMap("KFTurboFonts");
+
+	if(Role != ROLE_Authority)
+	{
+		return;
+	}
+
+	if (!ClassIsChildOf(Level.Game.PlayerControllerClass, class'TurboPlayerController'))
+	{
+		Level.Game.PlayerControllerClass = class'TurboPlayerController';
+		Level.Game.PlayerControllerClassName = string(class'TurboPlayerController');
+	}
+
+	Level.Game.HUDType = GetHUDReplacementClass(Level.Game.HUDType);
+
+	if (DeathMatch(Level.Game) != None)
+	{
+		DeathMatch(Level.Game).LoginMenuClass = string(class'TurboInvasionLoginMenu');
+	}
+
+	CustomZedHandler = Spawn(class'TurboCustomZedHandler', self);
+
+	if (bDebugClientPerkRepLink)
+	{
+		Spawn(class'TurboRepLinkTester', Self);
+	}
+	
+	class'TurboEventHandler'.static.RegisterHandler(Self, class'TurboEventHandlerImpl');
+
+	SetupBroadcaster();
+
+	if (TeamGame(Level.Game) != None)
+	{
+		if (TeamGame(Level.Game).FriendlyFireScale <= 0.f)
+		{
+			TeamGame(Level.Game).FriendlyFireScale = 0.001f;
+		}
+	}
 }
 
 function SetupBroadcaster()

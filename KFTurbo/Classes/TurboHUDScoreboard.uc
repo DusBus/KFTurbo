@@ -236,7 +236,7 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 	TempX = (CenterX - (SizeX * 0.5f)) + (SizeX * UsernameOffsetX);
 	TempY = CenterY;
 	Canvas.SetPos(TempX, CenterY - (TextSizeY * 0.5f));
-	class'TurboHUDOverlay'.static.DrawCounterTextMeticulous(Canvas, DrawText, TextSizeX, 1.f);
+	Canvas.DrawText(DrawText);
 
 	//Draw Kills
 	Canvas.DrawColor = KillIconColor;
@@ -315,10 +315,26 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 	Canvas.DrawTileScaled(PingIcon, (SizeY * PingSizeY) / float(PingIcon.USize), (SizeY * PingSizeY) / float(PingIcon.VSize));
 
 	Canvas.DrawColor = ScoreboardTextColor;
-	DrawText = string(KFPRI.Ping);
+	DrawText = Eval(KFPRI.bBot, Eval(BotText != "", BotText, "BOT"), string(KFPRI.Ping * 4));
 	Canvas.TextSize(DrawText, TextSizeX, TextSizeY);
 	Canvas.SetPos(TempX - (TextSizeX * 0.5f), CenterY - (TextSizeY * 0.5f));
 	class'TurboHUDOverlay'.static.DrawCounterTextMeticulous(Canvas, DrawText, TextSizeX, 1.f);
+
+	if (KFPRI.bAdmin)
+	{
+		DrawText = Eval(AdminText != "", AdminText, "ADMIN");
+
+		Canvas.DrawColor = Canvas.MakeColor(255, 0, 0, 255);
+		Canvas.FontScaleX = 1.f;
+		Canvas.FontScaleY = 1.f;
+		Canvas.Font = class'KFTurboFonts'.static.LoadFontStatic(6);
+		Canvas.TextSize(DrawText, TextSizeX, TextSizeY);
+		Canvas.FontScaleX = (SizeY * 0.5f) / TextSizeY;
+		Canvas.FontScaleY = Canvas.FontScaleX;
+		Canvas.TextSize(DrawText, TextSizeX, TextSizeY);
+		Canvas.SetPos(TempX - (TextSizeX * 0.5f), PositionY - (TextSizeY * 0.5f));
+		Canvas.DrawText(DrawText);
+	}
 }
 
 defaultproperties
