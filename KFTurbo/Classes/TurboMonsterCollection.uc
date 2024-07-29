@@ -184,7 +184,7 @@ final function PrepareSequence(int WaveNumber)
      }
 }
 
-final function float GetDifficultModifier(float GameDifficulty)
+final function float GetDifficultyModifier(float GameDifficulty)
 {
     if ( GameDifficulty >= 7.0 ) // Hell on Earth
     {
@@ -229,7 +229,7 @@ final function float GetPlayerCountModifier(int PlayerCount)
 
 final function int GetWaveTotalMonsters(int WaveNumber, float GameDifficulty, int PlayerCount )
 {
-     return float(WaveList[Clamp(WaveNumber, 0, 9)].TotalMonsters) * GetDifficultModifier(GameDifficulty) * GetPlayerCountModifier(PlayerCount);
+     return float(WaveList[Clamp(WaveNumber, 0, 9)].TotalMonsters) * GetDifficultyModifier(GameDifficulty) * GetPlayerCountModifier(PlayerCount);
 }
 
 final function int GetWaveMaxMonsters(int WaveNumber, float GameDifficulty, int PlayerCount)

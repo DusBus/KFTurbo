@@ -18,6 +18,12 @@ simulated event OnStatsAndAchievementsReady()
 	local class<KFWeapon> WeaponClass;
 	local ClientPerkRepLink CPRL;
 
+	if (Link == None || PCOwner == None)
+	{
+		LifeSpan = 1.f;
+		return;
+	}
+
 	InitStatInt(OwnedWeaponDLC, GetOwnedWeaponDLC());
 
 	for (WeaponIndex = Link.PlayerVariantList.Length - 1; WeaponIndex >= 0; --WeaponIndex)
@@ -72,7 +78,7 @@ simulated event OnStatsAndAchievementsReady()
 		}
 	}
 
-	CPRL = class'ClientPerkRepLink'.static.FindStats(Link.OwningController);
+	CPRL = class'ClientPerkRepLink'.static.FindStats(PCOwner);
 	for(WeaponIndex = (CPRL.ShopInventory.Length - 1); WeaponIndex>=0; --WeaponIndex)
 	{
 		if(CPRL.ShopInventory[WeaponIndex].bDLCLocked == 0 )

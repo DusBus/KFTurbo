@@ -64,21 +64,21 @@ defaultproperties
 	Begin Object Class=TurboMonsterCollectionSquad Name=EarlyMixInSquad1
           Squad(0)=(Monster=Scrake,Count=2)
           Squad(1)=(Monster=Clot,Count=1)
-          Squad(1)=(Monster=Stalker,Count=2)
+          Squad(2)=(Monster=Stalker,Count=2)
 	End Object
 	MixInSquad(1)=TurboMonsterCollectionSquad'KFTurbo.TurboPlusWaveEarly.EarlyMixInSquad1'
 
 	Begin Object Class=TurboMonsterCollectionSquad Name=EarlyMixInSquad2
           Squad(0)=(Monster=Husk,Count=1)
           Squad(1)=(Monster=Scrake,Count=1)
-          Squad(1)=(Monster=Gorefast,Count=1)
+          Squad(2)=(Monster=Gorefast,Count=1)
 	End Object
 	MixInSquad(2)=TurboMonsterCollectionSquad'KFTurbo.TurboPlusWaveEarly.EarlyMixInSquad2'
 
 	Begin Object Class=TurboMonsterCollectionSquad Name=EarlyMixInSquad3
           Squad(0)=(Monster=Siren,Count=1)
           Squad(1)=(Monster=Scrake,Count=1)
-          Squad(0)=(Monster=Bloat,Count=1)
+          Squad(2)=(Monster=Bloat,Count=1)
 	End Object
 	MixInSquad(3)=TurboMonsterCollectionSquad'KFTurbo.TurboPlusWaveEarly.EarlyMixInSquad3'
 
@@ -92,7 +92,7 @@ defaultproperties
           Squad(0)=(Monster=Fleshpound,Count=1)
 	End Object
 	BeatSquad(0)=TurboMonsterCollectionSquad'KFTurbo.TurboPlusWaveEarly.EarlyBeatSquad0'
-}
+
 	Begin Object Class=TurboMonsterCollectionSquad Name=EarlyBeatSquad1
           Squad(0)=(Monster=Scrake,Count=2)
           Squad(1)=(Monster=Siren,Count=1)
@@ -104,3 +104,4 @@ defaultproperties
           Squad(1)=(Monster=Stalker,Count=5)
 	End Object
 	BeatSquad(2)=TurboMonsterCollectionSquad'KFTurbo.TurboPlusWaveEarly.EarlyBeatSquad2'
+}
