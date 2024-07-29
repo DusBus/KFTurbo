@@ -16,6 +16,7 @@ simulated event OnStatsAndAchievementsReady()
 {
 	local int WeaponIndex, VariantIndex, WeaponLockID;
 	local class<KFWeapon> WeaponClass;
+	local ClientPerkRepLink CPRL;
 
 	InitStatInt(OwnedWeaponDLC, GetOwnedWeaponDLC());
 
@@ -71,7 +72,44 @@ simulated event OnStatsAndAchievementsReady()
 		}
 	}
 
-	//Link.DebugVariantInfo(false);
+	CPRL = class'ClientPerkRepLink'.static.FindStats(Link.OwningController);
+	for(WeaponIndex = (CPRL.ShopInventory.Length - 1); WeaponIndex>=0; --WeaponIndex)
+	{
+		if(CPRL.ShopInventory[WeaponIndex].bDLCLocked == 0 )
+		{
+			continue;
+		}
+		
+		WeaponLockID = class<KFWeapon>(CPRL.ShopInventory[WeaponIndex].PC.Default.InventoryType).Default.AppID;
+		if(WeaponLockID != 0)
+		{
+			if(PlayerOwnsWeaponDLC(WeaponLockID))
+			{
+				CPRL.ShopInventory[WeaponIndex].bDLCLocked = 0;
+			}
+			else if(class<KFWeapon>(CPRL.ShopInventory[WeaponIndex].PC.Default.InventoryType).Default.UnlockedByAchievement != -1)
+			{
+				CPRL.ShopInventory[WeaponIndex].bDLCLocked = 2; // Special hack for dwarf axe.
+			}
+			else
+			{
+				CPRL.ShopInventory[WeaponIndex].bDLCLocked = 1;
+			}
+
+			continue;
+		}
+
+		WeaponLockID = class<KFWeapon>(CPRL.ShopInventory[WeaponIndex].PC.Default.InventoryType).Default.UnlockedByAchievement;
+
+		if( Achievements[WeaponLockID].bCompleted == 1 )
+		{
+			CPRL.ShopInventory[WeaponIndex].bDLCLocked = 0;
+		}
+		else
+		{
+			CPRL.ShopInventory[WeaponIndex].bDLCLocked = 2;
+		}
+	}
 
 	UpdatePerkStats();
 

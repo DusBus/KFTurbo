@@ -1,8 +1,37 @@
-class TurboRepLink extends LinkedReplicationInfo
-    dependson(TurboRepLinkSettings);
+class TurboRepLink extends LinkedReplicationInfo;
+
+// Built-in Variant Set Names:
+//Common variants - accessible to all players.
+const DefaultID = "DEF"; //All non-variants.
+const GoldVariantID = "GOLD"; //Gold skins.
+const CamoVariantID = "CAMO"; //Camo skins.
+const TurboVariantID = "TURBO"; //KFTurbo sticker skins.
+const VMVariantID = "VM"; //VM sticker skins.
+const WLVariantID = "WEST"; //Westlondon sticker skins.
+const CyberVariantID = "CYB"; //Cyber Weapon skins.
+const SteampunkVariantID = "STP"; //Steampunk weapon skins.
+
+//Special variants - accessible to specific players.
+const RetartVariantID = "RET";
+const ScuddlesVariantID = "SCUD";
+const CubicVariantID = "CUBIC";
+const SMPVariantID = "SHOWME";
+
+struct VariantWeapon
+{
+    var class<KFWeaponPickup> VariantClass;
+    var String VariantID;
+    var int ItemStatus;
+};
+
+struct WeaponVariantData
+{
+    var class<KFWeaponPickup> WeaponPickup;
+    var array<VariantWeapon> VariantList;
+};
 
 //This local player's variant list.
-var array<TurboRepLinkSettings.WeaponVariantData> PlayerVariantList;
+var array<WeaponVariantData> PlayerVariantList;
 
 var KFTurboMut KFTurboMutator;
 var KFPlayerController OwningController;
@@ -10,88 +39,141 @@ var KFPlayerReplicationInfo OwningReplicationInfo;
 var String PlayerID;
 var array<String> PlayerGroups;
 
-var int WeaponIndex;
-var int VariantIndex;
-
 var int FailureCount;
+var bool bNeedsDestroy;
 var bool bHasPerformedSetup;
 var bool bHasPerformedVariantStatusUpdate;
 
 replication
 {
     reliable if (Role == ROLE_Authority)
-        Client_Reliable_SendVariant, Client_Reliable_SendComplete;
+        Client_Reliable_SetupComplete;
+}
+
+simulated function PreBeginPlay()
+{
+    Super.PreBeginPlay();
+
+    if (Role == ROLE_Authority)
+    {
+        return;
+    }
+
+    if (OwningController == None)
+    {
+        OwningController = KFPlayerController(Level.GetLocalPlayerController());
+    }
+
+    if (OwningReplicationInfo == None)
+    {
+        OwningReplicationInfo = KFPlayerReplicationInfo(OwningController.PlayerReplicationInfo);
+    }
+}
+
+function PostBeginPlay()
+{
+    Super.PostBeginPlay();
+    Disable('Tick');
+}
+
+function CleanUpRepLink()
+{
+    bNeedsDestroy = true;
+    Enable('Tick');
+}
+
+function IncrementFailureCounter()
+{
+    FailureCount++;
+    if (FailureCount % 20 == 0)
+    {
+        log("WARNING FAILURE LIMIT REACHED " $ FailureCount $ " TIMES ON " $ string(Self) $ "WAITING FOR CPRL.", 'KFTurbo');
+        if (FailureCount > 60)
+        {
+            CleanUpRepLink();
+        }
+    }
 }
 
 state RepSetup
 {
+    function Tick(float DeltaTime)
+    {
+        Global.Tick(DeltaTime);
+
+        if (bNeedsDestroy)
+        {
+            Destroy();
+        }
+    }
+
 Begin:
     if (Level.NetMode == NM_Client)
     {
         Stop;
     }
 
-    Sleep(1.f);
-
-    while (OwningController == None)
-    {
-        FailureCount++;
-        if (FailureCount % 20 == 0)
-        {
-            log("WARNING FAILURE LIMIT REACHED " $ FailureCount $ " TIMES ON " $ string(Self) $ " WAITING FOR PC.", 'KFTurbo');
-            if (FailureCount > 60)
-            {
-                Destroy();
-                stop;
-            }
-        }
-
-        Sleep(1.f);
-    }
-
     FailureCount = 0;
     while (!IsClientPerkRepLinkReady())
     {
-        FailureCount++;
-        if (FailureCount % 20 == 0)
-        {
-            log("WARNING FAILURE LIMIT REACHED " $ FailureCount $ " TIMES ON " $ string(Self) $ "WAITING FOR CPRL.", 'KFTurbo');
-            if (FailureCount > 60)
-            {
-                Destroy();
-                stop;
-            }
-        }
-
-        Sleep(1.f);
+        IncrementFailureCounter();
+        Sleep(0.5f);
     }
 
-    SetupPlayerInfo();
-    Sleep(1.f);
+    Sleep(0.25f);
+
+    if (!IsClientPerkRepLinkReady())
+    {
+        log ("CPRL Failed Completely!");
+        stop;
+    }
     
     if (NetConnection(OwningController.Player) == None)
     {
         UpdateVariantStatus();
-        Stop;
     }
-
-    for (WeaponIndex = 0; WeaponIndex < PlayerVariantList.Length; WeaponIndex++)
+    else
     {
-        for (VariantIndex = 0; VariantIndex < PlayerVariantList[WeaponIndex].VariantList.Length; VariantIndex++)
-        {
-            Client_Reliable_SendVariant(PlayerVariantList[WeaponIndex].WeaponPickup, PlayerVariantList[WeaponIndex].VariantList[VariantIndex]);
-        }
-        Sleep(0.1f);
+        Client_Reliable_SetupComplete();
     }
 
-    Client_Reliable_SendComplete();
+    Sleep(0.25f);
 
-    Sleep(1.f);
+    if (!IsClientPerkRepLinkReady())
+    {
+        stop;
+    }
+
+    CachePlayerStats();
+    GotoState('');
+}
+
+simulated function CachePlayerStats()
+{
+    local ClientPerkRepLink CPRL;
+    CPRL = class'ClientPerkRepLink'.static.FindStats(OwningController);
+    
+    if (CPRL == None)
+    {
+        return;
+    }
+
+    //Add way to cache perk values here and then provide bonuses to them later.
 }
 
 simulated function bool IsClientPerkRepLinkReady()
 {
     local ClientPerkRepLink CPRL;
+
+    if (bNeedsDestroy)
+    {
+        return false;
+    }
+
+    if (OwningController == None)
+    {
+        return false;
+    }
 
     CPRL = class'ClientPerkRepLink'.static.FindStats(OwningController);
 
@@ -100,7 +182,7 @@ simulated function bool IsClientPerkRepLinkReady()
         return false;
     }
 
-    if (CPRL.IsInState('RepSetup'))
+    if (Level.NetMode != NM_Client && CPRL.IsInState('RepSetup'))
     {
         return false;
     }
@@ -113,23 +195,145 @@ simulated function InitializeRepSetup()
     GotoState('RepSetup');
 }
 
-function SetupPlayerInfo()
+simulated function SetupPlayerInfo()
 {
+    local int ShopIndex;
+    local int VariantIndex;
+    local ClientPerkRepLink CPRL;
+    local class<KFWeaponPickup> WeaponPickup, VariantPickup;
+    local int PlayerVariantListIndex, PlayerVariantListVariantIndex;
+    local VariantWeapon VariantData;
+
     if (bHasPerformedSetup)
     {
         return;
     }
 
-    bHasPerformedSetup = true;
+    CPRL = class'ClientPerkRepLink'.static.FindStats(OwningController);
 
-    PlayerID = OwningController.GetPlayerIDHash();
+    bHasPerformedSetup = true;
+    PlayerVariantList.Length = 0;
+
+    for (ShopIndex = CPRL.ShopInventory.Length - 1; ShopIndex >= 0; ShopIndex--)
+    {
+        WeaponPickup = class<KFWeaponPickup>(CPRL.ShopInventory[ShopIndex].PC);
+
+        if (WeaponPickup.default.VariantClasses.Length == 0)
+        {
+            continue;
+        }
+
+        PlayerVariantListIndex = PlayerVariantList.Length;
+        PlayerVariantList.Insert(PlayerVariantListIndex, 1);
+
+        PlayerVariantList[PlayerVariantListIndex].WeaponPickup = WeaponPickup;
     
-	KFTurboMutator.InitializeRepLinkSettings();
-    KFTurboMutator.RepLinkSettings.GeneratePlayerVariantData(PlayerID, PlayerVariantList);
+        for (VariantIndex = 0; VariantIndex < WeaponPickup.default.VariantClasses.Length; VariantIndex++)
+        {
+            VariantPickup = class<KFWeaponPickup>(WeaponPickup.default.VariantClasses[VariantIndex]);
+
+            if (VariantPickup == None)
+            {
+                continue;
+            }
+
+            VariantData.VariantClass = VariantPickup;
+            SetupVariantWeaponEntry(VariantData);
+
+            PlayerVariantListVariantIndex = PlayerVariantList[PlayerVariantListIndex].VariantList.Length;
+            PlayerVariantList[PlayerVariantListIndex].VariantList.Insert(PlayerVariantListVariantIndex, 1);
+            PlayerVariantList[PlayerVariantListIndex].VariantList[PlayerVariantListVariantIndex] = VariantData;
+        }
+    }
+}
+
+simulated function SetupVariantWeaponEntry(out VariantWeapon Entry)
+{
+    Entry.VariantID = "";
+
+    if (AssignSpecialVariantID(Entry))
+    {
+        return;
+    }
+
+    if (IsGenericGoldSkin(Entry.VariantClass))
+    {
+        Entry.VariantID = GoldVariantID;
+        Entry.ItemStatus = 255; //Flag Gold weapons as awaiting DLC update.
+    }
+    else if (IsGenericCamoSkin(Entry.VariantClass))
+    {
+        Entry.VariantID = CamoVariantID;
+        Entry.ItemStatus = 255; //Flag Camo weapons as awaiting DLC update.
+    }
+    else if (IsGenericSteampunkSkin(Entry.VariantClass))
+    {
+        Entry.VariantID = SteampunkVariantID;
+        Entry.ItemStatus = 255; //Flag Dr T's as awaiting DLC update.
+    }
+    else if (IsGenericTurboSkin(Entry.VariantClass))
+    {
+        Entry.VariantID = TurboVariantID;
+        Entry.ItemStatus = 0;
+    }
+    else if (IsGenericVMSkin(Entry.VariantClass))
+    {
+        Entry.VariantID = VMVariantID;
+        Entry.ItemStatus = 0;
+    }
+    else if (IsGenericWestLondonSkin(Entry.VariantClass))
+    {
+        Entry.VariantID = WLVariantID;
+        Entry.ItemStatus = 0;
+    }
+    else if (IsGenericCyberSkin(Entry.VariantClass))
+    {
+        Entry.VariantID = CyberVariantID;
+        Entry.ItemStatus = 0;
+    }
+    else
+    {
+        Entry.VariantID = DefaultID;
+        Entry.ItemStatus = 0;
+    }
+}
+
+simulated function bool AssignSpecialVariantID(out VariantWeapon Entry)
+{
+    switch (Entry.VariantClass)
+    {
+        case class'W_V_M4203_Retart_Pickup' :
+            Entry.VariantID = RetartVariantID;
+            Entry.ItemStatus = 0;
+            break;
+        case class'W_V_M4203_Scuddles_Pickup' :
+            Entry.VariantID = ScuddlesVariantID;
+            Entry.ItemStatus = 0;
+            break;
+        case class'W_V_M14_Cubic_Pickup' :
+            Entry.VariantID = CubicVariantID;
+            Entry.ItemStatus = 0;
+            break;
+        case class'W_V_M14_SMP_Pickup' :
+        case class'W_V_AA12_SMP_Pickup' :
+            Entry.VariantID = SMPVariantID;
+            Entry.ItemStatus = 0;
+            break;
+    }
+
+    return Entry.VariantID != "";
 }
 
 simulated function UpdateVariantStatus()
 {
+    if (!IsClientPerkRepLinkReady())
+    {
+        return;
+    }
+
+    SetupPlayerInfo();
+    //DebugVariantInfo(false);
+
     if (bHasPerformedVariantStatusUpdate)
     {
         return;
@@ -158,46 +362,24 @@ simulated function DebugVariantInfo(bool bFilterStatus)
             VariantSet = VariantSet $ " | " $ j $ ": " $ PlayerVariantList[i].VariantList[j].VariantClass $ " (" $ PlayerVariantList[i].VariantList[j].ItemStatus $ ")";
         }
 
-        //log(VariantSet, 'KFTurbo');
+        log(VariantSet, 'KFTurbo');
     }
 
     if (PlayerVariantList.Length == 0)
     {
-        //log("WARNING: PlayerVariantList was empty!", 'KFTurbo');
+        log("WARNING: PlayerVariantList was empty!", 'KFTurbo');
     }
 }
 
-simulated function Client_Reliable_SendVariant(class<KFWeaponPickup> Pickup, TurboRepLinkSettings.VariantWeapon Variant)
-{
-    local int i;
-
-    for (i = 0; i < PlayerVariantList.Length; i++)
-    {
-        if (PlayerVariantList[i].WeaponPickup != Pickup)
-        {
-            continue;
-        }
-
-        PlayerVariantList[i].VariantList[PlayerVariantList[i].VariantList.Length] = Variant;
-        return;
-    }
-
-    i = PlayerVariantList.Length;
-    PlayerVariantList.Length = i + 1;
-
-    PlayerVariantList[i].WeaponPickup = Pickup;
-    PlayerVariantList[i].VariantList[0] = Variant;
-}
-
-simulated function Client_Reliable_SendComplete()
+simulated function Client_Reliable_SetupComplete()
 {
     UpdateVariantStatus();
 }
 
-simulated function GetVariantsForWeapon(class<KFWeaponPickup> Pickup, out array<TurboRepLinkSettings.VariantWeapon> VariantList)
+simulated function GetVariantsForWeapon(class<KFWeaponPickup> Pickup, out array<VariantWeapon> VariantList)
 {
     local int i;
-
+    
     for (i = 0; i < PlayerVariantList.Length; i++)
     {
         if (PlayerVariantList[i].WeaponPickup != Pickup)
@@ -237,6 +419,41 @@ static function TurboRepLink GetTurboRepLink(PlayerReplicationInfo PRI)
     }
 
     return None;
+}
+
+static final function bool IsGenericGoldSkin(class<Pickup> PickupClass)
+{
+	return InStr(Caps(PickupClass), "_GOLD_") != -1;
+}
+
+static final function bool IsGenericCamoSkin(class<Pickup> PickupClass)
+{
+	return InStr(Caps(PickupClass), "_CAMO_") != -1;
+}
+
+static final function bool IsGenericTurboSkin(class<Pickup> PickupClass)
+{
+	return InStr(Caps(PickupClass), "_TURBO_") != -1;
+}
+
+static final function bool IsGenericVMSkin(class<Pickup> PickupClass)
+{
+	return InStr(Caps(PickupClass), "_VM_") != -1;
+}
+
+static final function bool IsGenericWestLondonSkin(class<Pickup> PickupClass)
+{
+	return InStr(Caps(PickupClass), "_WL_") != -1;
+}
+
+static final function bool IsGenericCyberSkin(class<Pickup> PickupClass)
+{
+	return InStr(Caps(PickupClass), "_CYBER_") != -1;
+}
+
+static final function bool IsGenericSteampunkSkin(class<Pickup> PickupClass)
+{
+	return InStr(Caps(PickupClass), "_STP_") != -1;
 }
 
 defaultproperties

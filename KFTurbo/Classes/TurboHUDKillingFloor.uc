@@ -259,10 +259,6 @@ simulated function DrawKFHUDTextElements(Canvas C)
 
 simulated function DrawSpectatingHud(Canvas C)
 {
-	local rotator CamRot;
-	local vector CamPos, ViewDir, ScreenPos;
-	local KFPawn KFBuddy;
-
 	DrawModOverlay(C);
 
 	if( bHideHud )

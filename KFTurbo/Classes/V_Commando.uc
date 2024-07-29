@@ -9,6 +9,12 @@ static function AddCustomStats(ClientPerkRepLink Other)
 	Other.AddCustomValue(class'VP_BullpupDamage');
 }
 
+static function int GetStalkerKillStatAsDamage(ClientPerkRepLink StatOther)
+{
+	return StatOther.RBullpupDamageStat + StatOther.GetCustomValueInt(class'VP_BullpupDamage')
+		+ (float(StatOther.GetCustomValueInt(class'VP_StalkerKills')) * (class'P_Stalker'.default.HealthMax * 1.5f));
+}
+
 static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int FinalInt, byte CurLevel, byte ReqNum)
 {
 	switch (CurLevel)
@@ -38,7 +44,7 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 		FinalInt = 5500000 + GetScaledRequirement(CurLevel - 5, 500000);
 	}
 
-	return Min(StatOther.RBullpupDamageStat + StatOther.GetCustomValueInt(class'VP_BullpupDamage'), FinalInt);
+	return Min(GetStalkerKillStatAsDamage(StatOther), FinalInt);
 }
 
 static function SpecialHUDInfo(KFPlayerReplicationInfo KFPRI, Canvas C)

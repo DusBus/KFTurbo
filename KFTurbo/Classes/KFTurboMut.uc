@@ -9,8 +9,6 @@ class KFTurboMut extends Mutator
 var TurboCustomZedHandler CustomZedHandler;
 
 var config String RepLinkSettingsClassString;
-var class<TurboRepLinkSettings> RepLinkSettingsClass;
-var TurboRepLinkSettings RepLinkSettings;
 
 var config bool bDebugClientPerkRepLink;
 
@@ -85,31 +83,6 @@ static function string GetHUDReplacementClass(string HUDClassString)
 	}
 
 	return HUDClassString;
-}
-
-//Called every time a ServerStStats is made (but we only want to do this once).
-function InitializeRepLinkSettings()
-{
-	if (Role != ROLE_Authority)
-	{
-		return;
-	}
-
-	if (RepLinkSettings != none)
-	{
-		return;
-	}
-
-	log("Attempting setup of RepLinkSettingsClass with"@RepLinkSettingsClassString, 'KFTurbo');
-	RepLinkSettingsClass = class<TurboRepLinkSettings>(DynamicLoadObject(RepLinkSettingsClassString, class'Class'));
-
-	if (RepLinkSettingsClass == none)
-	{
-		RepLinkSettingsClass = class'TurboRepLinkSettings';
-	}
-
-	RepLinkSettings = new(self) RepLinkSettingsClass;
-	RepLinkSettings.Initialize();
 }
 
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
@@ -198,7 +171,7 @@ simulated function String GetHumanReadableName()
 
 defaultproperties
 {
-	bDebugClientPerkRepLink=true
+	bDebugClientPerkRepLink=false
 	bAddToServerPackages=True
 	GroupName="KF-KFTurbo"
 	FriendlyName="Killing Floor Turbo"
