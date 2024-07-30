@@ -29,6 +29,67 @@ simulated function Tick(float DeltaTime)
 	}
 }
 
+
+function VeterancyChanged()
+{
+	local Inventory CurrentInventory;
+	local KFWeapon CurrentWeapon;
+	local KFPlayerReplicationInfo KFPRI;
+	local int MaxAmmo;
+
+	MaxCarryWeight = Default.MaxCarryWeight;
+
+	KFPRI = KFPlayerReplicationInfo(PlayerReplicationInfo);
+
+	if ( KFPRI != none && KFPRI.ClientVeteranSkill != none )
+	{
+		MaxCarryWeight += KFPRI.ClientVeteranSkill.Static.AddCarryMaxWeight(KFPRI);
+	}
+
+	if ( CurrentWeight > MaxCarryWeight ) // Now carrying too much, drop something.
+	{
+		CurrentInventory = Inventory;
+
+		while (CurrentInventory != None)
+		{
+			CurrentWeapon = KFWeapon(CurrentInventory);
+			CurrentInventory = CurrentInventory.Inventory;
+
+			if (CurrentWeapon == None || CurrentWeapon.bKFNeverThrow)
+			{
+				continue;
+			}
+
+			CurrentWeapon.Velocity = Velocity;
+			CurrentWeapon.DropFrom(Location + (VRand() * 10.f));
+
+			if ( CurrentWeight <= MaxCarryWeight )
+			{
+				break; // Drop weapons until player is capable of carrying them all.
+			}
+		}
+	}
+
+	// Make sure nothing is over the Max Ammo amount when changing Veterancy
+	for ( CurrentInventory = Inventory; CurrentInventory != none; CurrentInventory = CurrentInventory.Inventory )
+	{
+		if ( Ammunition(CurrentInventory) != none )
+		{
+			MaxAmmo = Ammunition(CurrentInventory).default.MaxAmmo;
+
+			if ( KFPRI != none && KFPRI.ClientVeteranSkill != none )
+			{
+				MaxAmmo = float(MaxAmmo) * KFPRI.ClientVeteranSkill.static.AddExtraAmmoFor(KFPRI, Ammunition(CurrentInventory).Class);
+			}
+
+			if ( Ammunition(CurrentInventory).AmmoAmount > MaxAmmo )
+			{
+				Ammunition(CurrentInventory).AmmoAmount = MaxAmmo;
+			}
+		}
+	}
+}
+
 simulated function bool ShowStalkers()
 {
 	if ( KFPlayerReplicationInfo(PlayerReplicationInfo) != none && KFPlayerReplicationInfo(PlayerReplicationInfo).ClientVeteranSkill != none )
