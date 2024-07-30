@@ -15,7 +15,7 @@ simulated function Timer()
  
 	PlayerController = PlayerController(Owner);
 
-	if (PlayerController.PlayerReplicationInfo == None)
+	if (PlayerController == None || PlayerController.PlayerReplicationInfo == None)
     {
 		return;
     }

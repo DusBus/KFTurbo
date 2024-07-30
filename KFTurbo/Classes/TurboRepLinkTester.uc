@@ -103,6 +103,13 @@ simulated function Timer()
     }
 
     DebugPrint("FINDING CPRL FOR LOCAL PLAYER", bIsAuthority);
+
+    if (LocalPlayerController == none)
+    {
+        DebugPrint("LocalPlayerController IS NULL.", bIsAuthority);
+        return;
+    }
+
     CPRL = class'ClientPerkRepLink'.static.FindStats(LocalPlayerController);
 
     if (CPRL == None)

@@ -244,7 +244,7 @@ function bool SetupLoadoutTypes()
 	return true;
 }
 
-function bool SetupWaveLoadoutTypes(out int PlayerCount, int TotalPlayerCount, out array<PlayerLoadout> PendingPlayerLoadoutList)
+function bool SetupWaveLoadoutTypes(int PlayerCount, int TotalPlayerCount, out array<PlayerLoadout> PendingPlayerLoadoutList)
 {
 	local int PlayerTypeCount;
 	local int RandomPlayerIndex;
@@ -323,7 +323,7 @@ function bool SetupWaveLoadoutTypes(out int PlayerCount, int TotalPlayerCount, o
 	return true;
 }
 
-function bool SetupBossLoadoutTypes(out int PlayerCount, int TotalPlayerCount, out array<PlayerLoadout> PendingPlayerLoadoutList)
+function bool SetupBossLoadoutTypes(int PlayerCount, int TotalPlayerCount, out array<PlayerLoadout> PendingPlayerLoadoutList)
 {
 	local int PlayerTypeCount;
 	local int RandomPlayerIndex;
@@ -341,17 +341,13 @@ function bool SetupBossLoadoutTypes(out int PlayerCount, int TotalPlayerCount, o
 		PendingPlayerLoadoutList.Remove(RandomPlayerIndex, 1);
 	}
 
-	PlayerTypeCount = Round(FMin(float(TotalPlayerCount) * 0.33f, 1.f));
-	PlayerTypeCount = Min(PlayerCount, PlayerTypeCount);
-
-	if (PlayerTypeCount == 0)
+	if (PlayerCount == 0)
 	{
 		return true;
 	}
 
-	while (PlayerTypeCount > 0)
+	while (PlayerCount > 0)
 	{
-		PlayerTypeCount--;
 		PlayerCount--;
 
 		RandomPlayerIndex = Rand(PendingPlayerLoadoutList.Length - 1);
@@ -523,6 +519,11 @@ function int GetPlayerVeterancyLevel(out PlayerLoadout Loadout)
 {
 	local ClientPerkRepLink CPRL;
 	local int Index;
+
+	if (Loadout.Player == None)
+	{
+		return 0;
+	}
 
 	CPRL = class'ClientPerkRepLink'.static.FindStats(Loadout.Player);
 

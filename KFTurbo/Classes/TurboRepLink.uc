@@ -151,6 +151,12 @@ Begin:
 simulated function CachePlayerStats()
 {
     local ClientPerkRepLink CPRL;
+
+    if (OwningController == None)
+    {
+        return;
+    }
+
     CPRL = class'ClientPerkRepLink'.static.FindStats(OwningController);
     
     if (CPRL == None)
@@ -204,7 +210,7 @@ simulated function SetupPlayerInfo()
     local int PlayerVariantListIndex, PlayerVariantListVariantIndex;
     local VariantWeapon VariantData;
 
-    if (bHasPerformedSetup)
+    if (bHasPerformedSetup || OwningController == None)
     {
         return;
     }
