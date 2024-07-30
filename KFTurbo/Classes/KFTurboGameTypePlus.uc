@@ -17,6 +17,7 @@ const FAKED_P_HEALTH = 0;
 function PreBeginPlay()
 {
     local ZombieVolume ZV;
+	local ShopVolume Shop;
     Super.PreBeginPlay();
 
     // Adjust respawn time for each zombie volume
@@ -27,6 +28,13 @@ function PreBeginPlay()
             ZV.CanRespawnTime = FMin(ZV.CanRespawnTime, SPAWN_TIME);
         }
     }
+
+    //Close all shops! We don't use them at this difficulty.
+	foreach AllActors(Class'ShopVolume',Shop) 
+	{
+		Shop.bAlwaysClosed = true;
+        Shop.bAlwaysEnabled = false;
+	}
 }
 
 // Function called after the game begins
@@ -64,22 +72,48 @@ State MatchInProgress
         Super.BeginState();
 
         WaveCountDown = WAVE_COUNTDOWN;
-        OpenShops();
     }
 
-    function CloseShops()
+    //Don't select shops.
+    function SelectShop() {}
+
+    function OpenShops()
     {
         local Controller C;
-        Super.CloseShops();
 
-        // Close buy menu for all players
-        for (C = Level.ControllerList; C != None; C = C.NextController)
+        if (bTradingDoorsOpen)
         {
-            if (TurboPlayerController(C) != None)
+            return;
+        }
+    
+        bTradingDoorsOpen = True;
+
+        for( C=Level.ControllerList; C!=None; C=C.NextController )
+        {
+            if( C.Pawn!=None && C.Pawn.Health>0 )
             {
-                TurboPlayerController(C).ClientCloseBuyMenu();
+                if( KFPlayerController(C) !=None )
+                {
+                    if ( WaveNum < FinalWave )
+                    {
+                        KFPlayerController(C).ClientLocationalVoiceMessage(C.PlayerReplicationInfo, none, 'TRADER', 2);
+                    }
+                    else
+                    {
+                        KFPlayerController(C).ClientLocationalVoiceMessage(C.PlayerReplicationInfo, none, 'TRADER', 3);
+                    }
+
+                    KFPlayerController(C).CheckForHint(31);
+                    HintTime_1 = Level.TimeSeconds + 11;
+                }
             }
         }
+    }
+
+    //It's ok to call this I think.
+    function CloseShops()
+    {
+        Super.CloseShops();
     }
 }
 
