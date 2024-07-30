@@ -9,6 +9,7 @@ defaultproperties
           BeatSize=1
           RegularSequenceSize=10
           MixInWaveMask=1 //Mask will filter out all MixIn squads in the list except for the first one (2^0 = 1).
+          NextSquadSpawnTime=2.5f
 	End Object
 	WaveList(0)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave1'
 
@@ -17,6 +18,7 @@ defaultproperties
           TotalMonsters=55
           RegularSequenceSize=10
           BeatSize=1
+          NextSquadSpawnTime=2.5f
 	End Object
 	WaveList(1)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave2'
 
@@ -26,6 +28,7 @@ defaultproperties
           TotalMonsters=62
           RegularSequenceSize=8
           BeatSize=1
+          NextSquadSpawnTime=2.5f
 	End Object
 	WaveList(2)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave3'
 
@@ -34,6 +37,7 @@ defaultproperties
           TotalMonsters=65
           RegularSequenceSize=8
           BeatSize=2
+          NextSquadSpawnTime=2.f
 	End Object
 	WaveList(3)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave4'
 
@@ -42,6 +46,7 @@ defaultproperties
           TotalMonsters=67
           RegularSequenceSize=7
           BeatSize=2
+          NextSquadSpawnTime=2.f
 	End Object
 	WaveList(4)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave5'
 
@@ -50,6 +55,7 @@ defaultproperties
           TotalMonsters=70
           RegularSequenceSize=7
           BeatSize=3
+          NextSquadSpawnTime=2.f
 	End Object
 	WaveList(5)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave6'
      
@@ -58,6 +64,7 @@ defaultproperties
           TotalMonsters=72
           RegularSequenceSize=6
           BeatSize=3
+          NextSquadSpawnTime=2.f
 	End Object
 	WaveList(6)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave7'
      
@@ -67,6 +74,7 @@ defaultproperties
           TotalMonsters=75
           RegularSequenceSize=6
           BeatSize=1 
+          NextSquadSpawnTime=1.f
 	End Object
 	WaveList(7)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave8'
      
@@ -75,6 +83,7 @@ defaultproperties
           TotalMonsters=78
           RegularSequenceSize=5
           BeatSize=2
+          NextSquadSpawnTime=1.f
 	End Object
 	WaveList(8)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave9'
      
@@ -83,6 +92,7 @@ defaultproperties
           TotalMonsters=80
           RegularSequenceSize=5
           BeatSize=3
+          NextSquadSpawnTime=1.f
 	End Object
 	WaveList(9)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave10'
 

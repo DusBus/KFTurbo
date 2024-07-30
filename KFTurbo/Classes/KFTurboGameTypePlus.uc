@@ -121,7 +121,7 @@ function SetupWave()
     TotalMaxMonsters = TurboMonsterCollection.GetWaveTotalMonsters(WaveNum, GameDifficulty, NumPlayers + NumBots);
 
     WaveNextSquadSpawnTime = TurboMonsterCollection.GetNextSquadSpawnTime(WaveNum);
-    if (WaveNextSquadSpawnTime == -1.f)
+    if (WaveNextSquadSpawnTime < SPAWN_TIME)
     {
         WaveNextSquadSpawnTime = SPAWN_TIME;
     }

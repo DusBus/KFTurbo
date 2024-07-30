@@ -8,6 +8,8 @@ var int MaxMonsters;
 var int TotalMonsters;
 
 var float WaveDifficulty;
+
+//Time between squads in seconds. If less than SPAWN_TIME, gets set to SPAWN_TIME (currently 1 second).
 var float NextSquadSpawnTime;
 
 //Squads that are shuffled in between "beats".
