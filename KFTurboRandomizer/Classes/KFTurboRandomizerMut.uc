@@ -73,24 +73,13 @@ function PostBeginPlay()
 
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 {
+	//Get rid of ALL of them.
 	if (KFRandomItemSpawn(Other) != None)
 	{
-		UpdateRandomItemPickup(KFRandomItemSpawn(Other));
+		return false;
 	}
 
 	return true;
-}
-
-function UpdateRandomItemPickup(KFRandomItemSpawn PickupSpawner)
-{
-	PickupSpawner.PickupClasses[0] = None;
-	PickupSpawner.PickupClasses[1] = None;
-	PickupSpawner.PickupClasses[2] = None;
-	PickupSpawner.PickupClasses[3] = None;
-	PickupSpawner.PickupClasses[4] = None;
-	PickupSpawner.PickupClasses[5] = None;
-	PickupSpawner.PickupClasses[6] = None;
-	PickupSpawner.PickupClasses[7] = None;
 }
 
 function Timer()

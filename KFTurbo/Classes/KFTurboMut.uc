@@ -92,9 +92,11 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 		AddTurboPlayerReplicationInfo(KFPlayerReplicationInfo(Other));
 	}
 
-	if (KFRandomItemSpawn(Other) != None)
+	//Looks like tinkering with these directly doesn't work... just replace it.
+	if (KFRandomItemSpawn(Other) != None && TurboRandomItemSpawn(Other) == None)
 	{
-		UpdateRandomItemPickup(KFRandomItemSpawn(Other));
+		ReplaceWith(Other, string(class'KFTurbo.TurboRandomItemSpawn'));
+		return false;
 	}
 
 	return true;
@@ -107,35 +109,6 @@ function AddTurboPlayerReplicationInfo(KFPlayerReplicationInfo PlayerReplication
 	TurboPRI.NextReplicationInfo = PlayerReplicationInfo.CustomReplicationInfo;
 	TurboPRI.OwningReplicationInfo = PlayerReplicationInfo;
 	PlayerReplicationInfo.CustomReplicationInfo = TurboPRI;
-}
-
-function UpdateRandomItemPickup(KFRandomItemSpawn PickupSpawner)
-{
-	//Randomizer may have set these to none - so try to respect that.
-	if (PickupSpawner.PickupClasses[1] == Class'KFMod.ShotgunPickup')
-	{
-		PickupSpawner.PickupClasses[1] = Class'KFTurbo.W_Shotgun_Pickup';
-	}
-
-	if (PickupSpawner.PickupClasses[2] == Class'KFMod.BullpupPickup')
-	{
-		PickupSpawner.PickupClasses[2] = Class'KFTurbo.W_Bullpup_Pickup';
-	}
-
-	if (PickupSpawner.PickupClasses[3] == Class'KFMod.DeaglePickup')
-	{
-		PickupSpawner.PickupClasses[3] = Class'KFTurbo.W_Deagle_Pickup';
-	}
-
-	if (PickupSpawner.PickupClasses[4] == Class'KFMod.WinchesterPickup')
-	{
-		PickupSpawner.PickupClasses[4] = Class'KFTurbo.W_LAR_Pickup';
-	}
-
-	if (PickupSpawner.PickupClasses[5] == Class'KFMod.AxePickup')
-	{
-		PickupSpawner.PickupClasses[5] = Class'KFTurbo.W_Axe_Pickup';
-	}
 }
 
 function ModifyPlayer(Pawn Other)
