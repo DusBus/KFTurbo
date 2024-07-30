@@ -33,7 +33,7 @@ var class<DamageType> LastBurnDamageType;
 
 simulated function PreTick(float DeltaTime)
 {
-    if(!OwningMonster.bBurnified)
+    if(OwningMonster == None || !OwningMonster.bBurnified)
     {
 		return;
     }

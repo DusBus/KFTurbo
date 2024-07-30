@@ -295,6 +295,13 @@ Ignores StartCharging;
 	}
 }
 
+simulated function PlayDying(class<DamageType> DamageType, vector HitLoc)
+{
+    class'PawnHelper'.static.MonsterDied(Self, AfflictionData);
+
+    Super.PlayDying(DamageType, HitLoc);
+}
+
 state ZombieDying
 {
 ignores AnimEnd, Trigger, Bump, HitWall, HeadVolumeChange, PhysicsVolumeChange, Falling, BreathTimer, Died, RangedAttack, SpawnTwoShots;

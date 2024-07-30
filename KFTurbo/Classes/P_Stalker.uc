@@ -217,6 +217,8 @@ simulated function PlayDying(class<DamageType> DamageType, vector HitLoc)
 {
 	Super(KFMonster).PlayDying(DamageType,HitLoc);
 
+    class'PawnHelper'.static.MonsterDied(Self, AfflictionData);
+
 	if ( bUnlit )
 	{
 		bUnlit=!bUnlit;
