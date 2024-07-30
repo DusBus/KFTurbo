@@ -2,7 +2,8 @@ class TurboMonsterCollection extends Object
      editinlinenew;
 
 var TurboMonsterCollectionWave WaveList[10];
-var TurboMonsterCollectionSquad BossSquadList[3];
+
+var array<TurboMonsterCollectionBossSquad> BossSquadList;
 
 var array< class<KFMonster> > LoadedMonsterList;
 
@@ -28,7 +29,7 @@ final function InitializeWaves()
           WaveList[Index].Initialize(Self);
      }
      
-     for (Index = ArrayCount(BossSquadList) - 1; Index >= 0; Index--)
+     for (Index = BossSquadList.Length - 1; Index >= 0; Index--)
      {
           BossSquadList[Index].InitializeSquad(Self);
      }
@@ -181,6 +182,49 @@ final function PrepareSequence(int WaveNumber)
           CurrentBeat[CurrentBeat.Length] = GetBeatSquad();
           log ("- Added"@CurrentSequence[CurrentSequence.Length - 1]);
           BeatSize--;
+     }
+}
+
+final function ApplyFinalSquad(int FinalSquadNumber, int PlayerCount, out array< class<KFMonster> > OutNextSpawnSquad)
+{
+     local array< class<KFMonster> > SquadMonsterList;
+     local TurboMonsterCollectionSquad Squad;
+     local int SpawnAmount, NextSpawnSquadIndex;
+     local int BossSquadIndex;
+
+     OutNextSpawnSquad.Length = 0;
+
+     if (BossSquadList.Length == 0)
+     {
+          return;
+     }
+
+     BossSquadIndex = Min(BossSquadList.Length - 1, FinalSquadNumber);
+
+     Squad = BossSquadList[BossSquadIndex].Squad;
+     SpawnAmount = BossSquadList[BossSquadIndex].SquadSizePerPlayerCount[Min(PlayerCount - 1, ArrayCount(BossSquadList[BossSquadIndex].SquadSizePerPlayerCount) - 1)];
+
+     SquadMonsterList = Squad.MonsterList;
+
+     if (SquadMonsterList.Length == 0)
+     {
+          return;
+     }
+
+     while (SpawnAmount > OutNextSpawnSquad.Length)
+     {
+          NextSpawnSquadIndex = 0;
+
+          while(NextSpawnSquadIndex < SquadMonsterList.Length)
+          {
+               OutNextSpawnSquad[OutNextSpawnSquad.Length] = SquadMonsterList[NextSpawnSquadIndex];
+               NextSpawnSquadIndex++;
+
+               if (SpawnAmount <= OutNextSpawnSquad.Length)
+               {
+                    break;
+               }
+          }
      }
 }
 

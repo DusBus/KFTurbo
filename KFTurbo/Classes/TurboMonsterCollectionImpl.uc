@@ -85,4 +85,51 @@ defaultproperties
           BeatSize=3
 	End Object
 	WaveList(9)=TurboMonsterCollectionWave'KFTurbo.TurboMonsterCollectionImpl.Wave10'
+
+     //Example definition of boss helper squads, their containing boss squads, then storing them into the BossSquadList.
+
+     //Helper squads for each heal round boss squad.
+     Begin Object Class=TurboMonsterCollectionSquad Name=HelperSquad0
+          Squad(0)=(Monster=Clot,Count=4)
+	End Object
+     Begin Object Class=TurboMonsterCollectionSquad Name=HelperSquad1
+          Squad(0)=(Monster=Clot,Count=4)
+          Squad(1)=(Monster=Crawler,Count=4)
+	End Object
+     Begin Object Class=TurboMonsterCollectionSquad Name=HelperSquad2
+          Squad(0)=(Monster=Clot,Count=4)
+          Squad(1)=(Monster=Crawler,Count=4)
+          Squad(2)=(Monster=Stalker,Count=4)
+	End Object
+
+     //Each heal round's boss squad.
+	Begin Object Class=TurboMonsterCollectionBossSquad Name=BossSquad0
+          Squad=TurboMonsterCollectionSquad'KFTurbo.TurboMonsterCollectionImpl.HelperSquad0'
+	End Object
+
+	Begin Object Class=TurboMonsterCollectionBossSquad Name=BossSquad1
+          Squad=TurboMonsterCollectionSquad'KFTurbo.TurboMonsterCollectionImpl.HelperSquad1'
+          SquadSizePerPlayerCount(0)=12
+          SquadSizePerPlayerCount(1)=12
+          SquadSizePerPlayerCount(2)=16
+          SquadSizePerPlayerCount(3)=16
+          SquadSizePerPlayerCount(4)=18
+          SquadSizePerPlayerCount(5)=22
+	End Object
+     
+	Begin Object Class=TurboMonsterCollectionBossSquad Name=BossSquad2
+          Squad=TurboMonsterCollectionSquad'KFTurbo.TurboMonsterCollectionImpl.HelperSquad2'
+          SquadSizePerPlayerCount(0)=16
+          SquadSizePerPlayerCount(1)=16
+          SquadSizePerPlayerCount(2)=20
+          SquadSizePerPlayerCount(3)=20
+          SquadSizePerPlayerCount(4)=22
+          SquadSizePerPlayerCount(5)=26
+	End Object
+
+     //Storing the boss squads for each heal round.
+     BossSquadList(0)=TurboMonsterCollectionBossSquad'KFTurbo.TurboMonsterCollectionImpl.BossSquad0'
+     BossSquadList(1)=TurboMonsterCollectionBossSquad'KFTurbo.TurboMonsterCollectionImpl.BossSquad1'
+     BossSquadList(2)=TurboMonsterCollectionBossSquad'KFTurbo.TurboMonsterCollectionImpl.BossSquad2'
+
 }

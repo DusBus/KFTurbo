@@ -176,6 +176,53 @@ function BuildNextSquad()
     CurrentSquad = Squad;
 }
 
+function AddBossBuddySquad()
+{
+    local int TempMaxMonsters, NumMonstersSpawned, TotalZombiesValue;
+    local int MaxAttemptCount;
+
+    TurboMonsterCollection.ApplyFinalSquad(FinalSquadNum, NumPlayers + NumBots, NextSpawnSquad);
+    FinalSquadNum++;
+
+    LastZVol = FindSpawningVolume();
+
+    if(LastZVol != None)
+    {
+        LastSpawningVolume = LastZVol;
+    }
+
+    if(LastZVol == None)
+    {
+        LastZVol = FindSpawningVolume();
+
+        if(LastZVol != None)
+        {
+            LastSpawningVolume = LastZVol;
+        }
+    }
+
+    if (LastZVol == None)
+    {
+        return;
+    }
+
+    NumMonstersSpawned = 0;
+    TempMaxMonsters = 999;
+    MaxAttemptCount = NextSpawnSquad.Length;
+
+    while (MaxAttemptCount >= 0 && NextSpawnSquad.Length > 0)
+    {
+        MaxAttemptCount--;
+
+        if(LastZVol.SpawnInHere(NextSpawnSquad,,NumMonstersSpawned, TempMaxMonsters, 999, TotalZombiesValue))
+        {
+            NumMonsters += NumMonstersSpawned;
+            WaveMonsters += NumMonstersSpawned;
+            NextSpawnSquad.Remove(0, NumMonstersSpawned);
+        }
+    }
+}
+
 // Default properties for the game type
 defaultproperties
 {
