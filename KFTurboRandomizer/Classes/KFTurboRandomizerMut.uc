@@ -9,7 +9,12 @@ enum ELoadoutType
 	LT_ScrakeLoadout,
 	LT_EarlyWave,
 	LT_MiscLoadout,
-	LT_FunnyLoadout
+	LT_FunnyLoadout,
+
+	//Boss Wave Types:
+	LT_PatriarchTypeA,
+	LT_PatriarchTypeB,
+	LT_PatriarchFunny
 };
 
 struct PlayerLoadout
@@ -198,6 +203,11 @@ function bool ShouldWaveHaveScrakeAndFleshpoundLoadouts()
 	return KFGT.WaveNum + 1 >= ScrakeAndFleshpoundWaveNum;
 }
 
+function bool ShouldUsePatriarchLoadouts()
+{
+	return KFGT.FinalWave <= KFGT.WaveNum;
+}
+
 //Called at the start of a randomization pass. Allows randomizer settings to prepare.
 function bool PrepareRandomizerSettings()
 {
@@ -208,8 +218,7 @@ function bool PrepareRandomizerSettings()
 function bool SetupLoadoutTypes()
 {
 	local Controller C;
-	local int TotalPlayerCount, PlayerCount, PlayerTypeCount;
-	local int RandomPlayerIndex;
+	local int TotalPlayerCount, PlayerCount;
 	local array<PlayerLoadout> PendingPlayerLoadoutList;
 	
 	PlayerCount = 0;
@@ -232,6 +241,25 @@ function bool SetupLoadoutTypes()
 		return false;
 	}
 
+	if (!ShouldUsePatriarchLoadouts())
+	{
+		log ("Setting up Regular Wave"@KFGT.FinalWave@"/"@KFGT.WaveNum);
+		SetupWaveLoadoutTypes(PlayerCount, TotalPlayerCount, PendingPlayerLoadoutList);
+	}
+	else
+	{
+		log ("Setting up Boss Wave"@KFGT.FinalWave@"/"@KFGT.WaveNum);
+		SetupBossLoadoutTypes(PlayerCount, TotalPlayerCount, PendingPlayerLoadoutList);
+	}
+
+	return true;
+}
+
+function bool SetupWaveLoadoutTypes(out int PlayerCount, int TotalPlayerCount, out array<PlayerLoadout> PendingPlayerLoadoutList)
+{
+	local int PlayerTypeCount;
+	local int RandomPlayerIndex;
+	
 	//If we've reached a wave with Scrakes and Fleshpounds, give us loadouts for them.
 	if (ShouldWaveHaveScrakeAndFleshpoundLoadouts())
 	{
@@ -306,6 +334,56 @@ function bool SetupLoadoutTypes()
 	return true;
 }
 
+function bool SetupBossLoadoutTypes(out int PlayerCount, int TotalPlayerCount, out array<PlayerLoadout> PendingPlayerLoadoutList)
+{
+	local int PlayerTypeCount;
+	local int RandomPlayerIndex;
+	
+	PlayerTypeCount = Max(float(TotalPlayerCount) * 0.34f, 1);
+
+	while (PlayerTypeCount > 0)
+	{
+		PlayerTypeCount--;
+		PlayerCount--;
+		RandomPlayerIndex = Rand(PendingPlayerLoadoutList.Length - 1);
+		PendingPlayerLoadoutList[RandomPlayerIndex].LoadoutType = LT_PatriarchTypeA;
+
+		PlayerLoadoutList[PlayerLoadoutList.Length] = PendingPlayerLoadoutList[RandomPlayerIndex];
+		PendingPlayerLoadoutList.Remove(RandomPlayerIndex, 1);
+	}
+
+	PlayerTypeCount = Round(FMin(float(TotalPlayerCount) * 0.33f, 1.f));
+	PlayerTypeCount = Min(PlayerCount, PlayerTypeCount);
+
+	if (PlayerTypeCount == 0)
+	{
+		return true;
+	}
+
+	while (PlayerTypeCount > 0)
+	{
+		PlayerTypeCount--;
+		PlayerCount--;
+
+		RandomPlayerIndex = Rand(PendingPlayerLoadoutList.Length - 1);
+		PendingPlayerLoadoutList[RandomPlayerIndex].LoadoutType = LT_PatriarchTypeB;
+
+		if (FRand() > 0.1f)
+		{
+			PendingPlayerLoadoutList[RandomPlayerIndex].LoadoutType = LT_PatriarchTypeB;
+		}
+		else
+		{
+			PendingPlayerLoadoutList[RandomPlayerIndex].LoadoutType = LT_PatriarchFunny;
+		}
+
+		PlayerLoadoutList[PlayerLoadoutList.Length] = PendingPlayerLoadoutList[RandomPlayerIndex];
+		PendingPlayerLoadoutList.Remove(RandomPlayerIndex, 1);
+	}
+
+	return true;
+}
+
 function bool SelectLoadouts()
 {
 	local int PlayerIndex;
@@ -330,6 +408,15 @@ function bool SelectLoadouts()
 				break;
 			case LT_FunnyLoadout:
 				PlayerLoadoutList[PlayerIndex].Loadout = RandomizerSettings.GetRandomFunnyLoadout();
+				break;
+			case LT_PatriarchTypeA:
+				PlayerLoadoutList[PlayerIndex].Loadout = RandomizerSettings.GetRandomPatriarchTypeALoadout();
+				break;
+			case LT_PatriarchTypeB:
+				PlayerLoadoutList[PlayerIndex].Loadout = RandomizerSettings.GetRandomPatriarchTypeBLoadout();
+				break;
+			case LT_PatriarchFunny:
+				PlayerLoadoutList[PlayerIndex].Loadout = RandomizerSettings.GetRandomPatriarchFunnyLoadout();
 				break;
 		}
 
@@ -494,7 +581,7 @@ function ApplyVeterancy(out PlayerLoadout Loadout)
     Loadout.Player.PlayerReplicationInfo.NumLives = 2;
     Loadout.Player.bSpawnedThisWave=true;
 
-    HumanPawn.ShieldStrength = FMax(HumanPawn.ShieldStrength, Loadout.Loadout.GetArmor());
+    HumanPawn.ShieldStrength = FMax(HumanPawn.ShieldStrength, Loadout.Loadout.GetArmor(Loadout.LoadoutType));
 }
 
 function FillUpAmmo(KFHumanPawn HumanPawn)
