@@ -61,12 +61,22 @@ defaultproperties
     mapIndexes(40)=(mapname="kf-cubicalchamber",achvIndex=40)
 
     //Modified maps that should still reward the base map achievement.
+    //WestLondon Variants
     mapIndexes(41)=(mapname="kf-westlondonwinter",achvIndex=0)
     mapIndexes(42)=(mapname="kf-westlondon-s",achvIndex=0)
+
+    //Icebreaker Variants
     mapIndexes(43)=(mapname="kf-icebreaker-stirred",achvIndex=13)
-    mapIndexes(44)=(mapname="kf-departedwinter",achvIndex=10)
-    mapIndexes(45)=(mapname="kf-abusementparkwinter",achvIndex=19)
-    mapIndexes(46)=(mapname="kf-aperture-lights-out",achvIndex=18)
+    
+    //Departed Variants
+    mapIndexes(44)=(mapname="kf-departed-s",achvIndex=10)
+    mapIndexes(45)=(mapname="kf-departedwinter-s",achvIndex=10)
+    
+    //AbusementPark Variants
+    mapIndexes(46)=(mapname="kf-abusementparkwinter",achvIndex=19)
+    
+    //Aperture Variants
+    mapIndexes(47)=(mapname="kf-aperture-lights-out",achvIndex=18)
 
     achievements=()
     achievements(0)=(title="Hellish Pub Crawl",description="Win a long game on West London (or any variant) on Hell on Earth difficulty",image=Texture'KillingFloor2HUD.Achievements.Achievement_65')
