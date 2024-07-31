@@ -106,24 +106,27 @@ static function byte PreDrawPerk(Canvas C, byte Level, out Material PerkIcon, ou
 		C.SetDrawColor(255, 32, 32, C.DrawColor.A); //Red
 		break;
 	case 1:
-		C.SetDrawColor(16, 235, 32, C.DrawColor.A); //Green
+		C.SetDrawColor(25, 208, 0, C.DrawColor.A); //Green
 		break;
 	case 2:
-		C.SetDrawColor(16, 160, 255, C.DrawColor.A); //Blue
+		C.SetDrawColor(10, 120, 255, C.DrawColor.A); //Blue
 		break;
 	case 3:
-		C.SetDrawColor(120, 0, 255, C.DrawColor.A); //Purple
+		C.SetDrawColor(255, 0, 255, C.DrawColor.A); //Pink
 		break;
 	case 4:
-		C.SetDrawColor(255, 100, 255, C.DrawColor.A); //Pink
+		C.SetDrawColor(150, 30, 255, C.DrawColor.A); //Purple
 		break;
 	case 5:
-		C.SetDrawColor(255, 140, 0, C.DrawColor.A); //Orange
+		C.SetDrawColor(255, 110, 0, C.DrawColor.A); //Orange
 		break;
 	case 6:
-		C.SetDrawColor(255, 200, 0, C.DrawColor.A); //Gold
+		C.SetDrawColor(255, 190, 10, C.DrawColor.A); //Gold
 		break;
 	case 7:
+		C.SetDrawColor(255, 235, 225, C.DrawColor.A); //Platinum
+		break;
+	case 8:
 		C.SetDrawColor(255, 235, 225, C.DrawColor.A); //Platinum
 		break;
 	}
