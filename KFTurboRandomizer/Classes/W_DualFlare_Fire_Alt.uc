@@ -1,4 +1,4 @@
-class W_FlareRevolver_Fire_Alt extends W_FlareRevolver_Fire;
+class W_DualFlare_Fire_Alt extends W_DualFlare_Fire;
 
 
 simulated function HandleRecoil(float Rec)
@@ -57,9 +57,8 @@ simulated function HandleRecoil(float Rec)
  	}
 }
 
-
 defaultproperties
 {
-     FireRate=0.700000
-     ProjectileClass=Class'KFTurbo.W_FlareRevolver_Nade'
+     FireRate=0.350000
+     ProjectileClass=Class'KFTurboRandomizer.W_FlareRevolver_Nade'
 }

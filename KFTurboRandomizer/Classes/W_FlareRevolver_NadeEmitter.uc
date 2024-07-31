@@ -31,7 +31,7 @@ defaultproperties
          LifetimeRange=(Min=1.000000,Max=1.000000)
          StartVelocityRange=(X=(Min=-100.000000,Max=100.000000),Y=(Min=-100.000000,Max=100.000000),Z=(Min=25.000000,Max=50.000000))
      End Object
-     Emitters(0)=SpriteEmitter'KFTurbo.W_FlareRevolver_NadeEmitter.SpriteEmitter0'
+     Emitters(0)=SpriteEmitter'KFTurboRandomizer.W_FlareRevolver_NadeEmitter.SpriteEmitter0'
 
      Begin Object Class=SpriteEmitter Name=SpriteEmitter1
          UseColorScale=True
@@ -60,7 +60,7 @@ defaultproperties
          LifetimeRange=(Min=1.000000,Max=1.000000)
          StartVelocityRange=(X=(Min=-100.000000,Max=100.000000),Y=(Min=-100.000000,Max=100.000000))
      End Object
-     Emitters(1)=SpriteEmitter'KFTurbo.W_FlareRevolver_NadeEmitter.SpriteEmitter1'
+     Emitters(1)=SpriteEmitter'KFTurboRandomizer.W_FlareRevolver_NadeEmitter.SpriteEmitter1'
 
      Begin Object Class=SpriteEmitter Name=SpriteEmitter2
          UseColorScale=True
@@ -90,7 +90,7 @@ defaultproperties
          LifetimeRange=(Min=0.200000,Max=0.200000)
          StartVelocityRange=(Z=(Min=10.000000,Max=10.000000))
      End Object
-     Emitters(2)=SpriteEmitter'KFTurbo.W_FlareRevolver_NadeEmitter.SpriteEmitter2'
+     Emitters(2)=SpriteEmitter'KFTurboRandomizer.W_FlareRevolver_NadeEmitter.SpriteEmitter2'
 
      Begin Object Class=SpriteEmitter Name=SpriteEmitter3
          UseDirectionAs=PTDU_Up
@@ -112,7 +112,7 @@ defaultproperties
          LifetimeRange=(Min=0.400000,Max=0.600000)
          StartVelocityRange=(X=(Min=-500.000000,Max=500.000000),Y=(Min=-500.000000,Max=500.000000),Z=(Max=500.000000))
      End Object
-     Emitters(3)=SpriteEmitter'KFTurbo.W_FlareRevolver_NadeEmitter.SpriteEmitter3'
+     Emitters(3)=SpriteEmitter'KFTurboRandomizer.W_FlareRevolver_NadeEmitter.SpriteEmitter3'
 
      Begin Object Class=SpriteEmitter Name=SpriteEmitter4
          UseColorScale=True
@@ -144,7 +144,7 @@ defaultproperties
          SecondsBeforeInactive=30.000000
          LifetimeRange=(Min=0.500000,Max=0.500000)
      End Object
-     Emitters(4)=SpriteEmitter'KFTurbo.W_FlareRevolver_NadeEmitter.SpriteEmitter4'
+     Emitters(4)=SpriteEmitter'KFTurboRandomizer.W_FlareRevolver_NadeEmitter.SpriteEmitter4'
 
      Begin Object Class=SpriteEmitter Name=SpriteEmitter5
          FadeOut=True
@@ -173,7 +173,7 @@ defaultproperties
          LifetimeRange=(Min=0.200000,Max=0.200000)
          StartVelocityRange=(Z=(Min=10.000000,Max=10.000000))
      End Object
-     Emitters(5)=SpriteEmitter'KFTurbo.W_FlareRevolver_NadeEmitter.SpriteEmitter5'
+     Emitters(5)=SpriteEmitter'KFTurboRandomizer.W_FlareRevolver_NadeEmitter.SpriteEmitter5'
 
      Begin Object Class=SpriteEmitter Name=SpriteEmitter6
          FadeOut=True
@@ -208,7 +208,7 @@ defaultproperties
          LifetimeRange=(Min=1.000000,Max=1.000000)
          StartVelocityRange=(X=(Min=-10.000000,Max=10.000000),Y=(Min=-10.000000,Max=10.000000),Z=(Min=25.000000,Max=75.000000))
      End Object
-     Emitters(6)=SpriteEmitter'KFTurbo.W_FlareRevolver_NadeEmitter.SpriteEmitter6'
+     Emitters(6)=SpriteEmitter'KFTurboRandomizer.W_FlareRevolver_NadeEmitter.SpriteEmitter6'
 
      Begin Object Class=SpriteEmitter Name=SpriteEmitter7
          UseCollision=True
@@ -228,7 +228,7 @@ defaultproperties
          LifetimeRange=(Min=2.000000,Max=2.000000)
          StartVelocityRange=(X=(Min=-500.000000,Max=500.000000),Y=(Min=-500.000000,Max=500.000000),Z=(Max=500.000000))
      End Object
-     Emitters(7)=SpriteEmitter'KFTurbo.W_FlareRevolver_NadeEmitter.SpriteEmitter7'
+     Emitters(7)=SpriteEmitter'KFTurboRandomizer.W_FlareRevolver_NadeEmitter.SpriteEmitter7'
 
      Begin Object Class=SpriteEmitter Name=SpriteEmitter8
          FadeOut=True
@@ -264,7 +264,7 @@ defaultproperties
          LifetimeRange=(Min=0.500000,Max=0.500000)
          StartVelocityRange=(Z=(Min=75.000000,Max=75.000000))
      End Object
-     Emitters(8)=SpriteEmitter'KFTurbo.W_FlareRevolver_NadeEmitter.SpriteEmitter8'
+     Emitters(8)=SpriteEmitter'KFTurboRandomizer.W_FlareRevolver_NadeEmitter.SpriteEmitter8'
 
      AutoDestroy=True
      LightHue=255
