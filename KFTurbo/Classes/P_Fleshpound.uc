@@ -93,6 +93,9 @@ function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector M
             case class'DamTypeMedicNade':
                 Damage *= 2.0f;
                 break;
+            case class'DamTypeSeekerSixRocket':
+                Damage *= 1.65f;
+                break;
             default:
                 Damage *= 1.25f;
                 break;
