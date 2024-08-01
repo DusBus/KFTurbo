@@ -29,7 +29,7 @@ simulated function Tick(float DeltaTime)
 	}
 }
 
-
+//Fixed not properly dropping weapons until carry weight is valid.
 function VeterancyChanged()
 {
 	local Inventory CurrentInventory;
@@ -46,7 +46,7 @@ function VeterancyChanged()
 		MaxCarryWeight += KFPRI.ClientVeteranSkill.Static.AddCarryMaxWeight(KFPRI);
 	}
 
-	if ( CurrentWeight > MaxCarryWeight ) // Now carrying too much, drop something.
+	if ( CurrentWeight > MaxCarryWeight )
 	{
 		CurrentInventory = Inventory;
 
@@ -65,7 +65,7 @@ function VeterancyChanged()
 
 			if ( CurrentWeight <= MaxCarryWeight )
 			{
-				break; // Drop weapons until player is capable of carrying them all.
+				break;
 			}
 		}
 	}
@@ -88,6 +88,29 @@ function VeterancyChanged()
 			}
 		}
 	}
+}
+
+//Changed out damage type to ignore (and more importantly not damage) armor.
+function TakeFireDamage(int Damage, pawn BInstigator)
+{
+    if( Damage > 0 )
+    {
+        TakeDamage(Damage, BInstigator, Location, vect(0,0,0), class'TurboHumanBurned_DT');
+
+        if (BurnDown > 0)
+        {
+            BurnDown--;
+        }
+        if(BurnDown==0)
+        {
+            bBurnified = false;
+        }
+    }
+    else
+    {
+        BurnDown = 0;
+        bBurnified = false;
+    }
 }
 
 simulated function bool ShowStalkers()
