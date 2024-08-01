@@ -1,7 +1,7 @@
-class TurboMonsterCollectionBossSquad extends Object
+class TurboMonsterBossSquad extends Object
      editinlinenew;
 
-var TurboMonsterCollectionSquad Squad;
+var TurboMonsterSquad Squad;
 var int SquadSizePerPlayerCount[6];
 
 final function InitializeSquad(TurboMonsterCollection TurboCollection)

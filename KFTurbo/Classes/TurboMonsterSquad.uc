@@ -1,4 +1,4 @@
-class TurboMonsterCollectionSquad extends Object
+class TurboMonsterSquad extends Object
      editinlinenew;
 
 

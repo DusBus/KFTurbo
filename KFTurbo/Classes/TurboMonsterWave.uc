@@ -1,4 +1,4 @@
-class TurboMonsterCollectionWave extends Object
+class TurboMonsterWave extends Object
      editinlinenew;
 
 //Monster cap for this wave.
@@ -13,15 +13,15 @@ var float WaveDifficulty;
 var float NextSquadSpawnTime;
 
 //Squads that are shuffled in between "beats".
-var TurboMonsterCollectionSquad RegularSquad[30];
+var TurboMonsterSquad RegularSquad[30];
 var int RegularWaveMask; //Allows for a "base" class to define a bunch of squads and then use a wave mask to filter. Defaults to MaxInt (all).
 
 //Squads that are randomly placed into squads between "beats". 
-var TurboMonsterCollectionSquad MixInSquad[30];
+var TurboMonsterSquad MixInSquad[30];
 var int MixInWaveMask; //Allows for a "base" class to define a bunch of squads and then use a wave mask to filter. Defaults to MaxInt (all).
 
 //Squads that can be used for "beats".
-var TurboMonsterCollectionSquad BeatSquad[30];
+var TurboMonsterSquad BeatSquad[30];
 var int BeatWaveMask; //Allows for a "base" class to define a bunch of squads and then use a wave mask to filter. Defaults to MaxInt (all).
 
 //Number of regular squads to "roll" for a sequence between beats.

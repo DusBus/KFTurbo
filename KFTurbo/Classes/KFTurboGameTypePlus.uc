@@ -3,7 +3,7 @@ class KFTurboGameTypePlus extends KFTurboGameType;
 var TurboMonsterCollection TurboMonsterCollection;
 
 //Refers to the last squad we used to fill out NextSpawnSquad.
-var TurboMonsterCollectionSquad CurrentSquad;
+var TurboMonsterSquad CurrentSquad;
 var float WaveNextSquadSpawnTime;
 
 // Constants for initial game setup
@@ -141,7 +141,7 @@ function LoadUpMonsterList()
         TurboMonsterCollection.LoadedMonsterList[TurboMonsterCollection.LoadedMonsterList.Length - 1].static.PreCacheAssets(Level);
     }
 
-    TurboMonsterCollection.InitializeWaves();
+    TurboMonsterCollection.InitializeCollection();
 }
 
 function SetupWave()
@@ -181,25 +181,14 @@ function AddSpecialSquad()
 
 function BuildNextSquad()
 {
-    local TurboMonsterCollectionSquad Squad;
+    local TurboMonsterSquad Squad;
 
     if (NextSpawnSquad.Length != 0)
     {
         return;
     }
 
-    TurboMonsterCollection.PrepareSequence(WaveNum);
-
-    if (TurboMonsterCollection.CurrentSequence.Length > 0)
-    {
-        Squad = TurboMonsterCollection.CurrentSequence[0];
-        TurboMonsterCollection.CurrentSequence.Remove(0, 1);
-    }
-    else if (TurboMonsterCollection.CurrentBeat.Length > 0)
-    {
-        Squad = TurboMonsterCollection.CurrentBeat[0];
-        TurboMonsterCollection.CurrentBeat.Remove(0, 1);
-    }
+    Squad = TurboMonsterCollection.GetNextMonsterSquad();
 
     if (Squad == None)
     {
@@ -262,9 +251,10 @@ defaultproperties
 {
     bIsHighDifficulty = true
 
-	Begin Object Class=TurboMonsterCollectionImpl Name=TurboMonsterCollection0
+	Begin Object Class=TurboMonsterCollectionWaveImpl Name=TurboMonsterCollection0
 	End Object
-    TurboMonsterCollection=TurboMonsterCollectionImpl'KFTurbo.KFTurboGameTypePlus.TurboMonsterCollection0'
+    TurboMonsterCollection=TurboMonsterCollectionWaveImpl'KFTurbo.KFTurboGameTypePlus.TurboMonsterCollection0'
+
     // Wave 1
     // Squads: 0-5
     // Wave 2-7
