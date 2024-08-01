@@ -95,7 +95,7 @@ simulated function UpdateScoreBoard(Canvas Canvas)
 			continue;
 		}
 
-		DrawPlayerEntry(Canvas, KFPRI, EntrySizeY, TempY, OwnerPRI == KFPRI);
+		DrawPlayerEntry(Canvas, KFPRI, EntrySizeY, TempY, OwnerPRI == KFPRI, Index == 0);
 		TempY += EntrySizeY * 1.2f;	
 	}
 }
@@ -154,7 +154,7 @@ simulated function DrawScoreboardHeader(Canvas Canvas, float CenterY, float Size
 	class'TurboHUDOverlay'.static.DrawCounterTextMeticulous(Canvas, DrawString, TextSizeX, 1.f);
 }
 
-simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI, float SizeY, float PositionY, bool bIsLocalPlayer)
+simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI, float SizeY, float PositionY, bool bIsLocalPlayer, bool bIsFirstEntry)
 {
 	local float CenterX, CenterY;
 	local float SizeX;
@@ -222,7 +222,7 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 
 	DrawText = "000";
 
-	Canvas.Font = class'KFTurboFonts'.static.LoadFontStatic(3);
+	Canvas.Font = class'KFTurboFonts'.static.LoadFontStatic(2);
 	Canvas.FontScaleX = 1.f;
 	Canvas.FontScaleY = 1.f;
 	Canvas.TextSize(DrawText, TextSizeX, TextSizeY);
@@ -242,8 +242,12 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 	Canvas.DrawColor = KillIconColor;
 	TempX = (CenterX - (SizeX * 0.5f)) + (SizeX * KillsOffsetX);
 	TempY = CenterY - (SizeY * KillSizeY * 0.5f);
-	Canvas.SetPos(TempX - (SizeY * KillSizeY * 0.5f), TempY);
-	Canvas.DrawTileScaled(KillIcon, (SizeY * KillSizeY) / float(KillIcon.USize), (SizeY * KillSizeY) / float(KillIcon.VSize));
+
+	if (bIsFirstEntry)
+	{
+		Canvas.SetPos(TempX - (SizeY * KillSizeY * 0.5f), (TempY - (SizeY * 0.5f)) - (SizeY * KillSizeY * 0.5f));
+		Canvas.DrawTileScaled(KillIcon, (SizeY * KillSizeY) / float(KillIcon.USize), (SizeY * KillSizeY) / float(KillIcon.VSize));
+	}
 
 	Canvas.DrawColor = ScoreboardTextColor;
 	DrawText = string(KFPRI.Kills);
@@ -262,8 +266,12 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 	Canvas.DrawColor = HealthIconColor;
 	TempX = (CenterX - (SizeX * 0.5f)) + (SizeX * HealthOffsetX);
 	TempY = CenterY - (SizeY * HealthSizeY * 0.5f);
-	Canvas.SetPos(TempX - (SizeY * HealthSizeY * 0.5f), TempY);
-	Canvas.DrawTileScaled(HealthIcon, (SizeY * HealthSizeY) / float(HealthIcon.USize), (SizeY * HealthSizeY) / float(HealthIcon.VSize));
+	
+	if (bIsFirstEntry)
+	{
+		Canvas.SetPos(TempX - (SizeY * HealthSizeY * 0.5f), (TempY - (SizeY * 0.5f)) - (SizeY * HealthSizeY * 0.5f));
+		Canvas.DrawTileScaled(HealthIcon, (SizeY * HealthSizeY) / float(HealthIcon.USize), (SizeY * HealthSizeY) / float(HealthIcon.VSize));
+	}
 
 	Canvas.DrawColor = ScoreboardTextColor;
 	DrawText = string(KFPRI.PlayerHealth)$HealthyString;
@@ -275,8 +283,12 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 	Canvas.DrawColor = HealedHealthIconColor;
 	TempX = (CenterX - (SizeX * 0.5f)) + (SizeX * HealedHealthOffsetX);
 	TempY = CenterY - (SizeY * HealedHealthSizeY * 0.5f);
-	Canvas.SetPos(TempX - (SizeY * HealedHealthSizeY * 0.5f), TempY);
-	Canvas.DrawTileScaled(HealedHealthIcon, (SizeY * HealedHealthSizeY) / float(HealedHealthIcon.USize), (SizeY * HealedHealthSizeY) / float(HealedHealthIcon.VSize));
+	
+	if (bIsFirstEntry)
+	{
+		Canvas.SetPos(TempX - (SizeY * HealedHealthSizeY * 0.5f), (TempY - (SizeY * 0.5f)) - (SizeY * HealedHealthSizeY * 0.5f));
+		Canvas.DrawTileScaled(HealedHealthIcon, (SizeY * HealedHealthSizeY) / float(HealedHealthIcon.USize), (SizeY * HealedHealthSizeY) / float(HealedHealthIcon.VSize));
+	}
 
     TPRI = class'TurboPlayerReplicationInfo'.static.GetTurboPRI(KFPRI);
 	Canvas.DrawColor = ScoreboardTextColor;
@@ -298,8 +310,12 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 	Canvas.DrawColor = CashIconColor;
 	TempX = (CenterX - (SizeX * 0.5f)) + (SizeX * CashOffsetX);
 	TempY = CenterY - (SizeY * CashSizeY * 0.5f);
-	Canvas.SetPos(TempX - (SizeY * CashSizeY * 0.5f), TempY);
-	Canvas.DrawTileScaled(CashIcon, (SizeY * CashSizeY) / float(CashIcon.USize), (SizeY * CashSizeY) / float(CashIcon.VSize));
+	
+	if (bIsFirstEntry)
+	{
+		Canvas.SetPos(TempX - (SizeY * CashSizeY * 0.5f), (TempY - (SizeY * 0.5f)) - (SizeY * CashSizeY * 0.5f));
+		Canvas.DrawTileScaled(CashIcon, (SizeY * CashSizeY) / float(CashIcon.USize), (SizeY * CashSizeY) / float(CashIcon.VSize));
+	}
 	
 	Canvas.DrawColor = ScoreboardTextColor;
 	DrawText = string(int(KFPRI.Score)) $ class'KFTab_BuyMenu'.default.MoneyCaption;
@@ -311,8 +327,12 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 	Canvas.DrawColor = PingIconColor;
 	TempX = (CenterX - (SizeX * 0.5f)) + (SizeX * PingOffsetX);
 	TempY = CenterY - (SizeY * PingSizeY * 0.5f);
-	Canvas.SetPos(TempX - (SizeY * PingSizeY * 0.5f), TempY);
-	Canvas.DrawTileScaled(PingIcon, (SizeY * PingSizeY) / float(PingIcon.USize), (SizeY * PingSizeY) / float(PingIcon.VSize));
+	
+	if (bIsFirstEntry)
+	{
+		Canvas.SetPos(TempX - (SizeY * PingSizeY * 0.5f), (TempY - (SizeY * 0.5f)) - (SizeY * PingSizeY * 0.5f));
+		Canvas.DrawTileScaled(PingIcon, (SizeY * PingSizeY) / float(PingIcon.USize), (SizeY * PingSizeY) / float(PingIcon.VSize));
+	}
 
 	Canvas.DrawColor = ScoreboardTextColor;
 	DrawText = Eval(KFPRI.bBot, Eval(BotText != "", BotText, "BOT"), string(KFPRI.Ping * 4));
@@ -356,27 +376,27 @@ defaultproperties
 	UsernameOffsetX=0.05f
 
 	HealthOffsetX=0.275f
-	HealthSizeY=1.f
+	HealthSizeY=0.75f
 	HealthIconColor=(R=0,G=0,B=0,A=200)
 	HealthIcon=Texture'KFTurbo.Scoreboard.ScoreboardHealth_D'
 
 	HealedHealthOffsetX=0.625f
-	HealedHealthSizeY=0.925f
+	HealedHealthSizeY=0.75f
 	HealedHealthIconColor=(R=0,G=0,B=0,A=200)
-	HealedHealthIcon=Texture'KFTurbo.Ammo.SyringeIcon_D'
+	HealedHealthIcon=Texture'KFTurbo.Scoreboard.ScoreboardHealed_D'
 
 	KillsOffsetX=0.45f
-	KillSizeY=1.f
+	KillSizeY=0.75f
 	KillIconColor=(R=0,G=0,B=0,A=200)
 	KillIcon=Texture'KFTurbo.Scoreboard.ScoreboardKill_D'
 
 	CashOffsetX=0.8f
-	CashSizeY=1.125f
+	CashSizeY=0.75f
 	CashIconColor=(R=0,G=0,B=0,A=200)
 	CashIcon=Texture'KFTurbo.Scoreboard.ScoreboardCash_D'
 
 	PingOffsetX = 0.975f
-	PingSizeY = 0.95f
+	PingSizeY = 0.75f
 	PingIconColor=(R=0,G=0,B=0,A=200)
 	PingIcon=Texture'KFTurbo.Scoreboard.ScoreboardPing_D'
 }
