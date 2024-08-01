@@ -108,6 +108,37 @@ function EnableNonZeroExtentTraceCollision(bool bOriginalBlockNonZeroExtentTrace
 	}
 }
 
+exec function Speech( Name Type, int Index, string CallSign )
+{
+	if (Pawn != None)
+	{
+		CheckForVoiceCommandMark(Type, Index);
+	}
+
+	Super.Speech(Type, Index, CallSign);
+}
+
+function CheckForVoiceCommandMark(Name Type, int Index)
+{
+	local int VoiceCommandMarkData;
+
+	if (Type == 'ALERT' && Index == 0)
+	{
+		MarkActor();
+		return;
+	}
+
+	VoiceCommandMarkData = class'TurboMarkerType_VoiceCommand'.static.GetGenerateMarkerDataFromVoiceCommand(Type, Index);
+	
+	if (VoiceCommandMarkData == -1)
+	{
+		return;
+	}
+
+	//Mark the pawn with this data.
+	AttemptMarkActor(Pawn.Location, Pawn.Location, Pawn, class'TurboMarkerType_VoiceCommand', VoiceCommandMarkData, MarkColor);
+}
+
 exec function MarkActor()
 {
 	local Vector HitLocation, HitNormal;
@@ -156,7 +187,7 @@ exec function MarkActor()
 	if (Actor != None)
 	{
 		EnableNonZeroExtentTraceCollision(bPreviousNonZeroExtentTraces, bPreviousExtendedNonZeroExtentTraces);
-		AttemptMarkActor(StartMarkTrace, HitLocation, Actor);
+		AttemptMarkActor(StartMarkTrace, HitLocation, Actor, None, -1, MarkColor);
 		return;
 	}
 	
@@ -166,7 +197,7 @@ exec function MarkActor()
 	if (Actor != None)
 	{
 		EnableNonZeroExtentTraceCollision(bPreviousNonZeroExtentTraces, bPreviousExtendedNonZeroExtentTraces);
-		AttemptMarkActor(StartMarkTrace, HitLocation, Actor);
+		AttemptMarkActor(StartMarkTrace, HitLocation, Actor, None, -1, MarkColor);
 		return;
 	}
 
@@ -176,17 +207,17 @@ exec function MarkActor()
 	if (Actor != None)
 	{
 		EnableNonZeroExtentTraceCollision(bPreviousNonZeroExtentTraces, bPreviousExtendedNonZeroExtentTraces);
-		AttemptMarkActor(StartMarkTrace, HitLocation, Actor);
+		AttemptMarkActor(StartMarkTrace, HitLocation, Actor, None, -1, MarkColor);
 		return;
 	}
 }
 
-function AttemptMarkActor(vector Start, vector End, Actor TargetActor)
+function AttemptMarkActor(vector Start, vector End, Actor TargetActor, class<TurboMarkerType> DataClassOverride, int DataOverride, TurboPlayerReplicationInfo.EMarkColor Color)
 {
 	local TurboPlayerReplicationInfo TPRI;
 	local Pickup FoundPickup;
 
-	if (TargetActor == None || TargetActor.bWorldGeometry)
+	if ((TargetActor == None || TargetActor.bWorldGeometry) && (Player != None))
 	{
 		foreach CollidingActors(class'Pickup', FoundPickup, 40.f, End)
 			break;
@@ -197,6 +228,11 @@ function AttemptMarkActor(vector Start, vector End, Actor TargetActor)
 		}
 
 		TargetActor = FoundPickup;
+
+		if (TargetActor == None || TargetActor.bWorldGeometry)
+		{
+			return;
+		}
 	}
 	
     if (Pawn(TargetActor.Base) != None)
@@ -206,7 +242,7 @@ function AttemptMarkActor(vector Start, vector End, Actor TargetActor)
 	
 	if (Role != ROLE_Authority)
 	{
-		ServerMarkActor(Start, End, TargetActor, MarkColor);
+		ServerMarkActor(Start, End, TargetActor, DataClassOverride, DataOverride, MarkColor);
 		return;
 	}
 
@@ -222,28 +258,13 @@ function AttemptMarkActor(vector Start, vector End, Actor TargetActor)
 	if (TPRI != None)
 	{
 		TPRI.MarkerColor = MarkColor;
-		TPRI.MarkActor(TargetActor);
+		TPRI.MarkActor(TargetActor, DataClassOverride, DataOverride);
 	}
 }
 
-function ServerMarkActor(vector Start, vector End, Actor TargetActor, TurboPlayerReplicationInfo.EMarkColor Color)
+function ServerMarkActor(vector Start, vector End, Actor TargetActor, class<TurboMarkerType> DataClassOverride, int DataOverride, TurboPlayerReplicationInfo.EMarkColor Color)
 {
-	local TurboPlayerReplicationInfo TPRI;
-	
-	if (NextMarkTime > Level.TimeSeconds)
-	{
-		return;
-	}
-
-	NextMarkTime = Level.TimeSeconds + 0.1f;
-
-	TPRI = class'TurboPlayerReplicationInfo'.static.GetTurboPRI(PlayerReplicationInfo);
-
-	if (TPRI != None)
-	{
-		TPRI.MarkerColor = Color;
-		TPRI.MarkActor(TargetActor);
-	}
+	AttemptMarkActor(Start, End, TargetActor, DataClassOverride, DataOverride, Color);
 }
 
 exec function SetMarkColor(TurboPlayerReplicationInfo.EMarkColor Color)

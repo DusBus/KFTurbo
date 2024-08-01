@@ -5,10 +5,12 @@ var KFPlayerReplicationInfo OwningReplicationInfo;
 var Actor MarkedActor;
 var class<Actor> MarkActorClass;
 
-var Vector MarkLocation;
-var class<Object> DataClass;
 var Object DataObject;
+var class<Object> DataClass;
 
+var int MarkerData;
+
+var Vector MarkLocation;
 var float MarkTime;
 var float MarkDuration;
 var int HealthHealed;
@@ -35,6 +37,8 @@ var array<Color> MarkerColorList;
 var class<Actor> LastReceivedActorClass;
 var float LastReceivedMarkTime;
 var Object LastKnownDataObject;
+var class<Object> LastKnownDataClass;
+var int LastKnownMarkerData;
 
 var String MarkDisplayString;
 var float WorldZOffset;
@@ -53,7 +57,7 @@ replication
     reliable if( bNetInitial && ROLE == ROLE_Authority)
         OwningReplicationInfo;
 	reliable if( Role==ROLE_Authority )
-		MarkedActor, MarkActorClass, MarkLocation, DataClass, DataObject, MarkDuration, MarkerColor, HealthHealed;
+		MarkedActor, MarkActorClass, MarkLocation, DataClass, DataObject, MarkDuration, MarkerData, MarkerColor, HealthHealed;
 }
 
 simulated function PostBeginPlay()
@@ -93,8 +97,9 @@ simulated function final vector GetMarkLocation()
     return MarkLocation;
 }
 
-function MarkActor(Actor Target)
+function MarkActor(Actor Target, class<TurboMarkerType> DataClassOverride, int DataOverride)
 {
+    local TurboPlayerReplicationInfo TPRI;
     if (Target == None)
     {
         return;
@@ -105,15 +110,18 @@ function MarkActor(Actor Target)
         return;
     }
 
-    if (IsAlreadyMarkedActor(Target))
-    {
-        return;
-    }
-
-    if (MarkedActor == Target)
+    //We should probably make this more accurate but essentially this is a prelim check if our mark changed.
+    if (MarkedActor == Target && (DataClassOverride == None || DataClass == DataClassOverride) && (DataOverride == -1 || MarkerData == DataOverride))
     {
         MarkTime = Level.TimeSeconds;
         return;
+    }
+
+    TPRI = GetTPRIMarkingActor(Target);
+
+    if (TPRI != None)
+    {
+        TPRI.ClearMarkedActor();
     }
 
     ClearMarkedActor();
@@ -121,9 +129,27 @@ function MarkActor(Actor Target)
     MarkedActor = Target;
     MarkActorClass = Target.Class;
 
-    MarkLocation = Target.Location;
-    DataClass = GetRelevantDataClass(Target);
     DataObject = GetRelevantDataObject(Target);
+
+    if (DataClassOverride != None)
+    {
+        DataClass = DataClassOverride;
+    }
+    else
+    {
+        DataClass = GetRelevantDataClass(Target);
+    }
+
+    if (DataOverride != -1)
+    {
+        MarkerData = DataOverride;
+    }
+    else
+    {
+        MarkerData = GetRelevantData(Target);
+    }
+
+    MarkLocation = Target.Location;
 
     MarkTime = Level.TimeSeconds;
     MarkDuration = GetMarkDuration(Target);
@@ -144,7 +170,12 @@ function ClearMarkedActor()
 {
     MarkedActor = None;
     MarkActorClass = None;
+    
+    DataObject = None;
     DataClass = None;
+
+    MarkerData = 0;
+
     MarkTime = -1;
     MarkDuration = -1;
 
@@ -156,18 +187,24 @@ function ClearMarkedActor()
     NetUpdateTime = Level.TimeSeconds - 2.f;
 }
 
-final function bool IsAlreadyMarkedActor(Actor TargetActor)
+final function TurboPlayerReplicationInfo GetTPRIMarkingActor(Actor TargetActor)
 {
     local TurboPlayerReplicationInfo TPRI;
+
+    if (TargetActor == None)
+    {
+        return None;
+    }
+
     foreach TargetActor.DynamicActors(class'TurboPlayerReplicationInfo', TPRI)
     {
         if (TPRI != Self && TPRI.MarkedActor == TargetActor)
         {
-            return true;
+            return TPRI;
         }
     }
 
-    return false;
+    return None;
 }
 
 function bool CanMarkActor(Actor TargetActor)
@@ -220,9 +257,34 @@ function Object GetRelevantDataObject(Actor TargetActor)
     return None;
 }
 
+function int GetRelevantData(Actor TargetActor)
+{
+    if (CashPickup(TargetActor) != None)
+    {
+        return CashPickup(TargetActor).CashAmount;
+    }
+
+    return 0;
+}
+
 function float GetMarkDuration(Actor TargetActor)
 {
-    return 5.f;
+    if (class<TurboMarkerType>(DataClass) != None)
+    {
+        return class<TurboMarkerType>(DataClass).static.GetMarkerDuration(MarkedActor, MarkActorClass, DataObject, DataClass, MarkerData);
+    }
+
+    if (Pawn(TargetActor) != None)
+    {
+        return 20.f;
+    }
+
+    if (Pickup(TargetActor) != None)
+    {
+        return 10.f;
+    }
+
+    return 10.f;
 }
 
 function bool HasMarkData()
@@ -244,6 +306,12 @@ function Tick(float DeltaTime)
         ClearMarkedActor();
         return;
     }
+
+    if (MarkTime + MarkDuration < Level.TimeSeconds)
+    {
+        ClearMarkedActor();
+        return;
+    }
     
     if (CanMarkReceiveLocationUpdate())
     {
@@ -259,17 +327,28 @@ simulated function bool CanMarkReceiveLocationUpdate()
         return !KFMonster(MarkedActor).bCloaked || KFMonster(MarkedActor).bSpotted;
     }
 
+    if (class<TurboMarkerType>(DataClass) != None)
+    {
+        return class<TurboMarkerType>(DataClass).static.ShouldReceiveLocationUpdate(MarkedActor, MarkActorClass, DataObject, DataClass, MarkerData);
+    }
+
     return true;
 }
 
 simulated function bool HasMarkUpdate()
 {
-    if (MarkActorClass == LastReceivedActorClass && MarkTime == LastReceivedMarkTime && LastKnownDataObject == DataObject)
+    if (MarkActorClass != LastReceivedActorClass || MarkTime != LastReceivedMarkTime || LastKnownDataObject != DataObject)
     {
-        return false;
+        return true;
     }
 
-    return true;
+    if (LastKnownDataClass != DataClass || MarkerData != LastKnownMarkerData)
+    {
+        return true;
+    }
+
+    log("No Marker Update");
+    return false;
 }
 
 simulated function OnReceivedMark()
@@ -280,10 +359,17 @@ simulated function OnReceivedMark()
     LastReceivedActorClass = MarkActorClass;
     LastReceivedMarkTime = MarkTime;
     LastKnownDataObject = DataObject;
+    LastKnownDataClass = DataClass;
+    LastKnownMarkerData = MarkerData;
 }
 
 simulated function String GenerateDisplayString()
 {
+    if (class<TurboMarkerType>(DataClass) != None)
+    {
+        return class<TurboMarkerType>(DataClass).static.GenerateMarkerDisplayString(MarkedActor, MarkActorClass, DataObject, DataClass, MarkerData);
+    }
+    
     if (Pickup(MarkedActor) != None || class<Pickup>(MarkActorClass) != None)
     {
         return GeneratePickupDisplayString(Pickup(MarkedActor), class<Pickup>(MarkActorClass));
@@ -320,7 +406,7 @@ simulated function String GeneratePickupDisplayString(Pickup PickupActor, class<
         }
         else if (CashPickup(MarkedActor) != None)
         {
-            return PickupStringLeft$CashPickup(MarkedActor).CashAmount@class'KFTab_BuyMenu'.default.MoneyCaption$PickupStringRight; 
+            return PickupStringLeft$MarkerData@class'KFTab_BuyMenu'.default.MoneyCaption$PickupStringRight; 
         }
 
         if (Pickup(MarkedActor).InventoryType == None)
@@ -346,7 +432,7 @@ simulated function String GeneratePickupDisplayString(Pickup PickupActor, class<
     }
     else if (class<CashPickup>(PickupClass) != None)
     {
-        return class'KFTab_BuyMenu'.default.MoneyCaption;
+        return PickupStringLeft$MarkerData@class'KFTab_BuyMenu'.default.MoneyCaption$PickupStringRight;
     }
 
     if (class<Inventory>(DataClass) != None)
