@@ -57,30 +57,30 @@ defaultproperties
     mapIndexes(36)=(mapname="kf-northernsolitude",achvIndex=36)
     mapIndexes(37)=(mapname="kf-toyhouse-b3",achvIndex=37)
     mapIndexes(38)=(mapname="kf-6pointerv2",achvIndex=38)
-    mapIndexes(39)=(mapname="kf-yarnbox",achvIndex=39)
+    mapIndexes(39)=(mapname="kf-yarnbox-s",achvIndex=39)
     mapIndexes(40)=(mapname="kf-cubicalchamber",achvIndex=40)
-    mapIndexes(40)=(mapname="kf-vagrant-s",achvIndex=41)
+    mapIndexes(41)=(mapname="kf-vagrant-s",achvIndex=41)
 
     //Modified maps that should still reward the base map achievement.
     //WestLondon Variants
-    mapIndexes(41)=(mapname="kf-westlondonwinter",achvIndex=0)
-    mapIndexes(42)=(mapname="kf-westlondon-s",achvIndex=0)
+    mapIndexes(42)=(mapname="kf-westlondonwinter",achvIndex=0)
+    mapIndexes(43)=(mapname="kf-westlondon-s",achvIndex=0)
 
     //Icebreaker Variants
-    mapIndexes(43)=(mapname="kf-icebreaker-stirred",achvIndex=13)
+    mapIndexes(44)=(mapname="kf-icebreaker-stirred",achvIndex=13)
     
     //Departed Variants
-    mapIndexes(44)=(mapname="kf-departed-s",achvIndex=10)
-    mapIndexes(45)=(mapname="kf-departedwinter-s",achvIndex=10)
+    mapIndexes(45)=(mapname="kf-departed-s",achvIndex=10)
+    mapIndexes(46)=(mapname="kf-departedwinter-s",achvIndex=10)
     
     //AbusementPark Variants
-    mapIndexes(46)=(mapname="kf-abusementparkwinter",achvIndex=19)
+    mapIndexes(47)=(mapname="kf-abusementparkwinter",achvIndex=19)
     
     //Aperture Variants
-    mapIndexes(47)=(mapname="kf-aperture-lights-out",achvIndex=18)
+    mapIndexes(48)=(mapname="kf-aperture-lights-out",achvIndex=18)
     
     //Hospital Horrors Variants
-    mapIndexes(47)=(mapname="kf-hospitalhorrors-s",achvIndex=12)
+    mapIndexes(49)=(mapname="kf-hospitalhorrors-s",achvIndex=12)
 
     achievements=()
     achievements(0)=(title="Hellish Pub Crawl",description="Win a long game on West London (or any variant) on Hell on Earth difficulty",image=Texture'KillingFloor2HUD.Achievements.Achievement_65')
@@ -126,5 +126,5 @@ defaultproperties
     achievements(38)=(title="Six Star Struggle",description="Win a long game on 6Pointer on Hell on Earth difficulty",image=Texture'KFTurbo.Achievement.SixPointer_HoE')
     achievements(39)=(title="Fabric Softener",description="Win a long game on Yarn Box on Hell on Earth difficulty",image=Texture'KFTurbo.Achievement.YarnBox_HoE')
     achievements(40)=(title="Compacted Cube",description="Win a long game on Cubical Chamber on Hell on Earth difficulty",image=Texture'KFTurbo.Achievement.CubicalChamber_HoE')
-    achievements(40)=(title="Chemical Plant Zone",description="Win a long game on Vagrant on Hell on Earth difficulty",image=Texture'KFTurbo.Achievement.Vagrant_HoE')
+    achievements(41)=(title="Chemical Plant Zone",description="Win a long game on Vagrant on Hell on Earth difficulty",image=Texture'KFTurbo.Achievement.Vagrant_HoE')
 }
