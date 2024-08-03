@@ -170,11 +170,16 @@ simulated function HurtRadius(float DamageAmount, float DamageRadius, class<Dama
 		}
 
 		Direction = HitActor.Location - HitLocation;
+		Distance = VSize(Direction);
 
-		if(VSizeSquared(Direction) > 0.0001f)
+		if(Distance > 0.01f)
+		{
 			Direction = Normal(Direction);
+		}
 		else
+		{
 			Direction = vect(0, 0, 1);
+		}
 
 		DamageScale = 1.f - (FMax(0, (Distance - HitActor.CollisionRadius) / DamageRadius));
 
