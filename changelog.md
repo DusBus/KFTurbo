@@ -5,7 +5,10 @@
 - **Reworked trader menu**: Now you can select skins directly when you choose the weapon.
 - **Added custom weapon stickers**: You can access these in the skin selector in the trader menu.
 
+- **Redesigned HUD**: Information is more visible, closer to the center of the screen
+- **New Scoreboard**: Easier to tell crucial information at a glance. Now includes healing done.
 - **Added a Ping system**: Players can now ping enemies or pickups (default: X) to create a little text for their teammates.
+
 - **TBA**: insert changes here🚧
 
 ## Afflictions
@@ -210,7 +213,7 @@
 - M4 203 grenades receive 90% damage bonus instead of the standard 60% 🟢
 - 60% more LAW rockets 🟢
 - 30% faster LAW fire rate 🟢
-- 30% faster LAW reload speed 🟢
+- 40% faster LAW reload speed 🟢
 - Perk weapons receive a 30% discount 🔻
 - Pipe bombs receive a 74% discount 🟦
 - Spawn with an M4 203 ⚠️
@@ -254,7 +257,12 @@
     - **Pipe Bomb**
         - Removed the exploit which let players detonate pipe bombs multiple times by shooting it ⚠️
     - **Seeker Six Rocket Launcher** 
-        - WIP 🚧
+        - 250% increased explosive damage 🟢
+        - 100% increased impact damage 🟢
+
+        - Weight 7 -> 8 🔻
+        - 7% slower reload speed 🔻
+        - 50% less maximum ammo 🔻
 ### Field Medic
 - Healing grenades now have a new model and bounce more 🆕
 - Magazine capacity bonus on the M7A3 reduced to 50% from 100% 🔻
@@ -366,9 +374,6 @@
         - 45% slower fire rate 🔻
         - 30% more expensive 🔻
     - **Flare Revolver**
-        - Has a new alternate fire that shoots a grenade-like flare that's affected by gravity and explodes after 2.5 seconds 🆕
-        
-        - Alternate fire shoots 75% slower than primary 🔻
         - 25% reduced maximum and starting ammo 🔻
     - **Trenchgun**
         - Weight 8 -> 7 🟢
@@ -425,3 +430,4 @@
 - Fixed a bug that made the Fleshpound "friendly", preventing it from attacking
 - Fixed various issues with being on fire
 - Damage resistance to M99 reduced from 50% to 47.5%
+- Takes 65% increased damage from Seeker Six instead of the normal 25% for explosives.
