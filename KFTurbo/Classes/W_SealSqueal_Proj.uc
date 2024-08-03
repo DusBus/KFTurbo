@@ -181,6 +181,11 @@ simulated function HurtRadius(float DamageAmount, float DamageRadius, class<Dama
 			Direction = vect(0, 0, 1);
 		}
 
+		if(HitActor == Base)
+		{
+			Distance = 0.f;
+		}
+
 		DamageScale = 1.f - (FMax(0, (Distance - HitActor.CollisionRadius) / DamageRadius));
 
 		if (Instigator == None || Instigator.Controller == None)
