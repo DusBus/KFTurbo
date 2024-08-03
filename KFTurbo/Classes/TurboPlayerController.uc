@@ -239,16 +239,16 @@ function AttemptMarkActor(vector Start, vector End, Actor TargetActor, class<Tur
     {
         TargetActor = TargetActor.Base;
     }
+
+		//If no color specified, default to player's currently set color.
+	if (Color == Invalid)
+	{
+		Color = MarkColor;
+	}
 	
 	if (Role != ROLE_Authority)
 	{
-		//If no color specified, default to currently set color.
-		if (Color == Invalid)
-		{
-			Color = MarkColor;
-		}
-
-		ServerMarkActor(Start, End, TargetActor, DataClassOverride, DataOverride, MarkColor);
+		ServerMarkActor(Start, End, TargetActor, DataClassOverride, DataOverride, Color);
 		return;
 	}
 
@@ -263,7 +263,7 @@ function AttemptMarkActor(vector Start, vector End, Actor TargetActor, class<Tur
 
 	if (TPRI != None)
 	{
-		TPRI.MarkerColor = MarkColor;
+		TPRI.MarkerColor = Color;
 		TPRI.MarkActor(TargetActor, DataClassOverride, DataOverride);
 	}
 }
