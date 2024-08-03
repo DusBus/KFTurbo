@@ -242,6 +242,12 @@ function AttemptMarkActor(vector Start, vector End, Actor TargetActor, class<Tur
 	
 	if (Role != ROLE_Authority)
 	{
+		//If no color specified, default to currently set color.
+		if (Color == Invalid)
+		{
+			Color = MarkColor;
+		}
+
 		ServerMarkActor(Start, End, TargetActor, DataClassOverride, DataOverride, MarkColor);
 		return;
 	}

@@ -4,6 +4,7 @@ class TurboMarkerType_VoiceCommand extends TurboMarkerType
 //Simplified voice command list to help us figure out what voice command was used.
 enum ETurboVoiceCommand{
     //Support
+    Medic,
     Help,
 
     //Alert
@@ -26,6 +27,8 @@ static function int GetGenerateMarkerDataFromVoiceCommand(Name Type, int Index)
 		case 'SUPPORT':
 			switch(Index)
 			{
+				case 0:
+					return ETurboVoiceCommand.Medic;
 				case 1:
 					return ETurboVoiceCommand.Help;
 			}
@@ -98,6 +101,8 @@ static function String GenerateMarkerDisplayString(Actor MarkedActor, class<Acto
 
     switch(ETurboVoiceCommand(MarkerData))
     {
+        case Medic:
+            return VoicePack.default.SupportString[0];
         case Help:
             return VoicePack.default.SupportString[1];
             
