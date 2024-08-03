@@ -240,7 +240,7 @@ function AttemptMarkActor(vector Start, vector End, Actor TargetActor, class<Tur
         TargetActor = TargetActor.Base;
     }
 
-		//If no color specified, default to player's currently set color.
+	//If no color specified, default to player's currently set color.
 	if (Color == Invalid)
 	{
 		Color = MarkColor;
