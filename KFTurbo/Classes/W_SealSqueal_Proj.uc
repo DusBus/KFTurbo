@@ -152,7 +152,6 @@ simulated function HurtRadius(float DamageAmount, float DamageRadius, class<Dama
 
 	local int NumKilled;
 
-	local Vector DamageLocation;
 	local Vector MomentumVector;
 
 	if (bHurtEntry)
@@ -170,9 +169,8 @@ simulated function HurtRadius(float DamageAmount, float DamageRadius, class<Dama
 		}
 
 		Direction = HitActor.Location - HitLocation;
-		Distance = VSize(Direction);
 
-		if(Distance > 0.01f)
+		if(VSizeSquared(Direction) > 0.0001f)
 		{
 			Direction = Normal(Direction);
 		}
@@ -185,8 +183,17 @@ simulated function HurtRadius(float DamageAmount, float DamageRadius, class<Dama
 		{
 			Distance = 0.f;
 		}
+		else
+		{
+			Distance = class'WeaponHelper'.static.GetDistanceToClosestPointOnActor(HitLocation, HitActor);
+		}
 
-		DamageScale = 1.f - (FMax(0, (Distance - HitActor.CollisionRadius) / DamageRadius));
+		DamageScale = 1.f - FMax(Distance / DamageRadius, 0.f);
+
+		if (DamageScale <= 0.f)
+		{
+			continue;
+		}
 
 		if (Instigator == None || Instigator.Controller == None)
 		{
@@ -202,10 +209,9 @@ simulated function HurtRadius(float DamageAmount, float DamageRadius, class<Dama
 
 		if(HitPawn == None)
 		{
-			DamageLocation = HitActor.Location - (0.5f * (HitActor.CollisionHeight + HitActor.CollisionRadius) * Direction);
 			MomentumVector = (Momentum * Direction * DamageScale);
 
-			HitActor.TakeDamage(DamageAmount * DamageScale, Instigator, DamageLocation, MomentumVector, DamageType);
+			HitActor.TakeDamage(DamageAmount * DamageScale, Instigator, HitActor.Location, MomentumVector, DamageType);
 
 			if (Vehicle(HitActor) != None && Vehicle(HitActor).Health > 0)
 			{
@@ -238,9 +244,8 @@ simulated function HurtRadius(float DamageAmount, float DamageRadius, class<Dama
 			continue;
 		}
 
-		DamageLocation = HitActor.Location - (0.5f * (HitActor.CollisionHeight + HitActor.CollisionRadius) * Direction);
 		MomentumVector = (Momentum * Direction * DamageScale);
-		HitActor.TakeDamage(DamageAmount * DamageScale, Instigator, DamageLocation, MomentumVector, DamageType);
+		HitActor.TakeDamage(DamageAmount * DamageScale, Instigator, HitActor.Location, MomentumVector, DamageType);
 
 		if(Role == ROLE_Authority && HitPawn.Health <= 0 )
 		{
@@ -284,18 +289,14 @@ simulated function bool CanDamageTarget(Actor Target)
 
 simulated function float GetDamageMultiplier(Pawn HitPawn, Vector HitLocation)
 {
-	local float Multiplier;
-
-	Multiplier = 1.f;
-
 	if(HitPawn == Base)
 	{
 		if(bAttachedToHead)
 		{
-			return 3.f;
+			return 1.85f;
 		}
 
-		return 2.f;
+		return 1.5f;
 	}
 
 	if(KFPawn(HitPawn) != None)
@@ -354,6 +355,6 @@ simulated function CheckPawnBase(Pawn PawnBase)
 defaultproperties
 {
      ImpactDamage=0
-     Damage=200.000000
-     DamageRadius=250.000000
+     Damage=400.000000
+     DamageRadius=350.000000
 }
