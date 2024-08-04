@@ -93,7 +93,7 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 		Distance = FMax(VSize(Direction), 1.f);
 		Direction = Direction / Distance;
 
-		Distance = FMax(Distance - Target.CollisionRadius, 0.f);
+		Distance = class'WeaponHelper'.static.GetDistanceToClosestPointOnActor(HitLocation, Target);
 
 		if ( Instigator == None || Instigator.Controller == None )
 		{
