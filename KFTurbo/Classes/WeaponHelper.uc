@@ -11,6 +11,49 @@ enum ETraceResult
 	TR_None
 };
 
+//Takes into account cylinder size when giving back a distance.
+static final function float GetDistanceToClosestPointOnActor(Vector Location, Actor Target)
+{
+	local float DistZ;
+
+	Location = (Location - Target.Location);
+	DistZ = FMax(0.f, Abs(Location.Z) - Target.CollisionHeight);
+	
+	Location.X = Abs(Location.X);
+	Location.Y = Abs(Location.Y);
+	Location.Z = 0.f;
+	
+	Location -= (Normal(Location) * Target.CollisionRadius);
+	Location.Z = DistZ;
+
+	return VSize(Location);
+}
+
+//Takes into account both actors' cylinder size when giving back a distance.
+static final function float GetDistanceBetweenActors(Actor A, Actor B)
+{
+	local float DistZ;
+	local Vector Distance;
+
+	Distance = (A.Location - B.Location);
+	
+	//Get result Z component and clear it out from distance vector for now.
+	DistZ = FMax(0.f, Abs(Distance.Z) - (A.CollisionHeight + B.CollisionHeight));
+	Distance.Z = 0.f;
+	
+	//Remove sum of cylinder sizes from the XY component.
+	Distance.X = Abs(Distance.X);
+	Distance.Y = Abs(Distance.Y);
+	Distance -= (Normal(Distance) * (A.CollisionRadius + B.CollisionRadius));
+
+	//Put it all back together.
+	Distance.X = FMax(Distance.X, 0.f);
+	Distance.Y = FMax(Distance.Y, 0.f);
+	Distance.Z = DistZ;
+	
+	return VSize(Distance);
+}
+
 static final function PenetratingWeaponTrace(Vector TraceStart, KFWeapon Weapon, KFFire Fire, int PenetrationMax, float PenetrationMultiplier)
 {
 	local Actor HitActor;
