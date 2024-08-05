@@ -62,25 +62,21 @@ defaultproperties
     mapIndexes(41)=(mapname="kf-vagrant-s",achvIndex=41)
 
     //Modified maps that should still reward the base map achievement.
-    //WestLondon Variants
-    mapIndexes(42)=(mapname="kf-westlondonwinter",achvIndex=0)
-    mapIndexes(43)=(mapname="kf-westlondon-s",achvIndex=0)
-
-    //Icebreaker Variants
-    mapIndexes(44)=(mapname="kf-icebreaker-stirred",achvIndex=13)
-    
-    //Departed Variants
-    mapIndexes(45)=(mapname="kf-departed-s",achvIndex=10)
-    mapIndexes(46)=(mapname="kf-departedwinter-s",achvIndex=10)
-    
-    //AbusementPark Variants
-    mapIndexes(47)=(mapname="kf-abusementparkwinter",achvIndex=19)
-    
-    //Aperture Variants
-    mapIndexes(48)=(mapname="kf-aperture-lights-out",achvIndex=18)
-    
-    //Hospital Horrors Variants
-    mapIndexes(49)=(mapname="kf-hospitalhorrors-s",achvIndex=12)
+    mapIndexes(42)=(mapname="kf-abusementparkwinter-s",achvIndex=19)
+    mapIndexes(43)=(mapname="kf-aperture-s",achvIndex=18)
+    mapIndexes(44)=(mapname="kf-aperture-lights-out",achvIndex=18)
+    mapIndexes(45)=(mapname="kf-biohazard-s",achvIndex=8)
+    mapIndexes(46)=(mapname="kf-departed-s",achvIndex=10)
+    mapIndexes(47)=(mapname="kf-departedwinter-s",achvIndex=10)
+    mapIndexes(48)=(mapname="kf-forgotten-s",achvIndex=29)
+    mapIndexes(49)=(mapname="kf-foundry-s",achvIndex=5)
+    mapIndexes(50)=(mapname="kf-hellride-s",achvIndex=21)
+    mapIndexes(51)=(mapname="kf-hospitalhorrors-s",achvIndex=12)
+    mapIndexes(52)=(mapname="kf-icebreaker-stirred",achvIndex=13)
+    mapIndexes(53)=(mapname="kf-suburbia-s",achvIndex=15)
+    mapIndexes(54)=(mapname="kf-waterworks-s",achvIndex=16)
+    mapIndexes(55)=(mapname="kf-westlondon-s",achvIndex=0)
+    mapIndexes(56)=(mapname="kf-westlondonwinter-s",achvIndex=0)
 
     achievements=()
     achievements(0)=(title="Hellish Pub Crawl",description="Win a long game on West London (or any variant) on Hell on Earth difficulty",image=Texture'KillingFloor2HUD.Achievements.Achievement_65')
