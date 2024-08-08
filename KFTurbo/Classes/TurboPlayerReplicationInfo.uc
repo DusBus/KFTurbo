@@ -301,6 +301,11 @@ function Tick(float DeltaTime)
 {
     Super.Tick(DeltaTime);
 
+    if (Level.GRI == None)
+    {
+        return;
+    }
+
     if (!CanMarkActor(MarkedActor))
     {
         ClearMarkedActor();

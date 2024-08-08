@@ -23,6 +23,11 @@ simulated function Tick(float DeltaTime)
 		return;
 	}
 
+    if (Level.GRI == None)
+    {
+        return;
+    }
+
 	if (ShowStalkers())
 	{
 		SpotCloakedMonsters();
