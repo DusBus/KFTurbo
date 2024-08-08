@@ -7,6 +7,7 @@ static function AddCustomStats(ClientPerkRepLink Other)
 	Super.AddCustomStats(Other);
 
 	Other.AddCustomValue(class'VP_BullpupDamage');
+	Other.AddCustomValue(class'VP_StalkerKills');
 }
 
 static function int GetStalkerKillStatAsDamage(ClientPerkRepLink StatOther)

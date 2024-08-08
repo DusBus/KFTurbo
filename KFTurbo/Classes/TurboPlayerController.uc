@@ -68,8 +68,25 @@ simulated event ReceiveLocalizedMessage( class<LocalMessage> Message, optional i
 			Message = class'TurboMessageVeterancy';
 			break;
 	}
+
+	//Accolades are a bit special.
+	if (class<TurboAccoladeLocalMessage>(Message) != None)
+	{
+		CheckAccoladeLocalizedMessage(class<TurboAccoladeLocalMessage>(Message), Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject);
+		return;
+	}
 	
 	Super.ReceiveLocalizedMessage(Message, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject);
+}
+
+simulated event CheckAccoladeLocalizedMessage(class<TurboAccoladeLocalMessage> Message, optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject)
+{
+	if (!Message.default.bDisplayForAccoladeEarner && PlayerReplicationInfo == RelatedPRI_1)
+	{
+		return;
+	}
+
+	TeamMessage(RelatedPRI_1, Message.static.GetString(Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject), 'Accolade');
 }
 
 exec function Trade()

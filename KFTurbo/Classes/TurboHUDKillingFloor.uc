@@ -461,6 +461,97 @@ simulated function DrawHudPassA(Canvas C)
 	}
 }
 
+//Added drop shadow.
+function DisplayMessages(Canvas C)
+{
+	local int i, j, XPos, YPos,MessageCount;
+	local float XL, YL, XXL, YYL;
+
+	for( i = 0; i < ConsoleMessageCount; i++ )
+	{
+		if ( TextMessages[i].Text == "" )
+			break;
+		else if( TextMessages[i].MessageLife < Level.TimeSeconds )
+		{
+			TextMessages[i].Text = "";
+
+			if( i < ConsoleMessageCount - 1 )
+			{
+				for( j=i; j<ConsoleMessageCount-1; j++ )
+					TextMessages[j] = TextMessages[j+1];
+			}
+			TextMessages[j].Text = "";
+			break;
+		}
+		else
+			MessageCount++;
+	}
+
+	YPos = (ConsoleMessagePosY * HudCanvasScale * C.SizeY) + (((1.0 - HudCanvasScale) / 2.0) * C.SizeY);
+	if ( PlayerOwner == none || PlayerOwner.PlayerReplicationInfo == none || !PlayerOwner.PlayerReplicationInfo.bWaitingPlayer )
+	{
+		XPos = (ConsoleMessagePosX * HudCanvasScale * C.SizeX) + (((1.0 - HudCanvasScale) / 2.0) * C.SizeX);
+	}
+	else
+	{
+		XPos = (0.005 * HudCanvasScale * C.SizeX) + (((1.0 - HudCanvasScale) / 2.0) * C.SizeX);
+	}
+
+	C.Font = GetConsoleFont(C);
+	C.DrawColor = LevelActionFontColor;
+
+	C.TextSize ("A", XL, YL);
+
+	YPos -= YL * MessageCount+1; // DP_LowerLeft
+	YPos -= YL; // Room for typing prompt
+
+	for( i=0; i<MessageCount; i++ )
+	{
+		if ( TextMessages[i].Text == "" )
+		{
+			break;
+		}
+
+		C.DrawColor = C.MakeColor(0, 0, 0, 160);
+		C.SetPos(XPos + 2.f, YPos + 2.f);
+		if( TextMessages[i].PRI!=None )
+		{
+			XL = Class'SRScoreBoard'.Static.DrawCountryName(C,TextMessages[i].PRI,XPos + 2.f,YPos + 2.f);
+			C.SetPos( XPos + XL + 2.f, YPos + 2.f );
+		}
+
+		if( SmileyMsgs.Length!=0 )
+		{
+			DrawSmileyText(class'GUIComponent'.static.StripColorCodes(TextMessages[i].Text),C,,YYL);
+		}
+		else
+		{
+			C.DrawText(class'GUIComponent'.static.StripColorCodes(TextMessages[i].Text),false);
+		}
+
+		C.DrawColor = C.MakeColor(255, 255, 255, 255);
+		YYL = 0;
+		XXL = 0;
+		
+		C.SetPos( XPos, YPos );
+		if( TextMessages[i].PRI!=None )
+		{
+			XL = Class'SRScoreBoard'.Static.DrawCountryName(C,TextMessages[i].PRI,XPos,YPos);
+			C.SetPos( XPos+XL, YPos );
+		}
+
+		if( SmileyMsgs.Length!=0 )
+		{
+			DrawSmileyText(TextMessages[i].Text,C,,YYL);
+		}
+		else
+		{
+			C.DrawText(TextMessages[i].Text,false);
+		}
+		YPos += (YL+YYL);
+	}
+}
+
 static function Font LoadFontStatic(int i)
 {
 	return class'KFTurboFonts'.static.LoadFontStatic(i);

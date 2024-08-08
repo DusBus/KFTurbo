@@ -251,14 +251,14 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 
 	Canvas.DrawColor = ScoreboardTextColor;
 	DrawText = string(KFPRI.Kills);
-	Canvas.TextSize(DrawText, TextSizeX, TextSizeY);
+	Canvas.TextSize(class'TurboHUDOverlay'.static.GetStringOfZeroes(Len(DrawText)), TextSizeX, TextSizeY);
 	Canvas.SetPos(TempX - (TextSizeX * 0.5f), CenterY - (TextSizeY * 0.5f));
 	class'TurboHUDOverlay'.static.DrawCounterTextMeticulous(Canvas, DrawText, TextSizeX, 1.f);
 
 	Canvas.DrawColor.A = 120;
 	DrawText = " ("$KFPRI.KillAssists$")";
 	TempX += (TextSizeX * 0.5f);
-	Canvas.TextSize(DrawText, TextSizeX, TextSizeY);
+	Canvas.TextSize(class'TurboHUDOverlay'.static.GetStringOfZeroes(Len(DrawText)), TextSizeX, TextSizeY);
 	Canvas.SetPos(TempX, CenterY - (TextSizeY * 0.5f));
 	class'TurboHUDOverlay'.static.DrawCounterTextMeticulous(Canvas, DrawText, TextSizeX, 1.f);
 
@@ -275,7 +275,7 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 
 	Canvas.DrawColor = ScoreboardTextColor;
 	DrawText = string(KFPRI.PlayerHealth)$HealthyString;
-	Canvas.TextSize(DrawText, TextSizeX, TextSizeY);
+	Canvas.TextSize(class'TurboHUDOverlay'.static.GetStringOfZeroes(Len(DrawText)), TextSizeX, TextSizeY);
 	Canvas.SetPos(TempX - (TextSizeX * 0.5f), CenterY - (TextSizeY * 0.5f));
 	class'TurboHUDOverlay'.static.DrawCounterTextMeticulous(Canvas, DrawText, TextSizeX, 1.f);
 
@@ -302,7 +302,7 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 		DrawText = string(0);
 	}
 
-	Canvas.TextSize(DrawText, TextSizeX, TextSizeY);
+	Canvas.TextSize(class'TurboHUDOverlay'.static.GetStringOfZeroes(Len(DrawText)), TextSizeX, TextSizeY);
 	Canvas.SetPos(TempX - (TextSizeX * 0.5f), CenterY - (TextSizeY * 0.5f));
 	class'TurboHUDOverlay'.static.DrawCounterTextMeticulous(Canvas, DrawText, TextSizeX, 1.f);
 
@@ -319,7 +319,7 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 	
 	Canvas.DrawColor = ScoreboardTextColor;
 	DrawText = string(int(KFPRI.Score)) $ class'KFTab_BuyMenu'.default.MoneyCaption;
-	Canvas.TextSize(DrawText, TextSizeX, TextSizeY);
+	Canvas.TextSize(class'TurboHUDOverlay'.static.GetStringOfZeroes(Len(DrawText)), TextSizeX, TextSizeY);
 	Canvas.SetPos(TempX - (TextSizeX * 0.5f), CenterY - (TextSizeY * 0.5f));
 	class'TurboHUDOverlay'.static.DrawCounterTextMeticulous(Canvas, DrawText, TextSizeX, 1.f);
 
@@ -336,7 +336,7 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 
 	Canvas.DrawColor = ScoreboardTextColor;
 	DrawText = Eval(KFPRI.bBot, Eval(BotText != "", BotText, "BOT"), string(KFPRI.Ping * 4));
-	Canvas.TextSize(DrawText, TextSizeX, TextSizeY);
+	Canvas.TextSize(class'TurboHUDOverlay'.static.GetStringOfZeroes(Len(DrawText)), TextSizeX, TextSizeY);
 	Canvas.SetPos(TempX - (TextSizeX * 0.5f), CenterY - (TextSizeY * 0.5f));
 	class'TurboHUDOverlay'.static.DrawCounterTextMeticulous(Canvas, DrawText, TextSizeX, 1.f);
 

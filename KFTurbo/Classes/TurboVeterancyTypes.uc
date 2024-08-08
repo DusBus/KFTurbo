@@ -91,45 +91,46 @@ static function float LerpStat(KFPlayerReplicationInfo KFPRI, float A, float B)
 	return Lerp(Level, A, B);*/
 }
 
+static function Color GetPerkColor(byte Level)
+{
+	local int Index;
+	Index = Level / Default.LevelRankRequirement;
+
+	switch (Index)
+	{
+	case 0:
+		return class'Canvas'.static.MakeColor(255,32,32,255); //Red
+	case 1:
+		return class'Canvas'.static.MakeColor(25,208,0,255); //Green
+	case 2:
+		return class'Canvas'.static.MakeColor(10,120,255,255); //Blue
+	case 3:
+		return class'Canvas'.static.MakeColor(255,0,255,255); //Pink
+	case 4:
+		return class'Canvas'.static.MakeColor(150,30,255,255); //Purple
+	case 5:
+		return class'Canvas'.static.MakeColor(255,110,0,255); //Orange
+	case 6:
+		return class'Canvas'.static.MakeColor(255,190,10,255); //Gold
+	case 7:
+		return class'Canvas'.static.MakeColor(255,235,225,255); //Platinum
+	case 8:
+		return class'Canvas'.static.MakeColor(255,235,225, 255); //Platinum
+	}
+}
 
 static function byte PreDrawPerk(Canvas C, byte Level, out Material PerkIcon, out Material StarIcon)
 {
 	local int Index;
+	local byte DrawColorAlpha;
 	Index = Level / Default.LevelRankRequirement;
 
 	StarIcon = Default.StarTexture;
 	PerkIcon = Default.OnHUDGoldIcon;
 
-	switch (Index)
-	{
-	case 0:
-		C.SetDrawColor(255, 32, 32, C.DrawColor.A); //Red
-		break;
-	case 1:
-		C.SetDrawColor(25, 208, 0, C.DrawColor.A); //Green
-		break;
-	case 2:
-		C.SetDrawColor(10, 120, 255, C.DrawColor.A); //Blue
-		break;
-	case 3:
-		C.SetDrawColor(255, 0, 255, C.DrawColor.A); //Pink
-		break;
-	case 4:
-		C.SetDrawColor(150, 30, 255, C.DrawColor.A); //Purple
-		break;
-	case 5:
-		C.SetDrawColor(255, 110, 0, C.DrawColor.A); //Orange
-		break;
-	case 6:
-		C.SetDrawColor(255, 190, 10, C.DrawColor.A); //Gold
-		break;
-	case 7:
-		C.SetDrawColor(255, 235, 225, C.DrawColor.A); //Platinum
-		break;
-	case 8:
-		C.SetDrawColor(255, 235, 225, C.DrawColor.A); //Platinum
-		break;
-	}
+	DrawColorAlpha = C.DrawColor.A;
+	C.DrawColor = GetPerkColor(Level);
+	C.DrawColor.A = DrawColorAlpha;
 
 	return Level % Default.LevelRankRequirement;
 }
