@@ -512,12 +512,12 @@ function DisplayMessages(Canvas C)
 			break;
 		}
 
-		C.DrawColor = C.MakeColor(0, 0, 0, 160);
-		C.SetPos(XPos + 2.f, YPos + 2.f);
+		C.DrawColor = C.MakeColor(0, 0, 0, 120);
+		C.SetPos(XPos + 1.f, YPos + 1.f);
 		if( TextMessages[i].PRI!=None )
 		{
-			XL = Class'SRScoreBoard'.Static.DrawCountryName(C,TextMessages[i].PRI,XPos + 2.f,YPos + 2.f);
-			C.SetPos( XPos + XL + 2.f, YPos + 2.f );
+			XL = Class'SRScoreBoard'.Static.DrawCountryName(C,TextMessages[i].PRI,XPos + 1.f,YPos + 1.f);
+			C.SetPos( XPos + XL + 1.f, YPos + 1.f );
 		}
 
 		if( SmileyMsgs.Length!=0 )
