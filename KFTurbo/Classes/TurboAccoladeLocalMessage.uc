@@ -15,6 +15,7 @@ defaultproperties
     bDisplayForAccoladeEarner=false
     bComplexString=true //We're skipping ANY drawing by setting this to true but not implementing RenderComplexMessage
     bIsConsoleMessage=false
+    Lifetime=10
     
     DrawColor=(R=255,G=255,B=255,A=255)
 

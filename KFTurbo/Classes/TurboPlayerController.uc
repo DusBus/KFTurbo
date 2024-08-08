@@ -79,14 +79,37 @@ simulated event ReceiveLocalizedMessage( class<LocalMessage> Message, optional i
 	Super.ReceiveLocalizedMessage(Message, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject);
 }
 
-simulated event CheckAccoladeLocalizedMessage(class<TurboAccoladeLocalMessage> Message, optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject)
+simulated function CheckAccoladeLocalizedMessage(class<TurboAccoladeLocalMessage> Message, optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject)
 {
 	if (!Message.default.bDisplayForAccoladeEarner && PlayerReplicationInfo == RelatedPRI_1)
 	{
 		return;
 	}
 
-	TeamMessage(RelatedPRI_1, Message.static.GetString(Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject), 'Accolade');
+	AccoladeMessage(RelatedPRI_1, Message, Message.static.GetString(Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject));
+}
+
+simulated function AccoladeMessage(PlayerReplicationInfo PRI, class<TurboAccoladeLocalMessage> Message, string AccoladeMessage)
+{
+	if ( Level.NetMode == NM_DedicatedServer || GameReplicationInfo == None )
+	{
+		return;
+	}
+
+	if( AllowTextToSpeech(PRI, 'Accolade') )
+	{
+		TextToSpeech(AccoladeMessage, TextToSpeechVoiceVolume );
+	}
+
+	if ( myHUD != None )
+	{
+		myHUD.AddTextMessage(AccoladeMessage, Message, PRI);
+	}
+
+	if (Player != None && Player.Console != None)
+	{
+		Player.Console.Chat(AccoladeMessage, 6.0, PRI );
+	}
 }
 
 exec function Trade()
