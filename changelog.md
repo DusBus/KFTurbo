@@ -8,6 +8,8 @@
 - **Redesigned HUD**: Information is more visible, closer to the center of the screen
 - **New Scoreboard**: Easier to tell crucial information at a glance. Now includes healing done.
 - **Added a Ping system**: Players can now ping enemies or pickups (default: X) to create a little text for their teammates.
+- **Custom Achievements**: Players can complete brand new KFTurbo-related server-tracked achievements.
+ 
 
 - **TBA**: insert changes here🚧
 
@@ -124,7 +126,7 @@
         - 40% more recoil 🔻
         - Magazine capacity 10 -> 5 🔻
         - 17% more expensive 🔻
-        - Headshot bonus damage reduced by 15% 🔻
+        - Headshot bonus damage reduced by 13% 🔻
         - 45% less maximum ammo 🔻
     - **Crossbow**
         - 50% less maximum ammo 🔻
@@ -240,13 +242,15 @@
         - 33% less maximum ammo 🔻
     - **SealSqueal Harpoon Bomber**
         - Sticking a zed with a harpoon now inflicts [**Harpooned**](#afflictions) ⚠️
-        - It deals double damage if attached to a ZED ⚠️
-        - It deals triple damage if attached to a ZED's head ⚠️
-        - 25% faster fire rate 🟢
+        - It deals 1.5x damage if attached to a ZED (only the highest stick multiplier applies) ⚠️
+        - It deals 1.85x damage if attached to a ZED's head (only the highest stick multiplier applies) ⚠️
+        - 50% faster fire rate 🟢
+        - 33% faster reload speed 🟢
         - Has no spread and inaccuracy 🟢
+        - 14% increased damage 🟢
 
-        - 43% reduced damage 🔻
-        - 38% reduced explosion radius 🔻
+        - 13% reduced explosion radius 🔻
+        - 100% reduced impact damage 🔻
     - **LAW Rocket Launcher**
         - Weight 13 -> 11 🟢
         - 5% increased damage 🟢
@@ -337,7 +341,7 @@
         - 15% longer range 🟢
         - 25% cheaper 🟢
         - 85% larger hit angle 🟢
-        - 10% slower fire rate 🟢
+        - 10% faster fire rate 🟢
 
         - 15% reduced primary fire damage 🔻
         - 22% reduced alternate fire damage 🔻
