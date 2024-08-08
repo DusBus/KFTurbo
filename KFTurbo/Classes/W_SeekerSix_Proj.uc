@@ -218,6 +218,8 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 
 defaultproperties
 {
+	SoundPitch=48
+
 	AppliedMomentumCurve=(Points=((OutVal=0.500000),(InVal=100.000000,OutVal=0.500000),(InVal=350.000000,OutVal=1.000000),(InVal=600.000000,OutVal=1.000000)))
 	ArmDistSquared=10000.000000
 	Speed=2000.000000
