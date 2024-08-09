@@ -9,7 +9,7 @@ function NotifyPlayerKill( Pawn Killed, class<DamageType> damageType )
           return;
      }
 
-     if (P_Stalker(Killed) != None)
+     if (P_Stalker(Killed) == None)
      {
           return;
      }

@@ -9,7 +9,7 @@ function NotifyPlayerKill( Pawn Killed, class<DamageType> damageType )
           return;
      }
 
-     if (P_Fleshpound(Killed) != None)
+     if (P_Fleshpound(Killed) == None)
      {
           return;
      }
