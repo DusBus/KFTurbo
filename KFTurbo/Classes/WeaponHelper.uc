@@ -313,6 +313,46 @@ static final function BeginGrenadeSmoothRotation(Nade Grenade, float DownwardOff
 	Grenade.SetPhysics(PHYS_None);
 }
 
+//Helpers to do hint checking for us.
+static final function WeaponCheckForHint(KFWeapon Weapon, int HintID)
+{
+	local KFPlayerController PC;
+
+	if (Weapon == None || Weapon.ClientGrenadeState == GN_BringUp)
+	{
+		return;
+	}
+
+	PC = KFPlayerController(Weapon.Instigator.Controller);
+
+	if (PC == None)
+	{
+		return;
+	}
+
+	PC.CheckForHint(HintID);
+}
+
+//Helpers to do pullout remarks for us.
+static final function WeaponPulloutRemark(KFWeapon Weapon, int RemarkID)
+{
+	local KFPlayerController PC;
+
+	if (Weapon == None || Weapon.ClientGrenadeState == GN_BringUp)
+	{
+		return;
+	}
+
+	PC = KFPlayerController(Weapon.Instigator.Controller);
+
+	if (PC == None)
+	{
+		return;
+	}
+
+	PC.WeaponPulloutRemark(RemarkID);
+}
+
 static final function class<KFWeaponPickup> GetOriginalWeaponPickup(class<KFWeaponPickup> WeaponPickup)
 {
 	if (WeaponPickup == None)
