@@ -1,4 +1,4 @@
-class W_V_MK23_Cyber_Weap extends W_MK23_Weap;
+class W_V_DualMK23_Cyber_Weap extends W_DualMK23_Weap;
 
 var array<Material> LoadedStateMaterialList;
 var array<string> LoadedStateMaterialRefList;
@@ -45,7 +45,7 @@ simulated function UpdateSkin()
 
      LastKnownMagAmmo = MagAmmoRemaining;
 
-     if (MagAmmoRemaining > 6)
+     if (MagAmmoRemaining > 12)
      {
           Skins[0] = LoadedStateMaterialList[0];
           return;
@@ -63,7 +63,7 @@ simulated function UpdateSkin()
 
 static function PreloadAssets(Inventory Inv, optional bool bSkipRefCount)
 {
-     local W_V_MK23_Cyber_Weap Weapon;
+     local W_V_DualMK23_Cyber_Weap Weapon;
 
      Super.PreloadAssets(Inv, bSkipRefCount);
 
@@ -73,7 +73,7 @@ static function PreloadAssets(Inventory Inv, optional bool bSkipRefCount)
      default.LoadedStateMaterialList[2] = Shader(DynamicLoadObject(default.LoadedStateMaterialRefList[2], class'Shader'));
      default.LoadedStateMaterialList[3] = Shader(DynamicLoadObject(default.LoadedStateMaterialRefList[3], class'Shader'));
 
-     Weapon = W_V_MK23_Cyber_Weap(Inv);
+     Weapon = W_V_DualMK23_Cyber_Weap(Inv);
 
      if (Weapon != None)
      {
@@ -99,10 +99,10 @@ defaultproperties
 
      ReloadAnim="Reload"
 
-     ItemName="Cyber MK23"
-
+     ItemName="Dual Cyber MK23s"
      SkinRefs(0)="KFTurbo.Turbo.MK23_Turbo_SHDR"
-     PickupClass=Class'KFTurbo.W_V_MK23_Cyber_Pickup'
-     AttachmentClass=Class'KFTurbo.W_V_MK23_Cyber_Attachment'
+     PickupClass=Class'KFTurbo.W_V_DualMK23_Cyber_Pickup'
+     AttachmentClass=Class'KFTurbo.W_V_DualMK23_Cyber_Attachment'
+     DemoReplacement=Class'KFTurbo.W_V_MK23_Cyber_Weap'
      Skins(0)=Shader'KFTurbo.Turbo.MK23_Turbo_SHDR'
 }
