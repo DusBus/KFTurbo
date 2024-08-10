@@ -41,6 +41,13 @@ static final function RestoreLoadoutCollection(KFTurboRandomizerLoadoutCollectio
     //Go through the used loadouts for this loadout collection and remove the ones we've used.
     for (LoadoutIndex = LoadoutCollection.LoadoutList.Length - 1; LoadoutIndex >= 0; LoadoutIndex--)
     {
+        //Get rid of any accidentally empty elements.
+        if (LoadoutCollection.LoadoutList[LoadoutIndex] == None)
+        {
+            LoadoutCollection.LoadoutList.Remove(LoadoutIndex, 1);
+            continue;
+        }
+
         bFoundLoadout = false;
         for (UsedLoadoutIndex = UsedLoadoutList.Length - 1; UsedLoadoutIndex >= 0; UsedLoadoutIndex--)
         {
