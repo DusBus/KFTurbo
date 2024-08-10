@@ -327,7 +327,7 @@ defaultproperties
     End Object
 
     Begin Object Class=AfflictionHarpoon Name=HarpoonAffliction
-        HarpoonSpeedModifier=0.5f
+        HarpoonSpeedModifier=0.25f
     End Object
 
     AfflictionData=(Burn=AfflictionBurn'BurnAffliction',Zap=AfflictionZap'ZapAffliction',Harpoon=AfflictionHarpoon'HarpoonAffliction')
