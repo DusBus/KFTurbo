@@ -1,3 +1,5 @@
+//This class makes it easier for anyone extending KFTurbo to add weapon variants and have those variants show up in the trader just like ones built into KFTurbo.
+//Can be set on a subclass of TurboBuyMenuSaleList via TurboBuyMenuSaleList::TurboBuyMenuSettingsClassString.
 class TurboBuyMenuSettings extends Object;
 
 var localized String HintDefault;
@@ -35,6 +37,8 @@ function Texture GetIconForPickup(String VariantID)
             return Texture'KFTurbo.HUD.CyberIcon_D';
         case "STP":
             return Texture'KFTurbo.HUD.SteampunkIcon_D';
+        case "PRIDE":
+            return Texture'KFTurbo.HUD.PrideIcon_D';
     }
 
     return Texture'KFTurbo.HUD.StickerIcon_D';
@@ -61,6 +65,7 @@ function String GetHintForPickup(String VariantID)
         case "SCUD":
         case "CUBIC":
         case "SHOWME":
+        case "PRIDE":
             return StickerDefault;
     }
     

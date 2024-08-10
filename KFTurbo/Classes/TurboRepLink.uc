@@ -15,6 +15,7 @@ const SteampunkVariantID = "STP"; //Steampunk weapon skins.
 const RetartVariantID = "RET";
 const ScuddlesVariantID = "SCUD";
 const CubicVariantID = "CUBIC";
+const PrideVariantID = "PRIDE";
 const SMPVariantID = "SHOWME";
 
 struct VariantWeapon
@@ -304,6 +305,7 @@ simulated function SetupVariantWeaponEntry(out VariantWeapon Entry)
     }
 }
 
+//Refers to sticker types that are not considered "generic" and only intend on being implemented on one or two weapons.
 simulated function bool AssignSpecialVariantID(out VariantWeapon Entry)
 {
     switch (Entry.VariantClass)
@@ -325,6 +327,10 @@ simulated function bool AssignSpecialVariantID(out VariantWeapon Entry)
             Entry.VariantID = SMPVariantID;
             Entry.ItemStatus = 0;
             break;
+        case class'W_V_M14_Pride_Pickup' :
+            Entry.VariantID = PrideVariantID;
+            Entry.ItemStatus = 0;
+            break;
     }
 
     return Entry.VariantID != "";
@@ -338,7 +344,6 @@ simulated function UpdateVariantStatus()
     }
 
     SetupPlayerInfo();
-    //DebugVariantInfo(false);
 
     if (bHasPerformedVariantStatusUpdate)
     {
