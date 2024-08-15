@@ -197,7 +197,7 @@ function HealOrHurt(float DamageAmount, float DamageRadius, class<DamageType> Da
         
         KFPawnTarget.GiveHealth(HealSum, KFPawnTarget.HealthMax);
 
-        class'TurboEventHandler'.static.BroadcastPawnGrenadeHealed(Instigator, KFPawnTarget, MedicReward);
+        class'TurboHealEventHandler'.static.BroadcastPawnGrenadeHealed(Instigator, KFPawnTarget, MedicReward);
 
         if ( PRI == None || MedicReward <= 0 )
         {
@@ -251,6 +251,7 @@ defaultproperties
     DrawScale=0.2
 	
 	Physics=PHYS_Falling
+    bGameRelevant=false
 	bUseCollisionStaticMesh = false
 	bUseCylinderCollision = false
 	bFixedRotationDir = true

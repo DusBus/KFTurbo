@@ -79,6 +79,36 @@ static function float GetStalkerViewDistanceMulti(KFPlayerReplicationInfo KFPRI)
 	return LerpStat(KFPRI, 0.25f, 2.f);
 }
 
+static function ApplyAdjustedMagCapacityModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other, out float Multiplier)
+{
+	if (!IsHighDifficulty(KFPRI))
+	{
+		if (Multiplier > 1.f && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+		{
+			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetCommandoMagazineAmmoMultiplier();
+		}
+
+		Super.ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
+		return;
+	}
+
+	if (Multiplier > 1.f && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetCommandoMagazineAmmoMultiplier();
+	}
+
+	if(SCARMK17AssaultRifle(Other) != None)
+	{
+		Multiplier *= 1.2f;
+	}
+	else if(Other.default.MagCapacity > 1 && Multiplier > 1.f)
+	{
+		Multiplier *= 1.25f;
+	}
+
+	Super.ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
+}
+
 static function float GetMagCapacityMod(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
 {
 	local float Multiplier;
@@ -118,25 +148,6 @@ static function float GetMagCapacityMod(KFPlayerReplicationInfo KFPRI, KFWeapon 
 	return Multiplier;
 }
 
-static function ApplyAdjustedMagCapacityModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other, out float Multiplier)
-{
-	Super.ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
-
-	if (!IsHighDifficulty(KFPRI))
-	{
-		return;
-	}
-
-	if(SCARMK17AssaultRifle(Other) != None)
-	{
-		Multiplier *= 1.2f;
-	}
-	else if(Multiplier > 1.f)
-	{
-		Multiplier *= 1.25f;
-	}
-}
-
 static function float GetAmmoPickupMod(KFPlayerReplicationInfo KFPRI, KFAmmunition Other)
 {
 	local float Multiplier;
@@ -151,30 +162,14 @@ static function float GetAmmoPickupMod(KFPlayerReplicationInfo KFPRI, KFAmmuniti
 		|| CamoM4Ammo(Other) != none || NeonAK47Ammo(Other) != none) &&
 		KFPRI.ClientVeteranSkillLevel > 0)
 	{
-		Multiplier = LerpStat(KFPRI, 1.f, 1.25f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.25f);
 	}
-
-	if (FNFALAmmo(Other) != None)
+	else if (FNFALAmmo(Other) != None)
 	{
-		Multiplier = LerpStat(KFPRI, 1.f, 1.2f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.2f);
 	}
-
-	GetAdjustedAmmoPickupMod(KFPRI, Other, Multiplier);
 
 	return Multiplier;
-}
-
-static function GetAdjustedAmmoPickupMod(KFPlayerReplicationInfo KFPRI, KFAmmunition Other, out float Multiplier)
-{
-	if (!IsHighDifficulty(KFPRI))
-	{
-		return;
-	}
-
-	if(Multiplier > 1.f)
-	{
-		Multiplier *= 1.5f;
-	}
 }
 
 static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType)
@@ -192,7 +187,6 @@ static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, class<Ammun
 	case class'W_ThompsonDrum_Ammo' :
 	case class'W_M4203_Ammo_Bullet' :
 	case class'W_FNFAL_Ammo' :
-
 		Multiplier *= LerpStat(KFPRI, 1.f, 1.25f);
 		break;
 	}

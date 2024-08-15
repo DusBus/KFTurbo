@@ -12,6 +12,22 @@ static final function bool IsHighDifficulty( Actor Actor )
 	return class'KFTurboGameType'.static.StaticIsHighDifficulty(Actor);
 }
 
+static function ApplyAdjustedMovementSpeedModifier(KFPlayerReplicationInfo KFPRI, KFGameReplicationInfo KFGRI, out float Multiplier)
+{
+	if (TurboGameReplicationInfo(KFGRI) != None)
+	{
+		Multiplier *= TurboGameReplicationInfo(KFGRI).GetPlayerMovementSpeedMultiplier();
+	}
+}
+
+static function float GetMovementSpeedModifier(KFPlayerReplicationInfo KFPRI, KFGameReplicationInfo KFGRI)
+{
+	local float Multiplier;
+	Multiplier = 1.f;
+	ApplyAdjustedMovementSpeedModifier(KFPRI, KFGRI, Multiplier);
+	return Multiplier;
+}
+
 //Split off from AddExtraAmmoFor. Applies HighDifficultyExtraAmmoMultiplier on High Difficulty game types and anyone else who wants to mutate ammo amounts separately from perk bonuses.
 static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
 {
@@ -19,7 +35,7 @@ static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammu
 	{
 		if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
 		{
-			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).MaxAmmoMultiplier;
+			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMaxAmmoMultiplier();
 		}
 
 		return;
@@ -32,7 +48,7 @@ static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammu
 
 	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
 	{
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).MaxAmmoMultiplier;
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMaxAmmoMultiplier();
 	}
 }
 
@@ -48,7 +64,7 @@ static function ApplyAdjustedFireRate(KFPlayerReplicationInfo KFPRI, Weapon Othe
 {
 	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
 	{
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).FireRateMultiplier;
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetFireRateMultiplier();
 	}
 }
 
@@ -64,7 +80,7 @@ static function ApplyAdjustedReloadRate(KFPlayerReplicationInfo KFPRI, Weapon Ot
 {
 	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
 	{
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).ReloadRateMultiplier;
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetReloadRateMultiplier();
 	}
 }
 
@@ -78,9 +94,9 @@ static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWe
 
 static function ApplyAdjustedMagCapacityModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other, out float Multiplier)
 {
-	if (Other.MagCapacity > 1 && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	if (Other.default.MagCapacity > 1 && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
 	{
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).MagazineAmmoMultiplier;
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMagazineAmmoMultiplier();
 	}
 }
 
@@ -96,7 +112,7 @@ static function ApplyAdjustedRecoilSpreadModifier(KFPlayerReplicationInfo KFPRI,
 {
 	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
 	{
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).WeaponSpreadMultiplier;
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetWeaponSpreadRecoilMultiplier();
 	}
 }
 

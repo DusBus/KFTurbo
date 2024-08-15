@@ -5,7 +5,10 @@ var protected bool bStatsAndAchievementsEnabled;
 var protected bool bIsTestGameType;
 
 //Event handler stored here so we have an easy way to find it.
+//TODO: Slowly split these up into relevant categories so that a listener doesn't bloat the list of active handlers just to get one event it wants.
 var array< class<TurboEventHandler> > EventHandlerList;
+var array< class<TurboHealEventHandler> > HealEventHandlerList;
+var array< class<TurboWaveEventHandler> > WaveEventHandlerList;
 
 Delegate OnStatsAndAchievementsDisabled();
 
@@ -117,6 +120,13 @@ final function bool HasAnyTraders()
 	return bHasAnyTraders;
 }
 
+function BuildNextSquad()
+{
+	Super.BuildNextSquad();
+
+	class'TurboWaveEventHandler'.static.BroadcastNextSpawnSquadGenerated(Self, NextSpawnSquad);
+}
+
 state MatchInProgress
 {
 	//Don't do these things if there are no traders (KFTurbo+ or Randomizer).
@@ -139,6 +149,25 @@ state MatchInProgress
 
 		Super.OpenShops();
     }
+	
+	//Generic event broadcasting.
+	function SetupWave()
+	{
+		Super.SetupWave();
+		class'TurboWaveEventHandler'.static.BroadcastWaveStarted(Self, WaveNum);
+	}
+	
+	function StartWaveBoss()
+	{
+		Super.StartWaveBoss();
+		class'TurboWaveEventHandler'.static.BroadcastWaveStarted(Self, WaveNum);
+	}
+	
+	function DoWaveEnd()
+	{
+		Super.DoWaveEnd();
+		class'TurboWaveEventHandler'.static.BroadcastWaveEnded(Self, WaveNum - 1);
+	}
 }
 
 defaultproperties

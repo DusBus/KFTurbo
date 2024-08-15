@@ -66,6 +66,20 @@ static function int AddDamage(KFPlayerReplicationInfo KFPRI, KFMonster Injured, 
 	return InDamage;
 }
 
+
+static function ApplyAdjustedFireRate(KFPlayerReplicationInfo KFPRI, Weapon Other, out float Multiplier)
+{
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetFireRateMultiplier();
+
+		if (KFMeleeGun(Other) != None)
+		{
+			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetBerserkerFireRateMultiplier();
+		}
+	}
+}
+
 static function float GetFireSpeedMod(KFPlayerReplicationInfo KFPRI, Weapon Other)
 {
 	local float Multiplier;
@@ -98,7 +112,7 @@ static function int ReduceDamage(KFPlayerReplicationInfo KFPRI, KFPawn Injured, 
 			break;
 	}
 
-	InDamage = float(InDamage) * LerpStat(KFPRI, 1.f, 0.9f);
+	InDamage = float(InDamage) * LerpStat(KFPRI, 1.f, 0.85f);
 
 	if (ZombieBoss(Instigator) != None)
 	{
@@ -110,12 +124,12 @@ static function int ReduceDamage(KFPlayerReplicationInfo KFPRI, KFPawn Injured, 
 
 static function float GetBloatDamageReduction(KFPlayerReplicationInfo KFPRI)
 {
-	return LerpStat(KFPRI, 1.f, 0.4f);
+	return LerpStat(KFPRI, 1.f, 0.3f);
 }
 
 static function float GetSirenDamageReduction(KFPlayerReplicationInfo KFPRI)
 {
-	return LerpStat(KFPRI, 1.f, 0.8f);
+	return LerpStat(KFPRI, 1.f, 0.6f);
 }
 
 static function bool CanMeleeStun()

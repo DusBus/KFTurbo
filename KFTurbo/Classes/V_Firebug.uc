@@ -39,6 +39,19 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 	return Min(StatOther.RFlameThrowerDamageStat + StatOther.GetCustomValueInt(class'VP_FlamethrowerDamage'), FinalInt);
 }
 
+static function ApplyAdjustedFireRate(KFPlayerReplicationInfo KFPRI, Weapon Other, out float Multiplier)
+{
+	Super.ApplyAdjustedFireRate(KFPRI, Other, Multiplier);
+
+	if (Flamethrower(Other) != none || MAC10MP(Other) != none || Trenchgun(Other) != none || FlareRevolver(Other) != none || DualFlareRevolver(Other) != none || ThompsonSMG(Other) != none || HuskGun(Other) != None)
+	{
+		if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+		{
+			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetFirebugFireRateMultiplier();
+		}
+	}
+}
+
 static function float GetMagCapacityMod(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
 {
 	local float Multiplier;

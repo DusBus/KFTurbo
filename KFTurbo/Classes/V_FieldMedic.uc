@@ -39,6 +39,41 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 	return Min(StatOther.RDamageHealedStat + StatOther.GetCustomValueInt(class'VP_DamageHealed'), FinalInt);
 }
 
+static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
+{
+	if (!IsHighDifficulty(KFPRI))
+	{
+		if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+		{
+			if (class<MP7MAmmo>(AmmoType) != none || class<MP5MAmmo>(AmmoType) != none || class<M7A3MAmmo>(AmmoType) != none
+       			|| class<KrissMAmmo>(AmmoType) != none || class<BlowerThrowerAmmo>(AmmoType) != none)
+			{
+				Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMedicMaxAmmoMultiplier();
+			}
+
+			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMaxAmmoMultiplier();
+		}
+
+		return;
+	}
+
+	if (Multiplier > 1.f)
+	{
+		Multiplier *= default.HighDifficultyExtraAmmoMultiplier;
+	}
+
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		if (class<MP7MAmmo>(AmmoType) != none || class<MP5MAmmo>(AmmoType) != none || class<M7A3MAmmo>(AmmoType) != none
+			|| class<KrissMAmmo>(AmmoType) != none || class<BlowerThrowerAmmo>(AmmoType) != none)
+		{
+			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMedicMaxAmmoMultiplier();
+		}
+		
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMaxAmmoMultiplier();
+	}
+}
+
 static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, Class<Ammunition> AmmoType)
 {
 	local float Multiplier;
@@ -73,7 +108,7 @@ static function float GetHealPotency(KFPlayerReplicationInfo KFPRI)
 
 static function float GetMovementSpeedModifier(KFPlayerReplicationInfo KFPRI, KFGameReplicationInfo KFGRI)
 {
-	return LerpStat(KFPRI, 1.f, 1.2f);
+	return Super.GetMovementSpeedModifier(KFPRI, KFGRI) * LerpStat(KFPRI, 1.f, 1.2f);
 }
 
 static function int ReduceDamage(KFPlayerReplicationInfo KFPRI, KFPawn Injured, Pawn Instigator, int InDamage, class<DamageType> DmgType)
@@ -89,6 +124,15 @@ static function int ReduceDamage(KFPlayerReplicationInfo KFPRI, KFPawn Injured, 
 	}
 
 	return InDamage;
+}
+static function ApplyAdjustedMagCapacityModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other, out float Multiplier)
+{
+	if (Multiplier > 1.f && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMedicMagazineAmmoMultiplier();
+	}
+
+	Super.ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
 }
 
 static function float GetMagCapacityMod(KFPlayerReplicationInfo KFPRI, KFWeapon Other)

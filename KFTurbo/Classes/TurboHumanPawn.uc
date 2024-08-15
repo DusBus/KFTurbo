@@ -2,21 +2,36 @@ class TurboHumanPawn extends SRHumanPawn;
 
 var int HealthHealingTo;
 
+//Used to replicate HealthMax.
+var int NewHealthMax;
+
 replication
 {
     reliable if(Role == ROLE_Authority)
         HealthHealingTo;
+	reliable if ( bNetDirty && Role == ROLE_Authority )
+		NewHealthMax;
 }
 
 var bool bDebugServerBuyWeapon;
 
 var float NextCloakCheckTime;
 
+simulated function PostNetReceive()
+{
+	Super.PostNetReceive();
+
+	if (NewHealthMax != 0 && NewHealthMax != HealthMax)
+	{
+		HealthMax = NewHealthMax;
+	}
+}
+
 simulated function Tick(float DeltaTime)
 {
 	Super.Tick(DeltaTime);
 
-	UpdateHealthHealingTo();
+	UpdateHealth();
 
 	if (Level.NetMode == NM_DedicatedServer)
 	{
@@ -224,12 +239,17 @@ simulated function DisplayInventoryDebug(Canvas Canvas, Weapon Weapon, out float
     Canvas.SetPos(4,YPos);
 }
 
-simulated function UpdateHealthHealingTo()
+simulated function UpdateHealth()
 {
 	local int NewHealthHealingTo;
 	if (Role != ROLE_Authority)
 	{
 		return;
+	}
+
+	if (HealthMax != NewHealthMax)
+	{
+		NewHealthMax = HealthMax;
 	}
 	
 	if (HealthToGive <= 0 || Health >= int(HealthMax))

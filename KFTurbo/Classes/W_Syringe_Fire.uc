@@ -39,7 +39,7 @@ function Timer()
 		return;
 	}
 	
-    class'TurboEventHandler'.static.BroadcastPawnSyringeHealed(Instigator, Healed, MedicReward);
+    class'TurboHealEventHandler'.static.BroadcastPawnSyringeHealed(Instigator, Healed, MedicReward);
 
 	PRI = KFPlayerReplicationInfo(Instigator.PlayerReplicationInfo);
 

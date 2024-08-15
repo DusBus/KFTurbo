@@ -197,6 +197,8 @@ function BuildNextSquad()
 
     NextSpawnSquad = Squad.MonsterList;
     CurrentSquad = Squad;
+    
+	class'TurboWaveEventHandler'.static.BroadcastNextSpawnSquadGenerated(Self, NextSpawnSquad);
 }
 
 function AddBossBuddySquad()
