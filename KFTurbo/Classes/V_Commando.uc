@@ -1,4 +1,4 @@
-class V_Commando extends SRVetCommando
+class V_Commando extends KFTurbo.SRVetCommando
 	abstract;
 
 
@@ -79,11 +79,9 @@ static function float GetStalkerViewDistanceMulti(KFPlayerReplicationInfo KFPRI)
 	return LerpStat(KFPRI, 0.25f, 2.f);
 }
 
-//GetMagCapacityMod
 static function float GetMagCapacityMod(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
 {
 	local float Multiplier;
-
 	Multiplier = 1.f;
 
 	if (Bullpup(Other) != none 
@@ -92,36 +90,38 @@ static function float GetMagCapacityMod(KFPlayerReplicationInfo KFPRI, KFWeapon 
 		|| FNFAL_ACOG_AssaultRifle(Other) != none 
 		|| MKb42AssaultRifle(Other) != none)
 	{
-		Multiplier = LerpStat(KFPRI, 1.f, 1.25f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.25f);
 	}
 
 	if (ThompsonDrumSMG(Other) != None || SPThompsonSMG(Other) != none)
 	{
-		Multiplier = LerpStat(KFPRI, 1.f, 1.6f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.6f);
 	}
 
 	if (ThompsonSMG(Other) != None)
 	{
-		Multiplier = LerpStat(KFPRI, 1.f, 1.2f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.2f);
 	}
 
 	if (M4AssaultRifle(Other) != None)
 	{
-		Multiplier = LerpStat(KFPRI, 1.f, 1.34f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.34f);
 	}
 
 	if (W_FNFAL_Weap(Other) != None)
 	{
-		Multiplier = LerpStat(KFPRI, 1.f, 1.67f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.67f);
 	}
 
-	GetAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
+	ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
 
 	return Multiplier;
 }
 
-static function GetAdjustedMagCapacityModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other, out float Multiplier)
+static function ApplyAdjustedMagCapacityModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other, out float Multiplier)
 {
+	Super.ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
+
 	if (!IsHighDifficulty(KFPRI))
 	{
 		return;
@@ -180,7 +180,6 @@ static function GetAdjustedAmmoPickupMod(KFPlayerReplicationInfo KFPRI, KFAmmuni
 static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType)
 {
 	local float Multiplier;
-
 	Multiplier = 1.f;
 
 	switch (AmmoType)
@@ -194,30 +193,31 @@ static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, class<Ammun
 	case class'W_M4203_Ammo_Bullet' :
 	case class'W_FNFAL_Ammo' :
 
-		Multiplier = LerpStat(KFPRI, 1.f, 1.25f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.25f);
 		break;
 	}
 
-	AddAdjustedExtraAmmoFor(KFPRI, AmmoType, Multiplier);
+	ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 
 	return Multiplier;
 }
 
-static function AddAdjustedExtraAmmoFor(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
+static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
 {
 	if (!IsHighDifficulty(KFPRI))
 	{
+		Super.ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 		return;
 	}
 
 	switch (AmmoType)
 	{
 		case class'FragAmmo':
-			Multiplier *= LerpStat(KFPRI, 1.f, 1.6f);
+			Multiplier *= 1.1f;
 			break;
-		default:
-			Super.AddAdjustedExtraAmmoFor(KFPRI, AmmoType, Multiplier);
 	}
+
+	Super.ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 }
 
 static function int AddDamage(KFPlayerReplicationInfo KFPRI, KFMonster Injured, KFPawn Instigator, int InDamage, class<DamageType> DmgType)
@@ -261,7 +261,10 @@ static function float ModifyRecoilSpread(KFPlayerReplicationInfo KFPRI, WeaponFi
 
 static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
 {
-	return LerpStat(KFPRI, 1.05f, 1.35f);
+	local float Multiplier;
+	Multiplier = LerpStat(KFPRI, 1.05f, 1.35f);
+	ApplyAdjustedReloadRate(KFPRI, Other, Multiplier);
+	return Multiplier;
 }
 
 static function int ZedTimeExtensions(KFPlayerReplicationInfo KFPRI)

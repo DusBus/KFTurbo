@@ -49,27 +49,36 @@ static function int AddDamage(KFPlayerReplicationInfo KFPRI, KFMonster Injured, 
 
 static function float GetFireSpeedMod(KFPlayerReplicationInfo KFPRI, Weapon Other)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
 	if ( KFMeleeGun(Other) != none || Crossbuzzsaw(Other) != none )
 	{
 		switch ( KFPRI.ClientVeteranSkillLevel )
 		{
 			case 1:
-				return 1.05;
+				Multiplier *= 1.05;
+				break;
 			case 2:
 			case 3:
-				return 1.10;
+				Multiplier *= 1.10;
+				break;
 			case 4:
-				return 1.15;
+				Multiplier *= 1.15;
+				break;
 			case 5:
-				return 1.20;
+				Multiplier *= 1.20;
+				break;
 			case 6:
-				return 1.25; // 25% increase in wielding Melee Weapon
+				Multiplier *= 1.25; // 25% increase in wielding Melee Weapon
+				break;
 			default:
-				return 0.95+0.05*float(KFPRI.ClientVeteranSkillLevel);
+				Multiplier *= 0.95+0.05*float(KFPRI.ClientVeteranSkillLevel);
+				break;
 		}
 	}
 
-	return 1.0;
+	ApplyAdjustedFireRate(KFPRI, Other, Multiplier);
+	return Multiplier;
 }
 
 static function float GetMeleeMovementSpeedModifier(KFPlayerReplicationInfo KFPRI)

@@ -1,4 +1,4 @@
-class V_Berserker extends SRVetBerserker
+class V_Berserker extends KFTurbo.SRVetBerserker
 	abstract;
 
 static function AddCustomStats(ClientPerkRepLink Other)
@@ -42,17 +42,16 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, Class<Ammunition> AmmoType)
 {
 	local float Multiplier;
-
 	Multiplier = 1.f;
 
 	switch (AmmoType)
 	{
 	case class'FragAmmo' :
-		Multiplier = LerpStat(KFPRI, 1.f, 1.2f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.2f);
 		break;
 	}
 
-	AddAdjustedExtraAmmoFor(KFPRI, AmmoType, Multiplier);
+	ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 
 	return Multiplier;
 }
@@ -69,12 +68,17 @@ static function int AddDamage(KFPlayerReplicationInfo KFPRI, KFMonster Injured, 
 
 static function float GetFireSpeedMod(KFPlayerReplicationInfo KFPRI, Weapon Other)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+
 	if (KFMeleeGun(Other) != none || Crossbuzzsaw(Other) != none)
 	{
-		return LerpStat(KFPRI, 1.f, 1.15f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.15f);
 	}
 
-	return 1.f;
+	ApplyAdjustedFireRate(KFPRI, Other, Multiplier);
+
+	return Multiplier;
 }
 
 static function float GetMeleeMovementSpeedModifier(KFPlayerReplicationInfo KFPRI)

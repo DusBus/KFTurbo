@@ -1,4 +1,4 @@
-class V_Sharpshooter extends SRVetSharpshooter
+class V_Sharpshooter extends KFTurbo.SRVetSharpshooter
 	abstract;
 
 static function AddCustomStats(ClientPerkRepLink Other)
@@ -41,26 +41,12 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 
 static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, Class<Ammunition> AmmoType)
 {
-	local float Multiplier;
-
-	Multiplier = Super.AddExtraAmmoFor(KFPRI, AmmoType);
-
-	AddAdjustedExtraAmmoFor(KFPRI, AmmoType, Multiplier);
-
-	return Multiplier;
+	return Super.AddExtraAmmoFor(KFPRI, AmmoType);
 }
 
-static function AddAdjustedExtraAmmoFor(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
+static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
 {
-	if (!IsHighDifficulty(KFPRI))
-	{
-		return;
-	}
-
-	if (Multiplier > 1.f)
-	{
-		Multiplier *= 1.25f;
-	}
+	Super.ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 }
 
 static function float GetHeadShotDamMulti(KFPlayerReplicationInfo KFPRI, KFPawn P, class<DamageType> DmgType)
@@ -119,32 +105,40 @@ static function float ModifyRecoilSpread(KFPlayerReplicationInfo KFPRI, WeaponFi
 
 static function float GetFireSpeedMod(KFPlayerReplicationInfo KFPRI, Weapon Other)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+
 	if (Crossbow(Other) != None || M99SniperRifle(Other) != None)
 	{
-		return LerpStat(KFPRI, 1.f, 1.15f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.15f);
 	}
 	else if (SPSniperRifle(Other) != None)
 	{
-		return LerpStat(KFPRI, 1.f, 1.3f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.3f);
 	}
 	else if (Winchester(Other) != None)
 	{
-		return LerpStat(KFPRI, 1.f, 1.6f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.6f);
 	}
 
-	return 1.0;
+	ApplyAdjustedFireRate(KFPRI, Other, Multiplier);
+
+	return Multiplier;
 }
 
 static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+
 	if (Crossbow(Other) != None || M99SniperRifle(Other) != None)
 	{
-		return LerpStat(KFPRI, 1.f, 1.15f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.15f);
 	}
 
 	if(Magnum44Pistol(Other) != None || Dual44Magnum(Other) != None)
 	{
-		return LerpStat(KFPRI, 1.f, 1.4f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.4f);
 	}
 
 	if (Winchester(Other) != None
@@ -154,10 +148,11 @@ static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWe
 		|| M14EBRBattleRifle(Other) != None
 		|| SPSniperRifle(Other) != None)
 	{
-		return LerpStat(KFPRI, 1.f, 1.6f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.6f);
 	}
 
-	return 1.f;
+	ApplyAdjustedReloadRate(KFPRI, Other, Multiplier);
+	return Multiplier;
 }
 
 static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)
@@ -211,8 +206,10 @@ static function string GetCustomLevelInfo(byte Level)
 
 defaultproperties
 {
-     StartingWeaponSellPriceLevel5=255.000000
-     StartingWeaponSellPriceLevel6=255.000000
-     OnHUDGoldIcon=Texture'KFTurbo.Perks.Sharpshooter_D'
-	 SRLevelEffects(6)="2.4x bonus headshot multiplier for perk weapons|1.5x bonus headshot multiplier for off-perk weapons|60% faster reload with perk weapons|75% less recoil with perk weapons|70% discount on Pistols, M14 and S.P. Musket|30% faster firing rate on single-shot perk weapons|Spawn with a Lever Action Rifle"
+	HighDifficultyExtraAmmoMultiplier=1.25f
+
+	StartingWeaponSellPriceLevel5=255.000000
+	StartingWeaponSellPriceLevel6=255.000000
+	OnHUDGoldIcon=Texture'KFTurbo.Perks.Sharpshooter_D'
+	SRLevelEffects(6)="2.4x bonus headshot multiplier for perk weapons|1.5x bonus headshot multiplier for off-perk weapons|60% faster reload with perk weapons|75% less recoil with perk weapons|70% discount on Pistols, M14 and S.P. Musket|30% faster firing rate on single-shot perk weapons|Spawn with a Lever Action Rifle"
 }

@@ -1,4 +1,4 @@
-class V_FieldMedic extends SRVetFieldMedic
+class V_FieldMedic extends KFTurbo.SRVetFieldMedic
 	abstract;
 
 static function AddCustomStats(ClientPerkRepLink Other)
@@ -39,6 +39,23 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 	return Min(StatOther.RDamageHealedStat + StatOther.GetCustomValueInt(class'VP_DamageHealed'), FinalInt);
 }
 
+static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, Class<Ammunition> AmmoType)
+{
+	local float Multiplier;
+	Multiplier = 1.f;
+
+	switch(AmmoType)
+	{
+	case class'W_M7A3M_Ammo' :
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.2f);
+		break;
+	}
+
+	ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
+
+	return Multiplier;
+}
+
 static function class<Grenade> GetNadeType(KFPlayerReplicationInfo KFPRI)
 {
 	return class'V_FieldMedic_Grenade';
@@ -76,16 +93,20 @@ static function int ReduceDamage(KFPlayerReplicationInfo KFPRI, KFPawn Injured, 
 
 static function float GetMagCapacityMod(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+
 	if(W_M7A3M_Weap(Other) != None)
 	{
-		return LerpStat(KFPRI, 1.f, 1.5f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.5f);
 	}
 	else if (KFMedicGun(Other) != None)
 	{
-		return LerpStat(KFPRI, 1.f, 2.f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 2.f);
 	}
 
-	return 1.f;
+	ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
+	return Multiplier;
 }
 
 static function float GetAmmoPickupMod(KFPlayerReplicationInfo KFPRI, KFAmmunition Other)
@@ -101,18 +122,6 @@ static function float GetAmmoPickupMod(KFPlayerReplicationInfo KFPRI, KFAmmuniti
 	else if (BlowerThrowerAmmo(Other) != None)
 	{
 		return LerpStat(KFPRI, 1.f, 2.f);
-	}
-
-	return 1.f;
-}
-
-static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, Class<Ammunition> AmmoType)
-{
-	switch(AmmoType)
-	{
-	case class'W_M7A3M_Ammo' :
-		return LerpStat(KFPRI, 1.f, 1.2f);
-		break;
 	}
 
 	return 1.f;

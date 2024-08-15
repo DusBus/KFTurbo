@@ -91,15 +91,20 @@ static function int ReduceDamage(KFPlayerReplicationInfo KFPRI, KFPawn Injured, 
 
 static function float GetMagCapacityMod(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+
 	if ((MP7MMedicGun(Other) != none || MP5MMedicGun(Other) != none
 		|| KrissMMedicGun(Other) != none || BlowerThrower(Other) != none
 		|| M7A3MMedicGun(Other) != none)
 		&& KFPRI.ClientVeteranSkillLevel > 0)
 	{
-		return 1.0 + (0.20 * FMin(KFPRI.ClientVeteranSkillLevel, 1.f)); // 100% increase in MP7 Medic weapon ammo carry
+		Multiplier *= 1.0 + (0.20 * FMin(KFPRI.ClientVeteranSkillLevel, 1.f)); // 100% increase in MP7 Medic weapon ammo carry
 	}
 
-	return 1.0;
+	ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
+
+	return Multiplier;
 }
 
 static function float GetAmmoPickupMod(KFPlayerReplicationInfo KFPRI, KFAmmunition Other)

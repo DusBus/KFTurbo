@@ -17,19 +17,10 @@ static function OnPawnGrenadeHealed(Pawn Instigator, Pawn Target, int HealingAmo
 
 static function RewardHealedHealth(Pawn Instigator, Pawn Target, int HealingAmount)
 {
-    local TurboPlayerReplicationInfo TPRI;
-
-    if (Instigator == None || Instigator == Target || Instigator.PlayerReplicationInfo == None)
+    if (Instigator == None || Instigator == Target || TurboPlayerReplicationInfo(Instigator.PlayerReplicationInfo) == None)
     {
         return;
     }
-
-    TPRI = class'TurboPlayerReplicationInfo'.static.GetTurboPRI(Instigator.PlayerReplicationInfo);
-
-    if (TPRI == None)
-    {
-        return;
-    }
-
-    TPRI.HealthHealed += HealingAmount;
+    
+    TurboPlayerReplicationInfo(Instigator.PlayerReplicationInfo).HealthHealed += HealingAmount;
 }

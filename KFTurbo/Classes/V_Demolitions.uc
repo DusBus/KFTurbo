@@ -1,4 +1,4 @@
-class V_Demolitions extends SRVetDemolitions
+class V_Demolitions extends KFTurbo.SRVetDemolitions
 	abstract;
 
 static function AddCustomStats(ClientPerkRepLink Other)
@@ -47,39 +47,40 @@ static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, Class<Ammun
 	switch (AmmoType)
 	{
 	case class'W_LAW_Ammo' :
-		Multiplier = LerpStat(KFPRI, 1.f, 1.6f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.6f);
 		break;
 	case class'W_Pipebomb_Ammo' :
-		Multiplier = LerpStat(KFPRI, 1.f, 4.f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 4.f);
 		break;
 	case class'W_M4203_Ammo' :
-		Multiplier = LerpStat(KFPRI, 1.f, 1.5f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.5f);
 		break;
 	case class'FragAmmo' :
-		Multiplier = LerpStat(KFPRI, 1.f, 2.2f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 2.2f);
 		break;
 	}
 
-	AddAdjustedExtraAmmoFor(KFPRI, AmmoType, Multiplier);
+	ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 
 	return Multiplier;
 }
 
-static function AddAdjustedExtraAmmoFor(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
+static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
 {
 	if (!IsHighDifficulty(KFPRI))
 	{
+		Super.ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 		return;
 	}
 
 	switch (AmmoType)
 	{
 		case class'FragAmmo':
-			Multiplier *= 2.f;
+			Multiplier *= 1.3334f;
 			break;
-		default:
-			Super.AddAdjustedExtraAmmoFor(KFPRI, AmmoType, Multiplier);
 	}
+	
+	Super.ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 }
 
 static function int AddDamage(KFPlayerReplicationInfo KFPRI, KFMonster Injured, KFPawn DamageTaker, int InDamage, class<DamageType> DmgType)
@@ -128,21 +129,30 @@ static function int ReduceDamage(KFPlayerReplicationInfo KFPRI, KFPawn Injured, 
 
 static function float GetFireSpeedMod(KFPlayerReplicationInfo KFPRI, Weapon Other)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+
 	if (LAW(Other) != None)
 	{
-		return LerpStat(KFPRI, 1.f, 1.4f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.4f);
 	}
 
-	return 1.f;
+	ApplyAdjustedFireRate(KFPRI, Other, Multiplier);
+
+	return Multiplier;
 }
 
 static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+
 	if (LAW(Other) != None)
 	{
-		return LerpStat(KFPRI, 1.f, 1.3f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.3f);
 	}
 
+	ApplyAdjustedReloadRate(KFPRI, Other, Multiplier);
 	return 1.f;
 }
 

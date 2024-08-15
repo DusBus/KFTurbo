@@ -107,17 +107,26 @@ static function float ModifyRecoilSpread(KFPlayerReplicationInfo KFPRI, WeaponFi
 // Modify fire speed
 static function float GetFireSpeedMod(KFPlayerReplicationInfo KFPRI, Weapon Other)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+
 	if ( Winchester(Other)!=none || Crossbow(Other)!=none || M99SniperRifle(Other)!=none || SPSniperRifle(Other)!=none )
 	{
-		if ( KFPRI.ClientVeteranSkillLevel == 0 )
-			return 1.0;
-		return 1.0 + (0.10 * float(KFPRI.ClientVeteranSkillLevel)); // Up to 60% faster fire rate with Winchester
+		if ( KFPRI.ClientVeteranSkillLevel > 0 )
+		{
+			Multiplier *= 1.0 + (0.10 * float(KFPRI.ClientVeteranSkillLevel)); // Up to 60% faster fire rate with Winchester
+		}
 	}
+
+	ApplyAdjustedFireRate(KFPRI, Other, Multiplier);
 	return 1.0;
 }
 
 static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+
 	if ( Crossbow(Other) != none || Winchester(Other) != none
 		 || Single(Other) != none || Dualies(Other) != none
          || Deagle(Other) != none || DualDeagle(Other) != none
@@ -125,10 +134,13 @@ static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWe
          || M14EBRBattleRifle(Other) != none || Magnum44Pistol(Other) != none
          || Dual44Magnum(Other) != none || SPSniperRifle(Other) != none )
 	{
-		if ( KFPRI.ClientVeteranSkillLevel == 0 )
-			return 1.0;
-		return 1.0 + (0.10 * float(KFPRI.ClientVeteranSkillLevel)); // Up to 60% faster reload with Crossbow/Winchester/Handcannon
+		if ( KFPRI.ClientVeteranSkillLevel > 0 )
+		{
+			Multiplier *= 1.0 + (0.10 * float(KFPRI.ClientVeteranSkillLevel)); // Up to 60% faster reload with Crossbow/Winchester/Handcannon
+		}
 	}
+
+	ApplyAdjustedReloadRate(KFPRI, Other, Multiplier);
 	return 1.0;
 }
 

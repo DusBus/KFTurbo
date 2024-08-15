@@ -1,4 +1,4 @@
-class V_SupportSpec extends SRVetSupportSpec
+class V_SupportSpec extends KFTurbo.SRVetSupportSpec
 	abstract;
 
 static function AddCustomStats(ClientPerkRepLink Other)
@@ -76,26 +76,26 @@ static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, Class<Ammun
 		break;
 	}
 
-	AddAdjustedExtraAmmoFor(KFPRI, AmmoType, Multiplier);
-
+	ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 	return Multiplier;
 }
 
-static function AddAdjustedExtraAmmoFor(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
+static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
 {
 	if (!IsHighDifficulty(KFPRI))
 	{
+		Super.ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 		return;
 	}
 
 	switch (AmmoType)
 	{
 		case class'FragAmmo':
-			Multiplier *= 2.f;
+			Multiplier *= 1.3334f;
 			break;
-		default:
-			Super.AddAdjustedExtraAmmoFor(KFPRI, AmmoType, Multiplier);
 	}
+	
+	Super.ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 }
 
 static function int AddDamage(KFPlayerReplicationInfo KFPRI, KFMonster Injured, KFPawn DamageTaker, int InDamage, class<DamageType> DmgType)

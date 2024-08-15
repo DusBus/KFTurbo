@@ -2,6 +2,7 @@ class TurboVeterancyTypes extends SRVeterancyTypes
 	abstract;
 
 var int LevelRankRequirement; //Denotes levels between new rank names.
+var float HighDifficultyExtraAmmoMultiplier;
 
 var	Texture StarTexture;
 
@@ -11,23 +12,104 @@ static final function bool IsHighDifficulty( Actor Actor )
 	return class'KFTurboGameType'.static.StaticIsHighDifficulty(Actor);
 }
 
-//Default behaviour for increasing extra ammo is 50% more than perk bonus.
-static function AddAdjustedExtraAmmoFor(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
+//Split off from AddExtraAmmoFor. Applies HighDifficultyExtraAmmoMultiplier on High Difficulty game types and anyone else who wants to mutate ammo amounts separately from perk bonuses.
+static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
 {
 	if (!IsHighDifficulty(KFPRI))
 	{
+		if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+		{
+			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).MaxAmmoMultiplier;
+		}
+
 		return;
 	}
 
 	if (Multiplier > 1.f)
 	{
-		Multiplier *= 1.5f;
+		Multiplier *= default.HighDifficultyExtraAmmoMultiplier;
 	}
+
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).MaxAmmoMultiplier;
+	}
+}
+
+static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType)
+{
+	local float Multiplier;
+	Multiplier = 1.f;
+	ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
+	return Multiplier;
+}
+
+static function ApplyAdjustedFireRate(KFPlayerReplicationInfo KFPRI, Weapon Other, out float Multiplier)
+{
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).FireRateMultiplier;
+	}
+}
+
+static function float GetFireSpeedMod(KFPlayerReplicationInfo KFPRI, Weapon Other)
+{
+	local float Multiplier;
+	Multiplier = 1.f;
+	ApplyAdjustedFireRate(KFPRI, Other, Multiplier);
+	return Multiplier;
+}
+
+static function ApplyAdjustedReloadRate(KFPlayerReplicationInfo KFPRI, Weapon Other, out float Multiplier)
+{
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).ReloadRateMultiplier;
+	}
+}
+
+static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
+{
+	local float Multiplier;
+	Multiplier = 1.f;
+	ApplyAdjustedReloadRate(KFPRI, Other, Multiplier);
+	return Multiplier;
+}
+
+static function ApplyAdjustedMagCapacityModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other, out float Multiplier)
+{
+	if (Other.MagCapacity > 1 && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).MagazineAmmoMultiplier;
+	}
+}
+
+static function float GetMagCapacityMod(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
+{
+	local float Multiplier;
+	Multiplier = 1.f;
+	ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
+	return Multiplier;
+}
+
+static function ApplyAdjustedRecoilSpreadModifier(KFPlayerReplicationInfo KFPRI, WeaponFire Other, out float Multiplier)
+{
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).WeaponSpreadMultiplier;
+	}
+}
+
+static function float ModifyRecoilSpread(KFPlayerReplicationInfo KFPRI, WeaponFire Other, out float Recoil)
+{
+	Recoil = 1.f;
+	ApplyAdjustedRecoilSpreadModifier(KFPRI, Other, Recoil);
+	return Recoil;
 }
 
 static final function int GetScaledRequirement(byte CurLevel, int InValue)
 {
-	return CurLevel*CurLevel*InValue;
+	return CurLevel * CurLevel * InValue;
 }
 
 static function class<DamageType> GetMAC10DamageType(KFPlayerReplicationInfo KFPRI)
@@ -137,12 +219,15 @@ static function byte PreDrawPerk(Canvas C, byte Level, out Material PerkIcon, ou
 
 defaultproperties
 {
-     LevelRankRequirement=5
-     StarTexture=Texture'KFTurbo.Perks.Star_D'
-     LevelNames(1)="Experienced"
-     LevelNames(2)="Skilled"
-     LevelNames(3)="Adept"
-     LevelNames(4)="Masterful"
-     LevelNames(5)="Inhuman"
-     LevelNames(6)="Godlike"
+	LevelRankRequirement=5
+	HighDifficultyExtraAmmoMultiplier=1.5f
+	
+	StarTexture=Texture'KFTurbo.Perks.Star_D'
+
+	LevelNames(1)="Experienced"
+	LevelNames(2)="Skilled"
+	LevelNames(3)="Adept"
+	LevelNames(4)="Masterful"
+	LevelNames(5)="Inhuman"
+	LevelNames(6)="Godlike"
 }

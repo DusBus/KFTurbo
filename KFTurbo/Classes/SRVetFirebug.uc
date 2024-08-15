@@ -34,11 +34,16 @@ static function int GetPerkProgressInt( ClientPerkRepLink StatOther, out int Fin
 
 static function float GetMagCapacityMod(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+
 	if ( Flamethrower(Other) != none && KFPRI.ClientVeteranSkillLevel > 0 )
-		return 1.0 + (0.10 * float(KFPRI.ClientVeteranSkillLevel)); // Up to 60% larger fuel canister
+		Multiplier *= 1.0 + (0.10 * float(KFPRI.ClientVeteranSkillLevel)); // Up to 60% larger fuel canister
 	if ( MAC10MP(Other) != none && KFPRI.ClientVeteranSkillLevel > 0 )
-		return 1.0 + (0.12 * FMin(float(KFPRI.ClientVeteranSkillLevel), 5.0)); // 60% increase in MAC10 ammo carry
-	return 1.0;
+		Multiplier *= 1.0 + (0.12 * FMin(float(KFPRI.ClientVeteranSkillLevel), 5.0)); // 60% increase in MAC10 ammo carry
+
+	ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
+	return Multiplier;
 }
 static function float GetAmmoPickupMod(KFPlayerReplicationInfo KFPRI, KFAmmunition Other)
 {
@@ -94,13 +99,16 @@ static function class<Grenade> GetNadeType(KFPlayerReplicationInfo KFPRI)
 
 static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+	
 	if ( Flamethrower(Other)!=none || MAC10MP(Other)!=none || Trenchgun(Other)!=none || FlareRevolver(Other)!=none || DualFlareRevolver(Other)!=none )
 	{
-		if ( KFPRI.ClientVeteranSkillLevel == 0 )
-			return 1.0;
-		return 1.0 + (0.10 * float(KFPRI.ClientVeteranSkillLevel)); // Up to 60% faster reload with all
+		Multiplier *= 1.0 + (0.10 * float(KFPRI.ClientVeteranSkillLevel)); // Up to 60% faster reload with all
 	}
-	return 1.0;
+
+	ApplyAdjustedReloadRate(KFPRI, Other, Multiplier);
+	return Multiplier;
 }
 
 // Change the cost of particular items

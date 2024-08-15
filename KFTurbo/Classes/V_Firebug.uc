@@ -1,4 +1,4 @@
-class V_Firebug extends SRVetFirebug
+class V_Firebug extends KFTurbo.SRVetFirebug
 	abstract;
 
 static function AddCustomStats(ClientPerkRepLink Other)
@@ -41,9 +41,16 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 
 static function float GetMagCapacityMod(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+
 	if (Flamethrower(Other) != None || MAC10MP(Other) != None || ThompsonSMG(Other) != None)
-		return LerpStat(KFPRI, 1.f, 1.6f);
-	return 1.0;
+	{
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.6f);
+	}
+
+	ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
+	return Multiplier;
 }
 
 static function float GetAmmoPickupMod(KFPlayerReplicationInfo KFPRI, KFAmmunition Other)
@@ -55,9 +62,19 @@ static function float GetAmmoPickupMod(KFPlayerReplicationInfo KFPRI, KFAmmuniti
 
 static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, Class<Ammunition> AmmoType)
 {
-	if ((AmmoType == class'FlameAmmo' || AmmoType == class'MAC10Ammo' || AmmoType == class'W_Huskgun_Ammo' || AmmoType == class'W_ThompsonSMG_Ammo' || AmmoType == class'TrenchgunAmmo' || AmmoType == class'W_FlareRevolver_Ammo' || AmmoType == class'GoldenFlameAmmo') && KFPRI.ClientVeteranSkillLevel > 0)
-		return LerpStat(KFPRI, 1.f, 1.6f);
-	return 1.0;
+	local float Multiplier;
+	Multiplier = 1.f;
+
+	ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
+
+	if (AmmoType == class'FlameAmmo' || AmmoType == class'MAC10Ammo' || AmmoType == class'W_Huskgun_Ammo'
+		|| AmmoType == class'W_ThompsonSMG_Ammo' || AmmoType == class'TrenchgunAmmo'
+		|| AmmoType == class'W_FlareRevolver_Ammo' || AmmoType == class'GoldenFlameAmmo')
+	{
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.6f);
+	}
+
+	return Multiplier;
 }
 
 static function int AddDamage(KFPlayerReplicationInfo KFPRI, KFMonster Injured, KFPawn DamageTaker, int InDamage, class<DamageType> DmgType)
@@ -111,11 +128,16 @@ static function class<Grenade> GetNadeType(KFPlayerReplicationInfo KFPRI)
 
 static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+
 	if (Flamethrower(Other) != none || MAC10MP(Other) != none || Trenchgun(Other) != none || FlareRevolver(Other) != none || DualFlareRevolver(Other) != none|| ThompsonSMG(Other) != none)
 	{
-		return LerpStat(KFPRI, 1.f, 1.6f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.6f);
 	}
-	return 1.0;
+
+	ApplyAdjustedReloadRate(KFPRI, Other, Multiplier);
+	return Multiplier;
 }
 
 static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)

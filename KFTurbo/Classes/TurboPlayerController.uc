@@ -3,7 +3,7 @@ class TurboPlayerController extends KFPCServ;
 var class<WeaponRemappingSettings> WeaponRemappingSettings;
 var globalconfig bool bTraderBindingInitialized;
 var globalconfig bool bMarkActorBindingInitialized;
-var globalconfig TurboPlayerReplicationInfo.EMarkColor MarkColor;
+var globalconfig TurboPlayerMarkReplicationInfo.EMarkColor MarkColor;
 
 var float ClientNextMarkTime, NextMarkTime;
 
@@ -17,6 +17,12 @@ replication
 
 simulated function PostBeginPlay()
 {
+	//For some reason this really does not like getting set!
+	if (class<TurboPlayerReplicationInfo>(PlayerReplicationInfoClass) == None)
+	{
+		PlayerReplicationInfoClass = class'TurboPlayerReplicationInfo';
+	}
+
 	Super.PostBeginPlay();
 
 	if (Role != ROLE_Authority)
@@ -252,9 +258,9 @@ exec function MarkActor()
 	}
 }
 
-function AttemptMarkActor(vector Start, vector End, Actor TargetActor, class<TurboMarkerType> DataClassOverride, int DataOverride, TurboPlayerReplicationInfo.EMarkColor Color)
+function AttemptMarkActor(vector Start, vector End, Actor TargetActor, class<TurboMarkerType> DataClassOverride, int DataOverride, TurboPlayerMarkReplicationInfo.EMarkColor Color)
 {
-	local TurboPlayerReplicationInfo TPRI;
+	local TurboPlayerMarkReplicationInfo TurboMarkPRI;
 	local Pickup FoundPickup;
 
 	if ((TargetActor == None || TargetActor.bWorldGeometry) && (Player != None))
@@ -299,21 +305,21 @@ function AttemptMarkActor(vector Start, vector End, Actor TargetActor, class<Tur
 
 	NextMarkTime = Level.TimeSeconds + 0.1f;
 
-	TPRI = class'TurboPlayerReplicationInfo'.static.GetTurboPRI(PlayerReplicationInfo);
+	TurboMarkPRI = class'TurboPlayerMarkReplicationInfo'.static.GetTurboMarkPRI(PlayerReplicationInfo);
 
-	if (TPRI != None)
+	if (TurboMarkPRI != None)
 	{
-		TPRI.MarkerColor = Color;
-		TPRI.MarkActor(TargetActor, DataClassOverride, DataOverride);
+		TurboMarkPRI.MarkerColor = Color;
+		TurboMarkPRI.MarkActor(TargetActor, DataClassOverride, DataOverride);
 	}
 }
 
-function ServerMarkActor(vector Start, vector End, Actor TargetActor, class<TurboMarkerType> DataClassOverride, int DataOverride, TurboPlayerReplicationInfo.EMarkColor Color)
+function ServerMarkActor(vector Start, vector End, Actor TargetActor, class<TurboMarkerType> DataClassOverride, int DataOverride, TurboPlayerMarkReplicationInfo.EMarkColor Color)
 {
 	AttemptMarkActor(Start, End, TargetActor, DataClassOverride, DataOverride, Color);
 }
 
-exec function SetMarkColor(TurboPlayerReplicationInfo.EMarkColor Color)
+exec function SetMarkColor(TurboPlayerMarkReplicationInfo.EMarkColor Color)
 {
 	MarkColor = Color;
 	SaveConfig();
@@ -596,6 +602,7 @@ defaultproperties
 {
 	LobbyMenuClassString="KFTurbo.TurboLobbyMenu"
 	PawnClass=Class'KFTurbo.TurboHumanPawn'
+    PlayerReplicationInfoClass=Class'KFTurbo.TurboPlayerReplicationInfo'
 
 	WeaponRemappingSettings=class'WeaponRemappingSettingsImpl'
 }

@@ -163,6 +163,8 @@ defaultproperties
     SpecialEventMonsterCollections(2)=Class'KFTurbo.MC_HAL'
     SpecialEventMonsterCollections(3)=Class'KFTurbo.MC_XMA'
 
+	GameReplicationInfoClass=Class'KFTurbo.TurboGameReplicationInfo'
+	
     GameName="Killing Floor Turbo Game Type"
     Description="KF Turbo version of default Killing Floor Game Type."
     ScreenShotName="KFTurbo.Generic.KFTurbo_FB"

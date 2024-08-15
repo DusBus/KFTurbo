@@ -98,6 +98,9 @@ static function float GetStalkerViewDistanceMulti(KFPlayerReplicationInfo KFPRI)
 
 static function float GetMagCapacityMod(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+
 	if ( (Bullpup(Other) != none || AK47AssaultRifle(Other) != none ||
         SCARMK17AssaultRifle(Other) != none || M4AssaultRifle(Other) != none
         || FNFAL_ACOG_AssaultRifle(Other) != none || MKb42AssaultRifle(Other) != none
@@ -106,12 +109,16 @@ static function float GetMagCapacityMod(KFPlayerReplicationInfo KFPRI, KFWeapon 
         KFPRI.ClientVeteranSkillLevel > 0 )
 	{
 		if ( KFPRI.ClientVeteranSkillLevel == 1 )
-			return 1.10;
+			Multiplier *= 1.10;
 		else if ( KFPRI.ClientVeteranSkillLevel == 2 )
-			return 1.20;
-		return 1.25; // 25% increase in assault rifle ammo carry
+			Multiplier *= 1.20;
+		else
+			Multiplier *= 1.25;
 	}
-	return 1.0;
+
+	ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
+
+	return Multiplier;
 }
 
 static function float GetAmmoPickupMod(KFPlayerReplicationInfo KFPRI, KFAmmunition Other)
@@ -189,7 +196,10 @@ static function float ModifyRecoilSpread(KFPlayerReplicationInfo KFPRI, WeaponFi
 
 static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
 {
-	return 1.05 + (0.05 * float(KFPRI.ClientVeteranSkillLevel)); // Up to 35% faster reload speed
+	local float Multiplier;
+	Multiplier = 1.05 + (0.05 * float(KFPRI.ClientVeteranSkillLevel)); // Up to 35% faster reload speed
+	ApplyAdjustedReloadRate(KFPRI, Other, Multiplier);
+	return Multiplier;
 }
 
 // Set number times Zed Time can be extended

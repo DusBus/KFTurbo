@@ -87,23 +87,26 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 {
 	if (KFPlayerReplicationInfo(Other) != None)
 	{
-		AddTurboPlayerReplicationInfo(KFPlayerReplicationInfo(Other));
+		AddTurboPlayerMarkReplicationInfo(KFPlayerReplicationInfo(Other));
 	}
-
 	//Looks like tinkering with these directly doesn't work... just replace it.
-	if (KFRandomItemSpawn(Other) != None && TurboRandomItemSpawn(Other) == None)
+	else if (KFRandomItemSpawn(Other) != None && TurboRandomItemSpawn(Other) == None)
 	{
 		ReplaceWith(Other, string(class'KFTurbo.TurboRandomItemSpawn'));
 		return false;
+	}
+	else if(Controller(Other) != None && Controller(Other).PlayerReplicationInfo != None && TurboPlayerReplicationInfo(Controller(Other).PlayerReplicationInfo) == None)
+	{
+		Controller(Other).PlayerReplicationInfoClass = Class'TurboPlayerReplicationInfo';
 	}
 
 	return true;
 }
 
-function AddTurboPlayerReplicationInfo(KFPlayerReplicationInfo PlayerReplicationInfo)
+function AddTurboPlayerMarkReplicationInfo(KFPlayerReplicationInfo PlayerReplicationInfo)
 {
-	local TurboPlayerReplicationInfo TurboPRI;
-	TurboPRI = Spawn(class'TurboPlayerReplicationInfo', PlayerReplicationInfo.Owner);
+	local TurboPlayerMarkReplicationInfo TurboPRI;
+	TurboPRI = Spawn(class'TurboPlayerMarkReplicationInfo', PlayerReplicationInfo.Owner);
 	TurboPRI.NextReplicationInfo = PlayerReplicationInfo.CustomReplicationInfo;
 	TurboPRI.OwningReplicationInfo = PlayerReplicationInfo;
 	PlayerReplicationInfo.CustomReplicationInfo = TurboPRI;

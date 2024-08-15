@@ -53,22 +53,22 @@ var Texture PingIcon;
 
 simulated function UpdateScoreBoard(Canvas Canvas)
 {
-	local KFPlayerReplicationInfo OwnerPRI, KFPRI;
+	local TurboPlayerReplicationInfo OwnerPRI, TPRI;
 	local int Index, PlayerCount;
 	local float EntrySizeY, TempY;
 
 	Canvas.Style = ERenderStyle.STY_Alpha;
 
 	PlayerCount = 0;
-	OwnerPRI = KFPlayerReplicationInfo(KFPlayerController(Owner).PlayerReplicationInfo);
+	OwnerPRI = TurboPlayerReplicationInfo(KFPlayerController(Owner).PlayerReplicationInfo);
 	TempY = ((1.f - ScoreboardSize.Y) * 0.3f) * Canvas.ClipY;
 	DrawScoreboardHeader(Canvas, TempY, ((1.f - ScoreboardSize.Y) * 0.25f) * Canvas.ClipY);
 
 	for ( Index = 0; Index < GRI.PRIArray.Length; Index++)
 	{
-		KFPRI = KFPlayerReplicationInfo(GRI.PRIArray[Index]);
+		TPRI = TurboPlayerReplicationInfo(GRI.PRIArray[Index]);
 
-		if (KFPRI.bOnlySpectator)
+		if (TPRI == None || TPRI.bOnlySpectator)
 		{
 			continue;
 		}
@@ -88,14 +88,14 @@ simulated function UpdateScoreBoard(Canvas Canvas)
 
 	for ( Index = 0; Index < GRI.PRIArray.Length; Index++)
 	{
-		KFPRI = KFPlayerReplicationInfo(GRI.PRIArray[Index]);
+		TPRI = TurboPlayerReplicationInfo(GRI.PRIArray[Index]);
 
-		if (KFPRI.bOnlySpectator)
+		if (TPRI == None || TPRI.bOnlySpectator)
 		{
 			continue;
 		}
 
-		DrawPlayerEntry(Canvas, KFPRI, EntrySizeY, TempY, OwnerPRI == KFPRI, Index == 0);
+		DrawPlayerEntry(Canvas, TPRI, EntrySizeY, TempY, OwnerPRI == TPRI, Index == 0);
 		TempY += EntrySizeY * 1.2f;	
 	}
 }
@@ -154,7 +154,7 @@ simulated function DrawScoreboardHeader(Canvas Canvas, float CenterY, float Size
 	class'TurboHUDOverlay'.static.DrawCounterTextMeticulous(Canvas, DrawString, TextSizeX, 1.f);
 }
 
-simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI, float SizeY, float PositionY, bool bIsLocalPlayer, bool bIsFirstEntry)
+simulated function DrawPlayerEntry(Canvas Canvas, TurboPlayerReplicationInfo TurboPRI, float SizeY, float PositionY, bool bIsLocalPlayer, bool bIsFirstEntry)
 {
 	local float CenterX, CenterY;
 	local float SizeX;
@@ -164,7 +164,6 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 	local int Index, StarCounter, NumStars;
 	local float TextSizeX, TextSizeY;
 	local string DrawText;
-	local TurboPlayerReplicationInfo TPRI;
 
 	CenterX = Canvas.ClipX * 0.5f;
 	CenterY = PositionY + (SizeY * 0.5f);
@@ -184,7 +183,7 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 	
 	Canvas.DrawColor = Canvas.MakeColor(255, 255, 255, 32);
 	Canvas.SetPos(TempX + 1.f, ((PositionY + SizeY) - 1.f) - (SizeY * 0.04f));
-	Canvas.DrawTileScaled(ScoreboardBackplate, ((ScoreboardSize.X * Canvas.ClipX / float(ScoreboardBackplate.USize)) * FClamp((KFPRI.PlayerHealth / 100.f), 0.f, 1.f)) * (((ScoreboardSize.X * Canvas.ClipX) - 2.f) / (ScoreboardSize.X * Canvas.ClipX)), (SizeY / float(ScoreboardBackplate.VSize)) * 0.04f);
+	Canvas.DrawTileScaled(ScoreboardBackplate, ((ScoreboardSize.X * Canvas.ClipX / float(ScoreboardBackplate.USize)) * FClamp((TurboPRI.PlayerHealth / 100.f), 0.f, 1.f)) * (((ScoreboardSize.X * Canvas.ClipX) - 2.f) / (ScoreboardSize.X * Canvas.ClipX)), (SizeY / float(ScoreboardBackplate.VSize)) * 0.04f);
 
 	if (bIsLocalPlayer)
 	{
@@ -197,9 +196,9 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 
 	//Draw Perk
 	TempX += SizeX * PerkIconOffsetX;
-	if (Class<SRVeterancyTypes>(KFPRI.ClientVeteranSkill) != None)
+	if (Class<SRVeterancyTypes>(TurboPRI.ClientVeteranSkill) != None)
 	{
-		NumStars = Class<SRVeterancyTypes>(KFPRI.ClientVeteranSkill).static.PreDrawPerk(Canvas, KFPRI.ClientVeteranSkillLevel, PerkIcon, PerkStarIcon);
+		NumStars = Class<SRVeterancyTypes>(TurboPRI.ClientVeteranSkill).static.PreDrawPerk(Canvas, TurboPRI.ClientVeteranSkillLevel, PerkIcon, PerkStarIcon);
 
 		Canvas.SetPos(int(TempX - (SizeX * PerkIconOffsetX)), PositionY);
 		Canvas.DrawTileScaled(ScoreboardBackplateLeft, SizeY / float(ScoreboardBackplateLeft.USize), SizeY / float(ScoreboardBackplateLeft.VSize));
@@ -231,7 +230,7 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 
 	//Draw Name
 	Canvas.DrawColor = ScoreboardTextColor;
-	DrawText = KFPRI.PlayerName;
+	DrawText = TurboPRI.PlayerName;
 	Canvas.TextSize(DrawText, TextSizeX, TextSizeY);
 	TempX = (CenterX - (SizeX * 0.5f)) + (SizeX * UsernameOffsetX);
 	TempY = CenterY;
@@ -250,13 +249,13 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 	}
 
 	Canvas.DrawColor = ScoreboardTextColor;
-	DrawText = string(KFPRI.Kills);
+	DrawText = string(TurboPRI.Kills);
 	Canvas.TextSize(class'TurboHUDOverlay'.static.GetStringOfZeroes(Len(DrawText)), TextSizeX, TextSizeY);
 	Canvas.SetPos(TempX - (TextSizeX * 0.5f), CenterY - (TextSizeY * 0.5f));
 	class'TurboHUDOverlay'.static.DrawCounterTextMeticulous(Canvas, DrawText, TextSizeX, 1.f);
 
 	Canvas.DrawColor.A = 120;
-	DrawText = " ("$KFPRI.KillAssists$")";
+	DrawText = " ("$TurboPRI.KillAssists$")";
 	TempX += (TextSizeX * 0.5f);
 	Canvas.TextSize(class'TurboHUDOverlay'.static.GetStringOfZeroes(Len(DrawText)), TextSizeX, TextSizeY);
 	Canvas.SetPos(TempX, CenterY - (TextSizeY * 0.5f));
@@ -274,7 +273,7 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 	}
 
 	Canvas.DrawColor = ScoreboardTextColor;
-	DrawText = string(KFPRI.PlayerHealth)$HealthyString;
+	DrawText = string(TurboPRI.PlayerHealth)$HealthyString;
 	Canvas.TextSize(class'TurboHUDOverlay'.static.GetStringOfZeroes(Len(DrawText)), TextSizeX, TextSizeY);
 	Canvas.SetPos(TempX - (TextSizeX * 0.5f), CenterY - (TextSizeY * 0.5f));
 	class'TurboHUDOverlay'.static.DrawCounterTextMeticulous(Canvas, DrawText, TextSizeX, 1.f);
@@ -290,17 +289,8 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 		Canvas.DrawTileScaled(HealedHealthIcon, (SizeY * HealedHealthSizeY) / float(HealedHealthIcon.USize), (SizeY * HealedHealthSizeY) / float(HealedHealthIcon.VSize));
 	}
 
-    TPRI = class'TurboPlayerReplicationInfo'.static.GetTurboPRI(KFPRI);
 	Canvas.DrawColor = ScoreboardTextColor;
-
-	if (TPRI != None)
-	{
-		DrawText = string(TPRI.HealthHealed);
-	}
-	else
-	{
-		DrawText = string(0);
-	}
+	DrawText = string(TurboPRI.HealthHealed);
 
 	Canvas.TextSize(class'TurboHUDOverlay'.static.GetStringOfZeroes(Len(DrawText)), TextSizeX, TextSizeY);
 	Canvas.SetPos(TempX - (TextSizeX * 0.5f), CenterY - (TextSizeY * 0.5f));
@@ -318,7 +308,7 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 	}
 	
 	Canvas.DrawColor = ScoreboardTextColor;
-	DrawText = string(int(KFPRI.Score)) $ class'KFTab_BuyMenu'.default.MoneyCaption;
+	DrawText = string(int(TurboPRI.Score)) $ class'KFTab_BuyMenu'.default.MoneyCaption;
 	Canvas.TextSize(class'TurboHUDOverlay'.static.GetStringOfZeroes(Len(DrawText)), TextSizeX, TextSizeY);
 	Canvas.SetPos(TempX - (TextSizeX * 0.5f), CenterY - (TextSizeY * 0.5f));
 	class'TurboHUDOverlay'.static.DrawCounterTextMeticulous(Canvas, DrawText, TextSizeX, 1.f);
@@ -335,12 +325,12 @@ simulated function DrawPlayerEntry(Canvas Canvas, KFPlayerReplicationInfo KFPRI,
 	}
 
 	Canvas.DrawColor = ScoreboardTextColor;
-	DrawText = Eval(KFPRI.bBot, Eval(BotText != "", BotText, "BOT"), string(KFPRI.Ping * 4));
+	DrawText = Eval(TurboPRI.bBot, Eval(BotText != "", BotText, "BOT"), string(TurboPRI.Ping * 4));
 	Canvas.TextSize(class'TurboHUDOverlay'.static.GetStringOfZeroes(Len(DrawText)), TextSizeX, TextSizeY);
 	Canvas.SetPos(TempX - (TextSizeX * 0.5f), CenterY - (TextSizeY * 0.5f));
 	class'TurboHUDOverlay'.static.DrawCounterTextMeticulous(Canvas, DrawText, TextSizeX, 1.f);
 
-	if (KFPRI.bAdmin)
+	if (TurboPRI.bAdmin)
 	{
 		DrawText = Eval(AdminText != "", AdminText, "ADMIN");
 
