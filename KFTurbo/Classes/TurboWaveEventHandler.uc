@@ -38,7 +38,6 @@ static final function RegisterWaveHandler(Actor Context, class<TurboWaveEventHan
 //Event broadcasting.
 static final function BroadcastWaveStarted(KFTurboGameType GameType, int StartedWave)
 {
-    local KFTurboGameType KFTurboGameType;
     local int Index;
 
     if (GameType == None)
@@ -48,13 +47,12 @@ static final function BroadcastWaveStarted(KFTurboGameType GameType, int Started
 
     for (Index = GameType.WaveEventHandlerList.Length - 1; Index >= 0; Index--)
     {
-        KFTurboGameType.WaveEventHandlerList[Index].static.OnWaveStarted(GameType, StartedWave);
+        GameType.WaveEventHandlerList[Index].static.OnWaveStarted(GameType, StartedWave);
     }
 }
 
 static final function BroadcastWaveEnded(KFTurboGameType GameType, int EndedWave)
 {
-    local KFTurboGameType KFTurboGameType;
     local int Index;
 
     if (GameType == None)
@@ -62,15 +60,14 @@ static final function BroadcastWaveEnded(KFTurboGameType GameType, int EndedWave
         return;
     }
 
-    for (Index = GameType.EventHandlerList.Length - 1; Index >= 0; Index--)
+    for (Index = GameType.WaveEventHandlerList.Length - 1; Index >= 0; Index--)
     {
-        KFTurboGameType.WaveEventHandlerList[Index].static.OnWaveEnded(GameType, EndedWave);
+        GameType.WaveEventHandlerList[Index].static.OnWaveEnded(GameType, EndedWave);
     }
 }
 
 static final function BroadcastNextSpawnSquadGenerated(KFTurboGameType GameType,  out array < class<KFMonster> > NextSpawnSquad)
 {
-    local KFTurboGameType KFTurboGameType;
     local int Index;
 
     if (GameType == None)
@@ -78,8 +75,8 @@ static final function BroadcastNextSpawnSquadGenerated(KFTurboGameType GameType,
         return;
     }
 
-    for (Index = GameType.EventHandlerList.Length - 1; Index >= 0; Index--)
+    for (Index = GameType.WaveEventHandlerList.Length - 1; Index >= 0; Index--)
     {
-        KFTurboGameType.WaveEventHandlerList[Index].static.OnNextSpawnSquadGenerated(GameType, NextSpawnSquad);
+        GameType.WaveEventHandlerList[Index].static.OnNextSpawnSquadGenerated(GameType, NextSpawnSquad);
     }
 }
