@@ -129,6 +129,13 @@ function BuildNextSquad()
 
 state MatchInProgress
 {
+    function BeginState()
+    {
+        Super.BeginState();
+
+		class'TurboWaveEventHandler'.static.BroadcastGameStarted(Self, WaveNum);
+    }
+
 	//Don't do these things if there are no traders (KFTurbo+ or Randomizer).
     function SelectShop()
     {

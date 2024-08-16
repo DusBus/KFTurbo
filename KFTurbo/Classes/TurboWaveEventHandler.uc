@@ -1,5 +1,7 @@
 class TurboWaveEventHandler extends Object;
 
+static function OnGameStarted(KFTurboGameType GameType, int StartingWave);
+
 static function OnWaveStarted(KFTurboGameType GameType, int StartedWave);
 //EndedWave is the wave number we just completed (is Invasion::WaveNum - 1 as this is called right after we incremented the wave count and setup the trader wave)
 static function OnWaveEnded(KFTurboGameType GameType, int EndedWave);
@@ -36,10 +38,23 @@ static final function RegisterWaveHandler(Actor Context, class<TurboWaveEventHan
 }
 
 //Event broadcasting.
+static final function BroadcastGameStarted(KFTurboGameType GameType, int StartedWave)
+{
+    local int Index;
+    if (GameType == None)
+    {
+        return;
+    }
+
+    for (Index = GameType.WaveEventHandlerList.Length - 1; Index >= 0; Index--)
+    {
+        GameType.WaveEventHandlerList[Index].static.OnGameStarted(GameType, StartedWave);
+    }
+}
+
 static final function BroadcastWaveStarted(KFTurboGameType GameType, int StartedWave)
 {
     local int Index;
-
     if (GameType == None)
     {
         return;
