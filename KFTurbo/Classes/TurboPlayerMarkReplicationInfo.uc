@@ -13,7 +13,6 @@ var int MarkerData;
 var Vector MarkLocation;
 var float MarkTime;
 var float MarkDuration;
-var int HealthHealed;
 
 enum EMarkColor{
 	Invalid,
@@ -52,19 +51,20 @@ var localized String MonsterStringRight;
 var localized String PlayerStringLeft;
 var localized String PlayerStringRight;
 
+var bool bHasInitializedTurboInteraction;
+
 replication
 {
     reliable if( bNetInitial && ROLE == ROLE_Authority)
         OwningReplicationInfo;
 	reliable if( Role==ROLE_Authority )
-		MarkedActor, MarkActorClass, MarkLocation, DataClass, DataObject, MarkDuration, MarkerData, MarkerColor, HealthHealed;
+		MarkedActor, MarkActorClass, MarkLocation, DataClass, DataObject, MarkDuration, MarkerData, MarkerColor;
 }
 
 simulated function PostBeginPlay()
 {
     Super.PostBeginPlay();
 
-    Disable('Tick');
 }
 
 simulated function PostNetReceive()
@@ -300,6 +300,26 @@ function bool HasMarkData()
 function Tick(float DeltaTime)
 {
     Super.Tick(DeltaTime);
+
+    if (Level.NetMode != NM_DedicatedServer && !bHasInitializedTurboInteraction)
+    {
+        TurboPlayerController(Level.GetLocalPlayerController()).SetupTurboInteraction();
+        if (TurboPlayerController(Level.GetLocalPlayerController()).TurboInteraction != None)
+        {
+            bHasInitializedTurboInteraction = true;
+
+            if (Role != ROLE_Authority)
+            {
+                Disable('Tick');
+                return;
+            }
+        }
+
+        if (Role != ROLE_Authority)
+        {
+            return;
+        }
+    }
 
     if (Level.GRI == None)
     {
