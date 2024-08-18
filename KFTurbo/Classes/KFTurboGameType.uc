@@ -127,6 +127,13 @@ function BuildNextSquad()
 	class'TurboWaveEventHandler'.static.BroadcastNextSpawnSquadGenerated(Self, NextSpawnSquad);
 }
 
+function AddSpecialSquad()
+{
+	Super.AddSpecialSquad();
+
+	class'TurboWaveEventHandler'.static.BroadcastNextSpawnSquadGenerated(Self, NextSpawnSquad);
+}
+
 function SetupWave()
 {
 	Super.SetupWave();
