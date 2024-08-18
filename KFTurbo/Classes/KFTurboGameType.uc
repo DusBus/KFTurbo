@@ -127,6 +127,13 @@ function BuildNextSquad()
 	class'TurboWaveEventHandler'.static.BroadcastNextSpawnSquadGenerated(Self, NextSpawnSquad);
 }
 
+function SetupWave()
+{
+	Super.SetupWave();
+	
+	class'TurboWaveEventHandler'.static.BroadcastWaveStarted(Self, WaveNum);
+}
+
 state MatchInProgress
 {
     function BeginState()
@@ -156,13 +163,6 @@ state MatchInProgress
 
 		Super.OpenShops();
     }
-	
-	//Generic event broadcasting.
-	function SetupWave()
-	{
-		Super.SetupWave();
-		class'TurboWaveEventHandler'.static.BroadcastWaveStarted(Self, WaveNum);
-	}
 	
 	function StartWaveBoss()
 	{

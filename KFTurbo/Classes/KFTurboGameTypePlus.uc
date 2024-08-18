@@ -172,6 +172,8 @@ function SetupWave()
     TurboMonsterCollection.InitializeForWave(WaveNum);
 
     BuildNextSquad();
+    
+	class'TurboWaveEventHandler'.static.BroadcastWaveStarted(Self, WaveNum);
 }
 
 function AddSpecialSquad()

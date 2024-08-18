@@ -52,6 +52,8 @@ function InitializeForWave(int WaveNumber)
 {
      local int Index, WaveMask;
 
+     log("Initializing For Wave:"@WaveNumber);
+
      RegularSquadList.Length = 0;
      MixInSquadList.Length = 0;
      BeatSquadList.Length = 0;
