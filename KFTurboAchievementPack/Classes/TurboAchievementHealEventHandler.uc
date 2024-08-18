@@ -17,6 +17,11 @@ static function OnPawnDartHealed(Pawn Instigator, Pawn Target, int HealingAmount
     local int Index;
     SARI = ResolveSARI(Instigator);
 
+    if (SARI == None)
+    {
+        return;
+    }
+
     for (Index = SARI.achievementPacks.Length - 1; Index >= 0; Index--)
     {
         AchievementPack = TurboAchievementPackImpl(SARI.achievementPacks[Index]);
@@ -36,6 +41,11 @@ static function OnPawnSyringeHealed(Pawn Instigator, Pawn Target, int HealingAmo
     local int Index;
     SARI = ResolveSARI(Instigator);
 
+    if (SARI == None)
+    {
+        return;
+    }
+
     for (Index = SARI.achievementPacks.Length - 1; Index >= 0; Index--)
     {
         AchievementPack = TurboAchievementPackImpl(SARI.achievementPacks[Index]);
@@ -54,6 +64,11 @@ static function OnPawnGrenadeHealed(Pawn Instigator, Pawn Target, int HealingAmo
     local TurboAchievementPackImpl AchievementPack;
     local int Index;
     SARI = ResolveSARI(Instigator);
+
+    if (SARI == None)
+    {
+        return;
+    }
 
     for (Index = SARI.achievementPacks.Length - 1; Index >= 0; Index--)
     {

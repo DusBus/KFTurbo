@@ -17,6 +17,11 @@ static function OnPawnIgnited(Pawn Instigator, Pawn Target, class<KFWeaponDamage
     local int Index;
     SARI = ResolveSARI(Instigator);
 
+    if (SARI == None)
+    {
+        return;
+    }
+
     for (Index = SARI.achievementPacks.Length - 1; Index >= 0; Index--)
     {
         AchievementPack = TurboAchievementPackImpl(SARI.achievementPacks[Index]);
@@ -34,6 +39,11 @@ static function OnPawnZapped(Pawn Instigator, Pawn Target, float ZapAmount, bool
     local TurboAchievementPackImpl AchievementPack;
     local int Index;
     SARI = ResolveSARI(Instigator);
+
+    if (SARI == None)
+    {
+        return;
+    }
 
     for (Index = SARI.achievementPacks.Length - 1; Index >= 0; Index--)
     {
@@ -53,6 +63,11 @@ static function OnPawnHarpooned(Pawn Instigator, Pawn Target, int CurrentHarpoon
     local int Index;
     SARI = ResolveSARI(Instigator);
 
+    if (SARI == None)
+    {
+        return;
+    }
+
     for (Index = SARI.achievementPacks.Length - 1; Index >= 0; Index--)
     {
         AchievementPack = TurboAchievementPackImpl(SARI.achievementPacks[Index]);
@@ -71,6 +86,11 @@ static function OnBurnMitigatedDamage(Pawn Instigator, Pawn Target, int Damage, 
     local int Index;
     SARI = ResolveSARI(Instigator);
 
+    if (SARI == None)
+    {
+        return;
+    }
+
     for (Index = SARI.achievementPacks.Length - 1; Index >= 0; Index--)
     {
         AchievementPack = TurboAchievementPackImpl(SARI.achievementPacks[Index]);
@@ -88,6 +108,11 @@ static function OnPawnPushedWithMCZThrower(Pawn Instigator, Pawn Target, Vector 
     local TurboAchievementPackImpl AchievementPack;
     local int Index;
     SARI = ResolveSARI(Instigator);
+
+    if (SARI == None)
+    {
+        return;
+    }
 
     for (Index = SARI.achievementPacks.Length - 1; Index >= 0; Index--)
     {
