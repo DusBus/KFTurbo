@@ -123,6 +123,43 @@ static function float ModifyRecoilSpread(KFPlayerReplicationInfo KFPRI, WeaponFi
 	return Recoil;
 }
 
+static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)
+{
+	local float Multiplier;
+	Multiplier = 1.f;
+	ApplyCostScalingModifier(KFPRI, Item, Multiplier);
+	return Multiplier;
+}
+
+static function ApplyCostScalingModifier(KFPlayerReplicationInfo KFPRI, class<Pickup> Item, out float Multiplier)
+{
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetTraderCostMultiplier();
+	}
+}
+
+static function float GetAmmoCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)
+{
+	local float Multiplier;
+	Multiplier = 1.f;
+	ApplyAmmoCostScalingModifier(KFPRI, Item, Multiplier);
+	return Multiplier;
+}
+
+static function ApplyAmmoCostScalingModifier(KFPlayerReplicationInfo KFPRI, class<Pickup> Item, out float Multiplier)
+{
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetTraderCostMultiplier();
+
+		if (class<FragPickup>(Item) != None)
+		{
+			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetTraderGrenadeCostMultiplier();
+		}
+	}
+}
+
 static final function int GetScaledRequirement(byte CurLevel, int InValue)
 {
 	return CurLevel * CurLevel * InValue;

@@ -157,6 +157,9 @@ static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWe
 
 static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+	
 	switch(Item)
 	{
 		case class'W_MK23_Pickup':
@@ -169,29 +172,33 @@ static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup
 		case class'W_V_DualDeagle_Gold_Pickup':
 		case class'W_M14_Pickup' :
 		case class'W_SPSniper_Pickup' :
-			return LerpStat(KFPRI, 0.9f, 0.3f);
+			Multiplier *= LerpStat(KFPRI, 0.9f, 0.3f);
 			break;
 
 		case class'W_Crossbow_Pickup' :
 		case class'W_M99_Pickup' :
-			return 1.f;
+			Multiplier *= 1.f;
 			break;
 	}
 
-	return 1.f;
+	ApplyCostScalingModifier(KFPRI, Item, Multiplier);
+	return Multiplier;
 }
 
 static function float GetAmmoCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
 	switch(Item)
 	{
 		case class'W_Crossbow_Pickup':
 		case class'W_M99_Pickup' :
-			return LerpStat(KFPRI, 1.f, 0.7f);
+			Multiplier *= LerpStat(KFPRI, 1.f, 0.7f);
 			break;
 	}
 
-	return 1.f;
+	ApplyAmmoCostScalingModifier(KFPRI, Item, Multiplier);
+	return Multiplier;
 }
 
 static function AddDefaultInventory(KFPlayerReplicationInfo KFPRI, Pawn P)

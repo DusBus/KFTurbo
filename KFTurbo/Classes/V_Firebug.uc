@@ -155,6 +155,9 @@ static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWe
 
 static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+	
 	switch (Item)
 	{
 	case class'W_FlameThrower_Pickup' :
@@ -164,10 +167,12 @@ static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup
 	case class'W_Trenchgun_Pickup' :
 	case class'W_FlareRevolver_Pickup' :
 	case class'W_DualFlare_Pickup' :
-		return LerpStat(KFPRI, 0.9f, 0.3f);
+		Multiplier *= LerpStat(KFPRI, 0.9f, 0.3f);
+		break;
 	}
 
-	return 1.0;
+	ApplyCostScalingModifier(KFPRI, Item, Multiplier);
+	return Multiplier;
 }
 
 static function AddDefaultInventory(KFPlayerReplicationInfo KFPRI, Pawn P)

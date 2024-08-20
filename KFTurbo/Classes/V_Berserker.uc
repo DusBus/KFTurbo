@@ -154,6 +154,8 @@ static function class<Grenade> GetNadeType(KFPlayerReplicationInfo KFPRI)
 
 static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
 	switch (Item)
 	{
 	case class'W_Axe_Pickup' :
@@ -165,10 +167,12 @@ static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup
 	case class'W_Scythe_Pickup' :
 	case class'MachetePickup' :
 	case class'DwarfAxePickup' :
-		return LerpStat(KFPRI, 0.9f, 0.3f);
+		Multiplier *= LerpStat(KFPRI, 0.9f, 0.3f);
+		break;
 	}
 
-	return 1.f;
+	ApplyCostScalingModifier(KFPRI, Item, Multiplier);
+	return Multiplier;
 }
 
 static function AddDefaultInventory(KFPlayerReplicationInfo KFPRI, Pawn P)

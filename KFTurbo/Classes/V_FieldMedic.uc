@@ -173,6 +173,9 @@ static function float GetAmmoPickupMod(KFPlayerReplicationInfo KFPRI, KFAmmuniti
 
 static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+	
 	switch(Item)
 	{
 	case class'W_MP7M_Pickup' :
@@ -180,13 +183,15 @@ static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup
 	case class'W_KrissM_Pickup' :
 	case class'W_M7A3M_Pickup' :
 	case class'BlowerThrowerPickup' :
-		return LerpStat(KFPRI, 0.25f, 0.13f);// Up to 87% discount on Medic Gun
+		Multiplier *= LerpStat(KFPRI, 0.25f, 0.13f);// Up to 87% discount on Medic Gun
 		break;
 	case class'Vest':
-		return LerpStat(KFPRI, 0.9f, 0.3f);// Up to 87% discount on Medic Gun
+		Multiplier *= LerpStat(KFPRI, 0.9f, 0.3f);// Up to 87% discount on Medic Gun
+		break;
 	}
 
-	return 1.f;
+	ApplyCostScalingModifier(KFPRI, Item, Multiplier);
+	return Multiplier;
 }
 
 static function float GetBodyArmorDamageModifier(KFPlayerReplicationInfo KFPRI)

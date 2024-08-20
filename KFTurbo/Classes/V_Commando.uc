@@ -268,6 +268,9 @@ static function int ZedTimeExtensions(KFPlayerReplicationInfo KFPRI)
 
 static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)
 {
+	local float Multiplier;
+	Multiplier = 1.f;
+
 	switch (Item)
 	{
 	case class'W_MKb42_Pickup':
@@ -278,13 +281,14 @@ static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup
 	case class'W_FNFAL_Pickup' :
 	case class'W_SCARMK17_Pickup' :
 	case class'W_ThompsonSMG_Pickup' :
-		return LerpStat(KFPRI, 0.9f, 0.3f);
+		Multiplier *= LerpStat(KFPRI, 0.9f, 0.3f);
 		break;
 	default:
 		break;
 	}
 
-	return 1.f;
+	ApplyCostScalingModifier(KFPRI, Item, Multiplier);
+	return Multiplier;
 }
 
 static function AddDefaultInventory(KFPlayerReplicationInfo KFPRI, Pawn P)
