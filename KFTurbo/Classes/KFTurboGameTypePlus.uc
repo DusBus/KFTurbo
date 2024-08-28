@@ -76,6 +76,11 @@ State MatchInProgress
 
     //Don't select shops.
     function SelectShop() {}
+    
+    function float CalcNextSquadSpawnTime()
+    {
+        return WaveNextSquadSpawnTime / WaveSpawnRateModifier;
+    }
 
     function OpenShops()
     {
@@ -115,12 +120,6 @@ State MatchInProgress
     {
         Super.CloseShops();
     }
-}
-
-// Calculate next squad spawn time
-simulated function float CalcNextSquadSpawnTime()
-{
-    return WaveNextSquadSpawnTime;
 }
 
 function ResetZombieVolumes()

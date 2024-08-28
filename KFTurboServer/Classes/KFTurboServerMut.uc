@@ -2,11 +2,9 @@
 class KFTurboServerMut extends Mutator;
 
 var TurboRepLinkHandler RepLinkHandler;
-var bool bSpawnedRandomizerHelper;
 
 simulated function PostBeginPlay()
 {
-	local KFTurboRandomizerMut KFTurboRandomizerMutator;
 	local ServerPerksMut ServerPerksMutator;
 	Super.PostBeginPlay();
 
@@ -16,33 +14,26 @@ simulated function PostBeginPlay()
 		RepLinkHandler = Spawn(class'TurboRepLinkHandler', self);
 	}
 
-	foreach Level.AllActors( class'KFTurboRandomizerMut', KFTurboRandomizerMutator )
-	{
-		SpawnRandomizerHelper();
-		break;
-	}
-
 	//Tell server perks to turn off progression saving if we're disabling them.
 	foreach Level.AllActors( class'ServerPerksMut', ServerPerksMutator )
 	{
 		ServerPerksMutator.bNoSavingProgress = !class'KFTurboGameType'.static.StaticAreStatsAndAchievementsEnabled(Self);
 		break;
 	}
+
+	//Listen for disabling stats/achievements/perk selection.
+	if (KFTurboGameType(Level.Game) != None)
+	{
+		KFTurboGameType(Level.Game).OnStatsAndAchievementsDisabled = OnStatsAndAchievementsDisabled;
+		KFTurboGameType(Level.Game).LockPerkSelection = LockPerkSelection;
+	}
 }
 
 function AddMutator(Mutator M)
 {
-	local KFTurboRandomizerMut KFTurboRandomizerMutator;
 	local ServerPerksMut ServerPerksMutator;
 
 	Super.AddMutator(M);
-
-	KFTurboRandomizerMutator = KFTurboRandomizerMut(M);
-	
-	if (KFTurboRandomizerMutator != None)
-	{
-		SpawnRandomizerHelper();
-	}
 
 	ServerPerksMutator = ServerPerksMut(M);
 	
@@ -53,17 +44,6 @@ function AddMutator(Mutator M)
 	}
 }
 
-function SpawnRandomizerHelper()
-{
-	if (bSpawnedRandomizerHelper)
-	{
-		return;
-	}
-
-	bSpawnedRandomizerHelper = true;
-	Spawn(class'TurboRandomizetHelper', Self);
-}
-
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 {
 	if (RepLinkHandler != none && ServerStStats(Other) != None)
@@ -72,6 +52,36 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 	}
 
 	return true;
+}
+
+function OnStatsAndAchievementsDisabled()
+{	
+	local ServerPerksMut ServerPerksMut;
+
+	foreach Level.AllActors( class'ServerPerksMut', ServerPerksMut )
+		break;
+
+	if (ServerPerksMut == None)
+	{
+		return;
+	}
+
+	ServerPerksMut.bNoSavingProgress = true;
+}
+
+function LockPerkSelection(bool bLock)
+{	
+	local ServerPerksMut ServerPerksMut;
+
+	foreach Level.AllActors( class'ServerPerksMut', ServerPerksMut )
+		break;
+
+	if (ServerPerksMut == None)
+	{
+		return;
+	}
+
+	ServerPerksMut.bNoPerkChanges = bLock;
 }
 
 simulated function String GetHumanReadableName()
@@ -85,6 +95,4 @@ defaultproperties
 	GroupName="KF-KFTurboServer"
 	FriendlyName="Killing Floor Turbo Server"
 	Description="Mutator for KFTurbo Server."
-
-	bSpawnedRandomizerHelper=false
 }

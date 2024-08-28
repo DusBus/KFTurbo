@@ -11,26 +11,26 @@ replication
 }
 
 //Reminder that if you override these functions, they must return the same value on the client and server.
-simulated function float GetFireRateMultiplier() { if (NextGameModifierLink != None) { return NextGameModifierLink.GetFireRateMultiplier(); } return 1.f; }
-simulated function float GetBerserkerFireRateMultiplier() { if (NextGameModifierLink != None) { return NextGameModifierLink.GetBerserkerFireRateMultiplier(); } return 1.f; }
-simulated function float GetFirebugFireRateMultiplier() { if (NextGameModifierLink != None) { return NextGameModifierLink.GetFirebugFireRateMultiplier(); } return 1.f; }
+simulated function float GetFireRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetFireRateMultiplier(KFPRI, Other); } return 1.f; }
+simulated function float GetBerserkerFireRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetBerserkerFireRateMultiplier(KFPRI, Other); } return 1.f; }
+simulated function float GetFirebugFireRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetFirebugFireRateMultiplier(KFPRI, Other); } return 1.f; }
 
-simulated function float GetReloadRateMultiplier() { if (NextGameModifierLink != None) { return NextGameModifierLink.GetReloadRateMultiplier(); } return 1.f; }
+simulated function float GetReloadRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetReloadRateMultiplier(KFPRI, Other); } return 1.f; }
 
-simulated function float GetMagazineAmmoMultiplier() { if (NextGameModifierLink != None) { return NextGameModifierLink.GetMagazineAmmoMultiplier(); } return 1.f; }
-simulated function float GetCommandoMagazineAmmoMultiplier() { if (NextGameModifierLink != None) { return NextGameModifierLink.GetCommandoMagazineAmmoMultiplier(); } return 1.f; }
-simulated function float GetMedicMagazineAmmoMultiplier() { if (NextGameModifierLink != None) { return NextGameModifierLink.GetMedicMagazineAmmoMultiplier(); } return 1.f; }
+simulated function float GetMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI, KFWeapon Other) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetMagazineAmmoMultiplier(KFPRI, Other); } return 1.f; }
+simulated function float GetCommandoMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI, KFWeapon Other) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetCommandoMagazineAmmoMultiplier(KFPRI, Other); } return 1.f; }
+simulated function float GetMedicMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI, KFWeapon Other) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetMedicMagazineAmmoMultiplier(KFPRI, Other); } return 1.f; }
 
-simulated function float GetMaxAmmoMultiplier() { if (NextGameModifierLink != None) { return NextGameModifierLink.GetMaxAmmoMultiplier(); } return 1.f; }
-simulated function float GetMedicMaxAmmoMultiplier() { if (NextGameModifierLink != None) { return NextGameModifierLink.GetMedicMaxAmmoMultiplier(); } return 1.f; }
+simulated function float GetMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetMaxAmmoMultiplier(KFPRI, AmmoType); } return 1.f; }
+simulated function float GetMedicMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetMedicMaxAmmoMultiplier(KFPRI, AmmoType); } return 1.f; }
 
-simulated function float GetWeaponSpreadRecoilMultiplier() { if (NextGameModifierLink != None) { return NextGameModifierLink.GetWeaponSpreadRecoilMultiplier(); } return 1.f; }
+simulated function float GetWeaponSpreadRecoilMultiplier(KFPlayerReplicationInfo KFPRI, WeaponFire Other) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetWeaponSpreadRecoilMultiplier(KFPRI, Other); } return 1.f; }
 
-simulated function float GetTraderCostMultiplier() { if (NextGameModifierLink != None) { return NextGameModifierLink.GetTraderCostMultiplier(); } return 1.f; }
-simulated function float GetTraderGrenadeCostMultiplier() { if (NextGameModifierLink != None) { return NextGameModifierLink.GetTraderGrenadeCostMultiplier(); } return 1.f; }
+simulated function float GetTraderCostMultiplier(KFPlayerReplicationInfo KFPRI, class<Pickup> Item) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetTraderCostMultiplier(KFPRI, Item); } return 1.f; }
+simulated function float GetTraderGrenadeCostMultiplier(KFPlayerReplicationInfo KFPRI, class<Pickup> Item) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetTraderGrenadeCostMultiplier(KFPRI, Item); } return 1.f; }
 
-simulated function float GetPlayerMovementSpeedMultiplier() { if (NextGameModifierLink != None) { return NextGameModifierLink.GetPlayerMovementSpeedMultiplier(); } return 1.f; }
-simulated function float GetPlayerMaxHealthMultiplier() { if (NextGameModifierLink != None) { return NextGameModifierLink.GetPlayerMaxHealthMultiplier(); } return 1.f; }
+simulated function float GetPlayerMovementSpeedMultiplier(KFPlayerReplicationInfo KFPRI, KFGameReplicationInfo KFGRI) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetPlayerMovementSpeedMultiplier(KFPRI, KFGRI); } return 1.f; }
+simulated function float GetPlayerMaxHealthMultiplier(Pawn Pawn) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetPlayerMaxHealthMultiplier(Pawn); } return 1.f; }
 
 //Make NetUpdateTime want to update now.
 simulated function ForceNetUpdate()

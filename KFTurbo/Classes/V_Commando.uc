@@ -85,7 +85,7 @@ static function ApplyAdjustedMagCapacityModifier(KFPlayerReplicationInfo KFPRI, 
 	{
 		if (Multiplier > 1.f && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
 		{
-			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetCommandoMagazineAmmoMultiplier();
+			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetCommandoMagazineAmmoMultiplier(KFPRI, Other);
 		}
 
 		Super.ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
@@ -94,7 +94,7 @@ static function ApplyAdjustedMagCapacityModifier(KFPlayerReplicationInfo KFPRI, 
 
 	if (Multiplier > 1.f && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
 	{
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetCommandoMagazineAmmoMultiplier();
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetCommandoMagazineAmmoMultiplier(KFPRI, Other);
 	}
 
 	if(SCARMK17AssaultRifle(Other) != None)

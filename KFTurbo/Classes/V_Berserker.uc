@@ -71,11 +71,11 @@ static function ApplyAdjustedFireRate(KFPlayerReplicationInfo KFPRI, Weapon Othe
 {
 	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
 	{
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetFireRateMultiplier();
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetFireRateMultiplier(KFPRI, Other);
 
 		if (KFMeleeGun(Other) != None)
 		{
-			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetBerserkerFireRateMultiplier();
+			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetBerserkerFireRateMultiplier(KFPRI, Other);
 		}
 	}
 }

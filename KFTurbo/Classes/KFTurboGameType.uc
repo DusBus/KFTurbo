@@ -3,6 +3,9 @@ class KFTurboGameType extends KFGameType;
 var protected bool bIsHighDifficulty;
 var protected bool bStatsAndAchievementsEnabled;
 var protected bool bIsTestGameType;
+ 
+//Whatever spawn rate is set as, make sure it gets multiplied by this.
+var float WaveSpawnRateModifier;
 
 //Event handler stored here so we have an easy way to find it.
 //TODO: Slowly split these up into relevant categories so that a listener doesn't bloat the list of active handlers just to get one event it wants.
@@ -10,7 +13,9 @@ var array< class<TurboEventHandler> > EventHandlerList;
 var array< class<TurboHealEventHandler> > HealEventHandlerList;
 var array< class<TurboWaveEventHandler> > WaveEventHandlerList;
 
+//Events that KFTurboServerMut binds to for bridging communication with ServerPerksMut.
 Delegate OnStatsAndAchievementsDisabled();
+Delegate LockPerkSelection(bool bLock);
 
 static function bool IsHighDifficulty()
 {
@@ -170,6 +175,11 @@ state MatchInProgress
 
 		Super.OpenShops();
     }
+
+	function float CalcNextSquadSpawnTime()
+	{
+		return Super.CalcNextSquadSpawnTime() / WaveSpawnRateModifier;
+	}
 	
 	function StartWaveBoss()
 	{
@@ -189,6 +199,7 @@ defaultproperties
     bIsHighDifficulty=false
     bStatsAndAchievementsEnabled=true
 	bIsTestGameType=false
+	WaveSpawnRateModifier=1.f
 
     MonsterClasses(0)=(MClassName="KFTurbo.P_Clot_STA",Mid="A")
     MonsterClasses(1)=(MClassName="KFTurbo.P_Crawler_STA",Mid="B")

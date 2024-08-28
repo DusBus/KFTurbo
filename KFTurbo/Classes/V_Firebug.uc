@@ -47,7 +47,7 @@ static function ApplyAdjustedFireRate(KFPlayerReplicationInfo KFPRI, Weapon Othe
 	{
 		if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
 		{
-			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetFirebugFireRateMultiplier();
+			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetFirebugFireRateMultiplier(KFPRI, Other);
 		}
 	}
 }

@@ -48,10 +48,10 @@ static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammu
 			if (class<MP7MAmmo>(AmmoType) != none || class<MP5MAmmo>(AmmoType) != none || class<M7A3MAmmo>(AmmoType) != none
        			|| class<KrissMAmmo>(AmmoType) != none || class<BlowerThrowerAmmo>(AmmoType) != none)
 			{
-				Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMedicMaxAmmoMultiplier();
+				Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMedicMaxAmmoMultiplier(KFPRI, AmmoType);
 			}
 
-			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMaxAmmoMultiplier();
+			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMaxAmmoMultiplier(KFPRI, AmmoType);
 		}
 
 		return;
@@ -67,10 +67,10 @@ static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammu
 		if (class<MP7MAmmo>(AmmoType) != none || class<MP5MAmmo>(AmmoType) != none || class<M7A3MAmmo>(AmmoType) != none
 			|| class<KrissMAmmo>(AmmoType) != none || class<BlowerThrowerAmmo>(AmmoType) != none)
 		{
-			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMedicMaxAmmoMultiplier();
+			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMedicMaxAmmoMultiplier(KFPRI, AmmoType);
 		}
 		
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMaxAmmoMultiplier();
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMaxAmmoMultiplier(KFPRI, AmmoType);
 	}
 }
 
@@ -129,7 +129,7 @@ static function ApplyAdjustedMagCapacityModifier(KFPlayerReplicationInfo KFPRI, 
 {
 	if (Multiplier > 1.f && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
 	{
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMedicMagazineAmmoMultiplier();
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMedicMagazineAmmoMultiplier(KFPRI, Other);
 	}
 
 	Super.ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);

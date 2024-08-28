@@ -10,6 +10,8 @@ var TurboCustomZedHandler CustomZedHandler;
 
 var config bool bDebugClientPerkRepLink;
 
+delegate SetPerkSwitchEnabled(bool bEnable);
+
 simulated function PostBeginPlay()
 {
 	Super.PostBeginPlay();

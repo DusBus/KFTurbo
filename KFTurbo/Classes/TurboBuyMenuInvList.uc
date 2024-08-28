@@ -158,18 +158,36 @@ function UpdateMyBuyables()
 
 	MyBuyable.ItemName 		= class'BuyableVest'.default.ItemName;
 	MyBuyable.ItemDescription 	= class'BuyableVest'.default.ItemDescription;
-	MyBuyable.ItemCategorie		= "";
-	MyBuyable.ItemImage		= class'BuyableVest'.default.ItemImage;
-	MyBuyable.ItemAmmoCurrent	= PlayerOwner().Pawn.ShieldStrength;
-	MyBuyable.ItemAmmoMax		= 100;
 	MyBuyable.ItemCost		= int(class'BuyableVest'.default.ItemCost * KFV.static.GetCostScaling(PRI, class'Vest'));
-	MyBuyable.ItemAmmoCost		= MyBuyable.ItemCost / 100;
-	MyBuyable.ItemFillAmmoCost	= int((100.0 - MyBuyable.ItemAmmoCurrent) * MyBuyable.ItemAmmoCost);
-	MyBuyable.bIsVest			= true;
-	MyBuyable.bMelee			= false;
-	MyBuyable.bSaleList		= false;
-	MyBuyable.bSellable		= false;
-	MyBuyable.ItemPerkIndex		= class'BuyableVest'.default.CorrespondingPerkIndex;
+
+	if (MyBuyable.ItemCost > 0.f)
+	{
+		MyBuyable.ItemCategorie		= "";
+		MyBuyable.ItemImage			= class'BuyableVest'.default.ItemImage;
+		MyBuyable.ItemAmmoCurrent	= PlayerOwner().Pawn.ShieldStrength;
+		MyBuyable.ItemAmmoMax		= 100;
+		MyBuyable.ItemAmmoCost		= MyBuyable.ItemCost / 100;
+		MyBuyable.ItemFillAmmoCost	= int((100.0 - MyBuyable.ItemAmmoCurrent) * MyBuyable.ItemAmmoCost);
+		MyBuyable.bIsVest			= true;
+		MyBuyable.bMelee			= false;
+		MyBuyable.bSaleList			= false;
+		MyBuyable.bSellable			= false;
+		MyBuyable.ItemPerkIndex		= class'BuyableVest'.default.CorrespondingPerkIndex;
+	}
+	else 
+	{
+		MyBuyable.ItemCategorie		= "";
+		MyBuyable.ItemImage			= class'BuyableVest'.default.ItemImage;
+		MyBuyable.ItemAmmoCurrent	= PlayerOwner().Pawn.ShieldStrength;
+		MyBuyable.ItemAmmoMax		= 0;
+		MyBuyable.ItemAmmoCost		= 0;
+		MyBuyable.ItemFillAmmoCost	= 0;
+		MyBuyable.bIsVest			= true;
+		MyBuyable.bMelee			= false;
+		MyBuyable.bSaleList			= false;
+		MyBuyable.bSellable			= false;
+		MyBuyable.ItemPerkIndex		= class'BuyableVest'.default.CorrespondingPerkIndex;		
+	}
 
 	if( MyBuyables.Length<=(7-SecTypes.Length) )
 	{

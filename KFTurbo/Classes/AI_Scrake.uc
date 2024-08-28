@@ -16,26 +16,22 @@ function Tick(float dt)
 
 function ForceRage(Pawn Pawn)
 {
-	local ZombieScrake ZSC;
-	local float RageHealth;
-	ZSC = ZombieScrake(Pawn);
+	local P_Scrake Scrake;
+	Scrake = P_Scrake(Pawn);
 
 	bForcedRage = true;
 
-	if (ZSC == none)
+	if (Scrake == none)
 	{
 		return;
 	}
 
-	//Don't do any complex state management to force the Scrake to charge - just set its health to rage threshold.
-	RageHealth = ZSC.HealthMax * 0.73;
-	if (ZSC.Health > RageHealth)
-	{
-		ZSC.Health = RageHealth;
-	}
-	
 	//Attempt a ranged attack to try the normal rage flow.
-	ZSC.RangedAttack(none);
+	if (Scrake.HealthRageThreshold < 1000.f)
+	{
+		Scrake.HealthRageThreshold = 1000.f;
+		Scrake.RangedAttack(None);
+	}
 }
 
 

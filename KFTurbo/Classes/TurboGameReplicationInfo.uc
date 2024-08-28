@@ -9,26 +9,26 @@ replication
 }
 
 //Reminder that if you override these functions, they must return the same value on the client and server.
-simulated function float GetFireRateMultiplier() { if (CustomTurboModifier != None) { return CustomTurboModifier.GetFireRateMultiplier(); } return 1.f; }
-simulated function float GetBerserkerFireRateMultiplier() { if (CustomTurboModifier != None) { return CustomTurboModifier.GetBerserkerFireRateMultiplier(); } return 1.f; }
-simulated function float GetFirebugFireRateMultiplier() { if (CustomTurboModifier != None) { return CustomTurboModifier.GetFirebugFireRateMultiplier(); } return 1.f; }
+simulated function float GetFireRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetFireRateMultiplier(KFPRI, Other); } return 1.f; }
+simulated function float GetBerserkerFireRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetBerserkerFireRateMultiplier(KFPRI, Other); } return 1.f; }
+simulated function float GetFirebugFireRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetFirebugFireRateMultiplier(KFPRI, Other); } return 1.f; }
 
-simulated function float GetReloadRateMultiplier() { if (CustomTurboModifier != None) { return CustomTurboModifier.GetReloadRateMultiplier(); } return 1.f; }
+simulated function float GetReloadRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetReloadRateMultiplier(KFPRI, Other); } return 1.f; }
 
-simulated function float GetMagazineAmmoMultiplier() { if (CustomTurboModifier != None) { return CustomTurboModifier.GetMagazineAmmoMultiplier(); } return 1.f; }
-simulated function float GetCommandoMagazineAmmoMultiplier() { if (CustomTurboModifier != None) { return CustomTurboModifier.GetCommandoMagazineAmmoMultiplier(); } return 1.f; }
-simulated function float GetMedicMagazineAmmoMultiplier() { if (CustomTurboModifier != None) { return CustomTurboModifier.GetMedicMagazineAmmoMultiplier(); } return 1.f; }
+simulated function float GetMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI, KFWeapon Other) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetMagazineAmmoMultiplier(KFPRI, Other); } return 1.f; }
+simulated function float GetCommandoMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI, KFWeapon Other) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetCommandoMagazineAmmoMultiplier(KFPRI, Other); } return 1.f; }
+simulated function float GetMedicMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI, KFWeapon Other) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetMedicMagazineAmmoMultiplier(KFPRI, Other); } return 1.f; }
 
-simulated function float GetMaxAmmoMultiplier() { if (CustomTurboModifier != None) { return CustomTurboModifier.GetMaxAmmoMultiplier(); } return 1.f; }
-simulated function float GetMedicMaxAmmoMultiplier() { if (CustomTurboModifier != None) { return CustomTurboModifier.GetMedicMaxAmmoMultiplier(); } return 1.f; }
+simulated function float GetMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetMaxAmmoMultiplier(KFPRI, AmmoType); } return 1.f; }
+simulated function float GetMedicMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetMedicMaxAmmoMultiplier(KFPRI, AmmoType); } return 1.f; }
 
-simulated function float GetWeaponSpreadRecoilMultiplier() { if (CustomTurboModifier != None) { return CustomTurboModifier.GetWeaponSpreadRecoilMultiplier(); } return 1.f; }
+simulated function float GetWeaponSpreadRecoilMultiplier(KFPlayerReplicationInfo KFPRI, WeaponFire Other) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetWeaponSpreadRecoilMultiplier(KFPRI, Other); } return 1.f; }
 
-simulated function float GetTraderCostMultiplier() { if (CustomTurboModifier != None) { return CustomTurboModifier.GetTraderCostMultiplier(); } return 1.f; }
-simulated function float GetTraderGrenadeCostMultiplier() { if (CustomTurboModifier != None) { return CustomTurboModifier.GetTraderGrenadeCostMultiplier(); } return 1.f; }
+simulated function float GetTraderCostMultiplier(KFPlayerReplicationInfo KFPRI, class<Pickup> Item) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetTraderCostMultiplier(KFPRI, Item); } return 1.f; }
+simulated function float GetTraderGrenadeCostMultiplier(KFPlayerReplicationInfo KFPRI, class<Pickup> Item) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetTraderGrenadeCostMultiplier(KFPRI, Item); } return 1.f; }
 
-simulated function float GetPlayerMovementSpeedMultiplier() { if (CustomTurboModifier != None) { return CustomTurboModifier.GetPlayerMovementSpeedMultiplier(); } return 1.f; }
-simulated function float GetPlayerMaxHealthMultiplier() { if (CustomTurboModifier != None) { return CustomTurboModifier.GetPlayerMaxHealthMultiplier(); } return 1.f; }
+simulated function float GetPlayerMovementSpeedMultiplier(KFPlayerReplicationInfo KFPRI, KFGameReplicationInfo KFGRI) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetPlayerMovementSpeedMultiplier(KFPRI, KFGRI); } return 1.f; }
+simulated function float GetPlayerMaxHealthMultiplier(Pawn Pawn) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetPlayerMaxHealthMultiplier(Pawn); } return 1.f; }
 
 //Helpers TurboGameModifierReplicationLinks can call to propagate updates for multiplier changes.
 function NotifyPlayerMovementSpeedChanged()
@@ -50,7 +50,7 @@ function NotifyPlayerMaxHealthChanged()
     {
         if (Controller.Pawn != None && Controller.Pawn.Health > 0 && PlayerController(Controller) != None)
         {
-            Controller.Pawn.HealthMax = Controller.Pawn.default.HealthMax * GetPlayerMaxHealthMultiplier();
+            Controller.Pawn.HealthMax = Controller.Pawn.default.HealthMax * GetPlayerMaxHealthMultiplier(Controller.Pawn);
             Controller.Pawn.Health = Min(Controller.Pawn.Health, Controller.Pawn.HealthMax);
         }
     }

@@ -89,6 +89,11 @@ function Timer()
 		SetTimer(0.5f, false);
 	}
 
+	if (KFTurboGameType(Level.Game) != None)
+	{
+		KFTurboGameType(Level.Game).LockPerkSelection(true);
+	}
+	
 	InitializeRandomizer();
 }
 

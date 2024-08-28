@@ -1,5 +1,7 @@
 class TurboWaveEventHandler extends Object;
 
+//Note that wave 0 is wave 1 for the UI.
+
 static function OnGameStarted(KFTurboGameType GameType, int StartingWave);
 
 static function OnWaveStarted(KFTurboGameType GameType, int StartedWave);
