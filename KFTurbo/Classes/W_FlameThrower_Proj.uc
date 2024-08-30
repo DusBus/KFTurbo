@@ -33,6 +33,7 @@ simulated function Timer()
 
 defaultproperties
 {
-     BaseTime=2
-     Damage=6.000000
+	MyDamageType=Class'W_FlameThrower_DT'
+	BaseTime=2
+	Damage=6.000000
 }
