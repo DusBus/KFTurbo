@@ -108,7 +108,9 @@ static function float GetHealPotency(KFPlayerReplicationInfo KFPRI)
 
 static function float GetMovementSpeedModifier(KFPlayerReplicationInfo KFPRI, KFGameReplicationInfo KFGRI)
 {
-	return Super.GetMovementSpeedModifier(KFPRI, KFGRI) * LerpStat(KFPRI, 1.f, 1.2f);
+	local float Multiplier;
+	ApplyAdjustedMovementSpeedModifier(KFPRI, KFGRI, Multiplier);
+	return Multiplier * LerpStat(KFPRI, 1.f, 1.2f);
 }
 
 static function int ReduceDamage(KFPlayerReplicationInfo KFPRI, KFPawn Injured, Pawn Instigator, int InDamage, class<DamageType> DmgType)
