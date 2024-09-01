@@ -27,6 +27,12 @@ defaultproperties
         bSyringe = false
     End Object
 
+    Begin Object Class=KFTurboRandomizerLoadout Name=FunnyLoadout2
+        Perk=class'V_Firebug'
+        WeaponList(0)=class'KFTurbo.W_Huskgun_Weap'
+        WeaponList(1)=class'KFTurbo.W_LAW_Weap'
+    End Object
+
     LoadoutList(0)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Funny.FunnyLoadout8'
     LoadoutList(1)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Funny.FunnyLoadout9'
     LoadoutList(2)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Funny.FunnyLoadout10'
@@ -34,11 +40,12 @@ defaultproperties
     LoadoutList(4)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Funny.FunnyLoadout13'
     LoadoutList(5)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_PatriarchFunny.FunnyLoadout0'
     LoadoutList(6)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_PatriarchFunny.FunnyLoadout1'
+    LoadoutList(7)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_PatriarchFunny.FunnyLoadout2'
     
-    LoadoutList(7)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Funny.FleshpoundLoadout16'
-    LoadoutList(8)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Funny.ScrakeLoadout24'
-    LoadoutList(9)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Funny.ScrakeLoadout26'
-    LoadoutList(10)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Funny.MiscLoadout32'
-    LoadoutList(11)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Funny.MiscLoadout34'
-    LoadoutList(12)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Funny.MiscLoadout37'
+    LoadoutList(8)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Funny.FleshpoundLoadout16'
+    LoadoutList(9)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Funny.ScrakeLoadout24'
+    LoadoutList(10)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Funny.ScrakeLoadout26'
+    LoadoutList(11)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Funny.MiscLoadout32'
+    LoadoutList(12)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Funny.MiscLoadout34'
+    LoadoutList(13)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Funny.MiscLoadout37'
 }

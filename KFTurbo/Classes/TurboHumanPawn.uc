@@ -17,31 +17,16 @@ var bool bDebugServerBuyWeapon;
 
 var float NextCloakCheckTime;
 
-simulated function PostNetReceive()
-{
-	Super.PostNetReceive();
-
-	if (NewHealthMax != 0 && NewHealthMax != HealthMax)
-	{
-		HealthMax = NewHealthMax;
-	}
-}
-
 simulated function Tick(float DeltaTime)
 {
 	Super.Tick(DeltaTime);
 
 	UpdateHealth();
 
-	if (Level.NetMode == NM_DedicatedServer)
+	if (Level.NetMode == NM_DedicatedServer || Level.GRI == None)
 	{
 		return;
 	}
-
-    if (Level.GRI == None)
-    {
-        return;
-    }
 
 	if (ShowStalkers())
 	{
@@ -244,6 +229,11 @@ simulated function UpdateHealth()
 	local int NewHealthHealingTo;
 	if (Role != ROLE_Authority)
 	{
+		if (NewHealthMax != 0 && NewHealthMax != HealthMax)
+		{
+			HealthMax = NewHealthMax;
+		} 
+
 		return;
 	}
 

@@ -109,6 +109,7 @@ static function float GetHealPotency(KFPlayerReplicationInfo KFPRI)
 static function float GetMovementSpeedModifier(KFPlayerReplicationInfo KFPRI, KFGameReplicationInfo KFGRI)
 {
 	local float Multiplier;
+	Multiplier = 1.f;
 	ApplyAdjustedMovementSpeedModifier(KFPRI, KFGRI, Multiplier);
 	return Multiplier * LerpStat(KFPRI, 1.f, 1.2f);
 }

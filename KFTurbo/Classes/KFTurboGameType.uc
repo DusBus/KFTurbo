@@ -139,6 +139,117 @@ function AddSpecialSquad()
 	class'TurboWaveEventHandler'.static.BroadcastNextSpawnSquadGenerated(Self, NextSpawnSquad);
 }
 
+function AddSpecialPatriarchSquad()
+{
+    if( FinalSquads.Length == 0 )
+    {
+        AddSpecialPatriarchSquadFromCollection();
+    }
+    else
+    {
+        AddSpecialPatriarchSquadFromGameType();
+    }
+
+    if (NextSpawnSquad.Length > 0)
+    {
+	    class'TurboWaveEventHandler'.static.BroadcastNextSpawnSquadGenerated(Self, NextSpawnSquad);
+    }
+}
+
+function AddBossBuddySquad()
+{
+    local int TotalZeds, NumSpawned, TotalZedsValue;
+    local int Index;
+    local int TempMaxMonsters;
+    local int TotalSpawned;
+    local int SpawnDiff;
+
+    if (NumPlayers == 1)
+    {
+        TotalZeds = 8;
+    }
+    else if (NumPlayers <= 3)
+    {
+        TotalZeds = 12;
+    }
+    else if (NumPlayers <= 5)
+    {
+        TotalZeds = 14;
+    }
+    else if (NumPlayers >= 6)
+    {
+        TotalZeds = 16;
+    }
+	
+	class'TurboWaveEventHandler'.static.BroadcastAddBossBuddySquad(Self, TotalZeds);
+
+    for (Index = 0; Index < 10; Index++)
+    {
+        if (TotalSpawned >= TotalZeds)
+        {
+            FinalSquadNum++;
+            return;
+        }
+
+        NumSpawned = 0;
+        NextSpawnSquad.Length = 0;
+        AddSpecialPatriarchSquad();
+
+        LastZVol = FindSpawningVolume();
+        if (LastZVol != None)
+		{
+			LastSpawningVolume = LastZVol;
+		}
+
+        if (LastZVol == None)
+        {
+            LastZVol = FindSpawningVolume();
+            if (LastZVol != None)
+			{
+                LastSpawningVolume = LastZVol;
+			}
+
+            if (LastZVol == None)
+            {
+                log("Error!!! Couldn't find a place for the Patriarch squad after 2 tries!!!");
+            }
+        }
+
+        if ((NextSpawnSquad.Length + TotalSpawned) > TotalZeds)
+        {
+            SpawnDiff = (NextSpawnSquad.Length + TotalSpawned) - TotalZeds;
+
+            if (NextSpawnSquad.Length > SpawnDiff)
+            {
+                NextSpawnSquad.Remove(0, SpawnDiff);
+            }
+            else
+            {
+                FinalSquadNum++;
+                return;
+            }
+
+            if (NextSpawnSquad.Length == 0)
+            {
+                FinalSquadNum++;
+                return;
+            }
+        }
+
+        TempMaxMonsters = 999;
+        if (LastZVol.SpawnInHere(NextSpawnSquad, , NumSpawned, TempMaxMonsters, 999, TotalZedsValue))
+        {
+            NumMonsters += NumSpawned;
+            WaveMonsters += NumSpawned;
+            TotalSpawned += NumSpawned;
+
+            NextSpawnSquad.Remove(0, NumSpawned);
+        }
+    }
+
+    FinalSquadNum++;
+}
+
 function SetupWave()
 {
 	Super.SetupWave();

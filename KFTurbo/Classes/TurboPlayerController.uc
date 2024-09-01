@@ -288,6 +288,8 @@ function ServerInitializeSteamStatInt(byte Index, int Value)
 		return;
 	}
 
+	Value = Max(Value, 0);
+
 	switch (Index)
 	{
 	case 0:

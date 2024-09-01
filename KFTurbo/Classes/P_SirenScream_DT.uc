@@ -1,0 +1,1 @@
+class P_SirenScream_DT extends SirenScreamDamage;

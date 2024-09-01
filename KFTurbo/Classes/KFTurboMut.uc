@@ -118,7 +118,13 @@ function ModifyPlayer(Pawn Other)
 {
 	Super.ModifyPlayer(Other);
 
+	if (TurboHumanPawn(Other) == None || !Other.IsHumanControlled())
+	{
+		return;
+	}
+
 	AddChatWatcher(Other);
+	ApplyHealthModification(Other);
 }
 
 function AddChatWatcher(Pawn Other)
@@ -138,6 +144,23 @@ function AddChatWatcher(Pawn Other)
 	}
 
 	Other.AddInventory(ChatWatcherInv);
+}
+
+function ApplyHealthModification(Pawn Pawn)
+{
+	local float HealthMultiplier;
+	if (TurboGameReplicationInfo(Level.GRI) == None)
+	{
+		return;
+	}
+	
+	HealthMultiplier = TurboGameReplicationInfo(Level.GRI).GetPlayerMaxHealthMultiplier(Pawn);
+
+	Pawn.HealthMax *= HealthMultiplier;
+	Pawn.Health *= HealthMultiplier;
+	
+	Pawn.HealthMax = FMax(Pawn.HealthMax, 1.f);
+	Pawn.Health = FMax(Pawn.Health, 1.f);
 }
 
 simulated function String GetHumanReadableName()

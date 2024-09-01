@@ -231,6 +231,8 @@ ignores AnimEnd, Trigger, Bump, HitWall, HeadVolumeChange, PhysicsVolumeChange, 
 
 defaultproperties
 {
+    ScreamDamageType=Class'P_SirenScream_DT'
+
     Begin Object Class=AfflictionBurn Name=BurnAffliction
         BurnDurationModifier=1.f
     End Object

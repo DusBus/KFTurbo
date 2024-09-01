@@ -9,6 +9,8 @@ static function OnWaveStarted(KFTurboGameType GameType, int StartedWave);
 static function OnWaveEnded(KFTurboGameType GameType, int EndedWave);
 //Allows for mutation of the generated next spawn squad.
 static function OnNextSpawnSquadGenerated(KFTurboGameType GameType, out array < class<KFMonster> > NextSpawnSquad);
+//Allows for mutation of the generated next spawn squad.
+static function OnAddBossBuddySquad(KFTurboGameType GameType, out int TotalSquadSize);
 
 //Event registration.
 static final function RegisterWaveHandler(Actor Context, class<TurboWaveEventHandler> WaveEventHandlerClass)
@@ -95,5 +97,20 @@ static final function BroadcastNextSpawnSquadGenerated(KFTurboGameType GameType,
     for (Index = GameType.WaveEventHandlerList.Length - 1; Index >= 0; Index--)
     {
         GameType.WaveEventHandlerList[Index].static.OnNextSpawnSquadGenerated(GameType, NextSpawnSquad);
+    }
+}
+
+static final function BroadcastAddBossBuddySquad(KFTurboGameType GameType, out int TotalSquadSize)
+{
+    local int Index;
+
+    if (GameType == None)
+    {
+        return;
+    }
+
+    for (Index = GameType.WaveEventHandlerList.Length - 1; Index >= 0; Index--)
+    {
+        GameType.WaveEventHandlerList[Index].static.OnAddBossBuddySquad(GameType, TotalSquadSize);
     }
 }

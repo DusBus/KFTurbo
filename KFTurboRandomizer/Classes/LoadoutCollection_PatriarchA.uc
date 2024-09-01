@@ -22,19 +22,19 @@ defaultproperties
     Begin Object Class=KFTurboRandomizerLoadout Name=PatriarchALoadout1
         Perk=class'V_FieldMedic'
         WeaponList(0)=class'KFTurbo.W_MP7M_Weap'
-        WeaponList(1)=class'KFTurbo.W_MP5M_Weap'
+        WeaponList(1)=class'KFMod.Machete'
     End Object
     
     Begin Object Class=KFTurboRandomizerLoadout Name=PatriarchALoadout2
         Perk=class'V_Berserker'
-        WeaponList(0)=class'KFTurbo.W_Chainsaw_Weap'
+        WeaponList(0)=class'KFMod.Machete'
+        WeaponList(1)=class'KFTurbo.W_FlareRevolver_Weap'
     End Object
 
     Begin Object Class=KFTurboRandomizerLoadout Name=PatriarchALoadout3
         Perk=class'V_FieldMedic'
         WeaponList(0)=class'KFTurbo.W_MP7M_Weap'
-        WeaponList(1)=class'KFTurbo.W_MAC10_Weap'
-        WeaponList(2)=class'KFTurbo.W_Katana_Weap'
+        WeaponList(1)=class'KFTurbo.W_Katana_Weap'
     End Object
 
     Begin Object Class=KFTurboRandomizerLoadout Name=PatriarchALoadout4

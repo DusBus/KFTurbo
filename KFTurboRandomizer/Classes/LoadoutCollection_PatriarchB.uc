@@ -17,16 +17,6 @@ defaultproperties
     Begin Object Class=LoadoutCollection_Misc Name=ForceImportMiscLoadout
     End Object
 
-    Begin Object Class=LoadoutCollection_Funny Name=ForceImportFunnyLoadout
-    End Object
-
-    Begin Object Class=KFTurboRandomizerLoadout Name=PatriarchBLoadout0
-        Perk=class'V_Firebug'
-        WeaponList(0)=class'KFTurbo.W_Huskgun_Weap'
-        WeaponList(1)=class'KFTurbo.W_LAW_Weap'
-    End Object
-
-
     LoadoutList(0)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Scrake.ScrakeLoadout1'
     LoadoutList(1)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Scrake.ScrakeLoadout2'
     LoadoutList(2)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Scrake.ScrakeLoadout3'
@@ -48,5 +38,4 @@ defaultproperties
     LoadoutList(18)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Fleshpound.FleshpoundLoadout22'
     LoadoutList(19)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Misc.MiscLoadout25'
     LoadoutList(20)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Misc.MiscLoadout31'
-    LoadoutList(21)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_PatriarchB.PatriarchBLoadout0'
 }

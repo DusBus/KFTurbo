@@ -144,7 +144,7 @@ static function bool CanBeGrabbed(KFPlayerReplicationInfo KFPRI, KFMonster Other
 
 static function int ZedTimeExtensions(KFPlayerReplicationInfo KFPRI)
 {
-	return Min(KFPRI.ClientVeteranSkillLevel, 4);
+	return LerpStat(KFPRI, 1, 4);
 }
 
 static function class<Grenade> GetNadeType(KFPlayerReplicationInfo KFPRI)
@@ -177,7 +177,7 @@ static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup
 
 static function AddDefaultInventory(KFPlayerReplicationInfo KFPRI, Pawn P)
 {
-		KFHumanPawn(P).CreateInventoryVeterancy(string(class'Machete'), default.StartingWeaponSellPriceLevel6);
+	KFHumanPawn(P).CreateInventoryVeterancy(string(class'Machete'), default.StartingWeaponSellPriceLevel6);
 }
 
 static function string GetCustomLevelInfo(byte Level)

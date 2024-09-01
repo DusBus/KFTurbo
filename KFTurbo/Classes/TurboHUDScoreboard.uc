@@ -183,7 +183,7 @@ simulated function DrawPlayerEntry(Canvas Canvas, TurboPlayerReplicationInfo Tur
 	
 	Canvas.DrawColor = Canvas.MakeColor(255, 255, 255, 32);
 	Canvas.SetPos(TempX + 1.f, ((PositionY + SizeY) - 1.f) - (SizeY * 0.04f));
-	Canvas.DrawTileScaled(ScoreboardBackplate, ((ScoreboardSize.X * Canvas.ClipX / float(ScoreboardBackplate.USize)) * FClamp((TurboPRI.PlayerHealth / 100.f), 0.f, 1.f)) * (((ScoreboardSize.X * Canvas.ClipX) - 2.f) / (ScoreboardSize.X * Canvas.ClipX)), (SizeY / float(ScoreboardBackplate.VSize)) * 0.04f);
+	Canvas.DrawTileScaled(ScoreboardBackplate, ((ScoreboardSize.X * Canvas.ClipX / float(ScoreboardBackplate.USize)) * FClamp((TurboPRI.PlayerHealth / TurboPRI.HealthMax), 0.f, 1.f)) * (((ScoreboardSize.X * Canvas.ClipX) - 2.f) / (ScoreboardSize.X * Canvas.ClipX)), (SizeY / float(ScoreboardBackplate.VSize)) * 0.04f);
 
 	if (bIsLocalPlayer)
 	{
