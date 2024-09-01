@@ -154,6 +154,8 @@ function ApplyHealthModification(Pawn Pawn)
 		return;
 	}
 	
+    Pawn.AirControl = Pawn.default.AirControl * FMax(1.f, TurboGameReplicationInfo(Level.GRI).GetPlayerMovementSpeedMultiplier(KFPlayerReplicationInfo(Pawn.PlayerReplicationInfo), TurboGameReplicationInfo(Level.GRI)));
+	
 	HealthMultiplier = TurboGameReplicationInfo(Level.GRI).GetPlayerMaxHealthMultiplier(Pawn);
 
 	Pawn.HealthMax *= HealthMultiplier;
