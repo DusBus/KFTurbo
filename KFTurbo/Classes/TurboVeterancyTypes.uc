@@ -263,7 +263,7 @@ static function Color GetPerkColor(byte Level)
 	case 1:
 		return class'Canvas'.static.MakeColor(25,208,0,255); //Green
 	case 2:
-		return class'Canvas'.static.MakeColor(10,120,255,255); //Blue
+		return class'Canvas'.static.MakeColor(11,120,255,255); //Blue
 	case 3:
 		return class'Canvas'.static.MakeColor(255,0,255,255); //Pink
 	case 4:
@@ -271,7 +271,7 @@ static function Color GetPerkColor(byte Level)
 	case 5:
 		return class'Canvas'.static.MakeColor(255,110,0,255); //Orange
 	case 6:
-		return class'Canvas'.static.MakeColor(255,190,15,255); //Gold
+		return class'Canvas'.static.MakeColor(255,190,11,255); //Gold
 	case 7:
 	case 8:
 		return class'Canvas'.static.MakeColor(255,235,225,255); //Platinum

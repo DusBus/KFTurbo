@@ -87,6 +87,11 @@ static final simulated function InitializePawnHelper(KFMonster Monster, out Affl
 	}
 
 	SpawnClientExtendedZCollision(Monster);
+
+	if (Monster.Level.NetMode != NM_DedicatedServer && TurboGameReplicationInfo(Monster.Level.GRI) != None)
+	{
+		TurboGameReplicationInfo(Monster.Level.GRI).ModifyMonster(Monster);
+	}
 }
 
 //NOTE: No special destroy code is needed. EZCollision is already destroyed on any zed that has it (not role-dependent).

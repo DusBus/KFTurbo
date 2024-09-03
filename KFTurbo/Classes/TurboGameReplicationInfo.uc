@@ -1,11 +1,12 @@
 class TurboGameReplicationInfo extends KFGameReplicationInfo;
 
 var TurboGameModifierReplicationLink CustomTurboModifier;
+var TurboClientModifierReplicationLink CustomTurboClientModifier;
 
 replication
 {
     reliable if(bNetInitial && Role == ROLE_Authority)
-        CustomTurboModifier;
+        CustomTurboModifier, CustomTurboClientModifier;
 }
 
 //Reminder that if you override these functions, they must return the same value on the client and server.
@@ -56,3 +57,6 @@ function NotifyPlayerMaxHealthChanged()
         }
     }
 }
+
+//Client-side modification.
+simulated function ModifyMonster(KFMonster Monster) { if (CustomTurboClientModifier != None) { CustomTurboClientModifier.ModifyMonster(Monster); } }
