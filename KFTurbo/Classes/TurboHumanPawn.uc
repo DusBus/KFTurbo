@@ -100,7 +100,7 @@ function TakeFireDamage(int Damage, pawn BInstigator)
 {
     if( Damage > 0 )
     {
-        TakeDamage(Damage, BInstigator, Location, vect(0,0,0), class'TurboHumanBurned_DT');
+        TakeDamage(float(Damage) * Lerp(ShieldStrength / 100.f, 1.f, 0.25f, true), BInstigator, Location, vect(0,0,0), class'TurboHumanBurned_DT');
 
         if (BurnDown > 0)
         {
@@ -116,6 +116,51 @@ function TakeFireDamage(int Damage, pawn BInstigator)
         BurnDown = 0;
         bBurnified = false;
     }
+}
+
+function TakeFallingDamage()
+{
+    local float Shake, EffectiveSpeed;
+    local float UsedMaxFallSpeed;
+
+    UsedMaxFallSpeed = MaxFallSpeed;
+
+    if (Instigator != None && Instigator.PhysicsVolume.Gravity.Z > class'PhysicsVolume'.default.Gravity.Z)
+    {
+        UsedMaxFallSpeed *= 2.0;
+    }
+
+    if (Velocity.Z < -0.5 * UsedMaxFallSpeed)
+    {
+        if (Role == ROLE_Authority)
+        {
+            MakeNoise(1.0);
+
+            if (Velocity.Z < -1 * UsedMaxFallSpeed)
+            {
+                EffectiveSpeed = Velocity.Z;
+
+                if (TouchingWaterVolume())
+				{
+                    EffectiveSpeed = FMin(0, EffectiveSpeed + 100);
+				}
+
+                if (EffectiveSpeed < -1.f * UsedMaxFallSpeed)
+				{
+                    TakeDamage(-100.f * (EffectiveSpeed + UsedMaxFallSpeed) / UsedMaxFallSpeed, None, Location, vect(0,0,0), class'TurboHumanFall_DT');
+				}
+            }
+        }
+        if (Controller != None)
+        {
+            Shake = FMin(1, -1 * Velocity.Z/MaxFallSpeed);
+            Controller.DamageShake(Shake);
+        }
+    }
+    else if (Velocity.Z < -1.4 * JumpZ)
+	{
+        MakeNoise(0.5);
+	}
 }
 
 simulated function bool ShowStalkers()
