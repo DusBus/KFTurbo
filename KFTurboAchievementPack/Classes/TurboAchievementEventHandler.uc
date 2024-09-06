@@ -1,3 +1,6 @@
+//Killing Floor Turbo TurboAchievementEventHandler
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class TurboAchievementEventHandler extends KFTurbo.TurboEventHandler;
 
 static function SAReplicationInfo ResolveSARI(Pawn Instigator)

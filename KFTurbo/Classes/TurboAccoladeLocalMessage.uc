@@ -1,4 +1,7 @@
+//Killing Floor Turbo TurboAccoladeLocalMessage
 //Player perk level/achievement notification base class.
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class TurboAccoladeLocalMessage extends LocalMessage;
 
 //If true, the earner of the accolade will also display this local message.

@@ -119,7 +119,6 @@ exec function Trade()
 	KFPlayerController(ViewportOwner.Actor).ShowBuyMenu("WeaponLocker", KFHumanPawn(ViewportOwner.Actor.Pawn).MaxCarryWeight);
 }
 
-
 exec function SetMarkColor(TurboPlayerMarkReplicationInfo.EMarkColor Color)
 {
 	MarkColor = Color;

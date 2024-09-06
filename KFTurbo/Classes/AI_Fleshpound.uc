@@ -1,3 +1,6 @@
+//Killing Floor Turbo AI_Fleshpound
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class AI_Fleshpound extends FleshpoundZombieController;
 
 var bool bEnableForceRage;

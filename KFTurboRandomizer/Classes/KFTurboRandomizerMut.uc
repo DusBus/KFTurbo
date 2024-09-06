@@ -1,3 +1,7 @@
+//Killing Floor Turbo KFTurboRandomizerMut
+//Randomizer mutator. Handles all logic for the randomizer.
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class KFTurboRandomizerMut extends Mutator
 		config(KFTurboRandomizer);
 

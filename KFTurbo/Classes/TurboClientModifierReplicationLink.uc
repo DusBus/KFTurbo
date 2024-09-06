@@ -1,4 +1,7 @@
+//Killing Floor Turbo TurboClientModifierReplicationLink
 //Linked list of client modifications. Forwards mutator-like events but for things the client cares about.
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class TurboClientModifierReplicationLink extends ReplicationInfo
     abstract;
 

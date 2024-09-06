@@ -1,5 +1,6 @@
 class TurboHUDScoreboard extends SRScoreBoard
-	dependson(TurboHUDOverlay);
+	dependson(TurboHUDOverlay)
+    hidecategories(Advanced,Display,Events,Object,Sound);
 
 var(Layout) TurboHUDOverlay.Vector2D ScoreboardHeaderSize;
 var(Layout) TurboHUDOverlay.Vector2D ScoreboardSize;

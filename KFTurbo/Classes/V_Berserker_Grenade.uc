@@ -224,8 +224,8 @@ defaultproperties
 	bUseCylinderCollision = false
 	bFixedRotationDir = true
 
-	CollisionRadius=5
-    CollisionHeight=5
+	CollisionRadius=3
+    CollisionHeight=3
     RotationRate=(Roll=0)
 	PrePivot=(Z=6);
 }

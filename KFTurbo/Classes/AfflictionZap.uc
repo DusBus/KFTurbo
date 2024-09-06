@@ -1,3 +1,6 @@
+//Killing Floor Turbo AfflictionZap
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class AfflictionZap extends AfflictionBase;
 
 //We cache TotalZap in pretick and then use it in tick.

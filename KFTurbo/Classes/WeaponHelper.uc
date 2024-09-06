@@ -1,7 +1,7 @@
-//========
-//Anti redundancy class.
-//Handles logic for weapons.
-//========
+//Killing Floor Turbo WeaponHelper
+//Anti redundancy class. Handles logic for weapons.
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class WeaponHelper extends Object;
 
 enum ETraceResult
@@ -61,9 +61,25 @@ static final function PenetratingWeaponTrace(Vector TraceStart, KFWeapon Weapon,
 	local Vector TraceEnd, MomentumVector;
 	local Vector HitLocation;
 	local int HitCount;
-	HitCount = 0;
-	PenetrationMax++;
+	local float WeaponPenetrationMultiplier;
 
+	HitCount = 0;
+	WeaponPenetrationMultiplier = 1.f;
+
+	if (Weapon.Instigator != None && KFPlayerReplicationInfo(Weapon.Instigator.PlayerReplicationInfo) != None && class<TurboVeterancyTypes>(KFPlayerReplicationInfo(Weapon.Instigator.PlayerReplicationInfo).ClientVeteranSkill) != None)
+	{
+		WeaponPenetrationMultiplier = class<TurboVeterancyTypes>(KFPlayerReplicationInfo(Weapon.Instigator.PlayerReplicationInfo).ClientVeteranSkill).static.GetWeaponPenetrationMultiplier(KFPlayerReplicationInfo(Weapon.Instigator.PlayerReplicationInfo), Fire);
+
+		if (PenetrationMultiplier < 1.f && WeaponPenetrationMultiplier > 1.f)
+		{
+			PenetrationMultiplier = PenetrationMultiplier ** (1.f / WeaponPenetrationMultiplier);
+		}
+
+		log("PEN BEFORE:"@PenetrationMax@"PEN AFTER:"@int(float(PenetrationMax) * WeaponPenetrationMultiplier));
+		PenetrationMax = float(PenetrationMax) * WeaponPenetrationMultiplier;
+	} 
+
+	PenetrationMax++;
 	GetTraceInfo(Weapon, Fire, TraceStart, TraceEnd, MomentumVector);
 
 	while(HitCount < PenetrationMax)
@@ -109,7 +125,7 @@ static final function PenetratingWeaponTrace(Vector TraceStart, KFWeapon Weapon,
 	EnableCollision(IgnoreActors);
 }
 
-static final function ETraceResult WeaponTrace(Vector TraceStart, Vector TraceEnd, Vector MomentumVector, KFWeapon Weapon, KFFire Fire, out Actor HitActor, out Vector HitLocation, optional float DamageReduction)
+static final function ETraceResult WeaponTrace(Vector TraceStart, Vector TraceEnd, Vector MomentumVector, KFWeapon Weapon, KFFire Fire, out Actor HitActor, out Vector HitLocation, float DamageMultiplier)
 {
 	local KFPawn HitPawn;
 	local Vector HitNormal;
@@ -138,12 +154,12 @@ static final function ETraceResult WeaponTrace(Vector TraceStart, Vector TraceEn
 	{
 		if(!HitPawn.bDeleteMe)
 		{
-			HitPawn.ProcessLocationalDamage(int(Fire.DamageMax * DamageReduction), Fire.Instigator, HitLocation, MomentumVector, Fire.DamageType, HitPoints);
+			HitPawn.ProcessLocationalDamage(int(Fire.DamageMax * DamageMultiplier), Fire.Instigator, HitLocation, MomentumVector, Fire.DamageType, HitPoints);
 		}
 	}
     else
     {
-		HitActor.TakeDamage(int(Fire.DamageMax * DamageReduction), Fire.Instigator, HitLocation, MomentumVector, Fire.DamageType);
+		HitActor.TakeDamage(int(Fire.DamageMax * DamageMultiplier), Fire.Instigator, HitLocation, MomentumVector, Fire.DamageType);
 	}
 
 	return TR_Hit;

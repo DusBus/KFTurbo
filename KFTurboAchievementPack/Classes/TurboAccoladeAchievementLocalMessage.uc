@@ -1,4 +1,8 @@
-class TurboAccoladeAchievementLocalMessage extends TurboAccoladeLocalMessage;
+//Killing Floor Turbo TurboAccoladeAchievementLocalMessage
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
+class TurboAccoladeAchievementLocalMessage extends TurboAccoladeLocalMessage
+    DependsOn(TurboAchievementPackImpl);
 
 static function string GetString(optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject)
 {

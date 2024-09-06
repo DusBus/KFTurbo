@@ -1,3 +1,6 @@
+//Killing Floor Turbo TurboHumanPawn
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class TurboHumanPawn extends SRHumanPawn;
 
 var int HealthHealingTo;
@@ -7,10 +10,8 @@ var int NewHealthMax;
 
 replication
 {
-    reliable if(Role == ROLE_Authority)
-        HealthHealingTo;
-	reliable if ( bNetDirty && Role == ROLE_Authority )
-		NewHealthMax;
+	reliable if (bNetDirty && Role == ROLE_Authority)
+		NewHealthMax, HealthHealingTo;
 }
 
 var bool bDebugServerBuyWeapon;
@@ -289,7 +290,10 @@ simulated function UpdateHealth()
 	
 	if (HealthToGive <= 0 || Health >= int(HealthMax))
 	{
-		HealthHealingTo = -1;
+		if (HealthHealingTo != -1)
+		{
+			HealthHealingTo = -1;
+		}
 		return;
 	}
 
@@ -298,7 +302,10 @@ simulated function UpdateHealth()
 
 	if (Health == NewHealthHealingTo)
 	{
-		HealthHealingTo = -1;
+		if (HealthHealingTo != -1)
+		{
+			HealthHealingTo = -1;
+		}
 	}
 	else if (NewHealthHealingTo != HealthHealingTo)
 	{
@@ -606,7 +613,7 @@ exec function TossCash( int Amount )
 defaultproperties
 {
 	bDebugServerBuyWeapon=false
-	HealthHealingTo = 0
+	HealthHealingTo=0
 
 	RequiredEquipment(2)="KFTurbo.W_Frag_Weap"
     RequiredEquipment(3)="KFTurbo.W_Syringe_Weap"

@@ -43,7 +43,7 @@ static function int GetPerkProgressInt( ClientPerkRepLink StatOther, out int Fin
 
 static function int AddCarryMaxWeight(KFPlayerReplicationInfo KFPRI)
 {
-	return 9;
+	return Super.AddCarryMaxWeight(KFPRI) + 9;
 }
 
 static function float GetWeldSpeedModifier(KFPlayerReplicationInfo KFPRI)
@@ -119,11 +119,10 @@ static function int AddDamage(KFPlayerReplicationInfo KFPRI, KFMonster Injured, 
 
 static function float GetShotgunPenetrationDamageMulti(KFPlayerReplicationInfo KFPRI, float DefaultPenDamageReduction)
 {
-	local float PenDamageInverse;
-
-	PenDamageInverse = 1.0 - FMax(0, DefaultPenDamageReduction);
-
-	return DefaultPenDamageReduction + ((PenDamageInverse / 5.5555) * float(Min(6, 5)));
+	local float ReductionAmount;
+	ReductionAmount = LerpStat(KFPRI, 1.f, 6.f);
+	ReductionAmount *= GetWeaponPenetrationMultiplier(KFPRI, None);
+	return DefaultPenDamageReduction ** (1.f / ((1.75f * ReductionAmount) - 0.775f));
 }
 
 static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)

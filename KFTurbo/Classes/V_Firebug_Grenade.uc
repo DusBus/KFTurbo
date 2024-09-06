@@ -79,7 +79,7 @@ defaultproperties
 	bUseCylinderCollision = false
 	bFixedRotationDir = true
 
-	CollisionRadius=6
-    CollisionHeight=6
+	CollisionRadius=3
+    CollisionHeight=3
     RotationRate=(Roll=0)
 }

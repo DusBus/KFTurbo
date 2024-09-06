@@ -1,5 +1,8 @@
+//Killing Floor Turbo TurboBuyMenuSettings
 //This class makes it easier for anyone extending KFTurbo to add weapon variants and have those variants show up in the trader just like ones built into KFTurbo.
 //Can be set on a subclass of TurboBuyMenuSaleList via TurboBuyMenuSaleList::TurboBuyMenuSettingsClassString.
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class TurboBuyMenuSettings extends Object;
 
 var localized String HintDefault;

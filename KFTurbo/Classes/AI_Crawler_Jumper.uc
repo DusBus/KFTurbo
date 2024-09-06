@@ -1,3 +1,6 @@
+//Killing Floor Turbo AI_Crawler_Jumper
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class AI_Crawler_Jumper extends CrawlerController;
 
 function bool IsInPounceDist(actor PTarget)

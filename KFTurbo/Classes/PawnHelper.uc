@@ -1,7 +1,7 @@
-//========
-//Anti redundancy class.
-//Handles logic for zeds.
-//========
+//Killing Floor Turbo PawnHelper
+//Anti redundancy class. Handles logic for zeds.
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class PawnHelper extends Object;
 
 //Master container for all afflictions.

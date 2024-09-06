@@ -1,4 +1,5 @@
-class TurboHUDWaveInfo extends TurboHUDOverlay;
+class TurboHUDWaveInfo extends TurboHUDOverlay
+    hidecategories(Advanced,Collision,Display,Events,Force,Karma,LightColor,Lighting,Movement,Object,Sound);
 
 var KFGameReplicationInfo KFGRI;
 

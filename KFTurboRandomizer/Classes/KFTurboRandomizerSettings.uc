@@ -1,3 +1,7 @@
+//Killing Floor Turbo KFTurboRandomizerSettings
+//Configures the randomizer. Allows for modular implementations for the randomizer.
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class KFTurboRandomizerSettings extends Object;
 
 var editinline KFTurboRandomizerLoadoutCollection FleshpoundLoadout; //33% of lobby will have a loadout from this list (minimum of 1).

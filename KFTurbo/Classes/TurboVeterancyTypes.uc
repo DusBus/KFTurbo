@@ -1,3 +1,6 @@
+//Killing Floor Turbo TurboVeterancyTypes
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class TurboVeterancyTypes extends SRVeterancyTypes
 	abstract;
 
@@ -50,6 +53,22 @@ static function float GetMovementSpeedModifier(KFPlayerReplicationInfo KFPRI, KF
 	local float Multiplier;
 	Multiplier = 1.f;
 	ApplyAdjustedMovementSpeedModifier(KFPRI, KFGRI, Multiplier);
+	return Multiplier;
+}
+
+static function ApplyAdjustedHeadshotDamageMultiplier(KFPlayerReplicationInfo KFPRI, KFPawn Pawn, class<DamageType> DamageType, out float Multiplier)
+{
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetHeadshotDamageMultiplier(KFPRI, Pawn, DamageType);
+	}
+}
+
+static function float GetHeadShotDamMulti(KFPlayerReplicationInfo KFPRI, KFPawn Pawn, class<DamageType> DamageType)
+{
+	local float Multiplier;
+	Multiplier = 1.f;
+	ApplyAdjustedHeadshotDamageMultiplier(KFPRI, Pawn, DamageType, Multiplier);
 	return Multiplier;
 }
 
@@ -183,6 +202,37 @@ static function ApplyAmmoCostScalingModifier(KFPlayerReplicationInfo KFPRI, clas
 			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetTraderGrenadeCostMultiplier(KFPRI, Item);
 		}
 	}
+}
+
+static function float GetShotgunPenetrationDamageMulti(KFPlayerReplicationInfo KFPRI, float DefaultPenDamageReduction)
+{
+	return DefaultPenDamageReduction ** (1.f / ((1.75f * GetWeaponPenetrationMultiplier(KFPRI, None)) - 0.775f));
+}
+
+//Other can be none when called from GetShotgunPenetrationDamageMulti.
+static function float GetWeaponPenetrationMultiplier(KFPlayerReplicationInfo KFPRI, WeaponFire Other)
+{
+	local float Multiplier;
+	Multiplier = 1.f;
+
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetWeaponPenetrationMultiplier(KFPRI, Other);
+	}
+
+	return Multiplier;
+}
+
+static function int AddCarryMaxWeight(KFPlayerReplicationInfo KFPRI)
+{
+	local int CarryWeightBonus;
+	CarryWeightBonus = 0;
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		TurboGameReplicationInfo(KFPRI.Level.GRI).GetPlayerCarryWeightModifier(KFPRI, CarryWeightBonus);
+	}
+
+	return CarryWeightBonus;;	
 }
 
 static final function int GetScaledRequirement(byte CurLevel, int InValue)

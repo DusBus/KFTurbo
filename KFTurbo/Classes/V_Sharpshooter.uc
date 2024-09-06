@@ -49,13 +49,13 @@ static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammu
 	Super.ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 }
 
-static function float GetHeadShotDamMulti(KFPlayerReplicationInfo KFPRI, KFPawn P, class<DamageType> DmgType)
+static function float GetHeadShotDamMulti(KFPlayerReplicationInfo KFPRI, KFPawn Pawn, class<DamageType> DamageType)
 {
 	local float Multiplier;
 
-	Multiplier = 1.f;
+	Multiplier = Super(TurboVeterancyTypes).GetHeadShotDamMulti(KFPRI, Pawn, DamageType);
 
-	switch (DmgType)
+	switch (DamageType)
 	{
 	case class'DamTypeCrossbow' :
 	case class'DamTypeCrossbowHeadShot' :

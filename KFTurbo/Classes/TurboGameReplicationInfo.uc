@@ -1,3 +1,7 @@
+//Killing Floor Turbo TurboGameReplicationInfo
+//KFTurbo's GRI. Hooks up CustomTurboModifier and CustomTurboClientModifier systems.
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class TurboGameReplicationInfo extends KFGameReplicationInfo;
 
 var TurboGameModifierReplicationLink CustomTurboModifier;
@@ -9,7 +13,7 @@ replication
         CustomTurboModifier, CustomTurboClientModifier;
 }
 
-//Reminder that if you override these functions, they must return the same value on the client and server.
+//Reminder that if you override these simulated functions, they must return the same value on the client and server.
 simulated function float GetFireRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetFireRateMultiplier(KFPRI, Other); } return 1.f; }
 simulated function float GetBerserkerFireRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetBerserkerFireRateMultiplier(KFPRI, Other); } return 1.f; }
 simulated function float GetFirebugFireRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetFirebugFireRateMultiplier(KFPRI, Other); } return 1.f; }
@@ -23,13 +27,18 @@ simulated function float GetMedicMagazineAmmoMultiplier(KFPlayerReplicationInfo 
 simulated function float GetMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetMaxAmmoMultiplier(KFPRI, AmmoType); } return 1.f; }
 simulated function float GetMedicMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetMedicMaxAmmoMultiplier(KFPRI, AmmoType); } return 1.f; }
 
+simulated function float GetWeaponPenetrationMultiplier(KFPlayerReplicationInfo KFPRI, WeaponFire Other) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetWeaponPenetrationMultiplier(KFPRI, Other); } return 1.f; }
 simulated function float GetWeaponSpreadRecoilMultiplier(KFPlayerReplicationInfo KFPRI, WeaponFire Other) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetWeaponSpreadRecoilMultiplier(KFPRI, Other); } return 1.f; }
 
 simulated function float GetTraderCostMultiplier(KFPlayerReplicationInfo KFPRI, class<Pickup> Item) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetTraderCostMultiplier(KFPRI, Item); } return 1.f; }
 simulated function float GetTraderGrenadeCostMultiplier(KFPlayerReplicationInfo KFPRI, class<Pickup> Item) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetTraderGrenadeCostMultiplier(KFPRI, Item); } return 1.f; }
 
 simulated function float GetPlayerMovementSpeedMultiplier(KFPlayerReplicationInfo KFPRI, KFGameReplicationInfo KFGRI) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetPlayerMovementSpeedMultiplier(KFPRI, KFGRI); } return 1.f; }
+simulated function float GetPlayerMovementAccelMultiplier(KFPlayerReplicationInfo KFPRI, KFGameReplicationInfo KFGRI) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetPlayerMovementAccelMultiplier(KFPRI, KFGRI); } return 1.f; }
 simulated function float GetPlayerMaxHealthMultiplier(Pawn Pawn) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetPlayerMaxHealthMultiplier(Pawn); } return 1.f; }
+
+function GetPlayerCarryWeightModifier(KFPlayerReplicationInfo KFPRI, out int OutCarryWeightModifier) { if (CustomTurboModifier != None) { CustomTurboModifier.GetPlayerCarryWeightModifier(KFPRI, OutCarryWeightModifier); } }
+function float GetHeadshotDamageMultiplier(KFPlayerReplicationInfo KFPRI, KFPawn Pawn, class<DamageType> DamageType) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetHeadshotDamageMultiplier(KFPRI, Pawn, DamageType); } return 1.f; }
 
 //Helpers TurboGameModifierReplicationLinks can call to propagate updates for multiplier changes.
 function NotifyPlayerMovementSpeedChanged()
@@ -41,6 +50,7 @@ function NotifyPlayerMovementSpeedChanged()
         {
             Controller.Pawn.ModifyVelocity(0.f, Controller.Pawn.Velocity);
             Controller.Pawn.AirControl = Controller.Pawn.default.AirControl * FMax(1.f, GetPlayerMovementSpeedMultiplier(KFPlayerReplicationInfo(Controller.PlayerReplicationInfo), Self));
+            Controller.Pawn.AccelRate = Controller.Pawn.default.AccelRate * GetPlayerMovementAccelMultiplier(KFPlayerReplicationInfo(Controller.PlayerReplicationInfo), Self);
         }
     }
 }
@@ -54,6 +64,18 @@ function NotifyPlayerMaxHealthChanged()
         {
             Controller.Pawn.HealthMax = Controller.Pawn.default.HealthMax * GetPlayerMaxHealthMultiplier(Controller.Pawn);
             Controller.Pawn.Health = Min(Controller.Pawn.Health, Controller.Pawn.HealthMax);
+        }
+    }
+}
+
+function NotifyPlayerCarryWeightChanged()
+{
+    local Controller Controller;
+    for ( Controller = Level.ControllerList; Controller != None; Controller = Controller.NextController )
+    {
+        if (Controller.Pawn != None && Controller.Pawn.Health > 0 && KFHumanPawn(Controller.Pawn) != None)
+        {
+            KFHumanPawn(Controller.Pawn).VeterancyChanged();
         }
     }
 }

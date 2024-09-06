@@ -1,3 +1,6 @@
+//Killing Floor Turbo TurboMapPackTurboPlus
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class TurboMapPackTurboPlus extends TurboMapPackHoE;
 
 event matchEnd(string mapname, float difficulty, int length, byte result, int waveNum)

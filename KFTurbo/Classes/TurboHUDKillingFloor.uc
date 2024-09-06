@@ -1,3 +1,7 @@
+//Killing Floor Turbo TurboHUDKillingFloor
+//KFTurbo's HUD. Uses TurboHUDOverlays instead of HUDKillingFloor.
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class TurboHUDKillingFloor extends SRHUDKillingFloor;
 
 var Sound WinSound, LoseSound;

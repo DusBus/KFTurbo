@@ -1,4 +1,7 @@
-//Core of the KFTurbo mod. Needed for UI changes (as well as some other functionality).
+//Killing Floor Turbo KFTurboMut
+//Core of the KFTurbo mod.
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class KFTurboMut extends Mutator
 	config(KFTurbo);
 
@@ -125,6 +128,7 @@ function ModifyPlayer(Pawn Other)
 
 	AddChatWatcher(Other);
 	ApplyHealthModification(Other);
+	ApplySpeedModification(Other);
 }
 
 function AddChatWatcher(Pawn Other)
@@ -154,8 +158,6 @@ function ApplyHealthModification(Pawn Pawn)
 		return;
 	}
 	
-    Pawn.AirControl = Pawn.default.AirControl * FMax(1.f, TurboGameReplicationInfo(Level.GRI).GetPlayerMovementSpeedMultiplier(KFPlayerReplicationInfo(Pawn.PlayerReplicationInfo), TurboGameReplicationInfo(Level.GRI)));
-	
 	HealthMultiplier = TurboGameReplicationInfo(Level.GRI).GetPlayerMaxHealthMultiplier(Pawn);
 
 	Pawn.HealthMax *= HealthMultiplier;
@@ -163,6 +165,17 @@ function ApplyHealthModification(Pawn Pawn)
 	
 	Pawn.HealthMax = FMax(Pawn.HealthMax, 1.f);
 	Pawn.Health = FMax(Pawn.Health, 1.f);
+}
+
+function ApplySpeedModification(Pawn Pawn)
+{
+	if (TurboGameReplicationInfo(Level.GRI) == None)
+	{
+		return;
+	}
+	
+	Pawn.AirControl = Pawn.default.AirControl * FMax(1.f, TurboGameReplicationInfo(Level.GRI).GetPlayerMovementSpeedMultiplier(KFPlayerReplicationInfo(Pawn.PlayerReplicationInfo), TurboGameReplicationInfo(Level.GRI)));
+	Pawn.AccelRate = Pawn.default.AccelRate * FMax(1.f, TurboGameReplicationInfo(Level.GRI).GetPlayerMovementAccelMultiplier(KFPlayerReplicationInfo(Pawn.PlayerReplicationInfo), TurboGameReplicationInfo(Level.GRI)));
 }
 
 simulated function String GetHumanReadableName()
