@@ -144,7 +144,7 @@ static function bool CanBeGrabbed(KFPlayerReplicationInfo KFPRI, KFMonster Other
 
 static function int ZedTimeExtensions(KFPlayerReplicationInfo KFPRI)
 {
-	return LerpStat(KFPRI, 1, 4);
+	return Super(TurboVeterancyTypes).ZedTimeExtensions(KFPRI) + LerpStat(KFPRI, 1, 4);
 }
 
 static function class<Grenade> GetNadeType(KFPlayerReplicationInfo KFPRI)

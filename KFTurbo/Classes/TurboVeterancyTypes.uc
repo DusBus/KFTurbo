@@ -64,6 +64,16 @@ static function ApplyAdjustedHeadshotDamageMultiplier(KFPlayerReplicationInfo KF
 	}
 }
 
+static function float GetHealPotency(KFPlayerReplicationInfo KFPRI)
+{
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		return TurboGameReplicationInfo(KFPRI.Level.GRI).GetHealPotencyMultiplier(KFPRI);
+	}
+
+	return 1.f;
+}
+
 static function float GetHeadShotDamMulti(KFPlayerReplicationInfo KFPRI, KFPawn Pawn, class<DamageType> DamageType)
 {
 	local float Multiplier;
@@ -232,7 +242,20 @@ static function int AddCarryMaxWeight(KFPlayerReplicationInfo KFPRI)
 		TurboGameReplicationInfo(KFPRI.Level.GRI).GetPlayerCarryWeightModifier(KFPRI, CarryWeightBonus);
 	}
 
-	return CarryWeightBonus;;	
+	return CarryWeightBonus;
+}
+
+static function int ZedTimeExtensions(KFPlayerReplicationInfo KFPRI)
+{
+	local int Extensions;
+	Extensions = 0;
+
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		TurboGameReplicationInfo(KFPRI.Level.GRI).GetPlayerZedExtensionModifier(KFPRI, Extensions);
+	}
+
+	return Extensions;
 }
 
 static final function int GetScaledRequirement(byte CurLevel, int InValue)

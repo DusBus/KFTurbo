@@ -143,6 +143,13 @@ ignores AnimEnd, Trigger, Bump, HitWall, HeadVolumeChange, PhysicsVolumeChange, 
     }
 }
 
+simulated event SetHeadScale(float NewScale)
+{
+	HeadScale = NewScale;
+    class'PawnHelper'.static.AdjustHeadScale(Self, NewScale);
+	SetBoneScale(4, NewScale, 'head');
+}
+
 defaultproperties
 {
     Begin Object Class=AfflictionBurn Name=BurnAffliction

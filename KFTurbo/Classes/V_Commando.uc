@@ -263,7 +263,7 @@ static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWe
 
 static function int ZedTimeExtensions(KFPlayerReplicationInfo KFPRI)
 {
-	return LerpStat(KFPRI, 0, 4);
+	return Super(TurboVeterancyTypes).ZedTimeExtensions(KFPRI) + LerpStat(KFPRI, 0, 4);
 }
 
 static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)

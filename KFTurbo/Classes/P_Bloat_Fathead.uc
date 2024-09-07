@@ -4,9 +4,9 @@ simulated function PostBeginPlay()
 {
      Super.PostBeginPlay();
 
-     SetBoneScale(6, 1.25f, 'CHR_Neck');
-     SetBoneScale(5, 1.5f, 'CHR_Head');
-     SetBoneScale(4, 1.5f, 'CHR_Stomach');
+     SetBoneScale(10, 1.5f, 'CHR_Head');
+     SetBoneScale(11, 1.25f, 'CHR_Neck');
+     SetBoneScale(12, 1.5f, 'CHR_Stomach');
 }
 
 function RangedAttack(Actor A)

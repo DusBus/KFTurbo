@@ -38,7 +38,9 @@ simulated function float GetPlayerMovementAccelMultiplier(KFPlayerReplicationInf
 simulated function float GetPlayerMaxHealthMultiplier(Pawn Pawn) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetPlayerMaxHealthMultiplier(Pawn); } return 1.f; }
 
 function GetPlayerCarryWeightModifier(KFPlayerReplicationInfo KFPRI, out int OutCarryWeightModifier) { if (CustomTurboModifier != None) { CustomTurboModifier.GetPlayerCarryWeightModifier(KFPRI, OutCarryWeightModifier); } }
+function GetPlayerZedExtensionModifier(KFPlayerReplicationInfo KFPRI, out int OutZedExtensions) { if (CustomTurboModifier != None) { CustomTurboModifier.GetPlayerZedExtensionModifier(KFPRI, OutZedExtensions); } }
 function float GetHeadshotDamageMultiplier(KFPlayerReplicationInfo KFPRI, KFPawn Pawn, class<DamageType> DamageType) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetHeadshotDamageMultiplier(KFPRI, Pawn, DamageType); } return 1.f; }
+function float GetHealPotencyMultiplier(KFPlayerReplicationInfo KFPRI) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetHealPotencyMultiplier(KFPRI); } return 1.f; }
 
 //Helpers TurboGameModifierReplicationLinks can call to propagate updates for multiplier changes.
 function NotifyPlayerMovementSpeedChanged()
@@ -50,7 +52,7 @@ function NotifyPlayerMovementSpeedChanged()
         {
             Controller.Pawn.ModifyVelocity(0.f, Controller.Pawn.Velocity);
             Controller.Pawn.AirControl = Controller.Pawn.default.AirControl * FMax(1.f, GetPlayerMovementSpeedMultiplier(KFPlayerReplicationInfo(Controller.PlayerReplicationInfo), Self));
-            Controller.Pawn.AccelRate = Controller.Pawn.default.AccelRate * GetPlayerMovementAccelMultiplier(KFPlayerReplicationInfo(Controller.PlayerReplicationInfo), Self);
+            Controller.Pawn.AccelRate = FMax(0.f, Controller.Pawn.default.AccelRate * GetPlayerMovementAccelMultiplier(KFPlayerReplicationInfo(Controller.PlayerReplicationInfo), Self));
         }
     }
 }

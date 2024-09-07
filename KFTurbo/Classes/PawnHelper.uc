@@ -628,6 +628,11 @@ static function bool MeleeDamageTarget(KFMonster Monster, int HitDamage, vector 
 	return true;
 }
 
+static function AdjustHeadScale(KFMonster Monster, out float HeadScale)
+{
+	HeadScale /= Monster.default.HeadScale;
+}
+
 defaultproperties
 {
 

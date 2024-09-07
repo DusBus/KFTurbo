@@ -103,7 +103,7 @@ static function float GetSyringeChargeRate(KFPlayerReplicationInfo KFPRI)
 
 static function float GetHealPotency(KFPlayerReplicationInfo KFPRI)
 {
-	return LerpStat(KFPRI, 1.1f, 1.75f);
+	return Super(TurboVeterancyTypes).GetHealPotency(KFPRI) * LerpStat(KFPRI, 1.1f, 1.75f);
 }
 
 static function float GetMovementSpeedModifier(KFPlayerReplicationInfo KFPRI, KFGameReplicationInfo KFGRI)

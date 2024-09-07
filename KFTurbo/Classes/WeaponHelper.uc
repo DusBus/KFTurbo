@@ -74,8 +74,7 @@ static final function PenetratingWeaponTrace(Vector TraceStart, KFWeapon Weapon,
 		{
 			PenetrationMultiplier = PenetrationMultiplier ** (1.f / WeaponPenetrationMultiplier);
 		}
-
-		log("PEN BEFORE:"@PenetrationMax@"PEN AFTER:"@int(float(PenetrationMax) * WeaponPenetrationMultiplier));
+		
 		PenetrationMax = float(PenetrationMax) * WeaponPenetrationMultiplier;
 	} 
 
