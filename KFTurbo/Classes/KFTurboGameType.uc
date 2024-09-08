@@ -6,6 +6,10 @@ class KFTurboGameType extends KFGameType;
 var protected bool bIsHighDifficulty;
 var protected bool bStatsAndAchievementsEnabled;
 var protected bool bIsTestGameType;
+
+//Allows a gametype modification to total waves without impacting spawns (eg the game wants to work like a Long game, but with a different number of waves).
+var protected int FinalWaveOverride;
+var protected bool bHasAttemptedToApplyFinalWaveOverride;
  
 //Whatever spawn rate is set as, make sure it gets multiplied by this.
 var float WaveSpawnRateModifier;
@@ -126,6 +130,29 @@ final function bool HasAnyTraders()
 	}
 
 	return bHasAnyTraders;
+}
+
+simulated function bool SetFinalWaveOverride(int NewOverride)
+{
+    if (bHasAttemptedToApplyFinalWaveOverride)
+    {
+        return false;
+    }
+
+    FinalWaveOverride = NewOverride;
+    return true;
+}
+
+simulated function PrepareSpecialSquads()
+{
+    Super.PrepareSpecialSquads();
+
+    if (FinalWaveOverride != -1)
+    {
+        FinalWave = FinalWaveOverride;
+    }
+
+    bHasAttemptedToApplyFinalWaveOverride = true;
 }
 
 function BuildNextSquad()
@@ -313,6 +340,10 @@ defaultproperties
     bIsHighDifficulty=false
     bStatsAndAchievementsEnabled=true
 	bIsTestGameType=false
+
+    FinalWaveOverride=-1
+    bHasAttemptedToApplyFinalWaveOverride=false
+
 	WaveSpawnRateModifier=1.f
 
     MonsterClasses(0)=(MClassName="KFTurbo.P_Clot_STA",Mid="A")

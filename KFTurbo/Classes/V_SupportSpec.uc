@@ -43,7 +43,7 @@ static function int GetPerkProgressInt( ClientPerkRepLink StatOther, out int Fin
 
 static function int AddCarryMaxWeight(KFPlayerReplicationInfo KFPRI)
 {
-	return Super.AddCarryMaxWeight(KFPRI) + 9;
+	return Super(TurboVeterancyTypes).AddCarryMaxWeight(KFPRI) + 9;
 }
 
 static function float GetWeldSpeedModifier(KFPlayerReplicationInfo KFPRI)
