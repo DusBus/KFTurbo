@@ -2,15 +2,17 @@ class TurboPlusWaveEarly extends TurboMonsterWave;
 
 defaultproperties
 {
+     // All of these values can be overwritten in TurboMonsterCollectionWaveImpl
      MaxMonsters=35
      TotalMonsters=35
      WaveDifficulty=1.f
 
      RegularSequenceSize=10
+     // Mix in squads are squads which replace regular squads within one sequence. Replace a minimum / maximum of squads per sequence.
      MinMixInSquadCount=1
      MaxMixInSquadCount=2
 
-     // Small beat Size for early waves
+     // Small beat Size for early waves. Meaning that only X amount of beat squads per sequence will be spawned.
      BeatSize=1
 
      // Here is an example of a squad with 2 clots and 3 crawlers.
