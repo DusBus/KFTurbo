@@ -6,10 +6,10 @@ defaultproperties
 	Begin Object Class=TurboPlusWaveEarly Name=Wave1
           MaxMonsters=45
           TotalMonsters=45
-          BeatSize=1
-          RegularSequenceSize=10
+          BeatSize=1 //After each squence there will be X amount of beat squads
+          RegularSequenceSize=10 //Each sequence consists of X amount of squads. As soon as the sequence ends, a beat squad (see above) will be triggered
           MixInWaveMask=1 //Mask will filter out all MixIn squads in the list except for the first one (2^0 = 1).
-          NextSquadSpawnTime=2.5f
+          NextSquadSpawnTime=2.5f //Time between spawns in seconds
 	End Object
 	WaveList(0)=TurboMonsterWave'KFTurbo.TurboMonsterCollectionWaveImpl.Wave1'
 
@@ -73,7 +73,7 @@ defaultproperties
           MaxMonsters=60
           TotalMonsters=75
           RegularSequenceSize=6
-          BeatSize=1 
+          BeatSize=3 
           NextSquadSpawnTime=1.f
 	End Object
 	WaveList(7)=TurboMonsterWave'KFTurbo.TurboMonsterCollectionWaveImpl.Wave8'
@@ -82,7 +82,7 @@ defaultproperties
           MaxMonsters=65
           TotalMonsters=78
           RegularSequenceSize=5
-          BeatSize=2
+          BeatSize=3
           NextSquadSpawnTime=1.f
 	End Object
 	WaveList(8)=TurboMonsterWave'KFTurbo.TurboMonsterCollectionWaveImpl.Wave9'
