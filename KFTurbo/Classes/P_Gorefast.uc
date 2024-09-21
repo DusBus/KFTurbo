@@ -1,3 +1,6 @@
+//Killing Floor Turbo P_Gorefast
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class P_Gorefast extends ZombieGorefast DependsOn(PawnHelper);
 
 var PawnHelper.AfflictionData AfflictionData;
