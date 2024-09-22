@@ -1,3 +1,6 @@
+//Killing Floor Turbo WeaponRemappingSettingsImpl
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class WeaponRemappingSettingsImpl extends WeaponRemappingSettings;
 
 static function class<Weapon> GetRemappedWeapon(PlayerController PlayerController, class<Weapon> NewWeaponClass)

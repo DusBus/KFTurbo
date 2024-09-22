@@ -1,13 +1,16 @@
 class W_Frag_Proj extends KFMod.Nade;
 
+function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
+{
+    class'WeaponHelper'.static.GrenadeTakeDamage(self, Damage, InstigatedBy, Hitlocation, Momentum, DamageType, HitIndex);
+}
+
 simulated function ProcessTouch( actor Other, vector HitLocation )
 {
 	if (ExtendedZCollision(Other) != None)
 	{
 		return;
 	}
-
-	log(Other);
 
 	Super.ProcessTouch(Other, HitLocation);
 }

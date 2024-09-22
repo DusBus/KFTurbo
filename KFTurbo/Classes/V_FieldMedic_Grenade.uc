@@ -1,5 +1,10 @@
 class V_FieldMedic_Grenade extends KFMod.MedicNade;
 
+function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
+{
+    class'WeaponHelper'.static.GrenadeTakeDamage(self, Damage, InstigatedBy, Hitlocation, Momentum, DamageType, HitIndex);
+}
+
 simulated function Explode(vector HitLocation, vector HitNormal)
 {
     Super.Explode(HitLocation, HitNormal);

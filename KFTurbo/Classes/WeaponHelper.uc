@@ -615,6 +615,51 @@ static final function bool SingleWeaponSpawnCopy(KFWeaponPickup SingleWeaponPick
 	return false;
 }
 
+static final function GrenadeTakeDamage(Nade Projectile, int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
+{
+	if (Monster(InstigatedBy) != none || InstigatedBy == Projectile.Instigator)
+	{
+        if(class<SirenScreamDamage>(DamageType) != None)
+        {
+            Projectile.Disintegrate(HitLocation, vect(0,0,1));
+        }
+        else
+        {
+            Projectile.Explode(HitLocation, vect(0,0,1));
+        }
+    }
+}
+
+static final function M79GrenadeTakeDamage(M79GrenadeProjectile Projectile, int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
+{
+	if (Monster(InstigatedBy) != none || InstigatedBy == Projectile.Instigator)
+	{
+        if(class<SirenScreamDamage>(DamageType) != None)
+        {
+            Projectile.Disintegrate(HitLocation, vect(0,0,1));
+        }
+        else
+        {
+            Projectile.Explode(HitLocation, vect(0,0,1));
+        }
+    }
+}
+
+static final function LawProjTakeDamage(LawProj Projectile, int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
+{
+	if (Monster(InstigatedBy) != none || InstigatedBy == Projectile.Instigator)
+	{
+        if(class<SirenScreamDamage>(DamageType) != None)
+        {
+            Projectile.Disintegrate(HitLocation, vect(0,0,1));
+        }
+        else
+        {
+            Projectile.Explode(HitLocation, vect(0,0,1));
+        }
+    }
+}
+
 defaultproperties
 {
 }

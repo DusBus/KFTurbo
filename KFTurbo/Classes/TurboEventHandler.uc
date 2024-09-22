@@ -1,3 +1,7 @@
+//Killing Floor Turbo TurboEventHandler
+//Base class for combat gameplay events in KFTurbo. See TurboAchievementEventHandler for example implementation.
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class TurboEventHandler extends Object;
 
 static function OnPawnIgnited(Pawn Instigator, Pawn Target, class<KFWeaponDamageType> DamageType, int BurnDamage);

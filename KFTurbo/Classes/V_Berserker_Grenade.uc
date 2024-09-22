@@ -5,6 +5,11 @@ class V_Berserker_Grenade extends KFMod.Nade;
 
 var float ZapAmount;
 
+function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
+{
+    class'WeaponHelper'.static.GrenadeTakeDamage(self, Damage, InstigatedBy, Hitlocation, Momentum, DamageType, HitIndex);
+}
+
 simulated function Disintegrate(vector HitLocation, vector HitNormal)
 {
 	//Immune to disintegration.

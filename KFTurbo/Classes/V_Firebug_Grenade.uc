@@ -3,6 +3,11 @@
 //=============================================================================
 class V_Firebug_Grenade extends KFMod.FlameNade;
 
+function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
+{
+    class'WeaponHelper'.static.GrenadeTakeDamage(self, Damage, InstigatedBy, Hitlocation, Momentum, DamageType, HitIndex);
+}
+
 simulated function HitWall( vector HitNormal, actor Wall )
 {
     local Vector VNorm;

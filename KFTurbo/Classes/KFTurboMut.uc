@@ -47,7 +47,7 @@ simulated function PostBeginPlay()
 		Spawn(class'TurboRepLinkTester', Self);
 	}
 	
-	class'TurboEventHandler'.static.RegisterHandler(Self, class'TurboEventHandlerImpl');
+	class'TurboHealEventHandler'.static.RegisterHealHandler(Self, class'TurboHealEventHandlerImpl');
 
 	SetupBroadcaster();
 

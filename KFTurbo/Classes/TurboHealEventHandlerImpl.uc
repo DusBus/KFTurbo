@@ -1,4 +1,7 @@
-class TurboEventHandlerImpl extends TurboEventHandler;
+//Killing Floor Turbo TurboHealEventHandlerImpl
+//Distributed under the terms of the GPL-2.0 License.
+//For more information see https://github.com/KFPilot/KFTurbo.
+class TurboHealEventHandlerImpl extends TurboHealEventHandler;
 
 static function OnPawnDartHealed(Pawn Instigator, Pawn Target, int HealingAmount, HealingProjectile HealDart)
 {

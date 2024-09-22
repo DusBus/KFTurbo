@@ -8,8 +8,7 @@ var int HealthHealed;
 replication
 {
 	reliable if ( bNetDirty && (Role == Role_Authority) )
-		ShieldStrength,
-        HealthMax, HealthHealed;
+		ShieldStrength, HealthMax, HealthHealed;
 }
 
 function Timer()
