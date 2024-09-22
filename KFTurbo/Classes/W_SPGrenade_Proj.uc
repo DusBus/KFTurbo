@@ -6,6 +6,11 @@ var float TrickBounceMultiplier;
 var float TrickBounceBonusCoefficient; // by how much it should increase the bounce multiplier after bouncing
 var float CurrentCoefficient;
 
+function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> damageType, optional int HitIndex)
+{
+    class'WeaponHelper'.static.SPGrenadeProjTakeDamage(self, Damage, InstigatedBy, Hitlocation, Momentum, DamageType, HitIndex);
+}
+
 simulated function ProcessTouch(Actor Other, Vector HitLocation)
 {
     if ( Other == none || Other == Instigator || Other.Base == Instigator )

@@ -649,6 +649,17 @@ static final function LawProjTakeDamage(LawProj Projectile, int Damage, Pawn Ins
 {
 	if (Monster(InstigatedBy) != none || InstigatedBy == Projectile.Instigator)
 	{
+        if(class<SirenScreamDamage>(DamageType) == None)
+        {
+            Projectile.Explode(HitLocation, vect(0,0,1));
+        }
+    }
+}
+
+static final function SealSquealProjTakeDamage(SealSquealProjectile Projectile, int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
+{
+	if (Monster(InstigatedBy) != none || InstigatedBy == Projectile.Instigator)
+	{
         if(class<SirenScreamDamage>(DamageType) != None)
         {
             Projectile.Disintegrate(HitLocation, vect(0,0,1));
@@ -657,6 +668,56 @@ static final function LawProjTakeDamage(LawProj Projectile, int Damage, Pawn Ins
         {
             Projectile.Explode(HitLocation, vect(0,0,1));
         }
+    }
+}
+
+static final function SeekerSixProjTakeDamage(SeekerSixRocketProjectile Projectile, int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
+{
+	if(class<SirenScreamDamage>(DamageType) != None)
+	{
+		Projectile.Disintegrate(HitLocation, vect(0,0,1));
+	}
+}
+
+static final function HuskGunProjTakeDamage(HuskGunProjectile Projectile, int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
+{
+	if(class<SirenScreamDamage>(DamageType) != None)
+	{
+		Projectile.Disintegrate(HitLocation, vect(0,0,1));
+	}
+	else
+	{
+		if(!Projectile.bDud)
+		{
+			Projectile.Explode(HitLocation, vect(0,0,0));
+		}
+	}
+}
+
+static final function FlareRevolverProjTakeDamage(FlareRevolverProjectile Projectile, int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
+{
+	if(class<SirenScreamDamage>(DamageType) != None)
+	{
+		Projectile.Disintegrate(HitLocation, vect(0,0,1));
+	}
+	else
+	{
+		if(!Projectile.bDud)
+		{
+			Projectile.Explode(HitLocation, vect(0,0,0));
+		}
+	}
+}
+
+static final function SPGrenadeProjTakeDamage(SPGrenadeProjectile Projectile, int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
+{
+	if(class<SirenScreamDamage>(DamageType) != None)
+	{
+		Projectile.Disintegrate(HitLocation, vect(0,0,1));
+	}
+    else
+    {
+        Projectile.Explode(HitLocation, vect(0,0,0));
     }
 }
 

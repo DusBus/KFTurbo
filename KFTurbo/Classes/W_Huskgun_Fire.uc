@@ -211,8 +211,12 @@ event ModeDoFire()
 
 defaultproperties
 {
-     MaxChargeTime=2.000000
-     aimerror=0.000000
-     Spread=0.000000
-     AmmoClass=Class'KFTurbo.W_HuskGun_Ammo'
+    MaxChargeTime=2.000000
+    aimerror=0.000000
+    Spread=0.000000
+    AmmoClass=Class'KFTurbo.W_HuskGun_Ammo'
+
+    WeakProjectileClass=Class'W_HuskGun_Proj_Weak'
+    StrongProjectileClass=Class'W_HuskGun_Proj_Strong'
+    ProjectileClass=Class'W_HuskGun_Proj_Medium'
 }

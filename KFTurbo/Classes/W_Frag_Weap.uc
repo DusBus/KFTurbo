@@ -74,6 +74,7 @@ simulated function bool UpdateMeshDefinition()
     switch (NewDesiredProjectileClass)
     {
         case class'KFMod.Nade':
+        case class'KFTurbo.W_Frag_Proj':
             CurrentGrenadeDefinition = DefaultGrenadeDefinition;
             break;
         case class'KFTurbo.V_Firebug_Grenade':

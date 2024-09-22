@@ -1,18 +1,21 @@
 class W_LAW_Proj extends LAWProj;
 
+function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> damageType, optional int HitIndex)
+{
+	class'WeaponHelper'.static.LawProjTakeDamage(self, Damage, InstigatedBy, Hitlocation, Momentum, DamageType, HitIndex);
+}
+
 simulated function HurtRadius(float DamageAmount, float Radius, class<DamageType> DamageType, float Momentum, vector HitLocation)
 {
-	local actor HitActor;
-	local class<actor> PipebombClass;
+	local PipeBombProjectile HitPipebomb;
 
 	Super.HurtRadius(DamageAmount, Radius, DamageType, Momentum, HitLocation);
 
 	Radius *= 0.5f;
 
-	PipebombClass = class'PipeBombProjectile';
-	foreach CollidingActors (PipebombClass, HitActor, Radius, HitLocation)
+	foreach CollidingActors (class'PipeBombProjectile', HitPipebomb, Radius, HitLocation)
 	{
-		DetonatePipebomb(HitActor, Instigator);
+		DetonatePipebomb(HitPipebomb, Instigator);
 	}
 }
 

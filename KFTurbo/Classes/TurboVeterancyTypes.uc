@@ -268,6 +268,11 @@ static function class<DamageType> GetMAC10DamageType(KFPlayerReplicationInfo KFP
 	return none; //We no longer use this function anymore, W_MAC10_Fire extends KFFire
 }
 
+static function class<Grenade> GetNadeType(KFPlayerReplicationInfo KFPRI)
+{
+	return class'W_Frag_Proj';
+}
+
 //Slight change to how this works:
 //0 - returns this perk's title
 //1 - always returns TurboVeterancyTypes::GetCustomLevelInfo()'s result

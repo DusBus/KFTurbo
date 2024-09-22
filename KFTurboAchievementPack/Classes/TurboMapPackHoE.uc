@@ -3,6 +3,16 @@
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboMapPackHoE extends StockMapsHellOnEarth;
 
+function PostBeginPlay()
+{
+    Super.PostBeginPlay();
+
+    if (ownerController == None)
+    {
+        ownerController = KFPlayerController(Owner);
+    }
+}
+
 event matchEnd(string mapname, float difficulty, int length, byte result, int waveNum)
 {
     if (!class'KFTurboGameType'.static.StaticAreStatsAndAchievementsEnabled(self))

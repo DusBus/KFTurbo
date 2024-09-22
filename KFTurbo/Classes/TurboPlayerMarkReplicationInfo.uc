@@ -371,8 +371,7 @@ simulated function bool HasMarkUpdate()
     {
         return true;
     }
-
-    log("No Marker Update");
+    
     return false;
 }
 

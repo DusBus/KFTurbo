@@ -21,6 +21,18 @@ var array<TurboMonsterSquad> RemainingBeatSquadList;
 var array<TurboMonsterSquad> CurrentSequence;
 var array<TurboMonsterSquad> CurrentBeat;
 
+var bool bDebugWave;
+
+function DebugLog(coerce string Message)
+{
+     if (!bDebugWave)
+     {
+          return;
+     }
+
+     Log(Message);
+}
+
 function InitializeCollection()
 {
      local int Index;
@@ -52,7 +64,7 @@ function InitializeForWave(int WaveNumber)
 {
      local int Index, WaveMask;
 
-     log("Initializing For Wave:"@WaveNumber);
+     DebugLog("Initializing For Wave:"@WaveNumber);
 
      RegularSquadList.Length = 0;
      MixInSquadList.Length = 0;
@@ -89,13 +101,13 @@ function InitializeForWave(int WaveNumber)
      RemainingMixInSquadList = MixInSquadList;
      RemainingBeatSquadList = BeatSquadList;
 
-     log("Initialized For Wave:");
-     log(" - CurrentWave.RegularSquad:"@CurrentWave.RegularWaveMask);
-     log(" - CurrentWave.MixInSquad:"@CurrentWave.MixInWaveMask);
-     log(" - CurrentWave.BeatSquad:"@CurrentWave.BeatWaveMask);
-     log(" - RegularSquadList:"@RegularSquadList.Length);
-     log(" - MixInSquadList:"@MixInSquadList.Length);
-     log(" - BeatSquadList:"@BeatSquadList.Length);
+     DebugLog("Initialized For Wave:");
+     DebugLog(" - CurrentWave.RegularSquad:"@CurrentWave.RegularWaveMask);
+     DebugLog(" - CurrentWave.MixInSquad:"@CurrentWave.MixInWaveMask);
+     DebugLog(" - CurrentWave.BeatSquad:"@CurrentWave.BeatWaveMask);
+     DebugLog(" - RegularSquadList:"@RegularSquadList.Length);
+     DebugLog(" - MixInSquadList:"@MixInSquadList.Length);
+     DebugLog(" - BeatSquadList:"@BeatSquadList.Length);
 }
 
 final function TurboMonsterSquad GetSequenceSquad()
@@ -163,7 +175,7 @@ function PrepareSequence()
           return;
      }
 
-     log ("Building Sequence");
+     DebugLog ("Building Sequence");
 
      SequenceSize = CurrentWave.RegularSequenceSize;
      MixInCount = CurrentWave.MinMixInSquadCount + Rand(1 + CurrentWave.MaxMixInSquadCount - CurrentWave.MinMixInSquadCount);
@@ -173,7 +185,7 @@ function PrepareSequence()
      while(SequenceSize > 0 && RegularSquadList.Length != 0)
      {
           CurrentSequence[CurrentSequence.Length] = GetSequenceSquad();
-          log ("- Added"@CurrentSequence[CurrentSequence.Length - 1]);
+          DebugLog ("- Added"@CurrentSequence[CurrentSequence.Length - 1]);
           SequenceSize--;
      }
      
@@ -183,7 +195,7 @@ function PrepareSequence()
           RandomIndex = Rand(CurrentSequence.Length);
           CurrentSequence.Insert(RandomIndex, 1);
           CurrentSequence[RandomIndex] = GetMixInSquad();
-          log ("- Added"@CurrentSequence[RandomIndex]);
+          DebugLog ("- Added"@CurrentSequence[RandomIndex]);
           MixInCount--;
      }
      
@@ -191,7 +203,7 @@ function PrepareSequence()
      while(BeatSize > 0 && BeatSquadList.Length != 0)
      {
           CurrentBeat[CurrentBeat.Length] = GetBeatSquad();
-          log ("- Added"@CurrentSequence[CurrentSequence.Length - 1]);
+          DebugLog ("- Added"@CurrentSequence[CurrentSequence.Length - 1]);
           BeatSize--;
      }
 }
@@ -284,5 +296,5 @@ function float GetNextSquadSpawnTime(int WaveNumber)
 
 defaultproperties
 {
-
+     bDebugWave=false
 }

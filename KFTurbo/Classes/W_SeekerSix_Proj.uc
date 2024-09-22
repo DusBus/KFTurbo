@@ -2,6 +2,11 @@ class W_SeekerSix_Proj extends SeekerSixRocketProjectile;
 
 var Actor LastTouchedOverride;
 
+function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> damageType, optional int HitIndex)
+{
+	class'WeaponHelper'.static.SeekerSixProjTakeDamage(self, Damage, InstigatedBy, Hitlocation, Momentum, DamageType, HitIndex);
+}
+
 simulated function ProcessTouch(Actor Other, Vector HitLocation)
 {
 	local int Index;

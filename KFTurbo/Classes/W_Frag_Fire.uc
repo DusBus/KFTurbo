@@ -38,5 +38,5 @@ function PostSpawnProjectile(Projectile P)
 
 defaultproperties
 {
-    
+    ProjectileClass=Class'KFTurbo.W_Frag_Proj'
 }
