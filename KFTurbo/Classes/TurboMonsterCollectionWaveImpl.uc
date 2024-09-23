@@ -9,18 +9,16 @@ defaultproperties
           BeatSize=1
           RegularSequenceSize=10
           MixInWaveMask=1 //Mask will filter out all MixIn squads in the list except for the first one (2^0 = 1).
-          NextSquadSpawnTime=2.5f
 	End Object
-	WaveList(0)=TurboMonsterWave'KFTurbo.TurboMonsterCollectionWaveImpl.Wave1'
+	WaveList(0)=TurboMonsterWave'Wave1'
 
 	Begin Object Class=TurboPlusWaveMidGame Name=Wave2
           MaxMonsters=45
           TotalMonsters=55
           RegularSequenceSize=10
           BeatSize=1
-          NextSquadSpawnTime=2.5f
 	End Object
-	WaveList(1)=TurboMonsterWave'KFTurbo.TurboMonsterCollectionWaveImpl.Wave2'
+	WaveList(1)=TurboMonsterWave'Wave2'
 
      //Mid Game Waves:
 	Begin Object Class=TurboPlusWaveMidGame Name=Wave3
@@ -28,45 +26,40 @@ defaultproperties
           TotalMonsters=62
           RegularSequenceSize=8
           BeatSize=1
-          NextSquadSpawnTime=2.5f
 	End Object
-	WaveList(2)=TurboMonsterWave'KFTurbo.TurboMonsterCollectionWaveImpl.Wave3'
+	WaveList(2)=TurboMonsterWave'Wave3'
 
 	Begin Object Class=TurboPlusWaveMidGame Name=Wave4
           MaxMonsters=50
           TotalMonsters=65
           RegularSequenceSize=8
           BeatSize=2
-          NextSquadSpawnTime=2.f
 	End Object
-	WaveList(3)=TurboMonsterWave'KFTurbo.TurboMonsterCollectionWaveImpl.Wave4'
+	WaveList(3)=TurboMonsterWave'Wave4'
 
 	Begin Object Class=TurboPlusWaveMidGame Name=Wave5
           MaxMonsters=50
           TotalMonsters=67
           RegularSequenceSize=7
           BeatSize=2
-          NextSquadSpawnTime=2.f
 	End Object
-	WaveList(4)=TurboMonsterWave'KFTurbo.TurboMonsterCollectionWaveImpl.Wave5'
+	WaveList(4)=TurboMonsterWave'Wave5'
 
 	Begin Object Class=TurboPlusWaveMidGame Name=Wave6
           MaxMonsters=50
           TotalMonsters=70
           RegularSequenceSize=7
           BeatSize=3
-          NextSquadSpawnTime=2.f
 	End Object
-	WaveList(5)=TurboMonsterWave'KFTurbo.TurboMonsterCollectionWaveImpl.Wave6'
+	WaveList(5)=TurboMonsterWave'Wave6'
      
 	Begin Object Class=TurboPlusWaveMidGame Name=Wave7
           MaxMonsters=50
           TotalMonsters=72
           RegularSequenceSize=6
           BeatSize=3
-          NextSquadSpawnTime=2.f
 	End Object
-	WaveList(6)=TurboMonsterWave'KFTurbo.TurboMonsterCollectionWaveImpl.Wave7'
+	WaveList(6)=TurboMonsterWave'Wave7'
      
      //Late Game Waves:
 	Begin Object Class=TurboPlusWaveLateGame Name=Wave8
@@ -74,27 +67,24 @@ defaultproperties
           TotalMonsters=75
           RegularSequenceSize=6
           BeatSize=1 
-          NextSquadSpawnTime=1.f
 	End Object
-	WaveList(7)=TurboMonsterWave'KFTurbo.TurboMonsterCollectionWaveImpl.Wave8'
+	WaveList(7)=TurboMonsterWave'Wave8'
      
 	Begin Object Class=TurboPlusWaveLateGame Name=Wave9
           MaxMonsters=65
           TotalMonsters=78
           RegularSequenceSize=5
           BeatSize=2
-          NextSquadSpawnTime=1.f
 	End Object
-	WaveList(8)=TurboMonsterWave'KFTurbo.TurboMonsterCollectionWaveImpl.Wave9'
+	WaveList(8)=TurboMonsterWave'Wave9'
      
 	Begin Object Class=TurboPlusWaveLateGame Name=Wave10
           MaxMonsters=70
           TotalMonsters=80
           RegularSequenceSize=5
           BeatSize=3
-          NextSquadSpawnTime=1.f
 	End Object
-	WaveList(9)=TurboMonsterWave'KFTurbo.TurboMonsterCollectionWaveImpl.Wave10'
+	WaveList(9)=TurboMonsterWave'Wave10'
 
      //Example definition of boss helper squads, their containing boss squads, then storing them into the BossSquadList.
 
