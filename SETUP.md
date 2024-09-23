@@ -13,8 +13,6 @@ The result should look something like;
 
 `ucc server KF-Departed.rom?game=KFTurbo.KFTurboGameType?Mutator=KFTurbo.KFTurboMut,KFTurboServer.KFTurboServerMut,KFTurboRandomizer.KFTurboRandomizerMut,ServerPerksMut.ServerPerksMut`
 
-To play with the Randomizer mutator, add `KFTurboRandomizer.KFTurboRandomizerMut` to the comma separated list of mutators.
-
 To play on KFTurbo Plus difficulty, the GameType launch parameter must be set to `?game=KFTurbo.KFTurboGameTypePlus`.
 
 ### Map Vote Setup
@@ -23,3 +21,15 @@ For servers using Marco's [KFMapVoteV2](https://forums.tripwireinteractive.com/i
 - Server Achievements
 - Killing Floor Turbo
 - Killing Floor Turbo Server
+
+### Randomizer
+
+KFTurbo Randomizer is Killing Floor Turbo's randomizer mutator which provides players with random perks and loadouts each wave. More information can be found [here](https://github.com/KFPilot/KFTurbo/tree/master/KFTurboRandomizer#readme). To play the KFTurbo Randomizer, add `KFTurboRandomizer.KFTurboRandomizerMut` to the comma separated list of mutators (`?Mutator=`) in the server's launch parameters. To add it as a voting option in KFMapVoteV2, follow the instructions in the [Map Vote Setup](https://github.com/KFPilot/KFTurbo/blob/master/SETUP.md#map-vote-setup) section and add `Killing Floor Turbo Randomizer` to the list of Mutators.
+
+### Card Game
+
+The KFTurbo Card Game mutator adds votable "cards" players vote on each wave which modify a variety of gameplay mechanics. More information can be found [here](https://github.com/KFPilot/KFTurbo/tree/master/KFTurboCardGame#readme). To play the KFTurbo Card Game, add `KFTurboCardGame.KFTurboCardGameMut` to the comma separated list of mutators (`?Mutator=`) in the server's launch parameters. To add it as a voting option in KFMapVoteV2, follow the instructions in the [Map Vote Setup](https://github.com/KFPilot/KFTurbo/blob/master/SETUP.md#map-vote-setup) section and add `Killing Floor Turbo Card Game` to the list of Mutators.
+
+### Killing Floor Turbo+
+
+Killing Floor Turbo+ is the high difficulty mode for KFTurbo. To play Killing Floor Turbo+, set `KFTurbo.KFTurboGameTypePlus` in the game type specifier (`?game=`) in the server's launch parameters. To add it as a voting option in KFMapVoteV2, follow the instructions in the [Map Vote Setup](https://github.com/KFPilot/KFTurbo/blob/master/SETUP.md#map-vote-setup) section and set `Killing Floor Turbo+ Game Type` as the Game Type.
