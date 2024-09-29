@@ -1,5 +1,11 @@
 class W_SPShotgun_Fire extends SPShotgunFire;
 
+function DoFireEffect()
+{
+     class'WeaponHelper'.static.OnShotgunFire(self);
+     Super.DoFireEffect();
+}
+
 function Projectile SpawnProjectile(Vector Start, Rotator Dir)
 {
 	local Projectile Proj;

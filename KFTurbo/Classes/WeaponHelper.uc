@@ -615,6 +615,14 @@ static final function bool SingleWeaponSpawnCopy(KFWeaponPickup SingleWeaponPick
 	return false;
 }
 
+static final function OnShotgunFire(KFShotgunFire FireMode)
+{
+	if (FireMode != None && FireMode.Level != None && TurboGameReplicationInfo(FireMode.Level.GRI) != None)
+	{
+		TurboGameReplicationInfo(FireMode.Level.GRI).OnShotgunFire(FireMode);
+	}
+}
+
 static final function GrenadeTakeDamage(Nade Projectile, int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
 {
 	if (Monster(InstigatedBy) != none || InstigatedBy == Projectile.Instigator)

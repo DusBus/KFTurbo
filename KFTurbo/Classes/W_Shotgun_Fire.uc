@@ -1,5 +1,11 @@
 class W_Shotgun_Fire extends ShotgunFire;
 
+function DoFireEffect()
+{
+     class'WeaponHelper'.static.OnShotgunFire(self);
+     Super.DoFireEffect();
+}
+
 defaultproperties
 {
      ProjPerFire=9
