@@ -216,7 +216,7 @@ simulated function Render(Canvas C)
 	
 	Super.Render(C);
 
-	if (KFGRI == None)
+	if (KFGRI == None || !KFGRI.bMatchHasBegun)
 	{
 		return;
 	}
@@ -224,6 +224,10 @@ simulated function Render(Canvas C)
 	DrawGameBackplate(C, BackplateACenter, BackplateBCenter);
 	DrawCurrentWave(C, BackplateACenter);
 	DrawWaveData(C, BackplateBCenter);
+	
+	C.Reset();
+	C.DrawColor = class'HudBase'.default.WhiteColor;
+	C.Style = ERenderStyle.STY_Alpha;
 }
 
 simulated function DrawGameBackplate(Canvas C, out Vector2D BackplateACenter, out Vector2D BackplateBCenter)

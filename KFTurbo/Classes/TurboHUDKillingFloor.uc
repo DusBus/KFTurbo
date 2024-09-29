@@ -83,28 +83,14 @@ simulated function DrawHud(Canvas C)
 {
 	RenderDelta = Level.TimeSeconds - LastHUDRenderTime;
     LastHUDRenderTime = Level.TimeSeconds;
+	
+	C.Reset();
+	C.DrawColor = class'HudBase'.default.WhiteColor;
+	C.Style = ERenderStyle.STY_Alpha;
 
 	if ( FontsPrecached < 2 )
 	{
 		PrecacheFonts(C);
-	}
-
-	UpdateHud();
-
-	PassStyle = STY_Modulated;
-	DrawModOverlay(C);
-
-	if ( bUseBloom )
-	{
-		PlayerOwner.PostFX_SetActive(0, true);
-	}
-
-	if ( bHideHud )
-	{
-		// Draw fade effects even if the hud is hidden so poeple can't just turn off thier hud
-		C.Style = ERenderStyle.STY_Alpha;
-		DrawFadeEffect(C);
-		return;
 	}
 
 	if ( !KFPlayerReplicationInfo(PlayerOwner.PlayerReplicationInfo).bViewingMatineeCinematic )
@@ -113,9 +99,12 @@ simulated function DrawHud(Canvas C)
 	}
 	else
 	{
-		PassStyle = STY_Alpha;
 		DrawCinematicHUD(C);
 	}
+
+	C.Reset();
+	C.DrawColor = class'HudBase'.default.WhiteColor;
+	C.Style = ERenderStyle.STY_Alpha;
 
 	if ( bShowNotification )
 	{
@@ -144,7 +133,6 @@ simulated function DrawGameHud(Canvas C)
 		PlayerInfoHUD.Render(C);
 	}
 
-	PassStyle = STY_Alpha;
 	DrawDamageIndicators(C);
 	DrawHudPassA(C);
 	DrawHudPassC(C);
@@ -161,19 +149,14 @@ simulated function DrawGameHud(Canvas C)
 		}
 	}
 
-	PassStyle = STY_None;
 	DisplayLocalMessages(C);
-	DrawVehicleName(C);
-
-	PassStyle = STY_Alpha;
 
 	if ( CurrentGame!=None && CurrentGame.EndGameType > 0 )
 	{
 		DrawEndGameHUD(C, (CurrentGame.EndGameType==2));
 		return;
 	}
-
-	RenderFlash(C);
+	
 	C.Style = PassStyle;
 	DrawKFHUDTextElements(C);
 }
@@ -183,27 +166,24 @@ simulated function DrawKFHUDTextElements(Canvas C)
 {
 	local vector Pos, FixedZPos;
 	local rotator  ShopDirPointerRotation;
-	local float    CircleSize;
-	local float    ResScale;
 
 	if ( PlayerOwner == none || KFGRI == none || !KFGRI.bMatchHasBegun || KFPlayerController(PlayerOwner).bShopping )
 	{
 		return;
 	}
 
+	C.Reset();
+	C.DrawColor = class'HudBase'.default.WhiteColor;
+	C.Style = ERenderStyle.STY_Alpha;
+
 	if (WaveInfoHUD != None)
 	{
 		WaveInfoHUD.Render(C);
 	}
 
-    ResScale =  C.SizeX / 1024.0;
-    CircleSize = FMin(128 * ResScale,128);
-	C.FontScaleX = FMin(ResScale,1.f);
-	C.FontScaleY = FMin(ResScale,1.f);
-
-	C.FontScaleX = 1;
-	C.FontScaleY = 1;
-
+	C.Reset();
+	C.DrawColor = class'HudBase'.default.WhiteColor;
+	C.Style = ERenderStyle.STY_Alpha;
 
 	if ( KFPRI == none || KFPRI.Team == none || KFPRI.bOnlySpectator || PawnOwner == none )
 	{
@@ -263,14 +243,14 @@ simulated function DrawKFHUDTextElements(Canvas C)
 
 simulated function DrawSpectatingHud(Canvas C)
 {
-	DrawModOverlay(C);
-
 	if( bHideHud )
 	{
 		return;
 	}
 
-	PlayerOwner.PostFX_SetActive(0, false);
+	C.Reset();
+	C.DrawColor = class'HudBase'.default.WhiteColor;
+	C.Style = ERenderStyle.STY_Alpha;
 
 	if (MarkInfoHUD != None)
 	{
@@ -286,8 +266,6 @@ simulated function DrawSpectatingHud(Canvas C)
 	{
 		WaveInfoHUD.Render(C);
 	}
-
-	DrawFadeEffect(C);
 
 	if ( KFPlayerController(PlayerOwner) != None && KFPlayerController(PlayerOwner).ActiveNote != None )
 	{
@@ -382,8 +360,8 @@ simulated function DrawEndGameHUD(Canvas C, bool bVictory)
 
 	InitializeEndGameUI(bVictory);
 
-	//Reset draw.
-	C.DrawColor = WhiteColor;
+	C.Reset();
+	C.DrawColor = class'HudBase'.default.WhiteColor;
 	C.Style = ERenderStyle.STY_Alpha;
 
 	FadeAlpha = FMin(EndGameHUDAnimationProgress / (EndGameHUDAnimationDuration * 0.5f), 1.f);
@@ -455,13 +433,31 @@ simulated function DrawHudPassA(Canvas C)
 
 	if ( bDisplayInventory || bInventoryFadingOut )
 	{
-		PassStyle = STY_Alpha;
+		C.Style = ERenderStyle.STY_Normal;
 		DrawInventory(C);
+
+		C.Reset();
+		C.DrawColor = class'HudBase'.default.WhiteColor;
+		C.Style = ERenderStyle.STY_Alpha;
 	}
 
 	if (PlayerHUD != None)
 	{
 		PlayerHUD.Render(C);
+	}
+}
+
+
+simulated function DrawHudPassC(Canvas C)
+{
+	if (bShowScoreBoard && ScoreBoard != None)
+	{
+		ScoreBoard.DrawScoreboard(C);
+	}
+	
+	if (bShowPortrait && (Portrait != None))
+	{
+		DrawPortraitX(C);
 	}
 }
 

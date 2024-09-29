@@ -58,6 +58,8 @@ simulated function UpdateScoreBoard(Canvas Canvas)
 	local int Index, PlayerCount;
 	local float EntrySizeY, TempY;
 
+	Canvas.Reset();
+	Canvas.DrawColor = class'HudBase'.default.WhiteColor;
 	Canvas.Style = ERenderStyle.STY_Alpha;
 
 	PlayerCount = 0;
@@ -99,6 +101,10 @@ simulated function UpdateScoreBoard(Canvas Canvas)
 		DrawPlayerEntry(Canvas, TPRI, EntrySizeY, TempY, OwnerPRI == TPRI, Index == 0);
 		TempY += EntrySizeY * 1.2f;	
 	}
+
+	Canvas.Reset();
+	Canvas.DrawColor = class'HudBase'.default.WhiteColor;
+	Canvas.Style = ERenderStyle.STY_Alpha;
 }
 
 simulated function DrawScoreboardHeader(Canvas Canvas, float CenterY, float SizeY)

@@ -133,6 +133,10 @@ simulated function Render(Canvas C)
 			DrawMarkInfo(C, MarkInfoDataList[Index], ScreenPos.X, ScreenPos.Y, OpacityScale);
 		}
 	}
+	
+	C.Reset();
+	C.DrawColor = class'HudBase'.default.WhiteColor;
+	C.Style = ERenderStyle.STY_Alpha;
 }
 
 function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float ScreenLocX, float ScreenLocY, float OpacityScale)
