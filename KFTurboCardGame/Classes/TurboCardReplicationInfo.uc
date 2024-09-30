@@ -38,6 +38,8 @@ var TurboCardOverlay TurboCardOverlay;
 var TurboCardInteraction TurboCardInteraction;
 
 var PlayerBleedActor BleedManager;
+var PlayerBorrowedTimeActor BorrwedTimeManage;
+var PlayerNoRestForTheWickedActor NoRestForTheWickedManager;
 
 delegate OnSelectableCardsUpdated(TurboCardReplicationInfo CGRI);
 delegate OnActiveCardsUpdated(TurboCardReplicationInfo CGRI);
@@ -263,6 +265,9 @@ function Initialize(KFTurboCardGameMut Mutator)
     SuperGameDeck.InitializeDeck();
     ProConGameDeck.InitializeDeck();
     EvilGameDeck.InitializeDeck();
+    
+    SelectCard(EvilGameDeck.DeckCardObjectList[20]);
+    SelectCard(EvilGameDeck.DeckCardObjectList[22]);
 }
 
 //Append to end of active card list this newly selected card.
@@ -357,6 +362,18 @@ function StartSelection(int WaveNumber)
             Deck = ProConGameDeck;
             break;
         case 11:
+            Deck = EvilGameDeck;
+            break;
+        case 12:
+            Deck = GoodGameDeck;
+            break;
+        case 13:
+            Deck = EvilGameDeck;
+            break;
+        case 14:
+            Deck = SuperGameDeck;
+            break;
+        case 15:
             Deck = EvilGameDeck;
             break;
     }
@@ -614,6 +631,12 @@ function ModifyExplosiveRadius(float Multiplier)
     log("ExplosiveRadiusMultiplier"@OwnerMutator.CardGameRules.ExplosiveRadiusMultiplier);
 }
 
+function ModifyShotgunDamage(float Multiplier)
+{
+    OwnerMutator.CardGameRules.ShotgunDamageMultiplier *= Multiplier;
+    log("ShotgunDamageMultiplier"@OwnerMutator.CardGameRules.ShotgunDamageMultiplier);
+}
+
 function ModifyMedicGrenadeDamage(float DamageMultiplier)
 {
     OwnerMutator.CardGameRules.MedicGrenadeDamageMultiplier *= DamageMultiplier;
@@ -674,6 +697,13 @@ function ModifyWeaponZedTimeDualPistolExtensions(int Modifier)
 {
     OwnerMutator.TurboCardGameModifier.PlayerDualPistolZedTimeExtensionsModifier += Modifier;
     log("PlayerDualPistolZedTimeExtensionsModifier"@OwnerMutator.TurboCardGameModifier.PlayerDualPistolZedTimeExtensionsModifier);
+    OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
+}
+
+function ModifyDualWeaponMagazineAmmo(float Multiplier)
+{
+    OwnerMutator.TurboCardGameModifier.DualWeaponMagazineAmmoMultiplier *= Multiplier;
+    log("DualWeaponMagazineAmmoMultiplier"@OwnerMutator.TurboCardGameModifier.DualWeaponMagazineAmmoMultiplier);
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
 
@@ -744,6 +774,20 @@ function ModifyWeaponSpreadAndRecoil(float Multiplier)
 {
     OwnerMutator.TurboCardGameModifier.WeaponSpreadRecoilMultiplier *= Multiplier;
     log("WeaponSpreadRecoilMultiplier"@OwnerMutator.TurboCardGameModifier.WeaponSpreadRecoilMultiplier);
+    OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
+}
+
+function ModifyWeaponPelletCount(float Multiplier)
+{
+    OwnerMutator.TurboCardGameModifier.WeaponPelletCountMultiplier *= Multiplier;
+    log("WeaponPelletCountMultiplier"@OwnerMutator.TurboCardGameModifier.WeaponPelletCountMultiplier);
+    OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
+}
+
+function ModifyShotgunKickBack(float Multiplier)
+{
+    OwnerMutator.TurboCardGameModifier.ShotgunKickBackMultiplier *= Multiplier;
+    log("ShotgunKickBackMultiplier"@OwnerMutator.TurboCardGameModifier.ShotgunKickBackMultiplier);
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
 
@@ -945,6 +989,32 @@ function EnablePlayerBleeding()
     }
 
     BleedManager = Spawn(class'PlayerBleedActor', Self);
+}
+
+function ModifyPlayerFallDamage(float Multiplier)
+{
+    OwnerMutator.CardGameRules.FallDamageTakenMultiplier *= Multiplier;
+    log("WeaponPelletCountMultiplier"@OwnerMutator.CardGameRules.FallDamageTakenMultiplier);
+}
+
+function EnableBorrowedTime()
+{
+    if (BorrwedTimeManage != None)
+    {
+        return;
+    }
+
+    BorrwedTimeManage = Spawn(class'PlayerBorrowedTimeActor', Self);
+}
+
+function EnableNoRestForTheWicked()
+{
+    if (NoRestForTheWickedManager != None)
+    {
+        return;
+    }
+
+    NoRestForTheWickedManager = Spawn(class'PlayerNoRestForTheWickedActor', Self);
 }
 
 function ModifyFriendlyFireScale(float FriendlyFireScaleModifier)

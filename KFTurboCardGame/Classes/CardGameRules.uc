@@ -20,12 +20,14 @@ var(Turbo) float PlayerDamageMultiplier;
 var(Turbo) float PlayerRangedDamageMultiplier;
 var(Turbo) float ExplosiveDamageMultiplier;
 var(Turbo) float ExplosiveRadiusMultiplier;
+var(Turbo) float ShotgunDamageMultiplier;
 var(Turbo) float MedicGrenadeDamageMultiplier;
 var(Turbo) float FireDamageMultiplier;
 var(Turbo) float BerserkerMeleeDamageMultiplier;
 var(Turbo) float TrashHeadshotDamageMultiplier;
 
 var(Turbo) float ExplosiveDamageTakenMultiplier;
+var(Turbo) float FallDamageTakenMultiplier;
 
 var(Turbo) float OnPerkDamageMultiplier;
 var(Turbo) float OffPerkDamageMultiplier;
@@ -165,6 +167,7 @@ function Tick(float DeltaTime)
         }
 	}
 
+
 	ScrakePawnList.Length = 0;
 }
 
@@ -265,9 +268,14 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
                 DamageMultiplier *= FireDamageMultiplier;
             }
 
+            if (ShotgunDamageMultiplier != 1.f && (class'V_SupportSpec'.static.IsPerkDamageType(WeaponDamageType) || class<DamTypeTrenchgun>(DamageType) != None))
+            {
+                DamageMultiplier *= ShotgunDamageMultiplier;
+            }
+
             if (WeaponDamageType.default.bIsMeleeDamage)
             {
-                if (IsBerserker(InstigatedBy))
+                if (BerserkerMeleeDamageMultiplier != 1.f && IsBerserker(InstigatedBy))
                 {
                     DamageMultiplier *= BerserkerMeleeDamageMultiplier;
                 }
@@ -328,6 +336,14 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
         if (P_Scrake(Injured) != None)
         {
             DamageMultiplier *= ScrakeDamageMultiplier;
+        }
+    }
+
+    if (KFHumanPawn(Injured) != None)
+    {
+        if (FallDamageTakenMultiplier != 1.f && class<TurboHumanFall_DT>(DamageType) != None)
+        {
+            DamageMultiplier *= FallDamageTakenMultiplier;
         }
     }
 
@@ -465,6 +481,7 @@ function RemoveMonsterFromHeadshotList(KFMonster Monster)
 function PerformSuddenDeath()
 {
     local Controller C;
+    local PlayerController PC;
     if (bPerformingSuddenDeath)
     {
         return;
@@ -473,11 +490,18 @@ function PerformSuddenDeath()
     bPerformingSuddenDeath = true;
     for (C = Level.ControllerList; C != None; C = C.NextController)
     {
-        if (PlayerController(C) != None && PlayerController(C).Pawn != None && !PlayerController(C).Pawn.bDeleteMe && PlayerController(C).Pawn.Health > 0)
+        PC = PlayerController(C);
+
+        if (PC != None && PC.Pawn != None && !PC.Pawn.bDeleteMe && PC.Pawn.Health > 0)
         {
-            PlayerController(C).Pawn.Died(None, class'DamageType', PlayerController(C).Pawn.Location);
+            //Allow Cheat Death to directly stop this.
+            if (!AttemptCheatDeath(PC, PC.Pawn, class'SuddenDeath_DT'))
+            {
+                PlayerController(C).Pawn.Died(None, class'SuddenDeath_DT', PlayerController(C).Pawn.Location);
+            }
         }
     }
+    bPerformingSuddenDeath = false;
 }
 
 function float GetAdjustedScoreValue(float Score)
@@ -561,12 +585,14 @@ defaultproperties
     PlayerRangedDamageMultiplier=1.f
     ExplosiveDamageMultiplier=1.f
     ExplosiveRadiusMultiplier=1.f
+    ShotgunDamageMultiplier=1.f
     MedicGrenadeDamageMultiplier=1.f
     FireDamageMultiplier=1.f
     BerserkerMeleeDamageMultiplier=1.f
     TrashHeadshotDamageMultiplier=1.f
 
     ExplosiveDamageTakenMultiplier=1.f
+    FallDamageTakenMultiplier=1.f
 
     OnPerkDamageMultiplier=1.f
     OffPerkDamageMultiplier=1.f

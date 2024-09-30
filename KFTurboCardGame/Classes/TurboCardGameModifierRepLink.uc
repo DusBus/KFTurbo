@@ -13,6 +13,7 @@ var(Turbo) float FirebugFireRateMultiplier;
 var(Turbo) float ReloadRateMultiplier;
 
 var(Turbo) float MagazineAmmoMultiplier;
+var(Turbo) float DualWeaponMagazineAmmoMultiplier;
 var(Turbo) float CommandoMagazineAmmoMultiplier;
 var(Turbo) float MedicMagazineAmmoMultiplier;
 
@@ -21,6 +22,8 @@ var(Turbo) float MedicMaxAmmoMultiplier;
 
 var(Turbo) float WeaponPenetrationMultiplier;
 var(Turbo) float WeaponSpreadRecoilMultiplier;
+var(Turbo) float WeaponPelletCountMultiplier;
+var(Turbo) float ShotgunKickBackMultiplier;
 
 var(Turbo) float TraderCostMultiplier;
 var(Turbo) float TraderGrenadeCostMultiplier;
@@ -72,7 +75,19 @@ simulated function float GetFirebugFireRateMultiplier(KFPlayerReplicationInfo KF
 
 simulated function float GetReloadRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { return Super.GetFirebugFireRateMultiplier(KFPRI, Other) * ReloadRateMultiplier; }
 
-simulated function float GetMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI, KFWeapon Other) { return Super.GetMagazineAmmoMultiplier(KFPRI, Other) * MagazineAmmoMultiplier; }
+simulated function float GetMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
+{
+    local float Multiplier;
+    Multiplier = MagazineAmmoMultiplier;
+
+    if (Other.bDualWeapon)
+    {
+        Multiplier *= DualWeaponMagazineAmmoMultiplier;
+    }
+
+    return Super.GetMagazineAmmoMultiplier(KFPRI, Other) * Multiplier;
+}
+
 simulated function float GetCommandoMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI, KFWeapon Other) { return Super.GetCommandoMagazineAmmoMultiplier(KFPRI, Other) * CommandoMagazineAmmoMultiplier; }
 simulated function float GetMedicMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI, KFWeapon Other) { return Super.GetMedicMagazineAmmoMultiplier(KFPRI, Other) * MedicMagazineAmmoMultiplier; }
 
@@ -187,6 +202,12 @@ function float GetHealPotencyMultiplier(KFPlayerReplicationInfo KFPRI)
     return Multiplier;
 }
 
+function OnShotgunFire(KFShotgunFire ShotgunFire)
+{
+    ShotgunFire.ProjPerFire = float(ShotgunFire.default.ProjPerFire) * WeaponPelletCountMultiplier;
+    ShotgunFire.KickMomentum = ShotgunFire.default.KickMomentum * ShotgunKickBackMultiplier;
+}
+
 defaultproperties
 {
     FireRateMultiplier=1.f
@@ -197,6 +218,7 @@ defaultproperties
     ReloadRateMultiplier=1.f
 
     MagazineAmmoMultiplier=1.f
+    DualWeaponMagazineAmmoMultiplier=1.f
     CommandoMagazineAmmoMultiplier=1.f
     MedicMagazineAmmoMultiplier=1.f
 
@@ -205,6 +227,8 @@ defaultproperties
 
     WeaponPenetrationMultiplier=1.f
     WeaponSpreadRecoilMultiplier=1.f
+    WeaponPelletCountMultiplier=1.f
+    ShotgunKickBackMultiplier=1.f
 
     TraderCostMultiplier=1.f
     TraderGrenadeCostMultiplier=1.f

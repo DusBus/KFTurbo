@@ -114,6 +114,22 @@ function ActivateSmallerBlind(TurboCardReplicationInfo CGRI)
     CGRI.DecreaseSelectionCount();
 }
 
+function ActivateBorrowedTime(TurboCardReplicationInfo CGRI)
+{
+    CGRI.EnableBorrowedTime();
+}
+
+function ActivateBankRun(TurboCardReplicationInfo CGRI)
+{
+    class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'BankRunWaveEventHandler');
+    class'BankRunWaveEventHandler'.static.OnWaveStarted(KFTurboGameType(CGRI.Level.Game), KFTurboGameType(CGRI.Level.Game).WaveNum);
+}
+
+function ActivateNoRestForTheWicked(TurboCardReplicationInfo CGRI)
+{
+    CGRI.EnableNoRestForTheWicked();
+}
+
 defaultproperties
 {
     Begin Object Name=Hyperbloats Class=TurboCard_Evil
@@ -308,6 +324,38 @@ defaultproperties
         OnActivateCard=ActivateSmallerBlind
     End Object
     DeckCardObjectList(19)=TurboCard'SmallerBlind'
+    
+    Begin Object Name=BorrowedTime Class=TurboCard_Evil
+        CardName(0)="On Borrowed"
+        CardName(1)="Time"
+        CardDescriptionList(0)="Waves now have"
+        CardDescriptionList(1)="a time limit"
+        CardDescriptionList(2)="based on wave"
+        CardDescriptionList(3)="size. All players"
+        CardDescriptionList(4)="die when time"
+        CardDescriptionList(5)="runs outs."
+        OnActivateCard=ActivateBorrowedTime
+    End Object
+    DeckCardObjectList(20)=TurboCard'BorrowedTime'
+    
+    Begin Object Name=BankRun Class=TurboCard_Evil
+        CardName(0)="Bank Run"
+        CardDescriptionList(0)="Players lose all"
+        CardDescriptionList(1)="dosh at the end"
+        CardDescriptionList(2)="of trader time."
+        OnActivateCard=ActivateBankRun
+    End Object
+    DeckCardObjectList(21)=TurboCard'BankRun'
+    
+    Begin Object Name=NoRestForTheWicked Class=TurboCard_Evil
+        CardName(0)="No Rest For"
+        CardName(1)="The Wicked"
+        CardDescriptionList(0)="Players take"
+        CardDescriptionList(1)="damage when"
+        CardDescriptionList(2)="standing still."
+        OnActivateCard=ActivateNoRestForTheWicked
+    End Object
+    DeckCardObjectList(22)=TurboCard'NoRestForTheWicked'
 
-    //Increase spawn rate a lot.
+    //Strong Winds.
 }

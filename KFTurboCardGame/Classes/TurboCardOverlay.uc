@@ -27,6 +27,23 @@ var localized string HowToVoteString;
 var localized array<string> HowToScrollCardsString;
 var float HowToScrollFade;
 
+var Color BackplateColor;
+var Texture RoundedContainer;
+
+var PlayerBorrowedTimeActor BorrowedTimeActor;
+var bool bHasPlayedMinuteWarning, bHasPlayedThirtySecondsWarning;
+var Sound MinuteWarningSound, ThirtySecondsWarningSound, TenSecondWarningSound;
+var int LastWarnTime;
+
+enum EBorrowedTimeWarnLevel
+{
+	NoWarning,
+	OneMinuteLeft,
+	ThirtySecondsLeft,
+	TenSecondsLeft,
+	OutOfTime
+};
+
 //Bind to updates.
 simulated function InitializeCardGameHUD(TurboCardReplicationInfo CGRI)
 {
@@ -183,6 +200,7 @@ simulated function Render(Canvas C)
 	}
 	
 	C.Reset();
+	C.DrawColor = class'HudBase'.default.WhiteColor;
 	C.Style = ERenderStyle.STY_Alpha;
 
 	if (TCRI.bCurrentlyVoting)
@@ -191,6 +209,15 @@ simulated function Render(Canvas C)
 	}
 
 	DrawActiveCardList(C);
+
+	if (BorrowedTimeActor != None)
+	{
+		DrawBorrowedTime(C);
+	}
+
+	C.Reset();
+	C.DrawColor = class'HudBase'.default.WhiteColor;
+	C.Style = ERenderStyle.STY_Alpha;
 }
 
 simulated function DrawVoter(Canvas C, PlayerReplicationInfo PRI, float X, float Y, float XOffset, out array<int> VoteList)
@@ -484,6 +511,188 @@ simulated function OnActiveCardsUpdated(TurboCardReplicationInfo CGRI)
 	}
 }
 
+static final function EBorrowedTimeWarnLevel GetWarningForTime(float TimeRemaining)
+{
+	if (TimeRemaining < 1.f)
+	{
+		return OutOfTime;
+	}
+	if (TimeRemaining <= 10.f)
+	{
+		return TenSecondsLeft;
+	}
+	else if (TimeRemaining <= 30.f)
+	{
+		return ThirtySecondsLeft;
+	}
+	else if (TimeRemaining < 60.f)
+	{
+		return OneMinuteLeft;
+	}
+
+	return NoWarning;
+}
+
+static final function Color GetTextColorForWarnLevel(EBorrowedTimeWarnLevel WarnLevel)
+{
+	switch (WarnLevel)
+	{
+		case NoWarning:
+			return class'Canvas'.static.MakeColor(255, 255, 255, 220);
+		case OneMinuteLeft:
+			return class'Canvas'.static.MakeColor(255, 100, 100, 220);
+		case ThirtySecondsLeft:
+			return class'Canvas'.static.MakeColor(255, 50, 50, 220);
+		case TenSecondsLeft:
+			return class'Canvas'.static.MakeColor(255, 0, 0, 220);
+		case OutOfTime:
+			return class'Canvas'.static.MakeColor(255, 0, 0, 255);
+	}
+
+	return class'Canvas'.static.MakeColor(255, 255, 255, 220);
+}
+
+static final function float GetTextScaleForWarnLevel(EBorrowedTimeWarnLevel WarnLevel)
+{
+	switch (WarnLevel)
+	{
+		case NoWarning:
+			return 1.f;
+		case OneMinuteLeft:
+			return 1.25f;
+		case ThirtySecondsLeft:
+			return 1.5f;
+		case TenSecondsLeft:
+			return 2.f;
+		case OutOfTime:
+			return 4.f;
+	}
+
+	return 1.f;
+}
+
+static final function int GetFontSizeForWarnLevel(EBorrowedTimeWarnLevel WarnLevel)
+{
+	switch (WarnLevel)
+	{
+		case NoWarning:
+			return 2;
+		case OneMinuteLeft:
+			return 2;
+		case ThirtySecondsLeft:
+			return 1;
+		case TenSecondsLeft:
+			return 1;
+		case OutOfTime:
+			return 0;
+	}
+
+	return 2;
+}
+
+simulated function DrawBorrowedTime(Canvas C)
+{
+	local float TimeRemaining, SecondTime, MillisecondTime;
+	local int MinutesRemaining;
+	local string TimeString;
+	local bool bLessThanMinuteRemains;
+	local EBorrowedTimeWarnLevel WarnLevel;
+	
+	local float OffsetX, OffsetY, SizeY;
+	local float TextSizeX, TextSizeY, TextScale;
+	local float SizeX;
+
+	if (BorrowedTimeActor.BorrowedTimeEnd == -1)
+	{
+		bHasPlayedMinuteWarning = false;
+		bHasPlayedThirtySecondsWarning = false;
+		return;
+	}
+
+	TimeRemaining = float(BorrowedTimeActor.BorrowedTimeEnd) - (BorrowedTimeActor.CurrentServerTime + 1.f);
+	TimeRemaining = FMax(TimeRemaining, 0.f);
+
+	WarnLevel = GetWarningForTime(TimeRemaining);
+	
+	MinutesRemaining = int(TimeRemaining) / 60;
+	bLessThanMinuteRemains = MinutesRemaining <= 0;
+
+	if (!bLessThanMinuteRemains)
+	{
+		SecondTime = Max(int(TimeRemaining) - (MinutesRemaining * 60), 0);
+		TimeString = FillStringWithZeroes(MinutesRemaining, 2) $ ":" $ FillStringWithZeroes(int(SecondTime), 2);
+	}
+	else
+	{
+		SecondTime = Max(int(TimeRemaining), 0);
+		MillisecondTime = TimeRemaining - SecondTime;
+		MillisecondTime = MillisecondTime * 100.f;
+		TimeString = FillStringWithZeroes(int(SecondTime), 2) $ ":" $ FillStringWithZeroes(string(Max(int(MillisecondTime), 0)), 2);
+	}
+
+	//Offset from right needs to match cash widget offset.
+	OffsetX = C.ClipX - (C.ClipY * class'TurboHUDPlayer'.default.BackplateSpacing.Y);
+	OffsetY = C.ClipY * class'TurboHUDWaveInfo'.default.BackplateSpacing.Y;
+	SizeY = C.ClipY * class'TurboHUDWaveInfo'.default.BackplateSize.Y * GetTextScaleForWarnLevel(WarnLevel);
+
+	C.DrawColor = BackplateColor;
+
+	C.FontScaleX = 1.f;
+	C.FontScaleY = 1.f;
+	C.Font = class'KFTurboFonts'.static.LoadLargeNumberFont(GetFontSizeForWarnLevel(WarnLevel));
+	C.TextSize(GetStringOfZeroes(Len(TimeString)), TextSizeX, TextSizeY);
+	TextScale = (SizeY) / TextSizeY;
+	C.FontScaleX = TextScale;
+	C.FontScaleY = TextScale;
+	C.TextSize(GetStringOfZeroes(Len(TimeString)), TextSizeX, TextSizeY);
+
+	SizeX = C.ClipX * ((TextSizeX / C.ClipX) + 0.01f);
+
+	C.SetPos(OffsetX - SizeX, OffsetY);
+
+	if (RoundedContainer != None)
+	{
+		C.DrawTileStretched(RoundedContainer, SizeX, SizeY);
+	}
+	
+	C.DrawColor = GetTextColorForWarnLevel(WarnLevel);
+	C.SetPos((OffsetX - (SizeX * 0.5f)) - (TextSizeX * 0.5f), (OffsetY + (SizeY * 0.5f)) - (TextSizeY * 0.5f));
+	DrawTextMeticulous(C, TimeString, TextSizeX);
+
+	if (TimeRemaining <= 60)
+	{
+		CheckSoundWarning(TimeRemaining);
+	}
+}
+
+simulated function CheckSoundWarning(int TimeRemaining)
+{
+	TimeRemaining = Max(TimeRemaining, 0);
+	if (LastWarnTime == TimeRemaining)
+	{
+		return;
+	}
+
+	LastWarnTime = TimeRemaining;
+
+	if (TimeRemaining < 10)
+	{
+		bHasPlayedThirtySecondsWarning = true;
+		bHasPlayedMinuteWarning = true;
+		KFPHUD.PlayerOwner.ClientPlaySound(TenSecondWarningSound,,, SLOT_Interface);
+	}
+	else if (!bHasPlayedThirtySecondsWarning && TimeRemaining < 30)
+	{
+		bHasPlayedThirtySecondsWarning = true;
+		KFPHUD.PlayerOwner.ClientPlaySound(ThirtySecondsWarningSound,,, SLOT_Interface);
+	}
+	else if (!bHasPlayedMinuteWarning && TimeRemaining <= 60)
+	{
+		bHasPlayedMinuteWarning = true;
+		KFPHUD.PlayerOwner.ClientPlaySound(MinuteWarningSound,,, SLOT_Interface);
+	}
+}
+
 defaultproperties
 {
 	VotedCardIndex=-1
@@ -493,4 +702,15 @@ defaultproperties
 	HowToScrollCardsString(0)="Scroll up and"
 	HowToScrollCardsString(1)="down to show"
 	HowToScrollCardsString(2)="other cards!"
+	
+	BackplateColor=(R=0,G=0,B=0,A=140)	
+	RoundedContainer=Texture'KFTurbo.HUD.ContainerRounded_D'
+
+	bHasPlayedMinuteWarning=false
+	bHasPlayedThirtySecondsWarning=false
+
+	MinuteWarningSound=Sound'KF_FoundrySnd.1Shot.Alarm_BellWarning01'
+	ThirtySecondsWarningSound=Sound'KF_FoundrySnd.Alarm_SirenLoop01'
+	TenSecondWarningSound=Sound'KF_FoundrySnd.1Shot.Alarm_AlertWarning01'
+	LastWarnTime=-1
 }

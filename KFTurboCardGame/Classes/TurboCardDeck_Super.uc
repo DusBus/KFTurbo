@@ -90,13 +90,24 @@ function ActivateStrongArm(TurboCardReplicationInfo CGRI)
 
 function ActivateDiazepam(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyWeaponSpreadAndRecoil(0.3f);
+    CGRI.ModifyWeaponSpreadAndRecoil(0.2f);
 }
 
 function ActivateMaximumPayne(TurboCardReplicationInfo CGRI)
 {
     CGRI.ModifyWeaponZedTimeDualPistolFireRate(2.f);
     CGRI.ModifyWeaponZedTimeDualPistolExtensions(100);
+    CGRI.ModifyDualWeaponMagazineAmmo(1.5f);
+}
+
+function ActivatePackedShells(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyWeaponPelletCount(1.5f);
+}
+
+function ActivateMyLegsAreOkay(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyPlayerFallDamage(0.f);
 }
 
 defaultproperties
@@ -263,7 +274,7 @@ defaultproperties
         CardName(0)="Diazepam"
         CardDescriptionList(0)="Reduces spread"
         CardDescriptionList(1)="and recoil for all"
-        CardDescriptionList(2)="players by 70%."
+        CardDescriptionList(2)="players by 80%."
         OnActivateCard=ActivateDiazepam
     End Object
     DeckCardObjectList(16)=TurboCard'Diazepam'
@@ -271,14 +282,30 @@ defaultproperties
     Begin Object Name=MaximumPayne Class=TurboCard_Super
         CardName(0)="Maximum Payne"
         CardDescriptionList(0)="Increases dual"
-        CardDescriptionList(1)="pistol's zed time"
-        CardDescriptionList(2)="extensions and"
+        CardDescriptionList(1)="pistol's magazine"
+        CardDescriptionList(2)="size by 50% and"
         CardDescriptionList(3)="firerate during"
         CardDescriptionList(4)="zed time by 100%."
         OnActivateCard=ActivateMaximumPayne
     End Object
     DeckCardObjectList(17)=TurboCard'MaximumPayne'
 
+    Begin Object Name=PackedShells Class=TurboCard_Super
+        CardName(0)="Packed Shells"
+        CardDescriptionList(0)="Increases shotgun"
+        CardDescriptionList(1)="pellet count"
+        CardDescriptionList(2)="by 50%."
+        OnActivateCard=ActivatePackedShells
+    End Object
+    DeckCardObjectList(18)=TurboCard'PackedShells'
 
-    //Large increase to grenade capacity + no more avoidance for grenades.
+    Begin Object Name=MyLegsAreOkay Class=TurboCard_Super
+        CardName(0)="My Legs"
+        CardName(1)="Are Okay"
+        CardDescriptionList(0)="Players do"
+        CardDescriptionList(1)="not take"
+        CardDescriptionList(2)="fall damage."
+        OnActivateCard=ActivateMyLegsAreOkay
+    End Object
+    DeckCardObjectList(19)=TurboCard'MyLegsAreOkay'
 }
