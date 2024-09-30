@@ -609,7 +609,7 @@ simulated function DrawBorrowedTime(Canvas C)
 		return;
 	}
 
-	TimeRemaining = float(BorrowedTimeActor.BorrowedTimeEnd) - (BorrowedTimeActor.CurrentServerTime + 1.f);
+	TimeRemaining = float(BorrowedTimeActor.BorrowedTimeEnd) - (BorrowedTimeActor.CurrentServerTime);
 	TimeRemaining = FMax(TimeRemaining, 0.f);
 
 	WarnLevel = GetWarningForTime(TimeRemaining);
