@@ -14,6 +14,9 @@ var protected bool bHasAttemptedToApplyFinalWaveOverride;
 //Whatever spawn rate is set as, make sure it gets multiplied by this.
 var float WaveSpawnRateModifier;
 
+//Set to true when the boss has been spawned. Used to prevent duplicate broadcasts of OnBossSpawned event.
+var bool bHasSpawnedBoss;
+
 //Event handler stored here so we have an easy way to find it.
 //TODO: Slowly split these up into relevant categories so that a listener doesn't bloat the list of active handlers just to get one event it wants.
 var array< class<TurboEventHandler> > EventHandlerList;
@@ -23,6 +26,21 @@ var array< class<TurboWaveEventHandler> > WaveEventHandlerList;
 //Events that KFTurboServerMut binds to for bridging communication with ServerPerksMut.
 Delegate OnStatsAndAchievementsDisabled();
 Delegate LockPerkSelection(bool bLock);
+ 
+//Provide full context on something dying to TurboGameRules.
+function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<DamageType> DamageType)
+{
+    local GameRules NextGameRules;
+    Super.Killed(Killer, Killed, KilledPawn, DamageType);
+
+    for (NextGameRules = GameRulesModifiers; NextGameRules != None; NextGameRules = NextGameRules.NextGameRules)
+    {
+        if (TurboGameRules(NextGameRules) != None)
+        {
+            TurboGameRules(NextGameRules).Killed(Killer, Killed, KilledPawn, DamageType);
+        }
+    }
+}
 
 static function bool IsHighDifficulty()
 {
@@ -160,6 +178,23 @@ function BuildNextSquad()
 	Super.BuildNextSquad();
 
 	class'TurboWaveEventHandler'.static.BroadcastNextSpawnSquadGenerated(Self, NextSpawnSquad);
+}
+
+function bool AddBoss()
+{
+    if (Super.AddBoss())
+    {
+        if (!bHasSpawnedBoss)
+        {
+            log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SPAWNED BOSS");
+            bHasSpawnedBoss = true;
+	        class'TurboWaveEventHandler'.static.BroadcasBossSpawned(Self);
+        }
+        return true;
+    }
+
+    log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DID NOT SPAWNED BOSS");
+    return false;
 }
 
 function AddSpecialSquad()
@@ -345,6 +380,7 @@ defaultproperties
     bHasAttemptedToApplyFinalWaveOverride=false
 
 	WaveSpawnRateModifier=1.f
+    bHasSpawnedBoss=false
 
     MonsterClasses(0)=(MClassName="KFTurbo.P_Clot_STA",Mid="A")
     MonsterClasses(1)=(MClassName="KFTurbo.P_Crawler_STA",Mid="B")

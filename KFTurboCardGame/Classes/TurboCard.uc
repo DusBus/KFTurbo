@@ -17,9 +17,6 @@ var bool bCanEverRepeat;
 var Texture BackplateTexture;
 var Color BackplateColor;
 
-var Texture BackgroundTexture;
-var Color BackgroundColor;
-
 var Color CardNameColor;
 var Color CardDescriptionColor;
 var Color CardTextShadowColor;
@@ -30,13 +27,13 @@ var bool bCardDescriptionAllCaps;
 
 var Color CardIDColor;
 
+
 delegate OnActivateCard(TurboCardReplicationInfo CGRI);
 
 function SetupScriptedTexture(ScriptedTexture Tex)
 {
 	local float TempX, TempY;
 	local float SizeX, SizeY;
-	local float BackgroundScale;
 	local int TextSizeX, TextSizeY;
 	local Font TextFont;
 
@@ -47,16 +44,6 @@ function SetupScriptedTexture(ScriptedTexture Tex)
 
 	SizeX = 256;
 	SizeY = 512;
-
-	if (BackgroundTexture != None)
-	{
-		BackgroundScale = FMin(1.f, (SizeY - 128.f) / float(BackgroundTexture.VSize));
-		TempX = (SizeX * 0.5f) - (float(Tex.USize) * BackgroundScale * 0.5f);
-		TempY = (SizeY * 0.5f) - (float(Tex.VSize) * BackgroundScale * 0.5f);
-
-		Tex.DrawTile(TempX, TempY, float(Tex.USize) * BackgroundScale, float(Tex.VSize) * BackgroundScale,
-			0, 0, Tex.USize, Tex.VSize, BackgroundTexture, BackgroundColor);
-	}
 
 	FullTitleString = ApplyTitle(Tex);
 	
@@ -180,9 +167,6 @@ defaultproperties
 
 	BackplateTexture=Texture'KFTurboCardGame.Card.CardBackplate_D'
 	BackplateColor=(R=255,G=255,B=255,A=255)
-
-	BackgroundTexture=None
-	BackgroundColor=(R=255,G=255,B=255,A=200)
 	
 	CardNameColor=(R=0,G=0,B=0,A=255)
 	CardDescriptionColor=(R=0,G=0,B=0,A=255)

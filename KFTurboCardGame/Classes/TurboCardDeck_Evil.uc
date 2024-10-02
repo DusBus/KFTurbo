@@ -130,6 +130,11 @@ function ActivateNoRestForTheWicked(TurboCardReplicationInfo CGRI)
     CGRI.EnableNoRestForTheWicked();
 }
 
+function ActivateCurseOfRa(TurboCardReplicationInfo CGRI)
+{
+    CGRI.EnableCurseOfRa();
+}
+
 defaultproperties
 {
     Begin Object Name=Hyperbloats Class=TurboCard_Evil
@@ -356,6 +361,11 @@ defaultproperties
         OnActivateCard=ActivateNoRestForTheWicked
     End Object
     DeckCardObjectList(22)=TurboCard'NoRestForTheWicked'
+    
+    Begin Object Name=CurseOfRa Class=TurboCard_Evil_Ra
+        OnActivateCard=ActivateCurseOfRa
+    End Object
+    DeckCardObjectList(23)=TurboCard'CurseOfRa'
 
     //Strong Winds.
 }

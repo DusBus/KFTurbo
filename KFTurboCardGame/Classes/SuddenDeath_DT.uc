@@ -6,7 +6,7 @@ class SuddenDeath_DT extends DamageType;
 defaultproperties
 {  
     bArmorStops=false
-    bCausedByWorld=true
+    bCausedByWorld=false
     
     DeathString="%o was claimed by Sudden Death."
     FemaleSuicide="%o was claimed by Sudden Death."

@@ -2,7 +2,7 @@
 //Used to apply a variety of gameplay effects. Moved handling of modifying spawned actors here as well out of the Mutator.
 //Distributed under the terms of the GPL-2.0 License.
 //For more information see https://github.com/KFPilot/KFTurbo.
-class CardGameRules extends Engine.GameRules
+class CardGameRules extends TurboGameRules
     hidecategories(Advanced,Display,Events,Object,Sound);
 	
 var KFTurboCardGameMut MutatorOwner;
@@ -38,7 +38,12 @@ var(Turbo) float NonHeadshotDamageMultiplier;
 var(Turbo) float LowHealthDamageMultiplier;
 
 var (Turbo) bool bCheatDeathEnabled;
-var (Turbo) array<PlayerController> CheatedDeathPlayerList;
+struct CheatDeathEntry
+{
+    var PlayerController Player;
+    var float DeathTime;
+};
+var (Turbo) array<CheatDeathEntry> CheatedDeathPlayerList;
 
 //Monster
 var array<KFMonster> MonsterPawnList;
@@ -212,7 +217,7 @@ function bool AttemptCheatDeath(PlayerController Killed, Pawn KilledPawn, class<
 {
     local int Index;
 
-    //Do not block suicides and do not kills caused by the world (unless it's normal fall damage).
+    //Do not block suicides or kills caused by the world (unless it's normal fall damage).
     if (class<Suicided>(DamageType) != None || (DamageType.default.bCausedByWorld && class<TurboHumanFall_DT>(DamageType) == None))
     {
         return false;
@@ -220,16 +225,19 @@ function bool AttemptCheatDeath(PlayerController Killed, Pawn KilledPawn, class<
 
     for(Index = CheatedDeathPlayerList.Length - 1; Index > -1; Index--)
     {
-        if (CheatedDeathPlayerList[Index] == Killed)
+        if (CheatedDeathPlayerList[Index].Player == Killed)
         {
             return false;
         }
     }
 
+    CheatedDeathPlayerList.Length = CheatedDeathPlayerList.Length + 1;
+    CheatedDeathPlayerList[CheatedDeathPlayerList.Length - 1].Player = Killed;
+    CheatedDeathPlayerList[CheatedDeathPlayerList.Length - 1].DeathTime = Level.TimeSeconds;
+    KilledPawn.Health = Max(KilledPawn.HealthMax * 0.5f, Max(KilledPawn.Health, 1));
+
     Level.BroadcastLocalizedMessage(class'CheatDeathLocalMessage', 0, Killed.PlayerReplicationInfo);
     
-    CheatedDeathPlayerList[CheatedDeathPlayerList.Length] = Killed;
-    KilledPawn.Health = Max(KilledPawn.HealthMax * 0.5f, 1);
     return true;
 }
 
@@ -455,6 +463,40 @@ function ScoreKill(Controller Killer, Controller Killed)
         if (KFMonster(Killed.Pawn) != None)
         {
             RemoveMonsterFromHeadshotList(KFMonster(Killed.Pawn));
+        }
+    }
+}
+
+function bool ShouldTriggerSuddenDeath(Controller Killed, class<DamageType> DamageType)
+{
+    //Don't trigger sudden death on suicide during trader time.
+    if (class<Suicided>(DamageType) != None && KFGameType(Level.Game) != None && !KFGameType(Level.Game).bWaveInProgress)
+    {
+        return false;
+    }
+
+    //Don't trigger sudden death from sudden death.
+    if (class<SuddenDeath_DT>(DamageType) != None)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<DamageType> DamageType)
+{
+    if (Killed == None)
+    {
+        return;
+    }
+
+    if (bSuddenDeathEnabled && PlayerController(Killed) != None && KFHumanPawn(Killed.Pawn) != None
+        && Killed.PlayerReplicationInfo != None && Killed.PlayerReplicationInfo.Ping < 255)
+    {
+        if (ShouldTriggerSuddenDeath(Killed, DamageType))
+        {
+            PerformSuddenDeath();
         }
     }
 }

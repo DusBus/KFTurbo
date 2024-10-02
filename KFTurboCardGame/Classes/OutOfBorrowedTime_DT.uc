@@ -6,7 +6,7 @@ class OutOfBorrowedTime_DT extends DamageType;
 defaultproperties
 {
     bArmorStops=false
-    bCausedByWorld=true
+    bCausedByWorld=false
      
     DeathString="%o has run out of time."
     FemaleSuicide="%o has run out of time."

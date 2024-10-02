@@ -6,7 +6,7 @@ class NoRestForTheWicked_DT extends DamageType;
 defaultproperties
 {
     bArmorStops=false
-    bCausedByWorld=true
+    bCausedByWorld=false
     
     DeathString="%o has closed their eyes for good."
     FemaleSuicide="%o has closed their eyes for good."

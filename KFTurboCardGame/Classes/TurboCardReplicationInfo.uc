@@ -40,6 +40,7 @@ var TurboCardInteraction TurboCardInteraction;
 var PlayerBleedActor BleedManager;
 var PlayerBorrowedTimeActor BorrwedTimeManage;
 var PlayerNoRestForTheWickedActor NoRestForTheWickedManager;
+var CurseOfRaManager CurseOfRaManager;
 
 delegate OnSelectableCardsUpdated(TurboCardReplicationInfo CGRI);
 delegate OnActiveCardsUpdated(TurboCardReplicationInfo CGRI);
@@ -265,9 +266,6 @@ function Initialize(KFTurboCardGameMut Mutator)
     SuperGameDeck.InitializeDeck();
     ProConGameDeck.InitializeDeck();
     EvilGameDeck.InitializeDeck();
-    
-    SelectCard(EvilGameDeck.DeckCardObjectList[20]);
-    SelectCard(EvilGameDeck.DeckCardObjectList[22]);
 }
 
 //Append to end of active card list this newly selected card.
@@ -1015,6 +1013,17 @@ function EnableNoRestForTheWicked()
     }
 
     NoRestForTheWickedManager = Spawn(class'PlayerNoRestForTheWickedActor', Self);
+}
+
+function EnableCurseOfRa()
+{
+    if (CurseOfRaManager != None)
+    {
+        return;
+    }
+
+    CurseOfRaManager = Spawn(class'CurseOfRaManager', Self);
+    class'TurboWaveEventHandler'.static.RegisterWaveHandler(Self, class'CurseOfRawWaveEventHandler');
 }
 
 function ModifyFriendlyFireScale(float FriendlyFireScaleModifier)

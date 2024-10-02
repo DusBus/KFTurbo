@@ -6,6 +6,7 @@ class TurboHumanBleed_DT extends ZombieMeleeDamage;
 defaultproperties
 {
     bArmorStops=false
+    bCausedByWorld=false
     bCheckForHeadShots=false
     HeadShotDamageMult=1.f
      
