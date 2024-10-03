@@ -111,7 +111,9 @@ function AddSpawner(out RatedSpawner Entry, ZombieVolume Volume, float Score)
     Entry.Score = Score;
 }
 
+//TODO: Rage Scrakes and Fleshpounds
+
 defaultproperties
 {
-    NumExtraToSpawn=2
+    NumExtraToSpawn=1
 }

@@ -186,14 +186,12 @@ function bool AddBoss()
     {
         if (!bHasSpawnedBoss)
         {
-            log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SPAWNED BOSS");
             bHasSpawnedBoss = true;
 	        class'TurboWaveEventHandler'.static.BroadcasBossSpawned(Self);
         }
         return true;
     }
 
-    log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DID NOT SPAWNED BOSS");
     return false;
 }
 
