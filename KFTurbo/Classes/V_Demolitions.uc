@@ -47,7 +47,7 @@ static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, Class<Ammun
 	switch (AmmoType)
 	{
 	case class'W_LAW_Ammo' :
-		Multiplier *= LerpStat(KFPRI, 1.f, 1.6f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.5f);
 		break;
 	case class'W_Pipebomb_Ammo' :
 		Multiplier *= LerpStat(KFPRI, 1.f, 4.f);
