@@ -123,9 +123,9 @@ simulated function float GetPlayerMovementSpeedMultiplier(KFPlayerReplicationInf
         Multiplier *= FClamp(Lerp((KFPRI.Score - 800.f) / 5200.f, 1.f, 0.01f), 0.01f, 1.f);
     }
 
-    if (bMissingHealthStronglySlows && Controller(KFPRI.Owner) != None && (float(Controller(KFPRI.Owner).Pawn.Health) / Controller(KFPRI.Owner).Pawn.HealthMax) < 0.9f)
+    if (bMissingHealthStronglySlows && Controller(KFPRI.Owner) != None && (float(Controller(KFPRI.Owner).Pawn.Health) / Controller(KFPRI.Owner).Pawn.HealthMax) < 0.75f)
     {
-        Multiplier *= 0.5f;
+        Multiplier *= 0.75f;
     }
     
     return Super.GetPlayerMovementSpeedMultiplier(KFPRI, KFGRI) * Multiplier;

@@ -14,6 +14,8 @@ struct RatedSpawner
 function PostBeginPlay()
 {
     Super.PostBeginPlay();
+
+    SetTimer(17.f, true);
 }
 
 function OnBossSpawned()
@@ -111,7 +113,114 @@ function AddSpawner(out RatedSpawner Entry, ZombieVolume Volume, float Score)
     Entry.Score = Score;
 }
 
-//TODO: Rage Scrakes and Fleshpounds
+//Randomly do something strange sometimes.
+function Timer()
+{
+    local float Random;
+
+    if (KFGameType(Level.Game) != None && !KFGameType(Level.Game).bWaveInProgress)
+    {
+        return;
+    }
+
+    if (FRand() < 0.9f)
+    {
+        return;
+    }
+
+    Random = FRand();
+
+    if (Random < 0.1f)
+    {
+        RandomlyRageScrake();
+    }
+    else if (Random < 0.2f)
+    {
+        RandomlyRageFleshpound();
+    }
+    else if (Random < 0.3f)
+    {
+        RandomlySetOffPipebomb();
+    }
+}
+
+function RandomlyRageScrake()
+{
+    local P_Scrake Scrake;
+    local array<P_Scrake> ScrakeList;
+    foreach DynamicActors(class'P_Scrake', Scrake)
+    {
+        ScrakeList.Length = ScrakeList.Length + 1;
+        ScrakeList[ScrakeList.Length - 1] = Scrake;
+    }
+
+    if (ScrakeList.Length == 0)
+    {
+        return;
+    }
+
+    Scrake = ScrakeList[Rand(ScrakeList.Length)];
+
+    if (Scrake == None || Scrake.Health <= 0)
+    {
+        return;
+    }
+
+	Scrake.HealthRageThreshold = FMax(1.1f, Scrake.HealthRageThreshold);
+    Scrake.RangedAttack(None);
+}
+
+function RandomlyRageFleshpound()
+{
+    local AI_Fleshpound Fleshpound;
+    local array<AI_Fleshpound> FleshpoundList;
+    foreach DynamicActors(class'AI_Fleshpound', Fleshpound)
+    {
+        FleshpoundList.Length = FleshpoundList.Length + 1;
+        FleshpoundList[FleshpoundList.Length - 1] = Fleshpound;
+    }
+
+    if (FleshpoundList.Length == 0)
+    {
+        return;
+    }
+
+    Fleshpound = FleshpoundList[Rand(FleshpoundList.Length)];
+
+    if (Fleshpound == None || Fleshpound.Pawn == None || Fleshpound.Pawn.Health <= 0)
+    {
+        return;
+    }
+
+	Fleshpound.bForcedRage = true;
+	P_Fleshpound(Fleshpound.Pawn).StartCharging();
+	P_Fleshpound(Fleshpound.Pawn).bFrustrated = true;
+}
+
+function RandomlySetOffPipebomb()
+{
+    local PipeBombProjectile Pipebomb;
+    local array<PipeBombProjectile> PipebombList;
+    foreach DynamicActors(class'PipeBombProjectile', Pipebomb)
+    {
+        PipebombList.Length = PipebombList.Length + 1;
+        PipebombList[PipebombList.Length - 1] = Pipebomb;
+    }
+
+    if (PipebombList.Length == 0)
+    {
+        return;
+    }
+
+    Pipebomb = PipebombList[Rand(PipebombList.Length)];
+
+    if (Pipebomb == None)
+    {
+        return;
+    }
+
+    Pipebomb.Explode(Pipebomb.Location,vect(0,0,1));
+}
 
 defaultproperties
 {
