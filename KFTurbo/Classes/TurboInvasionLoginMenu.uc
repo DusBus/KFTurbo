@@ -8,7 +8,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 	local SRMenuAddition M;
 
 	// Setup panel classes.
-	Panels[0].ClassName = string(class'SRTab_ServerNews');
+	Panels[0].ClassName = string(class'TurboTab_ServerNews');
 	Panels[1].ClassName = string(class'TurboTab_MidGamePerks');
 	Panels[2].ClassName = string(class'SRTab_MidGameVoiceChat');
 	Panels[3].ClassName = string(class'SRTab_MidGameHelp');
@@ -43,7 +43,6 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 				M.NotifyMenuOpen(Self,MyController);
 			}
 	}
-
 
    	s = GetSizingCaption();
 
