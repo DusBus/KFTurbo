@@ -21,6 +21,11 @@ simulated function PostBeginPlay()
 	foreach Level.AllActors( class'ServerPerksMut', ServerPerksMutator )
 	{
 		ServerPerksMutator.bNoSavingProgress = !class'KFTurboGameType'.static.StaticAreStatsAndAchievementsEnabled(Self);
+		
+		if (!ServerPerksMutator.bEnabledEmoIcons)
+		{
+			ForceEnableEmotes(ServerPerksMutator);
+		}
 		break;
 	}
 
@@ -30,6 +35,33 @@ simulated function PostBeginPlay()
 		KFTurboGameType(Level.Game).OnStatsAndAchievementsDisabled = OnStatsAndAchievementsDisabled;
 		KFTurboGameType(Level.Game).LockPerkSelection = LockPerkSelection;
 	}
+}
+
+//ServerPerks likes to not do this - try to force it!
+function ForceEnableEmotes(ServerPerksMut ServerPerksMutator)
+{
+	local int i, j;
+	local Texture T;
+
+	j = 0;
+	for( i=0; i<ServerPerksMutator.SmileyTags.Length; ++i )
+	{
+		if( ServerPerksMutator.SmileyTags[i].IconTexture=="" || ServerPerksMutator.SmileyTags[i].IconTag=="" )
+			continue;
+		T = Texture(DynamicLoadObject(ServerPerksMutator.SmileyTags[i].IconTexture,class'Texture',true));
+		if( T==None )
+			continue;
+		ServerPerksMutator.ImplementPackage(T);
+		ServerPerksMutator.SmileyMsgs.Length = j+1;
+		ServerPerksMutator.SmileyMsgs[j].SmileyTex = T;
+		if( ServerPerksMutator.SmileyTags[i].bCaseInsensitive )
+			ServerPerksMutator.SmileyMsgs[j].SmileyTag = Caps(ServerPerksMutator.SmileyTags[i].IconTag);
+		else ServerPerksMutator.SmileyMsgs[j].SmileyTag = ServerPerksMutator.SmileyTags[i].IconTag;
+		ServerPerksMutator.SmileyMsgs[j].bInCAPS = ServerPerksMutator.SmileyTags[i].bCaseInsensitive;
+		++j;
+	}
+
+	ServerPerksMutator.bEnabledEmoIcons = (j!=0);
 }
 
 function AddMutator(Mutator M)
@@ -44,6 +76,11 @@ function AddMutator(Mutator M)
 	if (ServerPerksMutator != None)
 	{
 		ServerPerksMutator.bNoSavingProgress = !class'KFTurboGameType'.static.StaticAreStatsAndAchievementsEnabled(Self);
+
+		if (!ServerPerksMutator.bEnabledEmoIcons)
+		{
+			ForceEnableEmotes(ServerPerksMutator);
+		}
 	}
 }
 
@@ -95,6 +132,7 @@ simulated function String GetHumanReadableName()
 defaultproperties
 {
 	bAddToServerPackages=False
+
 	GroupName="KF-KFTurboServer"
 	FriendlyName="Killing Floor Turbo Server"
 	Description="Mutator for KFTurbo Server."

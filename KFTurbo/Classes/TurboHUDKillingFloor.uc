@@ -10,6 +10,8 @@ var Material EndGameHUDMaterial;
 var bool bHasInitializedEndGameHUD;
 var float EndGameHUDAnimationProgress;
 
+var bool bSortedEmoteList;
+
 var class<TurboHUDOverlay> PlayerInfoHUDClass;
 var TurboHUDOverlay PlayerInfoHUD;
 
@@ -76,6 +78,11 @@ simulated function Tick(float DeltaTime)
 	if (bHasInitializedEndGameHUD)
 	{
 		EndGameHUDAnimationProgress += DeltaTime;
+	}
+
+	if (!bSortedEmoteList)
+	{
+		bSortedEmoteList = true;
 	}
 }
 
@@ -529,7 +536,7 @@ function DisplayMessages(Canvas C)
 
 		if( SmileyMsgs.Length!=0 )
 		{
-			DrawSmileyText(class'GUIComponent'.static.StripColorCodes(TextMessages[i].Text),C,,YYL);
+			DrawScaledSmileyText(class'GUIComponent'.static.StripColorCodes(TextMessages[i].Text),C,,YYL);
 		}
 		else
 		{
@@ -549,7 +556,7 @@ function DisplayMessages(Canvas C)
 
 		if( SmileyMsgs.Length!=0 )
 		{
-			DrawSmileyText(TextMessages[i].Text,C,,YYL);
+			DrawScaledSmileyText(TextMessages[i].Text,C,,YYL);
 		}
 		else
 		{
@@ -557,6 +564,224 @@ function DisplayMessages(Canvas C)
 		}
 		YPos += (YL+YYL);
 	}
+}
+
+simulated function DrawTypingPrompt(Canvas C, String Text, optional int Pos)
+{
+    local float XPos, YPos;
+    local float XL, YL;
+	local string PromptText;
+
+    C.Font = GetConsoleFont(C);
+    C.Style = ERenderStyle.STY_Alpha;
+    C.SetDrawColor(255, 255, 255, 255);
+
+    C.TextSize("A", XL, YL);
+
+    XPos = (ConsoleMessagePosX * HudCanvasScale * C.SizeX) + (((1.0 - HudCanvasScale) * 0.5) * C.SizeX);
+    YPos = (ConsoleMessagePosY * HudCanvasScale * C.SizeY) + (((1.0 - HudCanvasScale) * 0.5) * C.SizeY) - YL;
+
+	PromptText = "(>"@Left(Text, Pos)$chr(4)$Eval(Pos < Len(Text), Mid(Text, Pos), "_");
+
+    C.SetPos(XPos, YPos);
+    C.DrawTextClipped(PromptText, true);
+
+	if (Pos >= Len(Text))
+	{
+		DrawEmoteHintPrompt(C, Text, XPos, YPos);
+	}
+}
+
+simulated function bool CheckEmotePrompt(Canvas C, out string EmoteText, out float DrawX)
+{
+	local int Index, StringSize;
+	local int ColonCount;
+	local int LastColon, LastSpace;
+	local string Char;
+	local float XL, YL;
+ 
+	Index = 0;
+	StringSize = Len(EmoteText);
+	ColonCount = 0;
+	LastColon = -1;
+	LastSpace = -1;
+
+	while(Index < StringSize)
+	{
+		Char = Mid(EmoteText, Index, 1);
+		if (Char == ":")
+		{
+			ColonCount++;
+			LastColon = Index;
+		}
+		else if (Char == " ")
+		{
+			ColonCount = 0;
+			LastSpace = Index;
+		}
+
+		Index++;
+	}
+
+	if (ColonCount % 2 == 0)
+	{
+		return false;
+	}
+
+	if (LastSpace > LastColon)
+	{
+		return false;
+	}
+    
+    C.TextSize(Left(EmoteText, LastColon), XL, YL);
+	DrawX += XL;
+	EmoteText = Mid(EmoteText, LastColon);
+	return true;
+}
+
+simulated function DrawEmoteHintPrompt(Canvas C, String Text, float DrawX, float DrawY)
+{
+	local int Index, LastAllocatedIndex;
+	local array<string> HintList;
+	local string CapsEmoteText;
+	local int EmoteTextLength;
+
+	local float TextSizeX, TextSizeY;
+	local float LargestTextSizeX, TotalTextSizeY;
+
+	if (!CheckEmotePrompt(C, Text, DrawX))
+	{
+		return;
+	}
+
+	CapsEmoteText = Caps(Text);
+	EmoteTextLength = Len(Text);
+	HintList.Length = Min(SmileyMsgs.Length, 8);
+	LastAllocatedIndex = -1;
+
+	Index = SmileyMsgs.Length - 1;
+	while(Index >= 0 && LastAllocatedIndex < 8)
+	{
+		if (SmileyMsgs[Index].bInCAPS)
+		{
+			if (StrCmp(SmileyMsgs[Index].SmileyTag, CapsEmoteText, EmoteTextLength) == 0)
+			{
+				LastAllocatedIndex++;
+				HintList[LastAllocatedIndex] = Locs(SmileyMsgs[Index].SmileyTag);
+			}
+		}
+		else
+		{
+			if (StrCmp(SmileyMsgs[Index].SmileyTag, Text, EmoteTextLength) == 0)
+			{
+				LastAllocatedIndex++;
+				HintList[LastAllocatedIndex] = SmileyMsgs[Index].SmileyTag;
+			}
+		}
+		
+		Index--;
+	}
+
+	if (LastAllocatedIndex == -1)
+	{
+		return;
+	}
+
+	HintList.Length = LastAllocatedIndex + 1;
+	C.TextSize(HintList[0], TextSizeX, TextSizeY);
+	TotalTextSizeY = TextSizeY * float(HintList.Length + 1);
+
+	for (Index = 0; Index < HintList.Length; Index++)
+	{
+		C.TextSize(HintList[Index], TextSizeX, TextSizeY);
+		LargestTextSizeX = FMax(LargestTextSizeX, TextSizeX);
+	}
+
+	LargestTextSizeX += TextSizeY;
+	C.SetPos(DrawX, DrawY - TotalTextSizeY);
+	C.SetDrawColor(0, 0, 0, 120);
+	C.DrawTile(Texture'Engine.WhiteSquareTexture', LargestTextSizeX, TotalTextSizeY, 0.f, 0.f, 1.f, 1.f);
+
+	DrawX += TextSizeY * 0.5f;
+	DrawY = (DrawY - TotalTextSizeY) + (TextSizeY * 0.5f);
+	C.SetDrawColor(255, 255, 255, 255);
+
+	for (Index = 0; Index < HintList.Length; Index++)
+	{
+		C.SetPos(DrawX, DrawY);
+		C.DrawText(HintList[Index]);
+		DrawY += TextSizeY;
+	}
+}
+
+simulated final function DrawScaledSmileyText( string S, canvas C, optional out float XXL, optional out float XYL )
+{
+	local int i,n;
+	local float PX,PY,XL,YL,CurX,CurY,SScale,Sca,AdditionalY,NewAY;
+	local string D;
+
+	// Initilize
+	C.TextSize("T",XL,YL);
+	SScale = YL;
+	PX = C.CurX;
+	PY = C.CurY;
+	CurX = PX;
+	CurY = PY;
+
+	// Search for smiles in text
+	i = FindNextSmile(S,n);
+	While( i!=-1 )
+	{
+		D = Left(S,i);
+		S = Mid(S,i+Len(SmileyMsgs[n].SmileyTag));
+		// Draw text behind
+		C.SetPos(CurX,CurY);
+		C.DrawText(D);
+		// Draw smile
+		C.StrLen(StripColorForTTS(D),XL,YL);
+		CurX+=XL;
+		While( CurX>C.ClipX )
+		{
+			CurY+=(YL+AdditionalY);
+			XYL+=(YL+AdditionalY);
+			AdditionalY = 0;
+			CurX-=C.ClipX;
+		}
+		
+		C.SetPos(CurX,CurY);
+
+		Sca = SScale;
+
+		C.DrawRect(SmileyMsgs[n].SmileyTex, Sca * (float(SmileyMsgs[n].SmileyTex.USize) / float(SmileyMsgs[n].SmileyTex.VSize)), Sca);
+		CurX += Sca * (float(SmileyMsgs[n].SmileyTex.USize) / float(SmileyMsgs[n].SmileyTex.VSize));
+		
+		While( CurX>C.ClipX )
+		{
+			CurY+=(YL+AdditionalY);
+			XYL+=(YL+AdditionalY);
+			AdditionalY = 0;
+			CurX-=C.ClipX;
+		}
+		// Then go for next smile
+		
+		i = FindNextSmile(S,n);
+	}
+	// Then draw rest of text remaining
+	C.SetPos(CurX,CurY);
+	C.StrLen(StripColorForTTS(S),XL,YL);
+	C.DrawText(S);
+	CurX+=XL;
+	While( CurX>C.ClipX )
+	{
+		CurY+=(YL+AdditionalY);
+		XYL+=(YL+AdditionalY);
+		AdditionalY = 0;
+		CurX-=C.ClipX;
+	}
+	XYL+=AdditionalY;
+	AdditionalY = 0;
+	XXL = CurX;
+	C.SetPos(PX,PY);
 }
 
 static function Font LoadFontStatic(int i)
@@ -577,6 +802,8 @@ defaultproperties
 
 	bHasInitializedEndGameHUD=false
 	EndGameHUDAnimationProgress=0.f
+
+	bSortedEmoteList=false
 
 	BarLength=70.000000
 	BarHeight=10.000000

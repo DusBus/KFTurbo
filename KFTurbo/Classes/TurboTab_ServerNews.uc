@@ -7,6 +7,7 @@ var bool bHasInitialized;
 function Timer()
 {
     local string Text;
+    local string ParsedText;
     local int Index;
 
     if (bHasInitialized)
@@ -18,9 +19,11 @@ function Timer()
 
     for (Index = 0; Index < NewsText.Length; Index++)
     {
-        Text $= Repl(NewsText[Index], "%q", "\"");
+        ParsedText = Repl(NewsText[Index], "%dq", "\"");
+        ParsedText = Repl(ParsedText, "%sq", "\'");
+        Text $= ParsedText;
     }
-    
+
 	SetNewsText(Text);
 }
 
@@ -46,7 +49,8 @@ defaultproperties
     NewsText(2)="<TAB X=40><FONT SIZE=-6 COLOR=grey>Welcome to Killing Floor Turbo!<br>"
     NewsText(3)="<FONT SIZE=-4 COLOR=grey><br>KFTurbo is a balance overhaul mod for Killing Floor that also includes a few QoL improvements.<br>"
     NewsText(4)="Try KFTurbo challenge modes! KFTurbo Card Game, KFTurbo Randomizer and KFTurbo+!<br>"
-    NewsText(5)="More information about the mod can be found on the github <A HREF=%qhttp://github.com/KFPilot/KFTurbo%q>here</A> <FONT SIZE=-4 COLOR=grey>.<br><br>"
-    NewsText(6)="<br><br><br><br><br><br><br><br><FONT SIZE=-3 COLOR=grey>Number one. That's terror. Number two. That's terror."
-    NewsText(7)="</BODY>"
+    NewsText(5)="Text chat has emote autocomplete! Type %dq:%dq to start!<br>"
+    NewsText(6)="More information about the mod can be found on the github <A HREF=%dqhttp://github.com/KFPilot/KFTurbo%dq>here</A> <FONT SIZE=-4 COLOR=grey>.<br><br>"
+    NewsText(7)="<br><br><br><br><br><br><br><br><br><br><br><br><br><br><FONT SIZE=-4 COLOR=grey>Number one. That%sqs terror.<br>Number two. That%sqs terror."
+    NewsText(8)="</BODY>"
 }
