@@ -83,6 +83,11 @@ simulated function DrawHud(Canvas C)
 {
 	RenderDelta = Level.TimeSeconds - LastHUDRenderTime;
     LastHUDRenderTime = Level.TimeSeconds;
+
+	if (bUseBloom)
+	{
+		PlayerOwner.PostFX_SetActive(0, true);
+	}
 	
 	C.Reset();
 	C.DrawColor = class'HudBase'.default.WhiteColor;
@@ -243,10 +248,12 @@ simulated function DrawKFHUDTextElements(Canvas C)
 
 simulated function DrawSpectatingHud(Canvas C)
 {
-	if( bHideHud )
+	if (bHideHud)
 	{
 		return;
 	}
+
+	PlayerOwner.PostFX_SetActive(0, false);
 
 	C.Reset();
 	C.DrawColor = class'HudBase'.default.WhiteColor;
