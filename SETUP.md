@@ -11,7 +11,7 @@ The following are required to be set in a server's launch command for KFTurbo to
 
 The result should look something like;
 
-`ucc server KF-Departed.rom?game=KFTurbo.KFTurboGameType?Mutator=KFTurbo.KFTurboMut,KFTurboServer.KFTurboServerMut,KFTurboRandomizer.KFTurboRandomizerMut,ServerPerksMut.ServerPerksMut`
+`ucc server KF-Departed.rom?game=KFTurbo.KFTurboGameType?Mutator=KFTurbo.KFTurboMut,KFTurboServer.KFTurboServerMut,ServerPerksMut.ServerPerksMut`
 
 To play on KFTurbo Plus difficulty, the GameType launch parameter must be set to `?game=KFTurbo.KFTurboGameTypePlus`.
 
