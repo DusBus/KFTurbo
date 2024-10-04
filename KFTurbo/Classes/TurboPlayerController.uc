@@ -2,6 +2,7 @@ class TurboPlayerController extends KFPCServ;
 
 var class<WeaponRemappingSettings> WeaponRemappingSettings;
 var TurboInteraction TurboInteraction;
+var TurboChatInteraction TurboChatInteraction;
 
 var float ClientNextMarkTime, NextMarkTime;
 
@@ -32,9 +33,19 @@ simulated function PostBeginPlay()
 
 simulated function SetupTurboInteraction()
 {
-	if (Level.NetMode != NM_DedicatedServer && TurboInteraction == None)
+	if (Level.NetMode == NM_DedicatedServer)
+	{
+		return;
+	}
+
+	if (TurboInteraction == None)
 	{
 		TurboInteraction = TurboInteraction(Player.InteractionMaster.AddInteraction("KFTurbo.TurboInteraction", Player));
+	}
+
+	if (TurboChatInteraction == None)
+	{
+		TurboChatInteraction = TurboChatInteraction(Player.InteractionMaster.AddInteraction("KFTurbo.TurboChatInteraction", Player));
 	}
 }
 

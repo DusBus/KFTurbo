@@ -17,6 +17,7 @@ simulated function ApplyTurboKeybinds()
 	{
 		ApplyTraderKeybind();
 	}
+
 	ApplyMarkActorKeybind();
 }
 

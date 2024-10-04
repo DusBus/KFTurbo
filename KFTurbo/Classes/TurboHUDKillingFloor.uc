@@ -592,19 +592,23 @@ simulated function DrawTypingPrompt(Canvas C, String Text, optional int Pos)
 	}
 }
 
-simulated function bool CheckEmotePrompt(Canvas C, out string EmoteText, out float DrawX)
+static final function bool CheckEmotePrompt(string EmoteText, out int LastColon)
 {
 	local int Index, StringSize;
 	local int ColonCount;
-	local int LastColon, LastSpace;
+	local int LastSpace;
 	local string Char;
-	local float XL, YL;
  
 	Index = 0;
 	StringSize = Len(EmoteText);
 	ColonCount = 0;
 	LastColon = -1;
 	LastSpace = -1;
+
+	if (StrCmp(EmoteText, "TeamSay ", Len("TeamSay ")) != 0 && StrCmp(EmoteText, "Say ", Len("Say ")) != 0)
+	{
+		return false;
+	}
 
 	while(Index < StringSize)
 	{
@@ -632,62 +636,77 @@ simulated function bool CheckEmotePrompt(Canvas C, out string EmoteText, out flo
 	{
 		return false;
 	}
-    
-    C.TextSize(Left(EmoteText, LastColon), XL, YL);
-	DrawX += XL;
-	EmoteText = Mid(EmoteText, LastColon);
+
 	return true;
 }
 
-simulated function DrawEmoteHintPrompt(Canvas C, String Text, float DrawX, float DrawY)
+static final function bool GetHintList(string EmoteText, out array<SmileyMessageType> EmoteList, out array<string> HintList)
 {
 	local int Index, LastAllocatedIndex;
-	local array<string> HintList;
-	local string CapsEmoteText;
 	local int EmoteTextLength;
+	local string CapsEmoteText;
 
-	local float TextSizeX, TextSizeY;
-	local float LargestTextSizeX, TotalTextSizeY;
-
-	if (!CheckEmotePrompt(C, Text, DrawX))
-	{
-		return;
-	}
-
-	CapsEmoteText = Caps(Text);
-	EmoteTextLength = Len(Text);
-	HintList.Length = Min(SmileyMsgs.Length, 8);
+	CapsEmoteText = Caps(EmoteText);
+	EmoteTextLength = Len(EmoteText);
+	HintList.Length = Min(EmoteList.Length, 8);
 	LastAllocatedIndex = -1;
 
-	Index = SmileyMsgs.Length - 1;
+	Index = EmoteList.Length - 1;
 	while(Index >= 0 && LastAllocatedIndex < 8)
 	{
-		if (SmileyMsgs[Index].bInCAPS)
+		if (EmoteList[Index].bInCAPS)
 		{
-			if (StrCmp(SmileyMsgs[Index].SmileyTag, CapsEmoteText, EmoteTextLength) == 0)
+			if (StrCmp(EmoteList[Index].SmileyTag, CapsEmoteText, EmoteTextLength) == 0)
 			{
 				LastAllocatedIndex++;
-				HintList[LastAllocatedIndex] = Locs(SmileyMsgs[Index].SmileyTag);
+				HintList[LastAllocatedIndex] = Locs(EmoteList[Index].SmileyTag);
 			}
 		}
 		else
 		{
-			if (StrCmp(SmileyMsgs[Index].SmileyTag, Text, EmoteTextLength) == 0)
+			if (StrCmp(EmoteList[Index].SmileyTag, EmoteText, EmoteTextLength) == 0)
 			{
 				LastAllocatedIndex++;
-				HintList[LastAllocatedIndex] = SmileyMsgs[Index].SmileyTag;
+				HintList[LastAllocatedIndex] = EmoteList[Index].SmileyTag;
 			}
 		}
 		
 		Index--;
 	}
 
+	HintList.Length = LastAllocatedIndex + 1;
 	if (LastAllocatedIndex == -1)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+simulated function DrawEmoteHintPrompt(Canvas C, String Text, float DrawX, float DrawY)
+{
+	local int Index;
+	local array<string> HintList;
+	local int LastColonIndex;
+
+	local float XL, YL;
+	local float TextSizeX, TextSizeY;
+	local float LargestTextSizeX, TotalTextSizeY;
+
+	if (!CheckEmotePrompt(Text, LastColonIndex))
+	{
+		return;
+	}
+    
+    C.TextSize(Left(Text, LastColonIndex), XL, YL);
+	DrawX += XL;
+	Text = Mid(Text, LastColonIndex);
+
+	if (!GetHintList(Text, SmileyMsgs, HintList))
 	{
 		return;
 	}
 
-	HintList.Length = LastAllocatedIndex + 1;
 	C.TextSize(HintList[0], TextSizeX, TextSizeY);
 	TotalTextSizeY = TextSizeY * float(HintList.Length + 1);
 
@@ -709,6 +728,13 @@ simulated function DrawEmoteHintPrompt(Canvas C, String Text, float DrawX, float
 	for (Index = 0; Index < HintList.Length; Index++)
 	{
 		C.SetPos(DrawX, DrawY);
+
+		//Last hint is autocomplete one.
+		if (Index == HintList.Length - 1)
+		{
+			C.SetDrawColor(244, 67, 54, 255);
+		}
+
 		C.DrawText(HintList[Index]);
 		DrawY += TextSizeY;
 	}
@@ -717,7 +743,7 @@ simulated function DrawEmoteHintPrompt(Canvas C, String Text, float DrawX, float
 simulated final function DrawScaledSmileyText( string S, canvas C, optional out float XXL, optional out float XYL )
 {
 	local int i,n;
-	local float PX,PY,XL,YL,CurX,CurY,SScale,Sca,AdditionalY,NewAY;
+	local float PX,PY,XL,YL,CurX,CurY,SScale,Sca,AdditionalY;
 	local string D;
 
 	// Initilize
@@ -754,7 +780,7 @@ simulated final function DrawScaledSmileyText( string S, canvas C, optional out 
 
 		C.DrawRect(SmileyMsgs[n].SmileyTex, Sca * (float(SmileyMsgs[n].SmileyTex.USize) / float(SmileyMsgs[n].SmileyTex.VSize)), Sca);
 		CurX += Sca * (float(SmileyMsgs[n].SmileyTex.USize) / float(SmileyMsgs[n].SmileyTex.VSize));
-		
+
 		While( CurX>C.ClipX )
 		{
 			CurY+=(YL+AdditionalY);

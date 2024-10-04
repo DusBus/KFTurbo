@@ -49,8 +49,8 @@ defaultproperties
     NewsText(2)="<TAB X=40><FONT SIZE=-6 COLOR=grey>Welcome to Killing Floor Turbo!<br>"
     NewsText(3)="<FONT SIZE=-4 COLOR=grey><br>KFTurbo is a balance overhaul mod for Killing Floor that also includes a few QoL improvements.<br>"
     NewsText(4)="Try KFTurbo challenge modes! KFTurbo Card Game, KFTurbo Randomizer and KFTurbo+!<br>"
-    NewsText(5)="Text chat has emote autocomplete! Type %dq:%dq to start!<br>"
+    NewsText(5)="Text chat has emote autocomplete! Type %dq:%dq to start and press tab to autocomplete!<br>"
     NewsText(6)="More information about the mod can be found on the github <A HREF=%dqhttp://github.com/KFPilot/KFTurbo%dq>here</A> <FONT SIZE=-4 COLOR=grey>.<br><br>"
-    NewsText(7)="<br><br><br><br><br><br><br><br><br><br><br><br><br><br><FONT SIZE=-4 COLOR=grey>Number one. That%sqs terror.<br>Number two. That%sqs terror."
+    NewsText(7)="<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><FONT SIZE=-4 COLOR=grey>Number one. That%sqs terror.<br>Number two. That%sqs terror."
     NewsText(8)="</BODY>"
 }
