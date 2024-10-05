@@ -24,6 +24,23 @@ var TurboHUDOverlay PlayerHUD;
 var class<TurboHUDOverlay> MarkInfoHUDClass;
 var TurboHUDOverlay MarkInfoHUD;
 
+simulated event PostRender( canvas Canvas )
+{
+	bUseBloom = bool(ConsoleCommand("get ini:Engine.Engine.ViewportManager Bloom"));
+	PlayerOwner.PostFX_SetActive(0, false);
+
+	Super.PostRender(Canvas);
+
+	if (bUseBloom)
+	{
+		PlayerOwner.PostFX_SetActive(0, true);
+	}
+	else
+	{
+		PlayerOwner.PostFX_SetActive(0, false);
+	}
+}
+
 simulated function PostBeginPlay()
 {
 	Super.PostBeginPlay();
@@ -73,7 +90,30 @@ simulated function SetScoreBoardClass (class<Scoreboard> ScoreBoardClass)
 
 simulated function Tick(float DeltaTime)
 {
-	Super.Tick(DeltaTime);
+	if( ClientRep == None )
+	{
+		ClientRep = Class'ClientPerkRepLink'.Static.FindStats(PlayerOwner);
+
+		if( ClientRep != None )
+		{
+			SmileyMsgs = ClientRep.SmileyTags;
+		}
+	}
+
+	if( bDisplayingProgress )
+	{
+		bDisplayingProgress = false;
+		if( VisualProgressBar<LevelProgressBar )
+		{
+			VisualProgressBar = FMin(VisualProgressBar+DeltaTime,LevelProgressBar);
+		}
+		else if( VisualProgressBar>LevelProgressBar )
+		{
+			VisualProgressBar = FMax(VisualProgressBar-DeltaTime,LevelProgressBar);
+		}
+	}
+
+	Super(HUD_StoryMode).Tick(DeltaTime);
 
 	if (bHasInitializedEndGameHUD)
 	{
@@ -88,13 +128,13 @@ simulated function Tick(float DeltaTime)
 
 simulated function DrawHud(Canvas C)
 {
+	if (bHideHud)
+	{
+		return;
+	}
+
 	RenderDelta = Level.TimeSeconds - LastHUDRenderTime;
     LastHUDRenderTime = Level.TimeSeconds;
-
-	if (bUseBloom)
-	{
-		PlayerOwner.PostFX_SetActive(0, true);
-	}
 	
 	C.Reset();
 	C.DrawColor = class'HudBase'.default.WhiteColor;
@@ -259,8 +299,6 @@ simulated function DrawSpectatingHud(Canvas C)
 	{
 		return;
 	}
-
-	PlayerOwner.PostFX_SetActive(0, false);
 
 	C.Reset();
 	C.DrawColor = class'HudBase'.default.WhiteColor;
