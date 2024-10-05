@@ -31,14 +31,7 @@ simulated event PostRender( canvas Canvas )
 
 	Super.PostRender(Canvas);
 
-	if (bUseBloom)
-	{
-		PlayerOwner.PostFX_SetActive(0, true);
-	}
-	else
-	{
-		PlayerOwner.PostFX_SetActive(0, false);
-	}
+	PlayerOwner.PostFX_SetActive(0, bUseBloom);
 }
 
 simulated function PostBeginPlay()
