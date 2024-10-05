@@ -149,11 +149,11 @@ static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWe
 
 	if (LAW(Other) != None)
 	{
-		Multiplier *= LerpStat(KFPRI, 1.f, 1.3f);
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.4f);
 	}
 
 	ApplyAdjustedReloadRate(KFPRI, Other, Multiplier);
-	return 1.f;
+	return Multiplier;
 }
 
 static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)
