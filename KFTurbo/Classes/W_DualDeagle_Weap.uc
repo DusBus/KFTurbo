@@ -38,7 +38,7 @@ simulated function bool PutDown()
 
 defaultproperties
 {
-     FireModeClass(0)=Class'KFTurbo.W_DualDeagle_Fire'
-     DemoReplacement=Class'KFTurbo.W_Deagle_Weap'
-     PickupClass=Class'KFTurbo.W_DualDeagle_Pickup'
+	FireModeClass(0)=Class'KFTurbo.W_DualDeagle_Fire'
+	DemoReplacement=Class'KFTurbo.W_Deagle_Weap'
+	PickupClass=Class'KFTurbo.W_DualDeagle_Pickup'
 }
