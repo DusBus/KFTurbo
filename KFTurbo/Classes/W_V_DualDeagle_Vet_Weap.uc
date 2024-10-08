@@ -7,5 +7,5 @@ defaultproperties
 	AttachmentClass=Class'KFTurbo.W_V_DualDeagle_Vet_Attachment'
 
 	ItemName="Dual Neon Handcannons"
-	Skins(0)=Shader'KFTurbo.Vet.Handcannon_SHDR'
+	Skins(0)=Shader'KFTurbo.Vet.Handcannon_Vet_SHDR'
 }

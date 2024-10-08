@@ -7,7 +7,7 @@ class TurboGUIBuyable extends GUIBuyable;
 var array<TurboRepLink.VariantWeapon> VariantList;
 var int VariantSelection;
 
-function class<Pickup> GetPickup()
+final function class<Pickup> GetPickup()
 {
 	if (VariantSelection == -1 || VariantList.Length <= VariantSelection)
 	{
@@ -17,7 +17,7 @@ function class<Pickup> GetPickup()
 	return VariantList[VariantSelection].VariantClass;
 }
 
-function class<KFWeapon> GetWeapon()
+final function class<KFWeapon> GetWeapon()
 {
 	if (GetPickup() == None || class<KFWeapon>(GetPickup().default.InventoryType) == None)
 	{

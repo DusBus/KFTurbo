@@ -139,7 +139,7 @@ simulated function Render(Canvas C)
 	C.Style = ERenderStyle.STY_Alpha;
 }
 
-function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float ScreenLocX, float ScreenLocY, float OpacityScale)
+simulated final function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float ScreenLocX, float ScreenLocY, float OpacityScale)
 {
 	local float XL, YL, TempX, TempY;
 	local float PlayerDistance, Dist;

@@ -321,7 +321,7 @@ static final function float GetSpeedMultiplier(AfflictionData AD)
 	return Multiplier;
 }
 
-static simulated function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Momentum, class<DamageType> DamageType, int HitIndex, out AfflictionData AD)
+static final simulated function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Momentum, class<DamageType> DamageType, int HitIndex, out AfflictionData AD)
 {
 	if (AD.Burn != None)
 	{
@@ -329,7 +329,7 @@ static simulated function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLo
 	}
 }
 
-static simulated function PostTakeDamage(KFMonster Monster, int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Momentum, class<DamageType> DamageType, int HitIndex, out AfflictionData AD)
+static final simulated function PostTakeDamage(KFMonster Monster, int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Momentum, class<DamageType> DamageType, int HitIndex, out AfflictionData AD)
 {
 	if (AD.Burn != None)
 	{
@@ -527,7 +527,7 @@ static final function DisablePawnCollision(Pawn P)
 	P.bBlockHitPointTraces = false;
 }
 
-static function bool MeleeDamageTarget(KFMonster Monster, int HitDamage, vector PushDirection, out AfflictionData AD)
+static final function bool MeleeDamageTarget(KFMonster Monster, int HitDamage, vector PushDirection, out AfflictionData AD)
 {
 	local vector HitLocation, HitNormal;
 	local Actor ControllerTarget, HitActor;
@@ -628,7 +628,7 @@ static function bool MeleeDamageTarget(KFMonster Monster, int HitDamage, vector 
 	return true;
 }
 
-static function AdjustHeadScale(KFMonster Monster, out float HeadScale)
+static final function AdjustHeadScale(KFMonster Monster, out float HeadScale)
 {
 	HeadScale /= Monster.default.HeadScale;
 }

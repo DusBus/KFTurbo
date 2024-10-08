@@ -605,7 +605,7 @@ function TryPickupVoiceLine(Pickup MarkedPickup)
 
 }
 
-static function TurboPlayerMarkReplicationInfo GetTurboMarkPRI(PlayerReplicationInfo PRI)
+static final function TurboPlayerMarkReplicationInfo GetTurboMarkPRI(PlayerReplicationInfo PRI)
 {
     local LinkedReplicationInfo LRI;
     local TurboPlayerMarkReplicationInfo TurboMarkPRI;
