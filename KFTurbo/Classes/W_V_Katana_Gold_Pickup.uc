@@ -6,5 +6,5 @@ defaultproperties
 {
      ItemName="Golden Katana"
      InventoryType=Class'KFTurbo.W_V_Katana_Gold_Weap'
-     Skins(0)=Combiner'KF_Weapons3rd_Gold_T.Weapons.Gold_3rdP_Katana_cmb'
+     Skins(0)=Texture'KF_Weapons3rd_Gold_T.Weapons.Gold_Katana_3rd'
 }
