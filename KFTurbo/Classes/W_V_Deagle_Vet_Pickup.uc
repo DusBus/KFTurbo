@@ -11,7 +11,6 @@ defaultproperties
 	InventoryType=Class'KFTurbo.W_V_Deagle_Vet_Weap'
 
 	ItemName="Neon Handcannon"
-	ItemShortName="Neon Handcannon"
 	PickupMessage="You got the Neon Handcannon."
 	Skins(0)=Texture'KFTurbo.Vet.Handcannon_Vet_3rd_D'
 }

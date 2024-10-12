@@ -2,6 +2,8 @@ class W_V_Katana_VM_Weap extends W_Katana_Weap;
 
 defaultproperties
 {
+     ItemName="VM Katana"
+     
      BloodyMaterialRef="KFTurbo.VMBoard.Katana_Bloody_VM_CMB"
      SkinRefs(0)="KFTurbo.VMBoard.Katana_VM_CMB"
      PickupClass=Class'KFTurbo.W_V_Katana_VM_Pickup'

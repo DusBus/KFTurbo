@@ -92,6 +92,8 @@ static function bool UnloadAssets()
 
 defaultproperties
 {
+     ItemName="Cyber SCARMK17"
+     
      LoadedStateMaterialRefList(0)="KFTurbo.Cyber.Cyber_SCAR_SHDR"
      LoadedStateMaterialRefList(1)="KFTurbo.Cyber.Cyber_SCAR_Warn_SHDR"
      LoadedStateMaterialRefList(2)="KFTurbo.Cyber.Cyber_SCAR_Empty_SHDR"

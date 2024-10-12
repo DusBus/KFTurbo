@@ -11,7 +11,6 @@ defaultproperties
 	InventoryType=Class'KFTurbo.W_V_Deagle_Gold_Weap'
 
 	ItemName="Golden Handcannon"
-	ItemShortName="Golden Handcannon"
 	PickupMessage="You got the gold handcannon."
 	StaticMesh=StaticMesh'KF_pickupsGold_Trip.HandcannonGold_Pickup'
 	Skins(0)=Texture'KF_Weapons3rd_Gold_T.Weapons.Gold_Handcannon_3rd'

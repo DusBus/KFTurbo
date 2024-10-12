@@ -2,6 +2,8 @@ class W_V_M4203_Camo_Weap extends W_M4203_Weap;
 
 defaultproperties
 {
+     ItemName="Camo M4 203"
+
      SkinRefs(0)="KFTurbo.Camo.M4_Camo_CMB1"
      AppID=258752
      TraderInfoTexture=Texture'KFTurbo.Camo.Trader_M4203_Camo'

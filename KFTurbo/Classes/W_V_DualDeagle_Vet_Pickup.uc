@@ -6,6 +6,5 @@ defaultproperties
 	Skins(0)=Texture'KFTurbo.Vet.Handcannon_Vet_3rd_D'
 
     ItemName="Dual Neon Handcannon"
-	ItemShortName="Dual Neon Handcannon"
 	PickupMessage="You got the Dual Neon Handcannon."
 }

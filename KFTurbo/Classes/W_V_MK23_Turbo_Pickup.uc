@@ -9,7 +9,6 @@ function inventory SpawnCopy( pawn Other )
 defaultproperties
 {
      ItemName="Turbo MK23"
-     ItemShortName="Turbo MK23"
      PickupMessage="You got the Turbo MK.23"
      
      InventoryType=Class'KFTurbo.W_V_MK23_Turbo_Weap'

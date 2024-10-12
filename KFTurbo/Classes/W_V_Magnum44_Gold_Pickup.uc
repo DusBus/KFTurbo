@@ -9,7 +9,6 @@ function inventory SpawnCopy( pawn Other )
 defaultproperties
 {
      ItemName="Gold 44 Magnum"
-     ItemShortName="Gold 44 Magnum"
      PickupMessage="You got the Gold 44 Magnum"
      
      InventoryType=Class'KFTurbo.W_V_Magnum44_Gold_Weap'

@@ -9,7 +9,6 @@ function inventory SpawnCopy( pawn Other )
 defaultproperties
 {
      ItemName="Cyber MK23"
-     ItemShortName="Cyber MK23"
      PickupMessage="You got the Cyber MK.23"
 
      InventoryType=Class'KFTurbo.W_V_MK23_Cyber_Weap'
