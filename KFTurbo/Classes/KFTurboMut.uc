@@ -126,28 +126,8 @@ function ModifyPlayer(Pawn Other)
 		return;
 	}
 
-	AddChatWatcher(Other);
 	ApplyHealthModification(Other);
 	ApplySpeedModification(Other);
-}
-
-function AddChatWatcher(Pawn Other)
-{
-	local ChatWatcher ChatWatcherInv;
-
-	if (!Other.IsHumanControlled())
-	{
-		return;
-	}
-
-	ChatWatcherInv = Spawn(class'ChatWatcher', Other);
-
-	if (ChatWatcherInv == None)
-	{
-		return;
-	}
-
-	Other.AddInventory(ChatWatcherInv);
 }
 
 function ApplyHealthModification(Pawn Pawn)

@@ -506,6 +506,48 @@ simulated function DrawHudPassC(Canvas C)
 	}
 }
 
+simulated final function float GetTextMessageLifeTime(string M, class<LocalMessage> MessageClass, PlayerReplicationInfo PRI)
+{
+	//Player messages should last a lil longer.
+	if (class<SayMessagePlus>(MessageClass) != None)
+	{
+		return float(MessageClass.Default.LifeTime) * 1.5f;
+	}
+
+	return MessageClass.Default.LifeTime;
+}
+
+function AddTextMessage(string M, class<LocalMessage> MessageClass, PlayerReplicationInfo PRI)
+{
+	local int i;
+
+	if (bMessageBeep && MessageClass.Default.bBeep)
+	{
+		PlayerOwner.PlayBeepSound();
+	}
+
+    for (i=0; i<ConsoleMessageCount; i++)
+    {
+        if (TextMessages[i].Text == "")
+		{
+            break;
+		}
+    }
+
+    if (i == ConsoleMessageCount)
+    {
+        for (i=0; i < ConsoleMessageCount-1; i++)
+		{
+            TextMessages[i] = TextMessages[i+1];
+		}
+    }
+
+    TextMessages[i].Text = M;
+    TextMessages[i].MessageLife = Level.TimeSeconds + GetTextMessageLifeTime(M, MessageClass, PRI);
+    TextMessages[i].TextColor = MessageClass.static.GetConsoleColor(PRI);
+    TextMessages[i].PRI = PRI;
+}
+
 //Added drop shadow.
 function DisplayMessages(Canvas C)
 {

@@ -350,6 +350,20 @@ state MatchInProgress
 		Super.OpenShops();
     }
 
+    function CloseShops()
+    {
+        local Controller C;
+        Super.CloseShops();
+
+        for (C = Level.ControllerList; C != None; C = C.NextController)
+        {
+            if (TurboPlayerController(C) != None)
+            {
+                TurboPlayerController(C).bShopping = false;
+            }
+        }
+    }
+
 	function float CalcNextSquadSpawnTime()
 	{
 		return Super.CalcNextSquadSpawnTime() / WaveSpawnRateModifier;

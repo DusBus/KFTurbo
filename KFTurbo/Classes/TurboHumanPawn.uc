@@ -3,26 +3,40 @@
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboHumanPawn extends SRHumanPawn;
 
-var int HealthHealingTo;
-
-//Used to replicate HealthMax.
-var int NewHealthMax;
-
-replication
-{
-	reliable if (bNetDirty && Role == ROLE_Authority)
-		NewHealthMax, HealthHealingTo;
-}
 
 var bool bDebugServerBuyWeapon;
 
 var float NextCloakCheckTime;
+var float NextPlayerFlagsCheckTime;
+
+//Replicated properties:
+var int HealthHealingTo;
+var int NewHealthMax;
+
+//Flags for CustomPlayerState.
+const ShoppingFlag = 1;
+const MainMenuOpen = 2;
+//const CustomPlayerStateFlag_3 = 4;
+//const CustomPlayerStateFlag_4 = 8;
+//const CustomPlayerStateFlag_5 = 16;
+//const CustomPlayerStateFlag_6 = 32;
+//const CustomPlayerStateFlag_7 = 64;
+//const CustomPlayerStateFlag_8 = 128; (1 << N)
+
+var byte PlayerFlags;
+
+replication
+{
+	reliable if (bNetDirty && Role == ROLE_Authority)
+		NewHealthMax, HealthHealingTo, PlayerFlags;
+}
 
 simulated function Tick(float DeltaTime)
 {
 	Super.Tick(DeltaTime);
 
 	UpdateHealth();
+	UpdatePlayerFlags();
 
 	if (Level.NetMode == NM_DedicatedServer || Level.GRI == None)
 	{
@@ -33,6 +47,34 @@ simulated function Tick(float DeltaTime)
 	{
 		SpotCloakedMonsters();
 	}
+}
+
+function UpdatePlayerFlags()
+{
+	local byte NewPlayerFlags;
+	NewPlayerFlags = 0;
+
+	if (NextPlayerFlagsCheckTime > Level.TimeSeconds)
+	{
+		return;
+	}
+
+	NextPlayerFlagsCheckTime = Level.TimeSeconds + 0.125f + (FRand() * 0.125f);
+
+	if (TurboPlayerController(Controller) != None && TurboPlayerController(Controller).bShopping)
+	{
+		NewPlayerFlags = NewPlayerFlags | ShoppingFlag;
+	}
+
+	if (NewPlayerFlags != PlayerFlags)
+	{
+		PlayerFlags = NewPlayerFlags;
+	}
+}
+
+simulated function bool IsShopping()
+{
+	return (PlayerFlags & ShoppingFlag) == ShoppingFlag;
 }
 
 //Fixed not properly dropping weapons until carry weight is valid.
@@ -190,7 +232,7 @@ simulated function SpotCloakedMonsters()
 
 	if (!IsLocallyControlled())
 	{
-		SpottingRange *= 0.25f;
+		SpottingRange *= 0.5f;
 	}
 
 	foreach CollidingActors(class'P_Stalker', Stalker, SpottingRange)
@@ -278,7 +320,7 @@ simulated function UpdateHealth()
 		if (NewHealthMax != 0 && NewHealthMax != HealthMax)
 		{
 			HealthMax = NewHealthMax;
-		} 
+		}
 
 		return;
 	}

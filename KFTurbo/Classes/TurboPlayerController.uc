@@ -11,7 +11,7 @@ replication
 	reliable if( Role==ROLE_Authority )
 		ClientCloseBuyMenu;
 	reliable if( Role<ROLE_Authority )
-		ServerDebugSkipWave, ServerDebugSkipTrader, ServerMarkActor;
+		ServerDebugSkipWave, ServerDebugSkipTrader, ServerMarkActor, ServerNotifyShoppingState;
 }
 
 simulated function PostBeginPlay()
@@ -47,6 +47,16 @@ simulated function SetupTurboInteraction()
 	{
 		TurboChatInteraction = TurboChatInteraction(Player.InteractionMaster.AddInteraction("KFTurbo.TurboChatInteraction", Player));
 	}
+}
+
+function ServerNotifyShoppingState(bool bNewShoppingState)
+{
+	if (KFGameType(Level.Game) == None || KFGameType(Level.Game).bWaveInProgress)
+	{
+		bNewShoppingState = false;
+	}
+
+	bShopping = bNewShoppingState;
 }
 
 simulated function ClientSetHUD(class<HUD> newHUDClass, class<Scoreboard> newScoringClass )
