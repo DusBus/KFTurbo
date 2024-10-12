@@ -1,5 +1,15 @@
 class TurboTab_BuyMenu extends SRKFTab_BuyMenu;
 
+function DoFillOneAmmo(GUIBuyable Buyable)
+{
+    if (Buyable == None)
+    {
+		return;
+    }
+
+	Super.DoFillOneAmmo(Buyable);
+}
+
 function DoBuy()
 {
 	if (KFPawn(PlayerOwner().Pawn) != none)
