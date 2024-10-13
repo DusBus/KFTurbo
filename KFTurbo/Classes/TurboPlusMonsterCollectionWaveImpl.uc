@@ -1,4 +1,4 @@
-class TurboMonsterCollectionWaveImpl extends TurboMonsterCollectionWaveBase;
+class TurboPlusMonsterCollectionWaveImpl extends TurboMonsterCollectionWaveBase;
 
 defaultproperties
 {
@@ -104,11 +104,11 @@ defaultproperties
 
      //Each heal round's boss squad.
 	Begin Object Class=TurboMonsterBossSquad Name=BossSquad0
-          Squad=TurboMonsterSquad'KFTurbo.TurboMonsterCollectionWaveImpl.HelperSquad0'
+          Squad=TurboMonsterSquad'KFTurbo.TurboPlusMonsterCollectionWaveImpl.HelperSquad0'
 	End Object
 
 	Begin Object Class=TurboMonsterBossSquad Name=BossSquad1
-          Squad=TurboMonsterSquad'KFTurbo.TurboMonsterCollectionWaveImpl.HelperSquad1'
+          Squad=TurboMonsterSquad'KFTurbo.TurboPlusMonsterCollectionWaveImpl.HelperSquad1'
           SquadSizePerPlayerCount(0)=12
           SquadSizePerPlayerCount(1)=12
           SquadSizePerPlayerCount(2)=16
@@ -118,7 +118,7 @@ defaultproperties
 	End Object
      
 	Begin Object Class=TurboMonsterBossSquad Name=BossSquad2
-          Squad=TurboMonsterSquad'KFTurbo.TurboMonsterCollectionWaveImpl.HelperSquad2'
+          Squad=TurboMonsterSquad'KFTurbo.TurboPlusMonsterCollectionWaveImpl.HelperSquad2'
           SquadSizePerPlayerCount(0)=16
           SquadSizePerPlayerCount(1)=16
           SquadSizePerPlayerCount(2)=20
@@ -128,8 +128,8 @@ defaultproperties
 	End Object
 
      //Storing the boss squads for each heal round.
-     BossSquadList(0)=TurboMonsterBossSquad'KFTurbo.TurboMonsterCollectionWaveImpl.BossSquad0'
-     BossSquadList(1)=TurboMonsterBossSquad'KFTurbo.TurboMonsterCollectionWaveImpl.BossSquad1'
-     BossSquadList(2)=TurboMonsterBossSquad'KFTurbo.TurboMonsterCollectionWaveImpl.BossSquad2'
+     BossSquadList(0)=TurboMonsterBossSquad'KFTurbo.TurboPlusMonsterCollectionWaveImpl.BossSquad0'
+     BossSquadList(1)=TurboMonsterBossSquad'KFTurbo.TurboPlusMonsterCollectionWaveImpl.BossSquad1'
+     BossSquadList(2)=TurboMonsterBossSquad'KFTurbo.TurboPlusMonsterCollectionWaveImpl.BossSquad2'
 
 }

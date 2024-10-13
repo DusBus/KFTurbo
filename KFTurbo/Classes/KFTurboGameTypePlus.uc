@@ -257,9 +257,9 @@ defaultproperties
 {
     bIsHighDifficulty = true
 
-	Begin Object Class=TurboMonsterCollectionWaveImpl Name=TurboMonsterCollection0
+	Begin Object Class=TurboPlusMonsterCollectionWaveImpl Name=TurboPlusMonsterCollectionWaveImpl0
 	End Object
-    TurboMonsterCollection=TurboMonsterCollectionWaveImpl'KFTurbo.KFTurboGameTypePlus.TurboMonsterCollection0'
+    TurboMonsterCollection=TurboPlusMonsterCollectionWaveImpl'KFTurbo.KFTurboGameTypePlus.TurboPlusMonsterCollectionWaveImpl0'
 
     LongWaves(0)=(WaveMask=63,WaveMaxMonsters=35,WaveDifficulty=2.000000)
     LongWaves(1)=(WaveMask=4032,WaveMaxMonsters=35,WaveDifficulty=2.000000)
