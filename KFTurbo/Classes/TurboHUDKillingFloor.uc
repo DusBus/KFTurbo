@@ -202,13 +202,12 @@ simulated function DrawGameHud(Canvas C)
 
 	DisplayLocalMessages(C);
 
-	if ( CurrentGame!=None && CurrentGame.EndGameType > 0 )
+	if (CurrentGame != None && CurrentGame.EndGameType > 0)
 	{
 		DrawEndGameHUD(C, (CurrentGame.EndGameType==2));
 		return;
 	}
 	
-	C.Style = PassStyle;
 	DrawKFHUDTextElements(C);
 }
 

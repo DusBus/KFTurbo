@@ -216,7 +216,7 @@ simulated function Render(Canvas C)
 	
 	Super.Render(C);
 
-	if (KFGRI == None || !KFGRI.bMatchHasBegun)
+	if (KFGRI == None)
 	{
 		return;
 	}
