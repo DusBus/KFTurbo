@@ -3,7 +3,7 @@
 ## General Changes
 - **Removed level-based perk bonuses**: All perks now receive the Level 6 bonuses regardless of player level.
 - **Reworked trader menu**: Now you can select skins directly when you choose the weapon.
-- **Added custom weapon stickers**: You can access these in the skin selector in the trader menu.
+- **Added custom weapon stickers and skins**: You can access these in the skin selector in the trader menu.
 
 - **Redesigned HUD**: Information is more visible, closer to the center of the screen
 - **New Scoreboard**: Easier to tell crucial information at a glance. Now includes healing done.
@@ -124,7 +124,7 @@
         - 60% tighter spread 🟢
 
         - 40% more recoil 🔻
-        - Magazine capacity 10 -> 5 🔻
+        - Magazine capacity 10 -> 6 🔻
         - 17% more expensive 🔻
         - Headshot bonus damage reduced by 13% 🔻
         - 45% less maximum ammo 🔻
@@ -213,7 +213,7 @@
 ### Demolitions
 - 50% more M4 203 grenades 🟢
 - M4 203 grenades receive 90% damage bonus instead of the standard 60% 🟢
-- 60% more LAW rockets 🟢
+- 50% more LAW rockets 🟢
 - 30% faster LAW fire rate 🟢
 - 40% faster LAW reload speed 🟢
 - Perk weapons receive a 30% discount 🔻
@@ -256,10 +256,11 @@
         - 5% increased damage 🟢
         - 138% increased dud impact damage 🟢
         - 8% cheaper 🟢
-
+        - 20% more maximum and starting ammo 🟢
         - 43% more player pushback on firing 🔻
     - **Pipe Bomb**
         - Removed the exploit which let players detonate pipe bombs multiple times by shooting it ⚠️
+        - Moved to inventory group 5 ⚠️
     - **Seeker Six Rocket Launcher** 
         - 250% increased explosive damage 🟢
         - 100% increased impact damage 🟢
@@ -282,7 +283,9 @@
         - 13% more expensive 🔻
         - 45% less maximum ammo 🔻
     - **MP5**
+        - 17% increased damage 🟢
         - 12% faster reload speed 🟢
+        - Firing type is no longer high RoF ⚠️
         
         - Magazine capacity 32 -> 30 🔻
         - 13% less maximum ammo 🔻
@@ -301,9 +304,9 @@
         - 53% stronger healing potency 🟢
         - 25% less recoil 🟢
         - 7% increased damage 🟢
-        - 17% slower fire rate 🔻
         - Headshot bonus damage increased by 105% 🟢
 
+        - 17% slower fire rate 🔻
         - 50% more charge consumed per dart 🔻
         - 10% more expensive 🔻
         - Magazine capacity 15 -> 10 🔻
