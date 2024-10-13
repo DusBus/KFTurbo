@@ -40,7 +40,7 @@ function ActivateScrakeDamage(TurboCardReplicationInfo CGRI)
 
 function ActivateGorefastToClot(TurboCardReplicationInfo CGRI)
 {
-    class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'GorefastToClotWaveEventHandler');
+    class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'DeEvolutionWaveEventHandler');
 }
 
 function ActivateMaxHealth(TurboCardReplicationInfo CGRI)
@@ -179,14 +179,16 @@ defaultproperties
     End Object
     DeckCardObjectList(5)=TurboCard'ScrakeDamage'
     
-    Begin Object Name=GorefastToClot Class=TurboCard_Super
+    Begin Object Name=DeEvolution Class=TurboCard_Super
         CardName(0)="De-Evolution"
-        CardDescriptionList(0)="All Gorefasts"
-        CardDescriptionList(1)="are replaced"
-        CardDescriptionList(2)="with Clots."
+        CardDescriptionList(0)="All zeds have"
+        CardDescriptionList(1)="a chance to be"
+        CardDescriptionList(2)="replaced with"
+        CardDescriptionList(3)="weaker versions"
+        CardDescriptionList(4)="of themselves."
         OnActivateCard=ActivateGorefastToClot
     End Object
-    DeckCardObjectList(6)=TurboCard'GorefastToClot'
+    DeckCardObjectList(6)=TurboCard'DeEvolution'
     
     Begin Object Name=MaxHealth Class=TurboCard_Super
         CardName(0)="Overheal"
