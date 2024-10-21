@@ -211,13 +211,12 @@ simulated function DrawGameHud(Canvas C)
 	DrawKFHUDTextElements(C);
 }
 
-
 simulated function DrawKFHUDTextElements(Canvas C)
 {
 	local vector Pos, FixedZPos;
 	local rotator  ShopDirPointerRotation;
 
-	if ( PlayerOwner == none || KFGRI == none || !KFGRI.bMatchHasBegun || KFPlayerController(PlayerOwner).bShopping )
+	if ( PlayerOwner == none || KFGRI == none || !KFGRI.bMatchHasBegun )
 	{
 		return;
 	}
@@ -450,7 +449,7 @@ simulated function InitializeEndGameUI(bool bVictory)
 	else
 	{
 		EndGameHUDMaterial = Texture'KFTurbo.EndGame.You_Died_D';
-		PlayerOwner.PlaySound(LoseSound, SLOT_Talk,255.0,,,, false);
+		PlayerOwner.PlaySound(LoseSound, SLOT_Talk, 255.0,,,, false);
 	}
 }
 

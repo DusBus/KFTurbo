@@ -136,23 +136,23 @@ simulated function UpdatePerkStats()
 	//This guy will take our stats and wait patiently for server perks to finish reading from the ftp before notifying stats of their value.
 	Handler = Spawn(class'TurboSteamStatsHandler', PCOwner);
 	
-	GetStatInt(DamageHealedStat, SteamNameStat[0]);
+	GetStatInt(DamageHealedStat, SteamNameStat[KFSTAT_DamageHealed]);
 	Handler.SteamDamageHealedStat = DamageHealedStat.Value;
-	GetStatInt(WeldingPointsStat, SteamNameStat[1]);
+	GetStatInt(WeldingPointsStat, SteamNameStat[KFSTAT_WeldingPoints]);
 	Handler.SteamWeldingPointsStat = WeldingPointsStat.Value;
-	GetStatInt(ShotgunDamageStat, SteamNameStat[2]);
+	GetStatInt(ShotgunDamageStat, SteamNameStat[KFSTAT_ShotgunDamage]);
 	Handler.SteamShotgunDamageStat = ShotgunDamageStat.Value;
-	GetStatInt(HeadshotKillsStat, SteamNameStat[3]);
+	GetStatInt(HeadshotKillsStat, SteamNameStat[KFSTAT_HeadshotKills]);
 	Handler.SteamHeadshotKillsStat = HeadshotKillsStat.Value;
-	GetStatInt(StalkerKillsStat, SteamNameStat[4]);
+	GetStatInt(StalkerKillsStat, SteamNameStat[KFSTAT_StalkerKills]);
 	Handler.SteamStalkerKillsStat = StalkerKillsStat.Value;
-	GetStatInt(BullpupDamageStat, SteamNameStat[5]);
+	GetStatInt(BullpupDamageStat, SteamNameStat[KFSTAT_BullpupDamage]);
 	Handler.SteamBullpupDamageStat = BullpupDamageStat.Value;
-	GetStatInt(MeleeDamageStat, SteamNameStat[6]);
+	GetStatInt(MeleeDamageStat, SteamNameStat[KFSTAT_MeleeDamage]);
 	Handler.SteamMeleeDamageStat = MeleeDamageStat.Value;
-	GetStatInt(FlameThrowerDamageStat, SteamNameStat[7]);
+	GetStatInt(FlameThrowerDamageStat, SteamNameStat[KFSTAT_FlameThrowerDamage]);
 	Handler.SteamFlameThrowerDamageStat = FlameThrowerDamageStat.Value;
-	GetStatInt(ExplosivesDamageStat, SteamNameStat[21]);
+	GetStatInt(ExplosivesDamageStat, SteamNameStat[KFSTAT_ExplosivesDamage]);
 	Handler.SteamExplosivesDamageStat = ExplosivesDamageStat.Value;
 }
 

@@ -14,7 +14,27 @@ event PostBeginPlay()
 function OnServerStatsAdded(ServerStStats Stats)
 {
     PendingReplicationLinkList[PendingReplicationLinkList.Length] = Stats;
-    SetTimer(1.f, false);
+    SetTimer(0.5f, false);
+}
+
+function bool IsClientReady(KFPlayerController PlayerController)
+{
+    if (PlayerController.SteamStatsAndAchievements == None)
+	{
+		return false;
+	}
+
+	if (SRStatsBase(PlayerController.SteamStatsAndAchievements) == None)
+	{
+		return false;
+	}
+
+	if (!SRStatsBase(PlayerController.SteamStatsAndAchievements).bStatsReadyNow)
+	{
+		return false;
+	}
+
+    return true;
 }
 
 function Timer()
@@ -41,6 +61,11 @@ function Timer()
         }
 
         if (CurrentPlayerController.PlayerReplicationInfo == none)
+        {
+            continue;
+        }
+
+        if (!IsClientReady(CurrentPlayerController))
         {
             continue;
         }
@@ -72,13 +97,17 @@ function Timer()
         }
 
         NewRepLinkList[NewRepLinkList.Length] = NewRepLink;
+        PendingReplicationLinkList.Remove(i, 1);
     }
-
-    PendingReplicationLinkList.Length = 0;
 
     for(i = (NewRepLinkList.Length - 1); i>=0; --i)
     {
         TurboRepLink(NewRepLinkList[i]).InitializeRepSetup();
+    }
+
+    if (PendingReplicationLinkList.Length != 0)
+    {
+        SetTimer(0.5f, false);
     }
 }
 

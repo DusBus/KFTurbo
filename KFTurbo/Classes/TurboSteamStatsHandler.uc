@@ -24,24 +24,6 @@ simulated function Timer()
 		return;
 	}
 
-	if (PCOwner.SteamStatsAndAchievements == None)
-	{
-		SetTimer(0.25f, false);
-		return;
-	}
-
-	if (SRStatsBase(PCOwner.SteamStatsAndAchievements) == None)
-	{
-		SetTimer(0.25f, false);
-		return;
-	}
-
-	if (!SRStatsBase(PCOwner.SteamStatsAndAchievements).bStatsReadyNow)
-	{
-		SetTimer(0.25f, false);
-		return;
-	}
-
 	ApplySteamPerkStats();
 }
 

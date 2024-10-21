@@ -118,6 +118,8 @@ function Timer()
 {
     local float Random;
 
+    SetTimer(15.f + (FRand() * 4.f), true);
+
     if (KFGameType(Level.Game) != None && !KFGameType(Level.Game).bWaveInProgress)
     {
         return;
@@ -141,6 +143,14 @@ function Timer()
     else if (Random < 0.3f)
     {
         RandomlySetOffPipebomb();
+    }
+    else if (Random < 0.4f)
+    {
+        ForceAReload();
+    }
+    else if (Random < 0.5f)
+    {
+        ForceDropCash();
     }
 }
 
@@ -220,6 +230,56 @@ function RandomlySetOffPipebomb()
     }
 
     Pipebomb.Explode(Pipebomb.Location,vect(0,0,1));
+}
+
+function ForceAReload()
+{
+    local TurboHumanPawn HumanPawn;
+    local array<TurboHumanPawn> HumanPawnList;
+    foreach DynamicActors(class'TurboHumanPawn', HumanPawn)
+    {
+        HumanPawnList.Length = HumanPawnList.Length + 1;
+        HumanPawnList[HumanPawnList.Length - 1] = HumanPawn;
+    }
+
+    if (HumanPawnList.Length == 0)
+    {
+        return;
+    }
+
+    HumanPawn = HumanPawnList[Rand(HumanPawnList.Length)];
+
+    if (HumanPawn == None || KFWeapon(HumanPawn.Weapon) == None)
+    {
+        return;
+    }
+
+    KFWeapon(HumanPawn.Weapon).ReloadMeNow();
+}
+
+function ForceDropCash()
+{
+    local TurboHumanPawn HumanPawn;
+    local array<TurboHumanPawn> HumanPawnList;
+    foreach DynamicActors(class'TurboHumanPawn', HumanPawn)
+    {
+        HumanPawnList.Length = HumanPawnList.Length + 1;
+        HumanPawnList[HumanPawnList.Length - 1] = HumanPawn;
+    }
+
+    if (HumanPawnList.Length == 0)
+    {
+        return;
+    }
+
+    HumanPawn = HumanPawnList[Rand(HumanPawnList.Length)];
+
+    if (HumanPawn == None)
+    {
+        return;
+    }
+    
+    HumanPawn.TossCash(50);
 }
 
 defaultproperties
