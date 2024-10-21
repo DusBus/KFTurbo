@@ -525,31 +525,39 @@ function AddTextMessage(string M, class<LocalMessage> MessageClass, PlayerReplic
 {
 	local int i;
 
-	if (bMessageBeep && MessageClass.Default.bBeep)
+	if( bMessageBeep && MessageClass.Default.bBeep )
 	{
 		PlayerOwner.PlayBeepSound();
 	}
 
-    for (i=0; i<ConsoleMessageCount; i++)
+    for( i=0; i<ConsoleMessageCount; i++ )
     {
-        if (TextMessages[i].Text == "")
+        if ( TextMessages[i].Text == "" )
 		{
             break;
 		}
     }
 
-    if (i == ConsoleMessageCount)
+    if( i == ConsoleMessageCount )
     {
-        for (i=0; i < ConsoleMessageCount-1; i++)
+        for( i=0; i<ConsoleMessageCount-1; i++ )
 		{
             TextMessages[i] = TextMessages[i+1];
 		}
     }
 
-    TextMessages[i].Text = M;
-    TextMessages[i].MessageLife = Level.TimeSeconds + GetTextMessageLifeTime(M, MessageClass, PRI);
-    TextMessages[i].TextColor = MessageClass.static.GetConsoleColor(PRI);
-    TextMessages[i].PRI = PRI;
+	TextMessages[i].Text = M;
+	TextMessages[i].MessageLife = Level.TimeSeconds + GetTextMessageLifeTime(M, MessageClass, PRI);
+	TextMessages[i].TextColor = MessageClass.static.GetConsoleColor(PRI);
+
+	if(MessageClass==class'SayMessagePlus' || MessageClass == class'TeamSayMessagePlus')
+	{
+		TextMessages[i].PRI = PRI;
+	}
+	else
+	{
+		TextMessages[i].PRI = None;
+	}
 }
 
 //Added drop shadow.
