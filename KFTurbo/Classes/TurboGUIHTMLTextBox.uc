@@ -50,12 +50,10 @@ protected function TurboInitHTMLArea( Canvas C )
 			break;
 		case 2: // Fit X
 			XS = C.ClipY * (C.ClipX / float(BgImage.X));
-			Log(XS);
 			BgImage.YS = XS;
 			break;
 		case 3: // Fit Y
 			XS = C.ClipX * (C.ClipY / float(BgImage.Y));
-			Log(XS);
 			BgImage.XS = XS;
 			break;
 		}

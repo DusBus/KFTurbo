@@ -5,11 +5,19 @@ var array<string> LoadedStateMaterialRefList;
 
 var int LastKnownMagAmmo;
 
+exec function ReloadMeNow()
+{
+     Super.ReloadMeNow();
+     
+     UpdateAttachmentState(3);
+}
+
 simulated function ClientReload()
 {
      Super.ClientReload();
 
      Skins[0] = LoadedStateMaterialList[3];
+     UpdateAttachmentState(3);
 }
 
 simulated function ClientFinishReloading()
@@ -27,12 +35,6 @@ simulated function ClientInterruptReload()
 simulated function WeaponTick(float DeltaTime)
 {
      Super.WeaponTick(DeltaTime);
-
-     if (Level.NetMode == NM_DedicatedServer || bIsReloading)
-     {
-          return;
-     }
-
      UpdateSkin();
 }
 
@@ -45,20 +47,53 @@ simulated function UpdateSkin()
 
      LastKnownMagAmmo = MagAmmoRemaining;
 
+     if (bIsReloading)
+     {
+          return;
+     }
+
+     if (Level.NetMode == NM_DedicatedServer)
+     {
+          if (MagAmmoRemaining > 6)
+          {
+               UpdateAttachmentState(0);
+          }
+          else if (MagAmmoRemaining > 0)
+          {
+               UpdateAttachmentState(1);
+          }
+          else
+          {
+               UpdateAttachmentState(2);
+          }
+          return;
+     }
+
      if (MagAmmoRemaining > 6)
      {
           Skins[0] = LoadedStateMaterialList[0];
+          UpdateAttachmentState(0);
           return;
      }
      
      if (MagAmmoRemaining > 0)
      {
           Skins[0] = LoadedStateMaterialList[1];
+          UpdateAttachmentState(1);
           return;
      }
 
      
      Skins[0] = LoadedStateMaterialList[2];
+     UpdateAttachmentState(2);
+}
+
+simulated function UpdateAttachmentState(byte State)
+{
+     if (W_V_MK23_Cyber_Attachment(ThirdPersonActor) != None)
+     {
+          W_V_MK23_Cyber_Attachment(ThirdPersonActor).SetWeaponState(State);
+     }
 }
 
 static function PreloadAssets(Inventory Inv, optional bool bSkipRefCount)

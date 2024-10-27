@@ -4,6 +4,7 @@ var int ShieldStrength;
 
 var int HealthMax;
 var int HealthHealed;
+var bool bVotedForTraderEnd;
 
 replication
 {
@@ -27,10 +28,37 @@ function Timer()
     }
 }
 
+function RequestTraderEnd()
+{
+    local KFTurboGameType GameType;
+
+    if (bVotedForTraderEnd)
+    {
+        return;
+    }
+
+    GameType = KFTurboGameType(Level.Game);
+
+    if (GameType == None || GameType.bWaveInProgress)
+    {
+        return;
+    }
+
+    bVotedForTraderEnd = true;
+    GameType.AttemptTraderEnd();
+}
+
+function ClearTraderEndVote()
+{
+    bVotedForTraderEnd = false;
+}
+
 defaultproperties
 {
     ShieldStrength=0
 
     HealthMax=100
     HealthHealed=0
+
+    bVotedForTraderEnd=false
 }

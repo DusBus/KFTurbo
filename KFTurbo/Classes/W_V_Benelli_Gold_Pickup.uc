@@ -6,5 +6,5 @@ defaultproperties
 {
      ItemName="Golden Combat Shotgun"
      InventoryType=Class'KFTurbo.W_V_Benelli_Gold_Weap'
-     Skins(0)=Combiner'KF_Weapons3rd_Gold_T.Weapons.Gold_3rdP_Benelli_cmb'
+     Skins(0)=Texture'KF_Weapons3rd_Gold_T.Weapons.Gold_Benelli_3rd'
 }

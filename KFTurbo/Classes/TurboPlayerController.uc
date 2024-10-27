@@ -11,7 +11,7 @@ replication
 	reliable if( Role==ROLE_Authority )
 		ClientCloseBuyMenu;
 	reliable if( Role<ROLE_Authority )
-		ServerDebugSkipWave, ServerDebugSkipTrader, ServerMarkActor, ServerNotifyShoppingState;
+		ServerDebugSkipWave, SkipTrader, ServerMarkActor, ServerNotifyShoppingState;
 }
 
 simulated function PostBeginPlay()
@@ -387,21 +387,19 @@ exec function ServerDebugSkipWave()
 	KFGameType(Level.Game).KillZeds();
 }
 
-exec function ServerDebugSkipTrader()
+exec function SkipTrader()
 {
-	if (PlayerReplicationInfo == None || !PlayerReplicationInfo.bAdmin)
-	{
-		return;
-	}
-
 	if (KFGameType(Level.Game) == None || KFGameType(Level.Game).bWaveInProgress)
 	{
 		return;
 	}
-	
-	class'KFTurboGameType'.static.StaticDisableStatsAndAchievements(Self);
 
-	KFGameType(Level.Game).WaveCountDown = 10;
+	if (TurboPlayerReplicationInfo(PlayerReplicationInfo) == None)
+	{
+		return;
+	}
+
+	TurboPlayerReplicationInfo(PlayerReplicationInfo).RequestTraderEnd();
 }
 
 defaultproperties

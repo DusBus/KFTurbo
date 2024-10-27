@@ -382,6 +382,56 @@ state MatchInProgress
 	}
 }
 
+//Check if enough people have voted to end the trader and end it.
+function AttemptTraderEnd()
+{
+    local int NumVoters, NumVotes;
+    local Controller C;
+    local float VotePercent;
+    
+    if (bWaveInProgress)
+	{
+		return;
+	}
+
+    NumVoters = 0;
+    NumVotes = 0;
+
+    for (C = Level.ControllerList; C != None; C = C.NextController)
+    {
+        if (C.PlayerReplicationInfo == None || C.PlayerReplicationInfo.bOnlySpectator)
+        {
+            continue;
+        }
+
+        if (TurboPlayerController(C) == None || TurboPlayerReplicationInfo(C.PlayerReplicationInfo) == None)
+        {
+            continue;
+        }
+
+        NumVoters++;
+        
+        if (TurboPlayerReplicationInfo(C.PlayerReplicationInfo).bVotedForTraderEnd)
+        {
+            NumVotes++;
+        }
+    }
+
+    if (NumVoters == 0)
+    {
+        return;
+    }
+
+    VotePercent = float(NumVotes) / float(NumVoters);
+
+    if (VotePercent < 0.51f)
+    {
+        return;
+    }
+
+	WaveCountDown = Min(WaveCountDown, 10);
+}
+
 defaultproperties
 {
     bIsHighDifficulty=false

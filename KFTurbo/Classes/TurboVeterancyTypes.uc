@@ -314,7 +314,7 @@ static function string GetFullPerkName(byte Level)
 static function string GetPerkTitle(byte Level)
 {
 	local int Index;
-	Index = Min(Level / Default.LevelRankRequirement, ArrayCount(Default.LevelNames) - 1);
+	Index = Min(GetPerkTier(Level), ArrayCount(Default.LevelNames) - 1);
 	return Default.LevelNames[Index];
 }
 
@@ -329,10 +329,15 @@ static function float LerpStat(KFPlayerReplicationInfo KFPRI, float A, float B)
 	return Lerp(Level, A, B);*/
 }
 
+static final function byte GetPerkTier(byte Level)
+{
+	return Level / Default.LevelRankRequirement;
+}
+
 static function Color GetPerkColor(byte Level)
 {
 	local int Index;
-	Index = Level / Default.LevelRankRequirement;
+	Index = GetPerkTier(Level);
 
 	switch (Index)
 	{
@@ -360,9 +365,7 @@ static function Color GetPerkColor(byte Level)
 
 static function byte PreDrawPerk(Canvas C, byte Level, out Material PerkIcon, out Material StarIcon)
 {
-	local int Index;
 	local byte DrawColorAlpha;
-	Index = Level / Default.LevelRankRequirement;
 
 	StarIcon = Default.StarTexture;
 	PerkIcon = Default.OnHUDGoldIcon;
