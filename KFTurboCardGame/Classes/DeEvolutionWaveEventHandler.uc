@@ -16,7 +16,7 @@ static function OnNextSpawnSquadGenerated(KFTurboGameType GameType, out array < 
     local int SquadIndex;
     for (SquadIndex = 0; SquadIndex < NextSpawnSquad.Length; SquadIndex++)
     {
-        if (FRand() < 0.1f)
+        if (FRand() < 0.15f)
         {
             AttemptReplaceMonster(NextSpawnSquad[SquadIndex]);
         }
@@ -41,9 +41,10 @@ defaultproperties
     ReplacementList(0)=(TargetParentClass=class'P_Clot',ReplacementClass=class'P_Clot_Weak')
     ReplacementList(1)=(TargetParentClass=class'P_Gorefast',ReplacementClass=class'P_Gorefast_Weak')
     ReplacementList(2)=(TargetParentClass=class'P_Crawler',ReplacementClass=class'P_Crawler_Weak')
-    ReplacementList(3)=(TargetParentClass=class'P_Bloat',ReplacementClass=class'P_Bloat_Weak')
-    ReplacementList(4)=(TargetParentClass=class'P_Husk',ReplacementClass=class'P_Husk_Weak')
-    ReplacementList(5)=(TargetParentClass=class'P_Siren',ReplacementClass=class'P_Siren_Weak')
-    ReplacementList(6)=(TargetParentClass=class'P_Scrake',ReplacementClass=class'P_Scrake_Weak')
-    ReplacementList(7)=(TargetParentClass=class'P_Fleshpound',ReplacementClass=class'P_Fleshpound_Weak')
+    ReplacementList(3)=(TargetParentClass=class'P_Stalker',ReplacementClass=class'P_Stalker_Weak')
+    ReplacementList(4)=(TargetParentClass=class'P_Bloat',ReplacementClass=class'P_Bloat_Weak')
+    ReplacementList(5)=(TargetParentClass=class'P_Husk',ReplacementClass=class'P_Husk_Weak')
+    ReplacementList(6)=(TargetParentClass=class'P_Siren',ReplacementClass=class'P_Siren_Weak')
+    ReplacementList(7)=(TargetParentClass=class'P_Scrake',ReplacementClass=class'P_Scrake_Weak')
+    ReplacementList(8)=(TargetParentClass=class'P_Fleshpound',ReplacementClass=class'P_Fleshpound_Weak')
 }
