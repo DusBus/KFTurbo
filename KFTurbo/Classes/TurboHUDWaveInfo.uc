@@ -420,7 +420,8 @@ static final function float GetBonusScale(out KillFeedEntry Entry)
 static final function InitializeKillFeedEntry(out KillFeedEntry Entry, TurboPlayerReplicationInfo Killer, class<Monster> MonsterClass, class<TurboKillsMessage> KillsMessageClass, bool bIsLocalPlayer)
 {
 	Entry.TPRI = Killer;
-	Entry.ResolvedName = Entry.TPRI.PlayerName;
+	Entry.ResolvedName = Eval(Len(Entry.TPRI.PlayerName) > 15, Left(Entry.TPRI.PlayerName, 15), Entry.TPRI.PlayerName);
+
 	Entry.KilledMonster = MonsterClass;
 
 	Entry.KillsMessageClass = KillsMessageClass;
@@ -446,7 +447,7 @@ simulated final function DrawKillFeedEntry(Canvas C, out float DrawY, out KillFe
 	local bool bIsElite;
 	local float TextSizeX, TextSizeY;
 	local float EntrySizeY, EntrySizeX, KillTextX, DrawX, DrawOffsetX;
-	local float BaseTextSizeY;
+	local float BaseTextSizeY, BaseTextScale;
 	local float FadeOutRatio;
 
 	if (Entry.LifeTime < 0.01f)
@@ -479,16 +480,17 @@ simulated final function DrawKillFeedEntry(Canvas C, out float DrawY, out KillFe
 
 	if (bIsElite)
 	{
-		C.FontScaleY = (C.ClipY * 0.035) / TextSizeY;
+		C.FontScaleY = (C.ClipY * 0.045) / TextSizeY;
 		C.FontScaleX = C.FontScaleY;
 	}
 	else
 	{
-		C.FontScaleY = (C.ClipY * 0.025) / TextSizeY;
+		C.FontScaleY = (C.ClipY * 0.035) / TextSizeY;
 		C.FontScaleX = C.FontScaleY;
 	}
 	
 	EntrySizeX = 8.f;
+	BaseTextScale = C.FontScaleX;
 
 	C.TextSize(KillCountString, TextSizeX, TextSizeY);
 	EntrySizeX += TextSizeX;
@@ -523,6 +525,18 @@ simulated final function DrawKillFeedEntry(Canvas C, out float DrawY, out KillFe
 
 	C.SetPos(DrawX + 4.f, DrawY + (EntrySizeY * 0.5f) - (TextSizeY * 0.45f));
 	C.DrawTextClipped(KillCountString);
+
+	//Draw player name if this isn't our entry.
+	if (!Entry.bIsLocalPlayer)
+	{
+		C.Font = class'KFTurboFontHelper'.static.LoadItalicFontStatic(3 + KillFeedFontSizeOffset);
+		C.FontScaleX = BaseTextScale;
+		C.FontScaleY = BaseTextScale;
+
+		C.TextSize(Entry.ResolvedName, TextSizeX, TextSizeY);
+		C.SetPos(DrawX + (KillTextX * 0.5f), DrawY - (TextSizeY * 0.65f));
+		C.DrawTextClipped(Entry.ResolvedName);
+	}
 
 	DrawY += (EntrySizeY + 2.f) * FadeOutRatio;
 }
@@ -755,7 +769,7 @@ simulated function DrawTraderEndVote(Canvas C)
 	local int Index;
 	local TurboPlayerReplicationInfo TPRI;
 	local float Ratio;
-	local float TempX, TempY, MinEntrySizeX, EntrySizeX, EntrySizeY, EntryXOffset;
+	local float TempX, TempY, MinEntrySizeX, EntrySizeY, EntryXOffset;
 	local float TextSizeX, TextSizeY;
 	local bool bHasVotes;
 
