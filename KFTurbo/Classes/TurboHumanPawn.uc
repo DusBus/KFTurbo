@@ -15,7 +15,7 @@ var int NewHealthMax;
 
 //Flags for CustomPlayerState.
 const ShoppingFlag = 1;
-const MainMenuOpen = 2;
+const LoginMenuFlag = 2;
 //const CustomPlayerStateFlag_3 = 4;
 //const CustomPlayerStateFlag_4 = 8;
 //const CustomPlayerStateFlag_5 = 16;
@@ -61,9 +61,17 @@ function UpdatePlayerFlags()
 
 	NextPlayerFlagsCheckTime = Level.TimeSeconds + 0.125f + (FRand() * 0.125f);
 
-	if (TurboPlayerController(Controller) != None && TurboPlayerController(Controller).bShopping)
+	if (TurboPlayerController(Controller) != None)
 	{
-		NewPlayerFlags = NewPlayerFlags | ShoppingFlag;
+		if (TurboPlayerController(Controller).bShopping)
+		{
+			NewPlayerFlags = NewPlayerFlags | ShoppingFlag;
+		}
+
+		if (TurboPlayerController(Controller).bInLoginMenu)
+		{
+			NewPlayerFlags = NewPlayerFlags | LoginMenuFlag;
+		}
 	}
 
 	if (NewPlayerFlags != PlayerFlags)
@@ -72,9 +80,14 @@ function UpdatePlayerFlags()
 	}
 }
 
-simulated function bool IsShopping()
+simulated final function bool IsShopping()
 {
 	return (PlayerFlags & ShoppingFlag) == ShoppingFlag;
+}
+
+simulated final function bool IsInLoginMenu()
+{
+	return (PlayerFlags & LoginMenuFlag) == LoginMenuFlag;
 }
 
 //Fixed not properly dropping weapons until carry weight is valid.
@@ -703,13 +716,6 @@ exec function TossCash( int Amount )
 			LongTossCashCount++;
 		} 
 	}
-}
-
-simulated event ModifyVelocity(float DeltaTime, vector OldVelocity)
-{
-	Super.ModifyVelocity(DeltaTime, OldVelocity);
-
-	log("GroundSpeed:"@GroundSpeed);
 }
 
 defaultproperties
