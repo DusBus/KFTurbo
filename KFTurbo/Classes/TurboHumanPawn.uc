@@ -318,6 +318,53 @@ simulated function DisplayInventoryDebug(Canvas Canvas, Weapon Weapon, out float
     Canvas.SetPos(4,YPos);
 }
 
+simulated function ChangedWeapon()
+{
+	local KFWeapon CurrentWeapon;
+	local KFPlayerReplicationInfo KFPRI;
+
+	InventorySpeedModifier = 0.f;
+
+    if(PendingWeapon == None || !AllowHoldWeapon(KFWeapon(PendingWeapon)))
+	{
+		PendingWeapon = None;
+		return;
+	}
+
+	Super(KFPawn).ChangedWeapon();
+
+	CurrentWeapon = KFWeapon(Weapon);
+
+	if (CurrentWeapon == None)
+	{
+		return;
+	}
+
+	KFPRI = KFPlayerReplicationInfo(PlayerReplicationInfo);
+
+	if (KFPRI == None)
+	{
+		return;
+	}
+
+	if (CurrentWeapon.bSpeedMeUp)
+	{
+		BaseMeleeIncrease = default.BaseMeleeIncrease;
+
+		if (KFPRI != None && KFPRI.ClientVeteranSkill != None)
+		{
+			BaseMeleeIncrease += KFPRI.ClientVeteranSkill.Static.GetMeleeMovementSpeedModifier(KFPRI);
+		}
+		
+        InventorySpeedModifier = ((default.GroundSpeed * BaseMeleeIncrease) - (CurrentWeapon.Weight * 2.f));
+	}
+	else if (KFMedicGun(CurrentWeapon) != None && class'V_FieldMedic'.static.IsFieldMedic(KFPRI))
+	{
+		BaseMeleeIncrease = default.BaseMeleeIncrease * 0.5f;
+		InventorySpeedModifier = ((default.GroundSpeed * BaseMeleeIncrease) - (CurrentWeapon.Weight * 2.f));
+	}
+}
+
 simulated function UpdateHealth()
 {
 	local int NewHealthHealingTo;
@@ -656,6 +703,13 @@ exec function TossCash( int Amount )
 			LongTossCashCount++;
 		} 
 	}
+}
+
+simulated event ModifyVelocity(float DeltaTime, vector OldVelocity)
+{
+	Super.ModifyVelocity(DeltaTime, OldVelocity);
+
+	log("GroundSpeed:"@GroundSpeed);
 }
 
 defaultproperties

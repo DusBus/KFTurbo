@@ -94,7 +94,7 @@ function MatchStarting()
         return;
     }
 
-    bCanEarnMedicGame = class'VeterancyChecks'.static.isFieldMedic(KFPlayerReplicationInfo(OwnerController.PlayerReplicationInfo));
+    bCanEarnMedicGame = class'V_FieldMedic'.static.IsFieldMedic(KFPlayerReplicationInfo(OwnerController.PlayerReplicationInfo));
 }
 
 event MatchEnd(string mapname, float difficulty, int length, byte result, int waveNum)
@@ -121,7 +121,7 @@ event WaveStart(int waveNum)
     ResetMagnumHeadshots();
     ResetM14Headshots();
     
-    if (bCanEarnMedicGame && !class'VeterancyChecks'.static.isFieldMedic(KFPlayerReplicationInfo(OwnerController.PlayerReplicationInfo)))
+    if (bCanEarnMedicGame && !class'V_FieldMedic'.static.IsFieldMedic(KFPlayerReplicationInfo(OwnerController.PlayerReplicationInfo)))
     {
         bCanEarnMedicGame = false;
     }
