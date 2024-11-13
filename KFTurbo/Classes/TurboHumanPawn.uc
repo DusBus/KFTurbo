@@ -89,6 +89,12 @@ function VeterancyChanged()
 
 	KFPRI = KFPlayerReplicationInfo(PlayerReplicationInfo);
 
+	//Attempt to speed up perk selection updates.
+	if (KFPRI != None)
+	{
+		KFPRI.NetUpdateTime = Level.TimeSeconds - 2.f;
+	}
+
 	if ( KFPRI != none && KFPRI.ClientVeteranSkill != none )
 	{
 		MaxCarryWeight += KFPRI.ClientVeteranSkill.Static.AddCarryMaxWeight(KFPRI);
