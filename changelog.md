@@ -75,8 +75,7 @@
     - **AA-12**:
         - Headshot bonus damage increased by 10% 🟢
     - **Hunting Shotgun**:
-        - 33% more expensive 🔻
-        - 25% less maximum ammo 🔻
+        - Unchanged 🟦
     - **VLAD-9000**: Reworked
         - Fires a single nail that deals high damage and pierces multiple zeds 🆕
         - Alternate fire toggles a laser aim module 🆕
@@ -112,7 +111,6 @@
         - 11% tighter spread 🟢
         - Headshot bonus damage increased by 80% 🟢
 
-        - 66% slower firerate 🔻
         - Weight 2 -> 3 🔻
         - 20% more recoil 🔻
     - **Lever Action Rifle**
