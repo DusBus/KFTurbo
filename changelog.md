@@ -35,7 +35,9 @@
 
 ### Support Specialist
 - Spawn with a Shotgun ⚠️
+
 - **Weapons**
+
     - **Shotgun**: 
         - Weight 8 -> 7 🟢
         - 20% faster reload speed 🟢
@@ -44,13 +46,14 @@
         - 25% more maximum and starting ammo 🟢
 
         - Pellet damage reduced by 11% 🔻
-        - 11% wider pellet spread 🔻
+        - 11% wider spread 🔻
     - **Combat Shotgun**:
         - Reloading is smoother 🟢
         - Magazine capacity 6 -> 8 🟢
         - 80% player pushback reduction on firing 🟢
         - 17% less recoil 🟢
         - Damage loss after penetrating reduced by 50% 🟢
+
     - **HSG Shotgun**:
         - 20% tighter spread 🟢
         - Pellet damage increased by 3% 🟢
@@ -74,28 +77,33 @@
         - 14% slower reload speed 🔻
     - **AA-12**:
         - Headshot bonus damage increased by 10% 🟢
+        
     - **Hunting Shotgun**:
         - Unchanged 🟦
+
     - **VLAD-9000**: Reworked
         - Fires a single nail that deals high damage and pierces multiple zeds 🆕
         - Alternate fire toggles a laser aim module 🆕
         - Has no spread and inaccuracy 🟢
-        - 11 Weight 🔻
+        - Weight 8 -> 11 🔻
         - Great for stunning scrakes or taking out long range threats ⚠️
+
 ### Sharpshooter
 - Replacing original bonus: ⚠️
-    - 2.4x bonus headshot multiplier for perk weapons 
     - 2.17x bonus headshot multiplier for the 44 Magnum
     - 2.1x bonus headshot multiplier for the 9mm
+    - 2.4x bonus headshot multiplier for all other perk weapons 
     - 1.8x bonus headshot multiplier for the VLAD 9000
     - 1.5x bonus headshot multiplier for off-perk weapons
-- 60% faster reload speed with perk weapons 🟦
-- 40% faster reload speed with the 44 Magnum and Dual Magnum. 🔻
-- 15% faster reload speed with the M99. 🔻
-- Spawn with a Lever Action Rifle ⚠️
+- Crossbow and M99 Ammo now gets a 30% purchase cost discount 🟢
+- 44 Magnum and Dual Magnum bonus reload speed 60% -> 40%. 🔻
+- M99 and Crossbow bonus reload speed 60% -> 15%. 🔻
 - Crossbow and M99 no longer get a purchase cost discount 🔻
-- Crosbow and M99 Ammo now gets a 30% purchase cost discount 🟢
+- 60% faster reload speed with perk weapons 🟦
+- Spawn with a Lever Action Rifle ⚠️
+
 - **Weapons**
+
     - **MK23 & Dual MK23**
         - 9% faster reload speed 🟢
 
@@ -106,28 +114,31 @@
         - Damage loss after penetrating reduced by 40%. 🟢
 
         - Penetration count 10 -> 1 🔻
-    - **44 Magnum**
+    - **44 Magnum & Dual 44 Magnum**
         - 14% increased damage 🟢
-        - 11% tighter spread 🟢
+        - 10% tighter spread 🟢
         - Headshot bonus damage increased by 80% 🟢
 
         - Weight 2 -> 3 🔻
         - 20% more recoil 🔻
     - **Lever Action Rifle**
         - Unchanged 🟦
+
     - **M14 EBR**
         - Unchanged 🟦
+
     - **Single Piston Longmusket**
         - 11% increased damage 🟢
         - 60% tighter spread 🟢
 
-        - 40% more recoil 🔻
+        - 20% more recoil 🔻
         - Magazine capacity 10 -> 6 🔻
         - 17% more expensive 🔻
         - Headshot bonus damage reduced by 13% 🔻
-        - 45% less maximum ammo 🔻
+        - 40% less maximum ammo 🔻
     - **Crossbow**
-        - 50% less maximum ammo 🔻
+        - 17% less maximum ammo 🔻
+
     - **M99 AMR**
         - Now obliterates normal and welded doors 🆕
         - Weight 13 -> 12 🟢
@@ -137,28 +148,31 @@
         - 27% reduced damage 🔻
         - 20% less maximum ammo 🔻
         - 35% more player pushback on firing 🔻
+
 ### Commando
 - Doubled distance at which invisible units are spotted 🟢
-- Thompson Drum receives 60% extra magazine size instead of the standard 25% 🟢
-- M4 receives 34% extra magazine size instead of the standard 25% 🟢
-- FN FAL receives 67% extra magazine size instead of the standard 25% 🟢
-- SCARMK17 receives 20% extra magazine size instead of the standard 25% 🔻
-- Thompson SMG receives 20% extra magazine size instead of the standard 25% 🔻
 - 25% extra ammo for perk weapons 🟢
+- Thompson Drum bonus magazine size 25% -> 60% 🟢
+- M4 203 bonus magazine size 25% -> 34% 🟢
+- FN FAL bonus magazine size 25% -> 67% 🟢
+- SCARMK17 bonus magazine size 25% -> 20% 🔻
+- Thompson SMG bonus magazine size 25% -> 20% 🔻
 - Spawn with a Bullpup ⚠️
+
 - **Weapons**
     - **Bullpup** 
         - Now penetrates up to 2 zeds with a damage loss of 25% 🆕
         - Weight 6 -> 5 🟢
         - 8% increased damage 🟢
-        - Has no spread and inaccuracy 🟢
+        - 90% tighter spread 🟢
 
         - Horizontal Recoil increased by 133% 🔻
         - Magazine capacity 40 -> 20 🔻
         - 25% more expensive 🔻
-        - 35% less maximum and starting ammo 🔻
+        - 35% less maximum ammo 🔻
     - **Thompson Drum** 
         - 66% more maximum and starting ammo 🟢
+        - 20% tighter spread 🟢
 
         - 10% slower reload speed 🔻
         - Weight 5 -> 6 🔻
@@ -166,8 +180,12 @@
         - 23% reduced damage 🔻
     - **AK47** 
         - Weight 6 -> 5 🟢
+        - 20% tighter spread 🟢
+
     - **MKb42**
         - 10% faster reload speed 🟢
+        - 15% tighter spread 🟢
+
     - **M4 203**
         - Replaces the original M4 ⚠️
         - Uses the scope from the M4 ⚠️
@@ -176,17 +194,20 @@
         - 36% cheaper than the M4 203 🟢
         - 25% less recoil 🟢
         - 23% increased damage 🟢
+        - 25% tighter spread 🟢
 
         - Single-shot fire mode removed 🔻
         - 75% more expensive than the M4 🔻
         - 17% less maximum grenades 🔻
         - 28% slower fire rate 🔻
     - **SCAR MK17**
-        - Unchanged 🟦
+        - 25% tighter spread 🟢
+
     - **FN FAL** 
         - 13% faster reload speed 🟢
         - 9% cheaper 🟢
         - Headshot bonus damage increased by 80% 🟢
+        - 60% tighter spread 🟢
 
         - Full-auto fire mode removed 🔻
         - Magazine capacity 20 -> 12 🔻
@@ -196,7 +217,7 @@
         - New incendiary variant 🆕
         - Ignites enemies  [**Burning**](#afflictions) 🆕
         - 12% less recoil 🟢
-        - 25% tighter spread 🟢
+        - 15% tighter spread 🟢
         - Firing type is no longer high RoF ⚠️
 
         - 63% slower fire rate 🔻
@@ -208,20 +229,24 @@
         - 5% reduced damage 🔻
     - **Steampunk Thompson**
         - Now a cosmetic variant for the Thompson Drum ⚠️
+
 ### Demolitions
 - 50% more M4 203 grenades 🟢
-- M4 203 grenades receive 90% damage bonus instead of the standard 60% 🟢
+- M4 203 grenades damage bonus 60% -> 90% 🟢
 - 50% more LAW rockets 🟢
 - 30% faster LAW fire rate 🟢
 - 40% faster LAW reload speed 🟢
-- Perk weapons receive a 30% discount 🔻
+- Perk weapons discount 70% -> 30% 🔻
 - Pipe bombs receive a 74% discount 🟦
 - Spawn with an M4 203 ⚠️
+
 - **Weapons**
     - **M79 Grenade Launcher**
         - Unchanged 🟦
+
     - **M32 Grenade Launcher**
         - Unchanged 🟦
+
     - **M4 203**
         - Replaces the original M4 ⚠️
         - Uses the scope from the M4 ⚠️
@@ -230,6 +255,7 @@
         - 36% cheaper than the M4 203 🟢
         - 25% less recoil 🟢
         - 23% increased damage 🟢
+        - 25% tighter spread 🟢
 
         - Single-shot fire mode removed 🔻
         - 75% more expensive than the M4 🔻
@@ -237,7 +263,8 @@
         - 28% slower fire rate 🔻
     - **Orca Bomb Propeller**
         - High speed bounces multiply the damage output of the projectile 🆕
-        - 33% less maximum ammo 🔻
+        - 42% less maximum and starting ammo 🔻
+
     - **SealSqueal Harpoon Bomber**
         - Sticking a zed with a harpoon now inflicts [**Harpooned**](#afflictions) ⚠️
         - It deals 1.5x damage if attached to a ZED (only the highest stick multiplier applies) ⚠️
@@ -246,6 +273,7 @@
         - 33% faster reload speed 🟢
         - Has no spread and inaccuracy 🟢
         - 14% increased damage 🟢
+        - Projectiles cannot be disintegrated by sirens 🟢
 
         - 13% reduced explosion radius 🔻
         - 100% reduced impact damage 🔻
@@ -255,10 +283,12 @@
         - 138% increased dud impact damage 🟢
         - 8% cheaper 🟢
         - 20% more maximum and starting ammo 🟢
+
         - 43% more player pushback on firing 🔻
     - **Pipe Bomb**
         - Removed the exploit which let players detonate pipe bombs multiple times by shooting it ⚠️
         - Moved to inventory group 5 ⚠️
+
     - **Seeker Six Rocket Launcher** 
         - 250% increased explosive damage 🟢
         - 100% increased impact damage 🟢
@@ -266,20 +296,27 @@
         - Weight 7 -> 8 🔻
         - 7% slower reload speed 🔻
         - 50% less maximum ammo 🔻
+
 ### Field Medic
 - Healing grenades now have a new model and bounce more 🆕
-- Magazine capacity bonus on the M7A3 reduced to 50% from 100% 🔻
-- 20% faster movement speed 🔻
+- 20% increase to grenade capacity 🟢
 - Receives 20% more ammo for M7A3 🟢
+- Knife movement speed bonus now applies to all on-perk weapons. 🟢
+- Magazine capacity bonus on the M7A3 reduced to 50% from 100% 🔻
+- Movement speed bonus 25% -> 20% 🔻
+- Spawns with an MP7 and full armor 🟦
+
 - **Weapons**
     - **MP7**
         - 38% increased damage 🟢
         - 33% stronger healing potency 🟢
         - 33% faster syringe recovery 🟢
         - 30% higher maximum healing charge 🟢
+        - Firing type is no longer high RoF ⚠️
 
         - 13% more expensive 🔻
         - 45% less maximum ammo 🔻
+        - 19% lower fire rate 🔻
     - **MP5**
         - 17% increased damage 🟢
         - 12% faster reload speed 🟢
@@ -288,21 +325,27 @@
         - Magazine capacity 32 -> 30 🔻
         - 13% less maximum ammo 🔻
         - 16% weaker healing potency 🔻
+        - 7% lower fire rate 🔻
     - **Kriss/Schneidzekk**
         - 38% cheaper 🟢
         - 5% increased damage 🟢
         - 13% more maximum ammo 🟢
+        - 50% tighter spread 🟢
+        - 50% less recoil 🟢
+        - Firing type is no longer high RoF ⚠️
 
         - Weight 3 -> 4 🔻
         - 30% lower maximum healing charge  🔻
         - 33% slower syringe recovery 🔻
         - 50% weaker healing potency 🔻
+        - 48% lower fire rate 🔻
     - **M7A3**
         - 23% faster reload speed 🟢
         - 53% stronger healing potency 🟢
         - 25% less recoil 🟢
         - 7% increased damage 🟢
         - Headshot bonus damage increased by 105% 🟢
+        - 30% tighter spread 🟢
 
         - 17% slower fire rate 🔻
         - 50% more charge consumed per dart 🔻
@@ -313,24 +356,29 @@
         - 66% less maximum ammo 🔻
     - **BlowerThrower Bile Launcher**
         - Moved to inventory group 4 ⚠️
+
 ### Berserker
 - Grenades are replaced with stun grenades that put zeds into [**Stasis**](#afflictions) 🆕
+- 20% siren scream damage reduction 🆕
 - 20% increase to grenade capacity 🟢
 - Stun grenades cannot be disintegrated by siren screams 🟢
-- Melee movement speed bonus 30% -> 20% 🔻
+- Melee movement speed bonus 30% -> 25% 🔻
 - Damage resistance 40% -> 10% 🔻
 - Melee swing speed 25% -> 15% 🔻
-- Patriarch can never deal more than 95 damage to the Berserker ⚠️
 - Bloat bile damage reduction 80% -> 60% 🔻
-- 20% siren scream damage reduction 🆕
+- Patriarch can never deal more than 95 damage to the Berserker ⚠️
 - Spawn with a Machete ⚠️
+
 - **Weapons**
     - **Machete**
         - Unchanged 🟦
+
     - **Katana**
         - Unchanged 🟦
+
     - **Axe**
         - Unchanged 🟦
+
     - **Claymore**
         - 10% longer range 🟢
         - 2% increased damage 🟢
@@ -352,11 +400,14 @@
         - 100% increased alternate fire damage 🟢
         - Now receives Berserker speed multiplier 🆕
         - Alternate fire now does damage in 3 instances instead of 1 ⚠️
+
     - **Buzzsaw Bow**
         - 45% reduced damage 🔻
         - 60% reduced maximum ammo 🔻
+
     - **Dwarfs Axe**
         - Removed 🚫
+
 ### Firebug
 - Fire grenades now have a new model and bounce more 🆕
 - Trenchgun, MAC-10 and Thompson SMG now receive a 15% damage bonus 🟢
@@ -364,10 +415,12 @@
 - 60% faster reload speed for perk weapons 🟢
 - Fire DoT mechanics changed [**Burning**](#afflictions) ⚠️
 - Spawns with a MAC-10 and no armor ⚠️
+
 - **Weapons**
     - **Flamethrower**
         - 50% reduced damage 🔻
         - 10% increased spread 🔻
+        
     - **MAC10**
         - Weight 4 -> 3 🟢
         - Headshot bonus damage increased by 18% 🟢
@@ -380,6 +433,7 @@
         - 30% more expensive 🔻
     - **Flare Revolver**
         - 25% reduced maximum and starting ammo 🔻
+
     - **Trenchgun**
         - Weight 8 -> 7 🟢
         - 23% less damage loss after penetrating. 🟢
@@ -391,7 +445,7 @@
         - New incendiary variant 🆕
         - Ignites enemies  [**Burning**](#afflictions) 🆕
         - 12% less recoil 🟢
-        - 25% tighter spread 🟢
+        - 15% tighter spread 🟢
         - Firing type is no longer high RoF ⚠️
 
         - 63% slower fire rate 🔻
@@ -411,7 +465,6 @@
 
 ## Zed changes
 
-🚧
 ### Crawler
 - Added a new variant: Raptor
 ### Gorefast
@@ -431,6 +484,7 @@
 - Fixed "Slow Rage" state, where the scrake would be stuck with a slow movement speed in his charging animation
 - Now has a 25% damage resistance to Flare Revolver
 - No longer spins in place when stunned
+- 2 minutes after spotting a player, Scrakes will automatically rage.
 ### Fleshpound
 - Fixed a bug that made the Fleshpound "friendly", preventing it from attacking
 - Fixed various issues with being on fire
