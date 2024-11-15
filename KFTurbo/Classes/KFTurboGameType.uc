@@ -26,6 +26,14 @@ var array< class<TurboWaveEventHandler> > WaveEventHandlerList;
 //Events that KFTurboServerMut binds to for bridging communication with ServerPerksMut.
 Delegate OnStatsAndAchievementsDisabled();
 Delegate LockPerkSelection(bool bLock);
+
+
+event InitGame( string Options, out string Error )
+{
+    //KFGameLength = GL_Long; //TODO: Maybe enforce this? Kinda annoying to test in singleplayer atm.
+    
+    Super.InitGame(Options, Error);
+}
  
 //Provide full context on something dying to TurboGameRules.
 function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<DamageType> DamageType)

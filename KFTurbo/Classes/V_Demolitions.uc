@@ -34,7 +34,7 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 		FinalInt = 5500000;
 		break;
 	default:
-		FinalInt = 5500000 + GetScaledRequirement(CurLevel - 5, 500000);
+		FinalInt = 5500000 + GetScaledRequirement(CurLevel - 5, 250000);
 	}
 	return Min(StatOther.RExplosivesDamageStat + StatOther.GetCustomValueInt(class'VP_ExplosiveDamage'), FinalInt);
 }
@@ -219,8 +219,9 @@ static function string GetCustomLevelInfo(byte Level)
 
 defaultproperties
 {
-     StartingWeaponSellPriceLevel5=255.000000
-     StartingWeaponSellPriceLevel6=255.000000
-     OnHUDGoldIcon=Texture'KFTurbo.Perks.Demolitions_D'
-	 SRLevelEffects(6)="60% extra explosives damage|55% resistance to explosives|50% increased capacity for M4 203 Grenades and LAW Rockets|40% faster firing rate with LAW|30% faster reload speed with LAW|120% increase in grenade capacity|Can carry 8 Pipe Bombs|30% discount on explosives|74% discount on Pipe Bombs|Spawn with an M4 203 Rifle and Pipe Bomb"
+	StartingWeaponSellPriceLevel5=255.000000
+	StartingWeaponSellPriceLevel6=255.000000
+	OnHUDGoldIcon=Texture'KFTurbo.Perks.Demolitions_D'
+	OnHUDIconMaxTier=Shader'KFTurbo.Perks.Demolitions_SHDR'
+	SRLevelEffects(6)="60% extra explosives damage|55% resistance to explosives|50% increased capacity for M4 203 Grenades and LAW Rockets|40% faster firing rate with LAW|30% faster reload speed with LAW|120% increase in grenade capacity|Can carry 8 Pipe Bombs|30% discount on explosives|74% discount on Pipe Bombs|Spawn with an M4 203 Rifle and Pipe Bomb"
 }

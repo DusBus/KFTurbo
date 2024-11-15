@@ -13,6 +13,7 @@ var() Color LevelColors[7];
 
 var() localized string MaxTierTitle;
 var() Color MaxTierColor;
+var() Material OnHUDIconMaxTier;
 
 //Are we playing KFTurbo+? Fixed to be callable by clients.
 static final function bool IsHighDifficulty( Actor Actor )
@@ -376,14 +377,21 @@ static final function Color GetPerkColor(byte Level)
 static function byte PreDrawPerk(Canvas C, byte Level, out Material PerkIcon, out Material StarIcon)
 {
 	local byte DrawColorAlpha;
+	DrawColorAlpha = C.DrawColor.A;
 
 	StarIcon = Default.StarTexture;
-	PerkIcon = Default.OnHUDGoldIcon;
 
-	DrawColorAlpha = C.DrawColor.A;
+	if (GetPerkTier(Level) == GetMaxTier())
+	{
+		PerkIcon = Default.OnHUDIconMaxTier;
+	}
+	else
+	{
+		PerkIcon = Default.OnHUDGoldIcon;
+	}
+
 	C.DrawColor = GetPerkColor(Level);
 	C.DrawColor.A = DrawColorAlpha;
-
 	return Level % Default.LevelRankRequirement;
 }
 
@@ -393,6 +401,7 @@ defaultproperties
 	HighDifficultyExtraAmmoMultiplier=1.5f
 	
 	StarTexture=Texture'KFTurbo.Perks.Star_D'
+	OnHUDIconMaxTier=None
 
 	LevelNames(0)="Experienced"
 	LevelNames(1)="Skilled"

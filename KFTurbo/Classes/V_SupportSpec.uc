@@ -8,6 +8,26 @@ static function AddCustomStats(ClientPerkRepLink Other)
 	Other.AddCustomValue(class'VP_ShotgunDamage');
 }
 
+//Used to grant shotgun damage for doing damage through zeds.
+static function RewardPenetrationShotgunDamage(PlayerController Target, int Amount)
+{
+	local ClientPerkRepLink TargetCPRL;
+	if (Target == None || Target.Role != ROLE_Authority)
+	{
+		return;
+	}
+
+	TargetCPRL = class'ClientPerkRepLink'.static.FindStats(Target);
+
+	if (TargetCPRL == None || TargetCPRL.StatObject == None)
+	{
+		return;
+	}
+
+	//Give an extra 33% of damage dealt with a shotgun from a penetrated hit.
+	TargetCPRL.StatObject.AddShotgunDamage(int(float(Amount) * 0.33f));
+}
+
 static function int GetPerkProgressInt( ClientPerkRepLink StatOther, out int FinalInt, byte CurLevel, byte ReqNum )
 {
 	switch( CurLevel )
@@ -34,7 +54,7 @@ static function int GetPerkProgressInt( ClientPerkRepLink StatOther, out int Fin
 		FinalInt = 5500000;
 		break;
 	default:
-		FinalInt = 5500000 + GetScaledRequirement(CurLevel - 5, 500000);
+		FinalInt = 5500000 + GetScaledRequirement(CurLevel - 5, 250000);
 		break;
 	}
 
@@ -159,6 +179,7 @@ static function string GetCustomLevelInfo(byte Level)
 
 defaultproperties
 {
-     OnHUDGoldIcon=Texture'KFTurbo.Perks.Support_D'
-	 SRLevelEffects(6)="60% more damage with shotguns|90% better shotgun penetration|30% extra shotgun ammo|50% more damage with grenades|120% increase in grenade capacity|60% increased carry weight|150% faster welding/unwelding|70% discount on shotguns|Spawn with a Shotgun"
+    OnHUDGoldIcon=Texture'KFTurbo.Perks.Support_D'
+	OnHUDIconMaxTier=Shader'KFTurbo.Perks.Support_SHDR'
+	SRLevelEffects(6)="60% more damage with shotguns|90% better shotgun penetration|30% extra shotgun ammo|50% more damage with grenades|120% increase in grenade capacity|60% increased carry weight|150% faster welding/unwelding|70% discount on shotguns|Spawn with a Shotgun"
 }

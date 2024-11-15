@@ -236,12 +236,11 @@ static final function bool AlreadyHitPawn(out Actor HitActor, out array<Pawn> Hi
 	local int Index;
 	local Pawn Pawn;
 
-	if (Pawn(HitActor.Base) != None)
-	{
-		HitActor = HitActor.Base;
-	}
-
 	Pawn = Pawn(HitActor);
+	if (Pawn == None)
+	{
+		Pawn = Pawn(HitActor.Base);
+	}
 
 	if (Pawn == None)
 	{
@@ -619,6 +618,32 @@ static final function bool SingleWeaponSpawnCopy(KFWeaponPickup SingleWeaponPick
 
 	SingleWeaponPickup.InventoryType = SingleWeaponPickup.default.InventoryType;
 	return false;
+}
+
+static final function OnShotgunProjectileHit(ShotgunBullet Projectile, Actor HitActor, float PreviousDamage)
+{
+	if (Projectile == None || Projectile.Role != ROLE_Authority)
+	{
+		return;
+	}
+
+	//Not considered a valid penetrated hit if PreviousDamage was default or if PreviousDamage is equal to current Damage.
+	if (PreviousDamage == Projectile.default.Damage || PreviousDamage == Projectile.Damage)
+	{
+		return;
+	}
+	
+	if (Monster(HitActor) == None && ExtendedZCollision(HitActor) == None)
+	{
+		return;
+	}
+
+	if (Projectile.Instigator == None || PlayerController(Projectile.Instigator.Controller) == None)
+	{
+		return;
+	}
+
+	class'V_SupportSpec'.static.RewardPenetrationShotgunDamage(PlayerController(Projectile.Instigator.Controller), Projectile.Damage);
 }
 
 static final function OnShotgunFire(KFShotgunFire FireMode)

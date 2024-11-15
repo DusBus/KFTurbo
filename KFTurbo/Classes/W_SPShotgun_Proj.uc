@@ -11,12 +11,15 @@ event PreBeginPlay()
 
 simulated function ProcessTouch(Actor Other, vector HitLocation)
 {
+	local float PreviousDamage;
 	if (class'WeaponHelper'.static.AlreadyHitPawn(Other, HitPawnList))
 	{
 		return;
 	}
 
+	PreviousDamage = Damage;
 	Super.ProcessTouch(Other, HitLocation);
+	class'WeaponHelper'.static.OnShotgunProjectileHit(Self, Other, PreviousDamage);
 }
 
 defaultproperties

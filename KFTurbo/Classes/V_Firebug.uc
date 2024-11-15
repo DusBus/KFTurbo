@@ -34,7 +34,7 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 		FinalInt = 5500000;
 		break;
 	default:
-		FinalInt = 5500000 + GetScaledRequirement(CurLevel - 5, 500000);
+		FinalInt = 5500000 + GetScaledRequirement(CurLevel - 5, 250000);
 	}
 	return Min(StatOther.RFlameThrowerDamageStat + StatOther.GetCustomValueInt(class'VP_FlamethrowerDamage'), FinalInt);
 }
@@ -192,9 +192,10 @@ static function string GetCustomLevelInfo(byte Level)
 
 defaultproperties
 {
-     StartingWeaponSellPriceLevel5=255.000000
-     StartingWeaponSellPriceLevel6=255.000000
-     OnHUDGoldIcon=Texture'KFTurbo.Perks.Firebug_D'
-	 SRLevelEffects(6)="60% extra damage with Flamethrower and Husk Gun|15% extra damage with MAC10, Trenchgun and Thompson Incendiary|60% faster reload speed with perk weapons|60% larger magazine for Flamethrower, MAC-10 and Thompson Incendiary|60% more ammo for with perk weapons|100% resistance to fire|100% extra Flamethrower range|Grenades set enemies on fire|70% discount on perk weapons|Spawn with a MAC-10"
-     Requirements(0)="Deal %x damage with weapons that cause Burning."
+	StartingWeaponSellPriceLevel5=255.000000
+	StartingWeaponSellPriceLevel6=255.000000
+	OnHUDGoldIcon=Texture'KFTurbo.Perks.Firebug_D'
+	OnHUDIconMaxTier=Shader'KFTurbo.Perks.Firebug_SHDR'
+	SRLevelEffects(6)="60% extra damage with Flamethrower and Husk Gun|15% extra damage with MAC10, Trenchgun and Thompson Incendiary|60% faster reload speed with perk weapons|60% larger magazine for Flamethrower, MAC-10 and Thompson Incendiary|60% more ammo for with perk weapons|100% resistance to fire|100% extra Flamethrower range|Grenades set enemies on fire|70% discount on perk weapons|Spawn with a MAC-10"
+	Requirements(0)="Deal %x damage with weapons that cause Burning."
 }
