@@ -290,7 +290,7 @@ static function string GetVetInfoText(byte Level, byte Type, optional byte Requi
 	switch (Type)
 	{
 	case 0:
-		return GetPerkTitle(Level);
+		return GetPerkTierTitle(GetPerkTier(Level));
 	case 1:
 		return GetCustomLevelInfo(Level);
 	case 3:
@@ -307,7 +307,7 @@ static function string GetFullPerkName(byte Level)
 {
 	local string Title;
 
-	Title = GetPerkTitle(Level);
+	Title = GetPerkTierTitle(GetPerkTier(Level));
 
 	if (Title == "")
 	{
@@ -315,24 +315,6 @@ static function string GetFullPerkName(byte Level)
 	}
 
 	return Title @ Default.VeterancyName;
-}
-
-static function string GetPerkTitle(byte Level)
-{
-	local int Tier;
-	Tier = GetPerkTier(Level);
-
-	if (Tier <= 0)
-	{
-		return "";
-	}
-
-	if (Tier == GetMaxTier())
-	{
-		return default.MaxTierTitle;
-	}
-
-	return default.LevelNames[Tier - 1];
 }
 
 //Lerp function but written so that we mutate our exact behaviour in a centralized location.
@@ -346,27 +328,39 @@ static function float LerpStat(KFPlayerReplicationInfo KFPRI, float A, float B)
 	return Lerp(Level, A, B);*/
 }
 
-static final function byte GetMaxTier()
-{
-	return ArrayCount(Default.LevelNames);
-}
-
 static final function byte GetPerkTier(byte Level)
 {
 	return Level / Default.LevelRankRequirement;
 }
 
-static final function Color GetPerkColor(byte Level)
+static final function byte GetMaxTier()
 {
-	local int Tier;
-	Tier = GetPerkTier(Level);
+	return ArrayCount(Default.LevelNames);
+}
 
+static function string GetPerkTierTitle(byte Tier)
+{
+	if (Tier <= 0)
+	{
+		return "";
+	}
+
+	if (Tier > GetMaxTier())
+	{
+		return default.MaxTierTitle;
+	}
+
+	return default.LevelNames[Tier - 1];
+}
+
+static final function Color GetPerkTierColor(byte Tier)
+{
 	if (Tier <= 0)
 	{
 		return class'Canvas'.static.MakeColor(255, 32, 32, 255);
 	}
 
-	if (Tier == GetMaxTier())
+	if (Tier > GetMaxTier())
 	{
 		return default.MaxTierColor;
 	}
@@ -377,11 +371,12 @@ static final function Color GetPerkColor(byte Level)
 static function byte PreDrawPerk(Canvas C, byte Level, out Material PerkIcon, out Material StarIcon)
 {
 	local byte DrawColorAlpha;
+	local byte PerkTier;
 	DrawColorAlpha = C.DrawColor.A;
 
-	StarIcon = Default.StarTexture;
-
-	if (GetPerkTier(Level) == GetMaxTier())
+	PerkTier = GetPerkTier(Level);
+	
+	if (PerkTier > GetMaxTier())
 	{
 		PerkIcon = Default.OnHUDIconMaxTier;
 	}
@@ -390,8 +385,11 @@ static function byte PreDrawPerk(Canvas C, byte Level, out Material PerkIcon, ou
 		PerkIcon = Default.OnHUDGoldIcon;
 	}
 
-	C.DrawColor = GetPerkColor(Level);
+	StarIcon = Default.StarTexture;
+
+	C.DrawColor = GetPerkTierColor(PerkTier);
 	C.DrawColor.A = DrawColorAlpha;
+	
 	return Level % Default.LevelRankRequirement;
 }
 
@@ -417,7 +415,7 @@ defaultproperties
 	LevelColors(3)=(R=150,G=30,B=255,A=255)
 	LevelColors(4)=(R=255,G=110,B=0,A=255)
 	LevelColors(5)=(R=255,G=190,B=11,A=255)
-	LevelColors(6)=(R=255,G=235,B=255,A=255)
+	LevelColors(6)=(R=225,G=235,B=255,A=255)
 
 	MaxTierTitle="";
 	MaxTierColor=(R=255,G=255,B=255,A=255)

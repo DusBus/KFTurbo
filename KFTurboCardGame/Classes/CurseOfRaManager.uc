@@ -4,6 +4,7 @@
 class CurseOfRaManager extends Engine.Info;
 
 var int NumExtraToSpawn;
+var bool bSpawnedExtra;
 
 struct RatedSpawner
 {
@@ -39,9 +40,15 @@ function AddBosses()
 
     local ZombieBoss ZombieBoss;
 
-    KFGT = KFGameType(Level.Game);
+    if (bSpawnedExtra)
+    {
+        return;
+    }
 
+    bSpawnedExtra = true;
+    KFGT = KFGameType(Level.Game);
     KFGT.NextSpawnSquad.Length = 1;
+
     if(KFGT.KFGameLength != KFGT.GL_Custom)
     {
         KFGT.NextSpawnSquad[0] = Class<KFMonster>(DynamicLoadObject(KFGT.MonsterCollection.default.EndGameBossClass, Class'Class'));
@@ -151,6 +158,10 @@ function Timer()
     else if (Random < 0.5f)
     {
         ForceDropCash();
+    }
+    else if (Random < 0.6f)
+    {
+        KillRandomMonster();
     }
 }
 
@@ -282,7 +293,38 @@ function ForceDropCash()
     HumanPawn.TossCash(50);
 }
 
+
+function KillRandomMonster()
+{
+    local Controller C;
+    local array<Monster> MonsterList;
+    local Monster SelectedMonster;
+
+	for (C = Level.ControllerList; C != None; C = C.NextController)
+	{
+		if(C != None && Monster(C.Pawn) != None && C.Pawn.Health > 0)
+		{
+			MonsterList[MonsterList.Length] = Monster(C.Pawn);
+		}
+	}
+
+    if (MonsterList.Length < 6)
+    {
+        return;
+    }
+
+    SelectedMonster = MonsterList[Rand(MonsterList.Length)];
+    
+    if (SelectedMonster == None || ZombieBoss(SelectedMonster) != None)
+    {
+        return;
+    }
+
+    SelectedMonster.Died(None, class'TurboCurseOfRaKillMonster_DT', SelectedMonster.Location);
+}
+
 defaultproperties
 {
     NumExtraToSpawn=1
+    bSpawnedExtra=false
 }

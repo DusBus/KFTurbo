@@ -39,7 +39,7 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 		FinalInt = 100000;
 		break;
 	default:
-		FinalInt = 85000 + GetScaledRequirement(CurLevel - 4, 6000);
+		FinalInt = 100000 + GetScaledRequirement(CurLevel - 5, 3500);
 	}
 	return Min(StatOther.RDamageHealedStat + StatOther.GetCustomValueInt(class'VP_DamageHealed'), FinalInt);
 }

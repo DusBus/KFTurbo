@@ -18,7 +18,7 @@ static function string GetString(optional int Switch, optional PlayerReplication
     }
 
     TextColorCode = class'GameInfo'.static.MakeColorCode(default.DrawColor);
-    PerkColorCode = class'GameInfo'.static.MakeColorCode(PlayerPerk.static.GetPerkColor(Switch));
+    PerkColorCode = class'GameInfo'.static.MakeColorCode(PlayerPerk.static.GetPerkTierColor(PlayerPerk.static.GetPerkTier(Switch)));
 
     Result = default.OtherPlayerEarnedPerkLevelString;
     Result = Repl(Result, "%player", PerkColorCode $ RelatedPRI_1.PlayerName $ TextColorCode);

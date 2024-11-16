@@ -895,6 +895,66 @@ simulated final function DrawScaledSmileyText( string S, canvas C, optional out 
 	C.SetPos(PX,PY);
 }
 
+simulated function DrawHealthBar(Canvas C, Actor A, int Health, int MaxHealth, float Height)
+{
+	local vector CameraLocation, CamDir, TargetLocation, HBScreenPos;
+	local rotator CameraRotation;
+	local float Distance, HealthPct, BarScale;
+	local Color OldDrawColor;
+
+	if (PlayerOwner.Player.GUIController.bActive)
+	{
+		return;
+	}
+
+	OldDrawColor = C.DrawColor;
+
+	C.GetCameraLocation(CameraLocation, CameraRotation);
+	TargetLocation = A.Location + (vect(0.f, 0.f, 1.f) * (A.CollisionHeight * 2.f));
+	Distance = VSize(TargetLocation - CameraLocation);
+
+	CamDir = vector(CameraRotation);
+
+	if (Distance > HealthBarCutoffDist || (Normal(TargetLocation - CameraLocation) dot CamDir) < 0.f)
+	{
+		return;
+	}
+
+	HBScreenPos = C.WorldToScreen(TargetLocation);
+
+	if (Pawn(A) != None && default.MessageHealthLimit <= Pawn(A).default.Health)
+	{
+		BarScale = 1.f;
+	}
+	else
+	{
+		BarScale = 0.5f;
+	}
+
+	if (HBScreenPos.X <= 0 || HBScreenPos.X >= C.SizeX || HBScreenPos.Y <= 0 || HBScreenPos.Y >= C.SizeY)
+	{
+		return;
+	}
+
+	if (!FastTrace(TargetLocation, CameraLocation))
+	{
+		return;
+	}
+
+	C.DrawColor = class'TurboHUDPlayerInfo'.default.BarBackplateColor;
+	C.DrawColor.A = int(float(C.DrawColor.A) * (float(255) / 255.f));
+	C.SetPos(HBScreenPos.X - (0.5f * BarLength * BarScale), HBScreenPos.Y - (0.33 * BarHeight * BarScale));
+	C.DrawTileStretched(WhiteMaterial, BarLength * BarScale, BarHeight * BarScale * 0.66f);
+
+	HealthPct = FClamp(float(Health) / float(MaxHealth), 0.f, 1.f);
+	C.DrawColor = class'TurboHUDPlayerInfo'.default.HealthBarColor;
+	C.DrawColor.A = int(float(C.DrawColor.A) * (float(255) / 255.f));
+	C.SetPos(HBScreenPos.X - (0.5f * BarLength * BarScale), HBScreenPos.Y - (0.33 * BarHeight * BarScale));
+	C.DrawTileStretched(WhiteMaterial, BarLength * HealthPct * BarScale, BarHeight * BarScale * 0.66f);
+
+	C.DrawColor = OldDrawColor;
+}
+
 simulated function LocalizedMessage( class<LocalMessage> Message, optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject, optional String CriticalString)
 {
 	if (class<KillsMessage>(Message) != None)
