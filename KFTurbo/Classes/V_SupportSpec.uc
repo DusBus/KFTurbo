@@ -124,7 +124,7 @@ static function int AddDamage(KFPlayerReplicationInfo KFPRI, KFMonster Injured, 
 	{
 	case class'W_NailGun_DT' :
 	case class'DamTypeShotgun' :
-	case class'DamTypeDBShotgun' :
+	case class'W_BoomStick_DT' :
 	case class'DamTypeAA12Shotgun' :
 	case class'DamTypeBenelli' :
 	case class'DamTypeKSGShotgun' :
