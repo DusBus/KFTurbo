@@ -233,7 +233,7 @@ function PerformAftershock()
         return;
     }
 
-	foreach VisibleCollidingActors(class 'Projectile', Projectile, ScreamRadius, Location)
+	foreach VisibleCollidingActors(class'Projectile', Projectile, ScreamRadius, Location)
 	{
         Direction = Projectile.Location - Location;
         Distance = FMax(1, VSize(Direction));

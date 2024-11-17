@@ -155,6 +155,16 @@ simulated event ReceiveLocalizedMessage( class<LocalMessage> Message, optional i
 	Super.ReceiveLocalizedMessage(Message, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject);
 }
 
+function ClientLocationalVoiceMessage(PlayerReplicationInfo Sender, PlayerReplicationInfo Recipient, name MessageType, byte MessageIndex, optional Pawn SoundSender, optional vector SenderLocation)
+{
+	Super.ClientLocationalVoiceMessage(Sender, Recipient, MessageType, MessageIndex, SoundSender, SenderLocation);
+
+	if (TurboHUDKillingFloor(myHUD) != None)
+	{
+		TurboHUDKillingFloor(myHUD).ReceivedVoiceMessage(Sender, MessageType, MessageIndex, SoundSender, SenderLocation);
+	}
+}
+
 simulated function CheckAccoladeLocalizedMessage(class<TurboAccoladeLocalMessage> Message, optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject)
 {
 	if (!Message.default.bDisplayForAccoladeEarner && PlayerReplicationInfo == RelatedPRI_1)

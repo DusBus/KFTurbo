@@ -202,7 +202,7 @@ defaultproperties
 
     Begin Object Name=Thorns Class=TurboCard_Good
         CardName(0)="Thorns"
-        CardDescriptionList(0)="Relfect 10% of"
+        CardDescriptionList(0)="Reflect 10% of"
         CardDescriptionList(1)="received damage"
         CardDescriptionList(2)="back onto zeds."
         OnActivateCard=ActivateThorns

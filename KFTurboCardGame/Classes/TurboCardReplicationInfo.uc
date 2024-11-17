@@ -163,7 +163,6 @@ simulated function CheckForActiveCardUpdates()
     local int ActiveCardIndex;
     local bool bHasNewActiveCards;
 
-    log("Attempting to broadcasting active card update");
     bHasNewActiveCards = false;
     for (ActiveCardIndex = 0; ActiveCardIndex < ArrayCount(ActiveCardList); ActiveCardIndex++)
     {
@@ -184,7 +183,6 @@ simulated function CheckForActiveCardUpdates()
         return;
     }
 
-    log("Broadcasting active card update");
     LastKnownActiveCardIndex = ActiveCardIndex - 1;
     OnActiveCardsUpdated(Self);
 }
@@ -200,7 +198,6 @@ simulated function CheckForSelectableCardUpdates()
     }
     
     bCurrentlyVoting = bHasSelectableCards;
-    log ("bCurrentlyVoting:"@bCurrentlyVoting);
     OnSelectableCardsUpdated(Self);
 }
 

@@ -971,6 +971,11 @@ simulated function LocalizedMessage( class<LocalMessage> Message, optional int S
 	Super.LocalizedMessage(Message, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject, CriticalString);
 }
 
+simulated function ReceivedVoiceMessage(PlayerReplicationInfo Sender, Name MessageType, byte MessageIndex, optional Pawn SoundSender, optional vector SenderLocation)
+{
+
+}
+
 simulated function UpdateKillMessage(Object OptionalObject, PlayerReplicationInfo RelatedPRI_1)
 {
 	//LocalMessage list no longer handles kill messages.

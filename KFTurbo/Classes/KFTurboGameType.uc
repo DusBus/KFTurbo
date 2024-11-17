@@ -438,7 +438,7 @@ function AttemptTraderEnd(TurboPlayerController VoteInstigator)
     if (VotePercent < 0.51f)
     {
         //This means someone instigated a vote.
-        if (NumVoters == 1)
+        if (NumVotes == 1)
         {
             BroadcastLocalizedMessage(class'TurboEndTraderVoteMessage',,VoteInstigator.PlayerReplicationInfo);
         }

@@ -254,6 +254,11 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
 
     DamageMultiplier = 1.f;
 
+    if (class<SirenScreamDamage>(DamageType) != None)
+    {   
+        DamageMultiplier *= SirenScreamDamageMultiplier;
+    }
+
     WeaponDamageType = class<KFWeaponDamageType>(DamageType);
     if (WeaponDamageType != None)
     {
@@ -316,11 +321,6 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
         if (P_Stalker(InstigatedBy) != None)
         {
             DamageMultiplier *= MonsterStalkerDamageMultiplier;
-        }
-
-        if (class<SirenScreamDamage>(DamageType) != None)
-        {   
-            DamageMultiplier *= SirenScreamDamageMultiplier;
         }
         else if (class<ZombieMeleeDamage>(DamageType) != None)
         {
