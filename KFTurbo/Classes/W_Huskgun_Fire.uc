@@ -1,5 +1,7 @@
 class W_Huskgun_Fire extends HuskGunFire;
 
+var float MaxDamageMultiplier;
+
 simulated function float GetScaledMaxChargeTime()
 {
     local float ScaledMaxChargeTime;
@@ -81,20 +83,16 @@ function class<Projectile> GetDesiredProjectileClass()
 /* Convenient place to perform changes to a newly spawned projectile */
 function PostSpawnProjectile(Projectile P)
 {
+    local float ChargePercentage;
+
     Super(KFShotgunFire).PostSpawnProjectile(P);
 
-    if( HoldTime < GetScaledMaxChargeTime() )
-    {
-        HuskGunProjectile(p).ImpactDamage *= HoldTime * 2.5;
-        HuskGunProjectile(p).Damage *= (1.0 + (HoldTime/GetScaledMaxChargeTime()));// up to double damage
-        HuskGunProjectile(p).DamageRadius *= (1.0 + (HoldTime/(GetScaledMaxChargeTime()/2.0)));// up 3x the damage radius
-    }
-    else
-    {
-        HuskGunProjectile(p).ImpactDamage *= GetScaledMaxChargeTime() * 2.5;
-        HuskGunProjectile(p).Damage *= 2.0;// up to double damage
-        HuskGunProjectile(p).DamageRadius *= 3.0;// up 3x the damage radius
-    }
+    ChargePercentage = FClamp(HoldTime / GetScaledMaxChargeTime(), 0.f, 1.f);
+
+    HuskGunProjectile(p).ImpactDamage *= Lerp(ChargePercentage, 1.f, MaxDamageMultiplier);
+    HuskGunProjectile(p).Damage *= (1.0 + ChargePercentage);  // Up to double damage.
+    HuskGunProjectile(p).DamageRadius *= (1.0 + (ChargePercentage * 2.0));  // Up to 3x the damage radius.
+
 }
 
 event ModeDoFire()
@@ -212,9 +210,9 @@ event ModeDoFire()
 defaultproperties
 {
     MaxChargeTime=2.000000
-    aimerror=0.000000
     Spread=0.000000
     AmmoClass=Class'KFTurbo.W_HuskGun_Ammo'
+    MaxDamageMultiplier=7.5
 
     WeakProjectileClass=Class'W_HuskGun_Proj_Weak'
     StrongProjectileClass=Class'W_HuskGun_Proj_Strong'

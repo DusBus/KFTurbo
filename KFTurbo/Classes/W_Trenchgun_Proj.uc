@@ -69,5 +69,5 @@ defaultproperties
      HeadShotDamageMult=1.000000
 
      Damage=18.000000
-     MyDamageType=Class'KFMod.DamTypeTrenchgun'
+     MyDamageType=Class'W_Trenchgun_DT'
 }
