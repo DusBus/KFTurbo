@@ -1,14 +1,11 @@
-class W_AA12_Proj extends AA12Bullet;
-
-simulated function ProcessTouch(Actor Other, vector HitLocation)
-{
-    local float PreviousDamage;
-    PreviousDamage = Damage;
-    Super.ProcessTouch(Other, HitLocation);
-    class'WeaponHelper'.static.OnShotgunProjectileHit(Self, Other, PreviousDamage);
-}
+class W_AA12_Proj extends W_BaseShotgunBullet;
 
 defaultproperties
 {
-     HeadShotDamageMult=1.640000
+    PenDamageReduction=0.750000
+    MomentumTransfer=60000.000000
+    DrawScale=1.500000
+    
+    Damage=30.000000
+    MyDamageType=Class'KFMod.DamTypeAA12Shotgun'
 }
