@@ -43,7 +43,7 @@ simulated function ProcessTouch(Actor Other, vector HitLocation)
         Other.TakeDamage(Damage, Instigator, HitLocation, MomentumTransfer * Normal(Velocity), MyDamageType);
 
         //If damage was applied and we're doing less than our default, assume it's a penetrated hit.
-        if (Monster(Other) != None && Damage < default.Damage)
+        if ((Monster(Other) != None || Monster(Other.Base) != None) && Damage < default.Damage)
         {
             class'WeaponHelper'.static.OnShotgunProjectileHit(Self, Other, Damage);
         }
