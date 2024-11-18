@@ -973,7 +973,10 @@ simulated function LocalizedMessage( class<LocalMessage> Message, optional int S
 
 simulated function ReceivedVoiceMessage(PlayerReplicationInfo Sender, Name MessageType, byte MessageIndex, optional Pawn SoundSender, optional vector SenderLocation)
 {
-
+	if (TurboHUDPlayerInfo(PlayerInfoHUD) != None)
+	{
+		TurboHUDPlayerInfo(PlayerInfoHUD).ReceivedVoiceMessage(Sender, MessageType, MessageIndex, SoundSender, SenderLocation);
+	}
 }
 
 simulated function UpdateKillMessage(Object OptionalObject, PlayerReplicationInfo RelatedPRI_1)

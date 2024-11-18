@@ -433,10 +433,13 @@ simulated function DrawActiveCardList(Canvas C)
 	{
 		C.TextSize(HowToScrollCardsString[Index], TextSizeX, TextSizeY);
 		
-		C.SetDrawColor(0, 0, 0, Lerp(HowToScrollFade, 0, 120));
+		C.SetDrawColor(0, 0, 0);
+		C.DrawColor.A = Lerp(HowToScrollFade, 0, 120);
 		C.SetPos((TempX - (TextSizeX * 0.5f)) + 2.f, TempY + 2.f);
 		C.DrawTextClipped(HowToScrollCardsString[Index]);
-		C.SetDrawColor(255, 255, 255, Lerp(HowToScrollFade, 0, 255));
+
+		C.SetDrawColor(255, 255, 255);
+		C.DrawColor.A = Lerp(HowToScrollFade, 0, 255);
 		C.SetPos((TempX - (TextSizeX * 0.5f)), TempY);
 		C.DrawTextClipped(HowToScrollCardsString[Index]);
 		TempY += TextSizeY;

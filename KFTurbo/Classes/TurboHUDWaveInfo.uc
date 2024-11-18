@@ -397,7 +397,8 @@ simulated function DrawActiveWave(Canvas C, Vector2D Center)
 		C.DrawRect(ActiveWaveIcon, C.ClipY * BackplateSize.Y * 0.6f, C.ClipY * BackplateSize.Y * 0.6f);
 	}
 
-	C.SetDrawColor(255, 255, 255, byte(ActiveWaveFadeRatio * 255.f));
+	C.SetDrawColor(255, 255, 255);
+	C.DrawColor.A = byte(ActiveWaveFadeRatio * 255.f);
 
 	C.SetPos(Center.X - (TextSizeX * 0.5f), Center.Y - (TextSizeY * 0.5f));
 	DrawTextMeticulous(C, ActiveWaveString, TextSizeX);
@@ -516,7 +517,8 @@ simulated final function DrawKillFeedEntry(Canvas C, out float DrawY, out KillFe
 
 	DrawOffsetX = ((1.f - FadeOutRatio) * 32.f);
 
-	C.SetDrawColor(0, 0, 0, byte(FadeOutRatio * 160.f));
+	C.SetDrawColor(0, 0, 0);
+	C.DrawColor.A = byte(FadeOutRatio * 160.f);
 	C.SetPos((-2.f) - DrawOffsetX, DrawY);
 
 	if (LeftEdgeContainer != None)
@@ -525,7 +527,8 @@ simulated final function DrawKillFeedEntry(Canvas C, out float DrawY, out KillFe
 	}
 
 	DrawX = 8.f - DrawOffsetX;
-	C.SetDrawColor(255, 255, 255, byte(FadeOutRatio * 255.f));
+	C.SetDrawColor(255, 255, 255);
+	C.DrawColor.A = byte(FadeOutRatio * 255.f);
 
 	C.SetPos(DrawX + KillTextX, DrawY + (EntrySizeY * 0.5f) - (BaseTextSizeY * 0.45f));
 	C.DrawTextClipped(KillTextString);
@@ -660,11 +663,7 @@ simulated function TickTraderWave(float DeltaTime)
 			EndTraderVoteList[EndTraderVoteIndex].Ratio = Lerp(2.f * DeltaTime, EndTraderVoteList[EndTraderVoteIndex].Ratio, 0.f);
 		}
 
-		if (EndTraderVoteList.Length != 0)
-		{
-			EndTraderVoteRatio = Lerp(4.f * DeltaTime, EndTraderVoteRatio, 0.f);
-		}
-
+		EndTraderVoteRatio = Lerp(4.f * DeltaTime, EndTraderVoteRatio, 0.f);
 		return;
 	}
 
@@ -740,7 +739,8 @@ simulated function DrawTraderWave(Canvas C, Vector2D Center)
 		return;
 	}
 
-	C.SetDrawColor(255, 255, 255, byte(TraderFadeRatio * 255.f));
+	C.SetDrawColor(255, 255, 255);
+	C.DrawColor.A = byte(TraderFadeRatio * 255.f);
 
 	if (WaveTimeSecondsRemaining >= 60.f)
 	{
@@ -783,6 +783,11 @@ simulated function DrawTraderEndVote(Canvas C)
 	local float TempX, TempY, MinEntrySizeX, EntrySizeY, EntryXOffset;
 	local float TextSizeX, TextSizeY;
 	local bool bHasVotes;
+
+	if (EndTraderVoteRatio < 0.001f)
+	{
+		return;
+	}
 
 	bHasVotes = false;
 	
@@ -838,18 +843,26 @@ simulated function DrawTraderEndVote(Canvas C)
 		}
 
 		Ratio = EndTraderVoteList[Index].Ratio;
+
+		if (Ratio < 0.001f)
+		{
+			continue;
+		}
+		
 		EntryXOffset = (MinEntrySizeX * Lerp(Ratio, 0.5f, 0.f));
 
 		C.TextSize(TPRI.PlayerName, TextSizeX, TextSizeY);
 
 		if (EdgeContainer != None)
 		{
-			C.SetDrawColor(0, 0, 0, byte(Ratio * 120.f));
+			C.SetDrawColor(0, 0, 0);
+			C.DrawColor.A = byte(Ratio * 120.f);
 			C.SetPos((TempX - MinEntrySizeX) + EntryXOffset, TempY);
 			C.DrawTileStretched(EdgeContainer, MinEntrySizeX + 2.f, EntrySizeY); //Avoid seams.
 		}
 
-		C.SetDrawColor(255, 255, 255, byte(Ratio * 255.f));
+		C.SetDrawColor(255, 255, 255);
+		C.DrawColor.A = byte(Ratio * 255.f);
 		C.SetPos((TempX - TextSizeX - 8.f) + EntryXOffset, TempY + (EntrySizeY * 0.5f) - (TextSizeY * 0.5f));
 		C.DrawTextClipped(TPRI.PlayerName);
 
@@ -858,7 +871,8 @@ simulated function DrawTraderEndVote(Canvas C)
 
 	if (bHasVotes)
 	{
-		C.SetDrawColor(255, 255, 255, byte(EndTraderVoteRatio * 255.f));
+		C.SetDrawColor(255, 255, 255);
+		C.DrawColor.A = byte(EndTraderVoteRatio * 255.f);
 		TempY = C.ClipY * 0.3f;
 		C.TextSize(EndTraderVoteTitle, TextSizeX, TextSizeY);
 
