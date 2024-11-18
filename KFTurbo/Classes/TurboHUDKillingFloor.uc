@@ -24,6 +24,8 @@ var TurboHUDOverlay PlayerHUD;
 var class<TurboHUDOverlay> MarkInfoHUDClass;
 var TurboHUDOverlay MarkInfoHUD;
 
+var TextReactionSettings TextReactionSettings;
+
 simulated event PostRender( canvas Canvas )
 {
 	bUseBloom = bool(ConsoleCommand("get ini:Engine.Engine.ViewportManager Bloom"));
@@ -75,6 +77,11 @@ simulated function PostBeginPlay()
 
 	MarkInfoHUD = Spawn(MarkInfoHUDClass, Self);
 	MarkInfoHUD.Initialize(Self);
+
+	if (TextReactionSettings != None)
+	{
+		TextReactionSettings.Initialize(Self);
+	}
 }
 
 simulated function SetScoreBoardClass (class<Scoreboard> ScoreBoardClass)
@@ -524,6 +531,11 @@ simulated final function float GetTextMessageLifeTime(string M, class<LocalMessa
 function AddTextMessage(string M, class<LocalMessage> MessageClass, PlayerReplicationInfo PRI)
 {
 	local int i;
+
+	if (TextReactionSettings != None)
+	{
+		TextReactionSettings.ReceivedMessage(TurboPlayerController(PlayerOwner), M, MessageClass, PRI);
+	}
 
 	if( bMessageBeep && MessageClass.Default.bBeep )
 	{
@@ -996,8 +1008,12 @@ simulated function Font LoadFont(int i)
 
 defaultproperties
 {
-	WinSound=Sound'KFTurbo.YouWin_S'
-	LoseSound=Sound'KFTurbo.YouLose_S'
+	Begin Object Class=TurboTextReactionSettings Name=TurboTextReaction
+    End Object
+	TextReactionSettings=TurboTextReactionSettings'TurboTextReaction';
+
+	WinSound=Sound'KFTurbo.UI.YouWin_S'
+	LoseSound=Sound'KFTurbo.UI.YouLose_S'
 	EndGameHUDAnimationDuration=8.f
 
 	bHasInitializedEndGameHUD=false
