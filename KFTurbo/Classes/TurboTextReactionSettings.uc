@@ -8,6 +8,7 @@ struct TextSoundMap
     var string Text;
     var string SoundRef;
     var Sound Sound;
+    var float CooldownTime;
 };
 
 var array<TextSoundMap> TextSoundList;
@@ -28,6 +29,12 @@ simulated function ReceivedMessage(TurboPlayerController PlayerController, strin
                 }
             }
 
+            if (TextSoundList[Index].CooldownTime > PlayerController.Level.TimeSeconds)
+            {
+                return;
+            }
+
+            TextSoundList[Index].CooldownTime = PlayerController.Level.TimeSeconds + TextSoundList[Index].Sound.Duration + 0.5f;
             PlayerController.PlayOwnedSound(TextSoundList[Index].Sound, SLOT_Talk, 200.f);
             return;
         }
