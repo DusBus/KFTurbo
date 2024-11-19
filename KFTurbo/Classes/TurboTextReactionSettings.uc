@@ -44,4 +44,5 @@ simulated function ReceivedMessage(TurboPlayerController PlayerController, strin
 defaultproperties
 {
     TextSoundList(0)=(Text=":goosecooked:",SoundRef="KFTurbo.UI.goosecooked")
+    TextSoundList(1)=(Text=":plink:",SoundRef="KFTurbo.UI.plink")
 }
