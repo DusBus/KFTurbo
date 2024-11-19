@@ -207,7 +207,7 @@ static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup
 
 static function float GetBodyArmorDamageModifier(KFPlayerReplicationInfo KFPRI)
 {
-	return LerpStat(KFPRI, 1.f, 0.25f);
+	return Super(TurboVeterancyTypes).GetBodyArmorDamageModifier(KFPRI) * LerpStat(KFPRI, 1.f, 0.25f);
 }
 
 static function AddDefaultInventory(KFPlayerReplicationInfo KFPRI, Pawn P)
