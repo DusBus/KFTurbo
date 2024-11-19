@@ -13,11 +13,11 @@ static function OnWaveStarted(KFTurboGameType GameType, int EndedWave)
         return;
     }
 
-    for ( Controller = GameType.Level.ControllerList; Controller != None; Controller = Controller.NextController )
+    for (Controller = GameType.Level.ControllerList; Controller != None; Controller = Controller.NextController)
     {
         if (Controller.Pawn != None && PlayerController(Controller) != None && Controller.PlayerReplicationInfo != None)
         {
-            Controller.PlayerReplicationInfo.Score = 0;
+            Controller.PlayerReplicationInfo.Score = int(Controller.PlayerReplicationInfo.Score / 2.f);
         }
     }
 
@@ -28,7 +28,6 @@ static function OnWaveStarted(KFTurboGameType GameType, int EndedWave)
             continue;
         }
 
-        CashPickup.CashAmount = 0;
-        CashPickup.Destroy();
+        CashPickup.CashAmount = CashPickup.CashAmount / 2;
     }
 }

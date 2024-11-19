@@ -25,6 +25,7 @@ var(Turbo) float MedicGrenadeDamageMultiplier;
 var(Turbo) float FireDamageMultiplier;
 var(Turbo) float BerserkerMeleeDamageMultiplier;
 var(Turbo) float TrashHeadshotDamageMultiplier;
+var(Turbo) float TrashDamageMultiplier;
 
 var(Turbo) float ExplosiveDamageTakenMultiplier;
 var(Turbo) float FallDamageTakenMultiplier;
@@ -44,6 +45,12 @@ struct CheatDeathEntry
     var float DeathTime;
 };
 var (Turbo) array<CheatDeathEntry> CheatedDeathPlayerList;
+
+var (Turbo) bool bRussianRouletteEnabled;
+var (Turbo) bool bDisableSyringe;
+
+var (Turbo) bool bSuperGrenades;
+
 
 //Monster
 var array<KFMonster> MonsterPawnList;
@@ -73,6 +80,7 @@ var array<P_Scrake> ScrakePawnList;
 
 var(Turbo) float MonsterDamageMultiplier;
 var(Turbo) float MonsterMeleeDamageMultiplier;
+var(Turbo) float MonsterRangedDamageMultiplier;
 var(Turbo) float MonsterMeleeDamageMomentumMultiplier;
 var(Turbo) float MonsterStalkerDamageMultiplier;
 
@@ -252,6 +260,20 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
         return Damage;
     }
 
+    if (bRussianRouletteEnabled && FRand() < 0.001 && class<TurboHumanBurned_DT>(DamageType) == None)
+    {
+        if (InstigatedBy == None)
+        {
+            Injured.Died(None, class'RussianRoulette_DT', Injured.Location);
+        }
+        else
+        {
+            Injured.Died(InstigatedBy.Controller, class'RussianRoulette_DT', Injured.Location);
+        }
+
+        return Damage;
+    }
+
     DamageMultiplier = 1.f;
 
     if (class<SirenScreamDamage>(DamageType) != None)
@@ -322,10 +344,15 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
         {
             DamageMultiplier *= MonsterStalkerDamageMultiplier;
         }
-        else if (class<ZombieMeleeDamage>(DamageType) != None)
+
+        if (class<ZombieMeleeDamage>(DamageType) != None)
         {
             DamageMultiplier *= MonsterMeleeDamageMultiplier;
             Momentum *= MonsterMeleeDamageMomentumMultiplier;
+        }
+        else
+        {
+            DamageMultiplier *= MonsterRangedDamageMultiplier;
         }
     }
 
@@ -352,6 +379,11 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
         if (FallDamageTakenMultiplier != 1.f && class<TurboHumanFall_DT>(DamageType) != None)
         {
             DamageMultiplier *= FallDamageTakenMultiplier;
+        }
+
+        if (MutatorOwner.TurboCardReplicationInfo.BleedManager != None && class<ZombieMeleeDamage>(DamageType) != None && class<TurboHumanBleed_DT>(DamageType) == None)
+        {
+            MutatorOwner.TurboCardReplicationInfo.BleedManager.ApplyBleedToPlayer(KFHumanPawn(Injured));
         }
     }
 
@@ -403,14 +435,22 @@ function bool WasHeadshot(KFMonster Injured)
 function MonsterNetDamage(out float DamageMultiplier, KFMonster Injured, Pawn InstigatedBy, Vector HitLocation, out Vector Momentum, class<KFWeaponDamageType> WeaponDamageType)
 {
     local bool bWasHeadshot;
+    local bool bIsTrashZed;
     bWasHeadshot = WasHeadshot(Injured);
+    
+    //We use kill message rules to figure out if something is a trash zed.
+    bIsTrashZed = Injured.Default.Health < Class'HUDKillingFloor'.Default.MessageHealthLimit && Injured.Default.Mass < Class'HUDKillingFloor'.Default.MessageMassLimit;
+
+    if (bIsTrashZed)
+    {
+        DamageMultiplier *= TrashDamageMultiplier;
+    }
 
     if (WeaponDamageType.default.bCheckForHeadShots)
     {
         if (bWasHeadshot)
         {
-            //We use kill message rules to figure out if something is a trash zed.
-            if(Class'HUDKillingFloor'.Default.MessageHealthLimit > Injured.Default.Health && Class'HUDKillingFloor'.Default.MessageMassLimit > Injured.Default.Mass)
+            if(bIsTrashZed)
             {
                 DamageMultiplier *= TrashHeadshotDamageMultiplier;
             }
@@ -578,9 +618,9 @@ function ModifyActor(Actor Other)
     {
         Projectile(Other).DamageRadius *= ExplosiveRadiusMultiplier;
 
-        if (MedicNade(Other) != None)
+        if (Nade(Other) != None)
         {
-            MedicNade(Other).Damage *= MedicGrenadeDamageMultiplier;
+            ModifyNade(Nade(Other));
         }
     }
 
@@ -611,9 +651,71 @@ function ModifyActor(Actor Other)
     }
 }
 
+function ModifyNade(Nade Nade)
+{
+    if (MedicNade(Nade) != None)
+    {
+        MedicNade(Nade).Damage *= MedicGrenadeDamageMultiplier;
+    }
+
+    if (bSuperGrenades)
+    {
+        Nade.Damage *= 2.f;
+
+        if (FlameNade(Nade) != None)
+        {
+            Nade.Damage *= 2.f; //Even more powerful.
+        }
+        else if (V_Berserker_Grenade(Nade) != None)
+        {
+            V_Berserker_Grenade(Nade).ZapAmount *= 100.f; //Always zap.
+        }
+        else if (MedicNade(Nade) != None)
+        {
+            MedicNade(Nade).HealBoostAmount *= 2.f;
+        }
+    }
+}
+
+function ModifyPlayer(Pawn Other)
+{
+    if (bDisableSyringe)
+    {
+        DestorySyringe(Other);
+    }
+}
+
+function DestorySyringe(Pawn Other)
+{
+    local Syringe Syringe;
+    local bool bWasEquipped;
+
+    if (Other == None || Other.bDeleteMe || Other.Health <= 0 || KFHumanPawn(Other) == None)
+    {
+        return;
+    }
+
+    Syringe = Syringe(Other.FindInventoryType(class'Syringe'));
+
+    if (Syringe == None)
+    {
+        return;
+    }
+
+    bWasEquipped = Syringe == Other.Weapon;
+
+    Syringe.Destroy();
+
+    if (bWasEquipped && Other.Controller != None)
+    {
+        Other.Controller.ClientSwitchToBestWeapon();
+    }
+}
+
 defaultproperties
 {
     BonusCashMultiplier=1.f
+    bRussianRouletteEnabled=false
 
     bSuddenDeathEnabled=false
     bPerformingSuddenDeath=false
@@ -631,6 +733,7 @@ defaultproperties
     FireDamageMultiplier=1.f
     BerserkerMeleeDamageMultiplier=1.f
     TrashHeadshotDamageMultiplier=1.f
+    TrashDamageMultiplier=1.f
 
     ExplosiveDamageTakenMultiplier=1.f
     FallDamageTakenMultiplier=1.f
@@ -657,6 +760,7 @@ defaultproperties
 
     MonsterDamageMultiplier=1.f
     MonsterMeleeDamageMultiplier=1.f
+    MonsterRangedDamageMultiplier=1.f
     MonsterMeleeDamageMomentumMultiplier=1.f
     MonsterStalkerDamageMultiplier=1.f
 

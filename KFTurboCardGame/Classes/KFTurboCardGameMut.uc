@@ -102,6 +102,16 @@ function AddTurboCardGameModifier(TurboGameReplicationInfo TGRI)
 	TGRI.CustomTurboClientModifier = TurboCardClientModifier;
 }
 
+function ModifyPlayer(Pawn Other)
+{
+	Super.ModifyPlayer(Other);
+	
+	if (CardGameRules != None)
+	{
+		CardGameRules.ModifyPlayer(Other);
+	}
+}
+
 simulated function String GetHumanReadableName()
 {
 	return FriendlyName;

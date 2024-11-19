@@ -183,6 +183,18 @@ static function float ModifyRecoilSpread(KFPlayerReplicationInfo KFPRI, WeaponFi
 	return Recoil;
 }
 
+static function float GetBodyArmorDamageModifier(KFPlayerReplicationInfo KFPRI)
+{
+	local float Multiplier;
+	Multiplier = 1.f;
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		TurboGameReplicationInfo(KFPRI.Level.GRI).GetBodyArmorDamageModifier(KFPRI, Multiplier);
+	}
+
+	return Multiplier;
+}
+
 static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)
 {
 	local float Multiplier;

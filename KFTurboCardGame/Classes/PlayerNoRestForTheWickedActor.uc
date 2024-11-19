@@ -13,7 +13,7 @@ var array<PlayerMovementCache> PlayerMovementList;
 
 function ResetPlayerMovementCache(out PlayerMovementCache Cache)
 {
-    Cache.NextDamageTime = Level.TimeSeconds + 2.f;
+    Cache.NextDamageTime = Level.TimeSeconds + 5.f;
 }
 
 function TickPlayerMovementCache(PlayerController PlayerController)
@@ -54,7 +54,7 @@ function TickPlayerMovementCache(PlayerController PlayerController)
         }
 
         PlayerController.Pawn.TakeDamage(10, None, PlayerController.Pawn.Location, vect(0, 0, 0), class'NoRestForTheWicked_DT');
-        ResetPlayerMovementCache(PlayerMovementList[Index]);
+        PlayerMovementList[Index].NextDamageTime = Level.TimeSeconds + 1.f;
         break;
     }
 
@@ -69,8 +69,13 @@ function TickPlayerMovementCache(PlayerController PlayerController)
 function Tick(float DeltaTime)
 {
     local Controller C;
+    local int Index;
     if (!KFGameType(Level.Game).bWaveInProgress)
     {
+        for (Index = PlayerMovementList.Length - 1; Index >= 0; Index--)
+        {
+            ResetPlayerMovementCache(PlayerMovementList[Index]);
+        }
         return;
     }
 

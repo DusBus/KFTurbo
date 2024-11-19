@@ -125,6 +125,16 @@ function ActivateDauntless(TurboCardReplicationInfo CGRI)
     CGRI.ModifyPlayerLowHealthDamageBonus(1.1f);
 }
 
+function ActivateRangedResistance(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyZombieRangedDamage(0.9f);
+}
+
+function ActivateBetterArmor(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyBodyArmorDamageModifier(0.9f);
+}
+
 defaultproperties
 {
     Begin Object Name=BonusCashKill Class=TurboCard_Good
@@ -308,4 +318,22 @@ defaultproperties
         OnActivateCard=ActivateDauntless
     End Object
     DeckCardObjectList(19)=TurboCard'Dauntless'
+
+    Begin Object Name=RangedResistance Class=TurboCard_Good
+        CardName(0)="Ranged Resistance"
+        CardDescriptionList(0)="Decreases damage"
+        CardDescriptionList(1)="taken by ranged"
+        CardDescriptionList(2)="zed attacks by 10%."
+        OnActivateCard=ActivateRangedResistance
+    End Object
+    DeckCardObjectList(20)=TurboCard'RangedResistance'
+
+    Begin Object Name=BetterArmor Class=TurboCard_Good
+        CardName(0)="Tier 4 Plates"
+        CardDescriptionList(0)="Increases armor"
+        CardDescriptionList(1)="damage reduction"
+        CardDescriptionList(2)="by 10%."
+        OnActivateCard=ActivateBetterArmor
+    End Object
+    DeckCardObjectList(21)=TurboCard'BetterArmor'
 }

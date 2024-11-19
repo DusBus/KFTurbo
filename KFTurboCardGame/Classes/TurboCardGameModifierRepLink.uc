@@ -19,6 +19,7 @@ var(Turbo) float MedicMagazineAmmoMultiplier;
 
 var(Turbo) float MaxAmmoMultiplier;
 var(Turbo) float MedicMaxAmmoMultiplier;
+var(Turbo) float GrenadeMaxAmmoMultiplier;
 
 var(Turbo) float WeaponPenetrationMultiplier;
 var(Turbo) float WeaponSpreadRecoilMultiplier;
@@ -42,6 +43,7 @@ var(Turbo) int PlayerMaxCarryWeightModifier;
 var(Turbo) int PlayerDualPistolZedTimeExtensionsModifier;
 
 var(Turbo) float MedicHealPotencyMultiplier, NonMedicHealPotencyMultiplier;
+var(Turbo) float BodyArmorDamageModifier;
 
 replication
 {
@@ -49,7 +51,7 @@ replication
         FireRateMultiplier, ZedTimeDualPistolFireRateMultiplier, BerserkerFireRateMultiplier, FirebugFireRateMultiplier,
         ReloadRateMultiplier, 
         MagazineAmmoMultiplier, CommandoMagazineAmmoMultiplier, MedicMagazineAmmoMultiplier,
-        MaxAmmoMultiplier, MedicMaxAmmoMultiplier,
+        MaxAmmoMultiplier, MedicMaxAmmoMultiplier, GrenadeMaxAmmoMultiplier,
         WeaponPenetrationMultiplier, WeaponSpreadRecoilMultiplier,
         TraderCostMultiplier, TraderGrenadeCostMultiplier, bDisableArmorPurchase,
         PlayerMovementSpeedMultiplier, PlayerMovementAccelMultiplier, bFreezePlayersDuringWave, bMoneySlowsPlayers, bMissingHealthStronglySlows,
@@ -91,7 +93,18 @@ simulated function float GetMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI
 simulated function float GetCommandoMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI, KFWeapon Other) { return Super.GetCommandoMagazineAmmoMultiplier(KFPRI, Other) * CommandoMagazineAmmoMultiplier; }
 simulated function float GetMedicMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI, KFWeapon Other) { return Super.GetMedicMagazineAmmoMultiplier(KFPRI, Other) * MedicMagazineAmmoMultiplier; }
 
-simulated function float GetMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType) { return Super.GetMaxAmmoMultiplier(KFPRI, AmmoType) * MaxAmmoMultiplier;}
+simulated function float GetMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType)
+{
+    local float Multiplier;
+    Multiplier = MaxAmmoMultiplier;
+    if (class<FragAmmo>(AmmoType) != None)
+    {
+        Multiplier *= GrenadeMaxAmmoMultiplier;
+    }
+
+    return Super.GetMaxAmmoMultiplier(KFPRI, AmmoType) * Multiplier;
+}
+
 simulated function float GetMedicMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType) { return Super.GetMedicMaxAmmoMultiplier(KFPRI, AmmoType) * MedicMaxAmmoMultiplier; }
 
 simulated function float GetWeaponPenetrationMultiplier(KFPlayerReplicationInfo KFPRI, WeaponFire Other) { return Super.GetWeaponPenetrationMultiplier(KFPRI, Other) * WeaponPenetrationMultiplier; }
@@ -202,6 +215,11 @@ function float GetHealPotencyMultiplier(KFPlayerReplicationInfo KFPRI)
     return Multiplier;
 }
 
+function GetBodyArmorDamageModifier(KFPlayerReplicationInfo KFPRI, out float Multiplier)
+{
+    Multiplier *= BodyArmorDamageModifier;
+}
+
 function OnShotgunFire(KFShotgunFire ShotgunFire)
 {
     ShotgunFire.ProjPerFire = float(ShotgunFire.default.ProjPerFire) * WeaponPelletCountMultiplier;
@@ -224,6 +242,7 @@ defaultproperties
 
     MaxAmmoMultiplier=1.f
     MedicMaxAmmoMultiplier=1.f
+    GrenadeMaxAmmoMultiplier=1.f
 
     WeaponPenetrationMultiplier=1.f
     WeaponSpreadRecoilMultiplier=1.f
@@ -246,4 +265,5 @@ defaultproperties
 
     MedicHealPotencyMultiplier=1.f
     NonMedicHealPotencyMultiplier=1.f
+    BodyArmorDamageModifier=1.f
 }

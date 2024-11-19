@@ -140,6 +140,11 @@ function ActivateUnlicensedPractitioner(TurboCardReplicationInfo CGRI)
     CGRI.ModifyNonMedicHealPotency(0.5f);
 }
 
+function ActivateRussianRoulette(TurboCardReplicationInfo CGRI)
+{
+    CGRI.EnableRussianRoulette();
+}
+
 defaultproperties
 {
     Begin Object Name=ExtraMoneyTraderTime Class=TurboCard_ProCon
@@ -388,12 +393,16 @@ defaultproperties
         OnActivateCard=ActivateUnlicensedPractitioner
     End Object
     DeckCardObjectList(21)=TurboCard'UnlicensedPractitioner'
-
-
-    /*
-        Medic Charge Rate +
-        Damage Taken +
-
-        
-     */
+    
+    Begin Object Name=RussianRoulette Class=TurboCard_ProCon
+        CardName(0)="Russian"
+        CardName(1)="Roulette"
+        CardDescriptionList(0)="Zeds and players"
+        CardDescriptionList(1)="have a 0.1%"
+        CardDescriptionList(2)="chance to die"
+        CardDescriptionList(3)="instantly when"
+        CardDescriptionList(4)="taking damage."
+        OnActivateCard=ActivateRussianRoulette
+    End Object
+    DeckCardObjectList(22)=TurboCard'RussianRoulette'
 }

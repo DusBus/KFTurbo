@@ -1,5 +1,5 @@
 //Killing Floor Turbo TurboGameModifierReplicationLink
-//Linked list of gameplay modifications. Forwards mutator-like events but for things gameplay cares about.
+//Linked list of gameplay modifications. Forwards mutator-like events but for things networked gameplay cares about.
 //Distributed under the terms of the GPL-2.0 License.
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboGameModifierReplicationLink extends ReplicationInfo
@@ -42,6 +42,7 @@ function GetPlayerCarryWeightModifier(KFPlayerReplicationInfo KFPRI, out int Out
 function GetPlayerZedExtensionModifier(KFPlayerReplicationInfo KFPRI, out int OutZedExtensions) { if (NextGameModifierLink != None) { NextGameModifierLink.GetPlayerZedExtensionModifier(KFPRI, OutZedExtensions); } }
 function float GetHeadshotDamageMultiplier(KFPlayerReplicationInfo KFPRI, KFPawn Pawn, class<DamageType> DamageType) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetHeadshotDamageMultiplier(KFPRI, Pawn, DamageType); } return 1.f; }
 function float GetHealPotencyMultiplier(KFPlayerReplicationInfo KFPRI) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetHealPotencyMultiplier(KFPRI); } return 1.f; }
+function GetBodyArmorDamageModifier(KFPlayerReplicationInfo KFPRI, out float Multiplier) { if (NextGameModifierLink != None) { NextGameModifierLink.GetBodyArmorDamageModifier(KFPRI, Multiplier); } }
 function OnShotgunFire(KFShotgunFire ShotgunFire) { if (NextGameModifierLink != None) { NextGameModifierLink.OnShotgunFire(ShotgunFire); } }
 
 //Make NetUpdateTime want to update now.

@@ -110,6 +110,12 @@ function ActivateMyLegsAreOkay(TurboCardReplicationInfo CGRI)
     CGRI.ModifyPlayerFallDamage(0.f);
 }
 
+function ActivateSuperGrenades(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyGrenadeMaxAmmo(2.f);
+    CGRI.EnableSuperGrenades();
+}
+
 defaultproperties
 {
     Begin Object Name=Berserker Class=TurboCard_Super
@@ -310,4 +316,15 @@ defaultproperties
         OnActivateCard=ActivateMyLegsAreOkay
     End Object
     DeckCardObjectList(19)=TurboCard'MyLegsAreOkay'
+
+    Begin Object Name=SuperGrenades Class=TurboCard_Super
+        CardName(0)="Super Grenades"
+        CardDescriptionList(0)="Increases grenade"
+        CardDescriptionList(1)="carry capacity by"
+        CardDescriptionList(2)="100% and increases"
+        CardDescriptionList(3)="power of all"
+        CardDescriptionList(4)="grenades by 100%."
+        OnActivateCard=ActivateSuperGrenades
+    End Object
+    DeckCardObjectList(20)=TurboCard'SuperGrenades'
 }

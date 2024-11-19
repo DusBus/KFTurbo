@@ -135,6 +135,16 @@ function ActivateCurseOfRa(TurboCardReplicationInfo CGRI)
     CGRI.EnableCurseOfRa();
 }
 
+function ActivateGarbageDay(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyTrashDamage(0.5f);
+}
+
+function ActivateNoJunkies(TurboCardReplicationInfo CGRI)
+{
+    CGRI.DisableSyringe();
+}
+
 defaultproperties
 {
     Begin Object Name=Hyperbloats Class=TurboCard_Evil
@@ -256,9 +266,12 @@ defaultproperties
     Begin Object Name=BleedingPlayers Class=TurboCard_Evil
         CardName(0)="Clotting"
         CardName(1)="Issues"
-        CardDescriptionList(0)="Players lose"
-        CardDescriptionList(1)="5 health every"
-        CardDescriptionList(2)="5 seconds."
+        CardDescriptionList(0)="After receiving"
+        CardDescriptionList(1)="melee damage,"
+        CardDescriptionList(2)="players lose"
+        CardDescriptionList(3)="5 health every"
+        CardDescriptionList(4)="second for"
+        CardDescriptionList(5)="5 seconds."
         OnActivateCard=ActivateBleedingPlayers
     End Object
     DeckCardObjectList(12)=TurboCard'BleedingPlayers'
@@ -345,9 +358,10 @@ defaultproperties
     
     Begin Object Name=BankRun Class=TurboCard_Evil
         CardName(0)="Bank Run"
-        CardDescriptionList(0)="Players lose all"
-        CardDescriptionList(1)="dosh at the end"
-        CardDescriptionList(2)="of trader time."
+        CardDescriptionList(0)="Players lose half"
+        CardDescriptionList(1)="of thier dosh"
+        CardDescriptionList(2)="at the end of"
+        CardDescriptionList(3)="trader time."
         OnActivateCard=ActivateBankRun
     End Object
     DeckCardObjectList(21)=TurboCard'BankRun'
@@ -366,6 +380,23 @@ defaultproperties
         OnActivateCard=ActivateCurseOfRa
     End Object
     DeckCardObjectList(23)=TurboCard'CurseOfRa'
+    
+    Begin Object Name=GarbageDay Class=TurboCard_Evil
+        CardName(0)="Garbage Day"
+        CardDescriptionList(0)="Trash zeds have"
+        CardDescriptionList(1)="100% more health."
+        OnActivateCard=ActivateGarbageDay
+    End Object
+    DeckCardObjectList(24)=TurboCard'GarbageDay'
+    
+    Begin Object Name=NoJunkies Class=TurboCard_Evil
+        CardName(0)="No Junkies"
+        CardDescriptionList(0)="Syringes are"
+        CardDescriptionList(1)="removed from"
+        CardDescriptionList(2)="all players."
+        OnActivateCard=ActivateNoJunkies
+    End Object
+    DeckCardObjectList(25)=TurboCard'NoJunkies'
 
     //Strong Winds.
 }

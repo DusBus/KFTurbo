@@ -656,6 +656,12 @@ function ModifyTrashHeadshotDamage(float Multiplier)
     log("TrashHeadshotDamageMultiplier"@OwnerMutator.CardGameRules.TrashHeadshotDamageMultiplier);
 }
 
+function ModifyTrashDamage(float Multiplier)
+{
+    OwnerMutator.CardGameRules.TrashDamageMultiplier *= Multiplier;
+    log("TrashDamageMultiplier"@OwnerMutator.CardGameRules.TrashDamageMultiplier);
+}
+
 function ModifySlomoDamage(float Multiplier)
 {
     OwnerMutator.CardGameRules.SlomoDamageMultiplier *= Multiplier;
@@ -758,6 +764,13 @@ function ModifyMedicWeaponMaxAmmo(float Multiplier)
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
 
+function ModifyGrenadeMaxAmmo(float Multiplier)
+{
+    OwnerMutator.TurboCardGameModifier.GrenadeMaxAmmoMultiplier *= Multiplier;
+    log("GrenadeMaxAmmoMultiplier"@OwnerMutator.TurboCardGameModifier.GrenadeMaxAmmoMultiplier);
+    OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
+}
+
 function ModifyWeaponPenetration(float Multiplier)
 {
     OwnerMutator.TurboCardGameModifier.WeaponPenetrationMultiplier *= Multiplier;
@@ -832,6 +845,12 @@ function ModifyZombieMeleeDamage(float Multiplier)
 {
     OwnerMutator.CardGameRules.MonsterMeleeDamageMultiplier *= Multiplier;
     log("MonsterMeleeDamageMultiplier"@OwnerMutator.CardGameRules.MonsterMeleeDamageMultiplier);
+}
+
+function ModifyZombieRangedDamage(float Multiplier)
+{
+    OwnerMutator.CardGameRules.MonsterRangedDamageMultiplier *= Multiplier;
+    log("MonsterRangedDamageMultiplier"@OwnerMutator.CardGameRules.MonsterRangedDamageMultiplier);
 }
 
 function ModifyStalkerMeleeDamage(float Multiplier)
@@ -940,7 +959,13 @@ function ModifyPlayerMaxCarryWeight(int Modifier)
 function ModifyPlayerLowHealthDamageBonus(float Multiplier)
 {
     OwnerMutator.CardGameRules.LowHealthDamageMultiplier *= Multiplier;
-    log("EnableCheatingDeath"@OwnerMutator.CardGameRules.LowHealthDamageMultiplier);
+    log("LowHealthDamageMultiplier"@OwnerMutator.CardGameRules.LowHealthDamageMultiplier);
+}
+
+function ModifyBodyArmorDamageModifier(float Multiplier)
+{
+    OwnerMutator.TurboCardGameModifier.BodyArmorDamageModifier *= Multiplier;
+    log("BodyArmorDamageModifier"@OwnerMutator.TurboCardGameModifier.BodyArmorDamageModifier);
 }
 
 function EnableWaveMovementFreeze()
@@ -958,14 +983,14 @@ function EnableSuddenDeath()
 function EnableMoneySlowsPlayers()
 {
     OwnerMutator.TurboCardGameModifier.bMoneySlowsPlayers = true;
-    log("EnableSuddenDeath"@OwnerMutator.TurboCardGameModifier.bMoneySlowsPlayers);
+    log("bMoneySlowsPlayers"@OwnerMutator.TurboCardGameModifier.bMoneySlowsPlayers);
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
 
 function EnableMissingHealthStronglySlows()
 {
     OwnerMutator.TurboCardGameModifier.bMissingHealthStronglySlows = true;
-    log("EnableSuddenDeath"@OwnerMutator.TurboCardGameModifier.bMissingHealthStronglySlows);
+    log("bMissingHealthStronglySlows"@OwnerMutator.TurboCardGameModifier.bMissingHealthStronglySlows);
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
 
@@ -975,11 +1000,30 @@ function EnableCheatingDeath()
     log("EnableCheatingDeath"@OwnerMutator.CardGameRules.bCheatDeathEnabled);
 }
 
+function EnableRussianRoulette()
+{
+    OwnerMutator.CardGameRules.bRussianRouletteEnabled = true;
+    log("bRussianRouletteEnabled"@OwnerMutator.CardGameRules.bRussianRouletteEnabled);
+}
+
+function DisableSyringe()
+{
+    local KFHumanPawn Pawn;
+
+    OwnerMutator.CardGameRules.bDisableSyringe = true;
+    log("bDisableSyringe"@OwnerMutator.CardGameRules.bDisableSyringe);
+
+    foreach DynamicActors(class'KFHumanPawn', Pawn)
+    {
+        OwnerMutator.CardGameRules.DestorySyringe(Pawn);
+    }
+}
+
 function EnablePlayerBleeding()
 {
     if (BleedManager != None)
     {
-        BleedManager.ModifyBleedInterval(0.5f);
+        BleedManager.ModifyBleedCount(1.75f);
         return;
     }
 
@@ -1023,6 +1067,12 @@ function EnableCurseOfRa()
     class'TurboWaveEventHandler'.static.RegisterWaveHandler(Self, class'CurseOfRawWaveEventHandler');
 }
 
+function EnableSuperGrenades()
+{
+    OwnerMutator.CardGameRules.bSuperGrenades = true;
+    log("bSuperGrenades"@OwnerMutator.CardGameRules.bSuperGrenades);
+}
+
 function ModifyFriendlyFireScale(float FriendlyFireScaleModifier)
 {
     if (FriendlyFireScaleModifier <= 1.f)
@@ -1053,7 +1103,7 @@ function EnablePlainSightSpawning()
             continue;
         }
 
-        KFGT.ZedSpawnList[Index].MinDistanceToPlayer = FMax(512.f, KFGT.ZedSpawnList[Index].MinDistanceToPlayer);
+        KFGT.ZedSpawnList[Index].MinDistanceToPlayer = FMax(768.f, KFGT.ZedSpawnList[Index].MinDistanceToPlayer);
         KFGT.ZedSpawnList[Index].bAllowPlainSightSpawns = true;
     }
 }

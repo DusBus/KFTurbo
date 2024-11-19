@@ -3,53 +3,84 @@
 //For more information see https://github.com/KFPilot/KFTurbo.
 class PlayerBleedActor extends Engine.Info;
 
-var float BleedDamageMultiplier;
-var float BleedDamageIntervalMultiplier;
-var float BaseBleedInterval;
-var float BaseBleedDamage;
+var float BleedInterval;
+var float BleedDamage;
+var float BleedCount;
+
+struct BleedEntry
+{
+    var KFHumanPawn Pawn;
+    var float NextBleedTime;
+    var int BleedCount;
+};
+var array<BleedEntry> BleedList;
 
 function PostBeginPlay()
 {
     Super.PostBeginPlay();
-
-    SetTimer(BaseBleedInterval, false);
 }
 
-function ModifyBleedAmount(float Modifier)
+function ModifyBleedCount(float Multiplier)
 {
-    BleedDamageMultiplier *= Modifier;
+    BleedCount *= Multiplier;
 }
 
-function ModifyBleedInterval(float Modifier)
+function ApplyBleedToPlayer(KFHumanPawn Pawn)
 {
-    BleedDamageIntervalMultiplier *= Modifier;
-}
-
-function Timer()
-{
-    local Controller C;
-
-    SetTimer(FMax(BaseBleedInterval * BleedDamageIntervalMultiplier, 0.1f), false);
-
-    if (KFGameType(Level.Game) != None && !KFGameType(Level.Game).bWaveInProgress)
+    local int Index;
+    for (Index = BleedList.Length - 1; Index >= 0; Index--)
     {
+        if (BleedList[Index].Pawn == Pawn)
+        {
+            BleedList[Index].BleedCount = BleedCount;
+            return;
+        }
+    }
+
+    BleedList.Length = BleedList.Length + 1;
+    BleedList[BleedList.Length - 1].Pawn = Pawn;
+    BleedList[BleedList.Length - 1].NextBleedTime = Level.TimeSeconds + BleedInterval;
+    BleedList[BleedList.Length - 1].BleedCount = int(BleedCount);
+}
+
+function Tick(float DeltaTime)
+{
+    local int Index;
+    if (KFGameType(Level.Game) == None || !KFGameType(Level.Game).bWaveInProgress)
+    {
+        BleedList.Length = 0;
         return;
     }
 
-    for (C = Level.ControllerList; C != None; C = C.NextController)
+    for (Index = BleedList.Length - 1; Index >= 0; Index--)
     {
-        if (PlayerController(C) != None && PlayerController(C).Pawn != None && !PlayerController(C).Pawn.bDeleteMe && PlayerController(C).Pawn.Health > 0)
+        if (BleedList[Index].Pawn == None || BleedList[Index].Pawn.bDeleteMe || BleedList[Index].Pawn.Health <= 0)
         {
-            PlayerController(C).Pawn.TakeDamage(BaseBleedDamage * BleedDamageMultiplier, None, PlayerController(C).Pawn.Location, vect(0, 0, 0), class'TurboHumanBleed_DT');
+            BleedList.Remove(Index, 1);
+            continue;
         }
+
+        if (BleedList[Index].NextBleedTime > Level.TimeSeconds)
+        {
+            continue;
+        }
+
+        BleedList[Index].BleedCount--;
+        BleedList[Index].Pawn.TakeDamage(BleedDamage, None, BleedList[Index].Pawn.Location, vect(0, 0, 0), class'TurboHumanBleed_DT');
+        
+        if (BleedList[Index].BleedCount <= 0)
+        {
+            BleedList.Remove(Index, 1);
+            continue;
+        }
+         
+        BleedList[Index].NextBleedTime = Level.TimeSeconds + BleedInterval;
     }
 }
 
 defaultproperties
 {
-    BleedDamageMultiplier=1.f
-    BleedDamageIntervalMultiplier=1.f
-
-    BaseBleedInterval=8.f
-    BaseBleedDamage=5.f
+    BleedInterval=1.f
+    BleedDamage=5.f
+    BleedCount=5
 }
