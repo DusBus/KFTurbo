@@ -3,7 +3,7 @@ class V_FieldMedic extends KFTurbo.SRVetFieldMedic
 
 static final function bool IsFieldMedic(KFPlayerReplicationInfo KFPRI)
 {
-	return class<V_FieldMedic>(KFPRI.ClientVeteranSkill) != None;
+	return KFPRI != None && class<V_FieldMedic>(KFPRI.ClientVeteranSkill) != None;
 }
 
 static function AddCustomStats(ClientPerkRepLink Other)

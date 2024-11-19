@@ -671,7 +671,7 @@ simulated function TickTraderWave(float DeltaTime)
 	{
 		TPRI = TurboPlayerReplicationInfo(Level.GRI.PRIArray[Index]);
 
-		if (TPRI.bOnlySpectator || !TPRI.bVotedForTraderEnd)
+		if (TPRI == None || TPRI.bOnlySpectator || !TPRI.bVotedForTraderEnd)
 		{
 			continue;
 		}
