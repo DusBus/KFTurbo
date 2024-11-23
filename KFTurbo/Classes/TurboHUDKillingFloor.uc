@@ -24,6 +24,7 @@ var TurboHUDOverlay PlayerHUD;
 var class<TurboHUDOverlay> MarkInfoHUDClass;
 var TurboHUDOverlay MarkInfoHUD;
 
+var class<TextReactionSettings> TextReactionSettingsClass;
 var TextReactionSettings TextReactionSettings;
 
 simulated event PostRender( canvas Canvas )
@@ -78,8 +79,9 @@ simulated function PostBeginPlay()
 	MarkInfoHUD = Spawn(MarkInfoHUDClass, Self);
 	MarkInfoHUD.Initialize(Self);
 
-	if (TextReactionSettings != None)
+	if (TextReactionSettingsClass != None)
 	{
+		TextReactionSettings = Spawn(TextReactionSettingsClass, Self);
 		TextReactionSettings.Initialize(Self);
 	}
 }
@@ -1008,9 +1010,7 @@ simulated function Font LoadFont(int i)
 
 defaultproperties
 {
-	Begin Object Class=TurboTextReactionSettings Name=TurboTextReaction
-    End Object
-	TextReactionSettings=TurboTextReactionSettings'TurboTextReaction';
+	TextReactionSettingsClass=class'TurboTextReactionSettings'
 
 	WinSound=Sound'KFTurbo.UI.YouWin_S'
 	LoseSound=Sound'KFTurbo.UI.YouLose_S'

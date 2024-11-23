@@ -16,6 +16,12 @@ var array<TextSoundMap> TextSoundList;
 simulated function ReceivedMessage(TurboPlayerController PlayerController, string M, class<LocalMessage> MessageClass, PlayerReplicationInfo PRI)
 {
     local int Index;
+    
+    if (PlayerController == None)
+    {
+        return;
+    }
+
     for (Index = TextSoundList.Length - 1; Index >= 0; Index--)
     {
         if (InStr(M, TextSoundList[Index].Text) > 0)

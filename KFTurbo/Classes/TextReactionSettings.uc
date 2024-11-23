@@ -1,11 +1,8 @@
 //Killing Floor Turbo TextReactionSettings
-//Object that handles when a player receives a text message.
-//NOTE: This is an object so actor members are not properly memory managed!
+//Handles when a player receives a text message.
 //Distributed under the terms of the GPL-2.0 License.
 //For more information see https://github.com/KFPilot/KFTurbo.
-class TextReactionSettings extends Object
-	instanced
-	abstract;
+class TextReactionSettings extends Info;
 
 simulated function Initialize(TurboHUDKillingFloor HUD)
 {
