@@ -441,11 +441,6 @@ function MonsterNetDamage(out float DamageMultiplier, KFMonster Injured, Pawn In
     //We use kill message rules to figure out if something is a trash zed.
     bIsTrashZed = Injured.Default.Health < Class'HUDKillingFloor'.Default.MessageHealthLimit && Injured.Default.Mass < Class'HUDKillingFloor'.Default.MessageMassLimit;
 
-    if (bIsTrashZed)
-    {
-        DamageMultiplier *= TrashDamageMultiplier;
-    }
-
     if (WeaponDamageType.default.bCheckForHeadShots)
     {
         if (bWasHeadshot)
@@ -459,6 +454,11 @@ function MonsterNetDamage(out float DamageMultiplier, KFMonster Injured, Pawn In
         }
         else
         {
+            if (bIsTrashZed)
+            {
+                DamageMultiplier *= TrashDamageMultiplier;
+            }
+
             DamageMultiplier *= NonHeadshotDamageMultiplier;
         }
     }
