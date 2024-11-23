@@ -25,6 +25,12 @@ simulated function PostBeginPlay()
 
 function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
 {
+	//M99 is very weak compared to Crossbow. Buff the damage.
+	if (class<DamTypeM99SniperRifle>(damageType) != None || class<DamTypeM99HeadShot>(damageType) != None )
+    {
+    	Damage = int(float(Damage) * 1.66f);
+    }
+
 	if (Role == ROLE_Authority)
 	{
 		class'PawnHelper'.static.TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitIndex, AfflictionData);
