@@ -70,6 +70,16 @@ static function ApplyAdjustedHeadshotDamageMultiplier(KFPlayerReplicationInfo KF
 	}
 }
 
+static function float GetSyringeChargeRate(KFPlayerReplicationInfo KFPRI)
+{
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	{
+		return TurboGameReplicationInfo(KFPRI.Level.GRI).GetHealRechargeMultiplier(KFPRI);
+	}
+
+	return 1.f;
+}
+
 static function float GetHealPotency(KFPlayerReplicationInfo KFPRI)
 {
 	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)

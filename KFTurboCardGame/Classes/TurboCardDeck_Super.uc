@@ -40,7 +40,7 @@ function ActivateScrakeDamage(TurboCardReplicationInfo CGRI)
 
 function ActivateGorefastToClot(TurboCardReplicationInfo CGRI)
 {
-    class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'DeEvolutionWaveEventHandler');
+    class'TurboWaveSpawnEventHandler'.static.RegisterWaveHandler(CGRI, class'DeEvolutionWaveEventHandler');
 }
 
 function ActivateMaxHealth(TurboCardReplicationInfo CGRI)

@@ -20,7 +20,7 @@ function ActivateHairtriggerFleshpounds(TurboCardReplicationInfo CGRI)
 
 function ActivateOverclockedHusks(TurboCardReplicationInfo CGRI)
 {
-    class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'OverclockedHuskWaveEventHandler');
+    class'TurboWaveSpawnEventHandler'.static.RegisterWaveHandler(CGRI, class'OverclockedHuskWaveEventHandler');
     CGRI.ModifyHuskRefireTime(0.0000001f);
 }
 
@@ -63,7 +63,6 @@ function ActivateFreezeTag(TurboCardReplicationInfo CGRI)
 function ActivateSuddenDeath(TurboCardReplicationInfo CGRI)
 {
     CGRI.EnableSuddenDeath();
-    CGRI.ModifyPlayerMaxHealth(0.75f);
 }
 
 function ActivateBleedingPlayers(TurboCardReplicationInfo CGRI)
@@ -73,7 +72,7 @@ function ActivateBleedingPlayers(TurboCardReplicationInfo CGRI)
 
 function ActivateLightWeightPlayers(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyZombieMeleeDamage(3.f);
+    CGRI.ModifyZombieMeleeDamage(2.f);
     CGRI.ModifyZombieMeleeMomentum(10.f);
 }
 
@@ -137,7 +136,7 @@ function ActivateCurseOfRa(TurboCardReplicationInfo CGRI)
 
 function ActivateGarbageDay(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyTrashDamage(0.5f);
+    CGRI.ModifyTrashDamage(0.66f);
 }
 
 function ActivateNoJunkies(TurboCardReplicationInfo CGRI)
@@ -209,7 +208,6 @@ defaultproperties
         CardDescriptionList(1)="scream damage by"
         CardDescriptionList(2)="200% and scream"
         CardDescriptionList(3)="range by 100%."
-        //TODO: Normal sirens are blowing up explosives with screams - not good.
         OnActivateCard=ActivateSuperSiren
     End Object
     DeckCardObjectList(6)=TurboCard'SuperSiren'
@@ -254,11 +252,9 @@ defaultproperties
     
     Begin Object Name=SuddenDeath Class=TurboCard_Evil
         CardName(0)="Sudden Death"
-        CardDescriptionList(0)="Reduces player"
-        CardDescriptionList(1)="health by 25%."
-        CardDescriptionList(2)="If any player"
-        CardDescriptionList(3)="dies, the"
-        CardDescriptionList(4)="squad dies."
+        CardDescriptionList(0)="If any player"
+        CardDescriptionList(1)="dies, the"
+        CardDescriptionList(2)="squad dies."
         OnActivateCard=ActivateSuddenDeath
     End Object
     DeckCardObjectList(11)=TurboCard'SuddenDeath'
@@ -269,7 +265,7 @@ defaultproperties
         CardDescriptionList(0)="After receiving"
         CardDescriptionList(1)="melee damage,"
         CardDescriptionList(2)="players lose"
-        CardDescriptionList(3)="5 health every"
+        CardDescriptionList(3)="2 health every"
         CardDescriptionList(4)="second for"
         CardDescriptionList(5)="5 seconds."
         OnActivateCard=ActivateBleedingPlayers
@@ -280,7 +276,7 @@ defaultproperties
         CardName(0)="Lethal"
         CardName(1)="Specimens"
         CardDescriptionList(0)="Zeds deal"
-        CardDescriptionList(1)="200% more damage"
+        CardDescriptionList(1)="100% more damage"
         CardDescriptionList(2)="and knockback is"
         CardDescriptionList(3)="increased by 900%."
         OnActivateCard=ActivateLightWeightPlayers
@@ -384,7 +380,7 @@ defaultproperties
     Begin Object Name=GarbageDay Class=TurboCard_Evil
         CardName(0)="Garbage Day"
         CardDescriptionList(0)="Trash zeds have"
-        CardDescriptionList(1)="100% more health."
+        CardDescriptionList(1)="50% more health."
         OnActivateCard=ActivateGarbageDay
     End Object
     DeckCardObjectList(24)=TurboCard'GarbageDay'

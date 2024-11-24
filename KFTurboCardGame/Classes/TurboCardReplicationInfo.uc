@@ -373,7 +373,7 @@ function StartSelection(int WaveNumber)
             break;
     }
 
-    //We pick specific card order for the first 10 waves.
+    //We pick specific card order for the first 15 waves.
     //After that, space out card occurances in a way that leans towards more difficulty.
     if (Deck == None)
     {
@@ -694,11 +694,16 @@ function ModifyWeaponZedTimeDualPistolFireRate(float Multiplier)
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
 
+function ModifyWeaponZedTimeExtensions(int Modifier)
+{
+    OwnerMutator.TurboCardGameModifier.PlayerZedTimeExtensionsModifier += Modifier;
+    log("PlayerZedTimeExtensionsModifier"@OwnerMutator.TurboCardGameModifier.PlayerZedTimeExtensionsModifier);
+}
+
 function ModifyWeaponZedTimeDualPistolExtensions(int Modifier)
 {
     OwnerMutator.TurboCardGameModifier.PlayerDualPistolZedTimeExtensionsModifier += Modifier;
     log("PlayerDualPistolZedTimeExtensionsModifier"@OwnerMutator.TurboCardGameModifier.PlayerDualPistolZedTimeExtensionsModifier);
-    OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
 
 function ModifyDualWeaponMagazineAmmo(float Multiplier)
@@ -815,6 +820,12 @@ function ModifyMedicHealPotency(float Multiplier)
 {
     OwnerMutator.TurboCardGameModifier.MedicHealPotencyMultiplier *= Multiplier;
     log("MedicHealPotencyMultiplier"@OwnerMutator.TurboCardGameModifier.MedicHealPotencyMultiplier);
+}
+
+function ModifyHealRecharge(float Multiplier)
+{
+    OwnerMutator.TurboCardGameModifier.HealRechargeMultiplier *= Multiplier;
+    log("HealRechargeMultiplier"@OwnerMutator.TurboCardGameModifier.HealRechargeMultiplier);
 }
 
 function IncreaseSelectionCount()
@@ -1064,7 +1075,7 @@ function EnableCurseOfRa()
     }
 
     CurseOfRaManager = Spawn(class'CurseOfRaManager', Self);
-    class'TurboWaveEventHandler'.static.RegisterWaveHandler(Self, class'CurseOfRawWaveEventHandler');
+    class'TurboWaveSpawnEventHandler'.static.RegisterWaveHandler(Self, class'CurseOfRawWaveEventHandler');
 }
 
 function EnableSuperGrenades()

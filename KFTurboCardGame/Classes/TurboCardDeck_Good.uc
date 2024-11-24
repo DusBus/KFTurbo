@@ -13,11 +13,6 @@ function ActivateFirerateIncrease(TurboCardReplicationInfo CGRI)
     CGRI.ModifyWeaponFireRate(1.05f);
 }
 
-function ActivateDiscountedGrenades(TurboCardReplicationInfo CGRI)
-{
-    CGRI.ModifyGrenadeTraderPriceMultiplier(0.1f);
-}
-
 function ActivateExplosiveDamage(TurboCardReplicationInfo CGRI)
 {
     CGRI.ModifyExplosiveDamage(1.05f);
@@ -71,7 +66,7 @@ function ActivateTraderGrenadeDiscount(TurboCardReplicationInfo CGRI)
 
 function ActivateTrashHeadshotDamage(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyTrashHeadshotDamage(1.15f);
+    CGRI.ModifyTrashHeadshotDamage(1.1f);
 }
 
 function ActivateFastAmmoRespawn(TurboCardReplicationInfo CGRI)
@@ -138,6 +133,47 @@ function ActivateBetterArmor(TurboCardReplicationInfo CGRI)
 function ActivateMyLegsAreOkay(TurboCardReplicationInfo CGRI)
 {
     CGRI.ModifyPlayerFallDamage(0.f);
+}
+
+function ActivateHealthy(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyPlayerMaxHealth(1.05f);
+}
+
+function ActivateBetterMedicine(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyNonMedicHealPotency(1.05f);
+    CGRI.ModifyMedicHealPotency(1.05f);
+}
+
+function ActivateFamiliarTerritory(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyOnPerkDamage(1.05f);
+}
+
+function ActivateUnfamiliarTerritory(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyOffPerkDamage(1.05f);
+}
+
+function ActivateMoreSlomo(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyWeaponZedTimeExtensions(1);
+}
+
+function ActivateExtraGrenade(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyGrenadeMaxAmmo(1.2f);
+}
+
+function ActivateExtraGrenade(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyGrenadeMaxAmmo(1.2f);
+}
+
+function ActivateFasterMedical(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyHealRecharge(1.15f);
 }
 
 defaultproperties
@@ -247,7 +283,7 @@ defaultproperties
         CardName(0)="Trash Heads"
         CardDescriptionList(0)="Increases headshot"
         CardDescriptionList(1)="damage on non-elite"
-        CardDescriptionList(2)="wave zeds by 15%."
+        CardDescriptionList(2)="zeds by 10%."
         OnActivateCard=ActivateTrashHeadshotDamage
     End Object
     DeckCardObjectList(11)=TurboCard'TrashHeadshotDamage'
@@ -351,4 +387,67 @@ defaultproperties
         OnActivateCard=ActivateMyLegsAreOkay
     End Object
     DeckCardObjectList(22)=TurboCard'MyLegsAreOkay'
+
+    Begin Object Name=Healthy Class=TurboCard_Good
+        CardName(0)="Healthy"
+        CardDescriptionList(0)="Increases player"
+        CardDescriptionList(1)="health by 5%."
+        OnActivateCard=ActivateHealthy
+    End Object
+    DeckCardObjectList(23)=TurboCard'Healthy'
+
+    Begin Object Name=BetterMedicine Class=TurboCard_Good
+        CardName(0)="Better Medicine"
+        CardDescriptionList(0)="Increases heal"
+        CardDescriptionList(1)="potency by 5%."
+        OnActivateCard=ActivateBetterMedicine
+    End Object
+    DeckCardObjectList(24)=TurboCard'BetterMedicine'
+
+    Begin Object Name=FamiliarTerritory Class=TurboCard_Good
+        CardName(0)="Familiar"
+        CardName(1)="Territory"
+        CardDescriptionList(0)="Increases on-perk"
+        CardDescriptionList(1)="damage by 5%."
+        OnActivateCard=ActivateFamiliarTerritory
+    End Object
+    DeckCardObjectList(25)=TurboCard'FamiliarTerritory'
+
+    Begin Object Name=UnfamiliarTerritory Class=TurboCard_Good
+        CardName(0)="Unfamiliar"
+        CardName(1)="Territory"
+        CardDescriptionList(0)="Increases off-perk"
+        CardDescriptionList(1)="damage by 5%."
+        OnActivateCard=ActivateUnfamiliarTerritory
+    End Object
+    DeckCardObjectList(26)=TurboCard'UnfamiliarTerritory'
+
+    Begin Object Name=MoreSlomo Class=TurboCard_Good
+        CardName(0)="Extended Cut"
+        CardDescriptionList(0)="Increases player"
+        CardDescriptionList(1)="max zed time"
+        CardDescriptionList(1)="extensions by 1."
+        OnActivateCard=ActivateMoreSlomo
+    End Object
+    DeckCardObjectList(27)=TurboCard'MoreSlomo'
+
+    Begin Object Name=ExtraGrenade Class=TurboCard_Good
+        CardName(0)="He Who Casts"
+        CardName(1)="The First Stone"
+        CardDescriptionList(0)="Increases grenade"
+        CardDescriptionList(1)="max ammo by 20%."
+        OnActivateCard=ActivateExtraGrenade
+    End Object
+    DeckCardObjectList(28)=TurboCard'ExtraGrenade'
+
+    Begin Object Name=FasterMedical Class=TurboCard_Good
+        CardName(0)="Faster Medical"
+        CardName(1)="Delivery"
+        CardDescriptionList(0)="Increases medic"
+        CardDescriptionList(1)="gun and syringe"
+        CardDescriptionList(2)="recharge rate"
+        CardDescriptionList(3)="by 15%."
+        OnActivateCard=ActivateFasterMedical
+    End Object
+    DeckCardObjectList(29)=TurboCard'FasterMedical'
 }

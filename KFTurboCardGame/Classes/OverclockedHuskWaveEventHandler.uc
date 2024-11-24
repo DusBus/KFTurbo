@@ -1,7 +1,7 @@
 //Killing Floor Turbo OverclockedHuskWaveEventHandler
 //Distributed under the terms of the GPL-2.0 License.
 //For more information see https://github.com/KFPilot/KFTurbo.
-class OverclockedHuskWaveEventHandler extends KFTurbo.TurboWaveEventHandler;
+class OverclockedHuskWaveEventHandler extends KFTurbo.TurboWaveSpawnEventHandler;
 
 static function OnNextSpawnSquadGenerated(KFTurboGameType GameType, out array < class<KFMonster> > NextSpawnSquad)
 {
@@ -20,6 +20,10 @@ static function OnNextSpawnSquadGenerated(KFTurboGameType GameType, out array < 
     while (HuskCount > 0)
     {
         HuskCount--;
-        NextSpawnSquad[NextSpawnSquad.Length] = class'P_Husk_STA';
+
+        if (FRand() < 0.5f)
+        {
+            NextSpawnSquad[NextSpawnSquad.Length] = class'P_Husk_STA';
+        }
     }
 }

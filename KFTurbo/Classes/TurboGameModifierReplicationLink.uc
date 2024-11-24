@@ -38,6 +38,9 @@ simulated function float GetPlayerMovementSpeedMultiplier(KFPlayerReplicationInf
 simulated function float GetPlayerMovementAccelMultiplier(KFPlayerReplicationInfo KFPRI, KFGameReplicationInfo KFGRI) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetPlayerMovementAccelMultiplier(KFPRI, KFGRI); } return 1.f; }
 simulated function float GetPlayerMaxHealthMultiplier(Pawn Pawn) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetPlayerMaxHealthMultiplier(Pawn); } return 1.f; }
 
+simulated function float GetHealRechargeMultiplier(KFPlayerReplicationInfo KFPRI) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetHealRechargeMultiplier(KFPRI); } return 1.f; }
+
+//These functions are only called server-side so no need to replicate properties that are only used here.
 function GetPlayerCarryWeightModifier(KFPlayerReplicationInfo KFPRI, out int OutCarryWeightModifier) { if (NextGameModifierLink != None) { NextGameModifierLink.GetPlayerCarryWeightModifier(KFPRI, OutCarryWeightModifier); } }
 function GetPlayerZedExtensionModifier(KFPlayerReplicationInfo KFPRI, out int OutZedExtensions) { if (NextGameModifierLink != None) { NextGameModifierLink.GetPlayerZedExtensionModifier(KFPRI, OutZedExtensions); } }
 function float GetHeadshotDamageMultiplier(KFPlayerReplicationInfo KFPRI, KFPawn Pawn, class<DamageType> DamageType) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetHeadshotDamageMultiplier(KFPRI, Pawn, DamageType); } return 1.f; }
@@ -53,5 +56,5 @@ simulated function ForceNetUpdate()
 
 defaultproperties
 {
-    NetUpdateFrequency=0.1f
+    NetUpdateFrequency=0.01f
 }

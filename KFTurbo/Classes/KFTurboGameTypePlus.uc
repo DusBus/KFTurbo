@@ -202,7 +202,7 @@ function BuildNextSquad()
     NextSpawnSquad = Squad.MonsterList;
     CurrentSquad = Squad;
     
-	class'TurboWaveEventHandler'.static.BroadcastNextSpawnSquadGenerated(Self, NextSpawnSquad);
+	class'TurboWaveSpawnEventHandler'.static.BroadcastNextSpawnSquadGenerated(Self, NextSpawnSquad);
 }
 
 function AddBossBuddySquad()
@@ -257,9 +257,9 @@ defaultproperties
 {
     bIsHighDifficulty = true
 
-	Begin Object Class=TurboPlusMonsterCollectionWaveImpl Name=TurboPlusMonsterCollectionWaveImpl0
+	Begin Object Name=TurboPlusMonsterCollectionWaveImpl0 Class=TurboPlusMonsterCollectionWaveImpl
 	End Object
-    TurboMonsterCollection=TurboPlusMonsterCollectionWaveImpl'KFTurbo.KFTurboGameTypePlus.TurboPlusMonsterCollectionWaveImpl0'
+    TurboMonsterCollection=TurboPlusMonsterCollectionWaveImpl'TurboPlusMonsterCollectionWaveImpl0'
 
     LongWaves(0)=(WaveMask=63,WaveMaxMonsters=35,WaveDifficulty=2.000000)
     LongWaves(1)=(WaveMask=4032,WaveMaxMonsters=35,WaveDifficulty=2.000000)

@@ -37,6 +37,8 @@ simulated function float GetPlayerMovementSpeedMultiplier(KFPlayerReplicationInf
 simulated function float GetPlayerMovementAccelMultiplier(KFPlayerReplicationInfo KFPRI, KFGameReplicationInfo KFGRI) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetPlayerMovementAccelMultiplier(KFPRI, KFGRI); } return 1.f; }
 simulated function float GetPlayerMaxHealthMultiplier(Pawn Pawn) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetPlayerMaxHealthMultiplier(Pawn); } return 1.f; }
 
+simulated function float GetHealRechargeMultiplier(KFPlayerReplicationInfo KFPRI) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetHealRechargeMultiplier(KFPRI); } return 1.f; }
+
 function GetPlayerCarryWeightModifier(KFPlayerReplicationInfo KFPRI, out int OutCarryWeightModifier) { if (CustomTurboModifier != None) { CustomTurboModifier.GetPlayerCarryWeightModifier(KFPRI, OutCarryWeightModifier); } }
 function GetPlayerZedExtensionModifier(KFPlayerReplicationInfo KFPRI, out int OutZedExtensions) { if (CustomTurboModifier != None) { CustomTurboModifier.GetPlayerZedExtensionModifier(KFPRI, OutZedExtensions); } }
 function float GetHeadshotDamageMultiplier(KFPlayerReplicationInfo KFPRI, KFPawn Pawn, class<DamageType> DamageType) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetHeadshotDamageMultiplier(KFPRI, Pawn, DamageType); } return 1.f; }

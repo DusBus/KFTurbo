@@ -11,6 +11,8 @@ struct SelectableCardEntry
 };
 var array<SelectableCardEntry> CardRenderActorList;
 var bool bUseLargeCards;
+var int BaseFontSize;
+
 var int CurrentCardCount;
 var int VotedCardIndex;
  
@@ -54,6 +56,14 @@ simulated function InitializeCardGameHUD(TurboCardReplicationInfo CGRI)
 	TCRI = CGRI;
 	CGRI.OnSelectableCardsUpdated = OnSelectableCardsUpdated;
 	CGRI.OnActiveCardsUpdated = OnActiveCardsUpdated;
+
+	//Mid-game joiners may need an update.
+	if (CGRI.bCurrentlyVoting)
+	{
+		OnSelectableCardsUpdated(CGRI);
+	}
+
+	OnActiveCardsUpdated(CGRI);
 }
 
 simulated function bool CanUseLargeCards()
@@ -74,13 +84,17 @@ simulated function OnScreenSizeChange(Canvas C, Vector2D CurrentClipSize, Vector
 {
 	Super.OnScreenSizeChange(C, CurrentClipSize, PreviousClipSize);
 
-	if (CanUseLargeCards())
+	bUseLargeCards = false;
+	BaseFontSize = 4;
+
+	if (CurrentClipSize.Y >= 1440.f)
 	{
-		bUseLargeCards = CurrentClipSize.Y >= 1440.f;
-	}
-	else
-	{
-		bUseLargeCards = false;
+		if (CanUseLargeCards())
+		{
+			bUseLargeCards = true;
+		}
+		
+		BaseFontSize = 3;
 	}
 }
 
@@ -130,7 +144,7 @@ simulated function Tick(float DeltaTime)
 		{
 			if (Index == VotedCardIndex)
 			{
-				CardRenderActorList[Index].Ratio = FMin(Lerp(DeltaTime * 12.f, CardRenderActorList[Index].Ratio, 1.f), 1.f);
+				CardRenderActorList[Index].Ratio = FMin(Lerp(DeltaTime * 20.f, CardRenderActorList[Index].Ratio, 1.f), 1.f);
 			}
 			else
 			{
@@ -362,12 +376,13 @@ simulated function DrawSelectableCardList(Canvas C)
 	local array<int> VoteList;
 	
 	C.SetDrawColor(255, 255, 255, 255);
-	C.Font = class'KFTurboFontHelper'.static.LoadBoldFontStatic(4);
+
+	C.Font = class'KFTurboFontHelper'.static.LoadBoldFontStatic(BaseFontSize);
 
 	CenterIndex = float(CurrentCardCount) / 2.f;
-	CardSize = FMin(C.ClipX / 10.f, (C.ClipY / 4.f)) * Lerp(VoteMenuScale, 0.66f, 1.f);
+	CardSize = FMin(C.ClipX / 10.f, (C.ClipY / 4.f)) * Lerp(VoteMenuScale, 0.5f, 1.f);
 	CardOffset = CardSize * 1.1f;
-	TempY = (C.ClipY / 1.75f) - (CardSize * 0.5f * VoteMenuScale);
+	TempY = (C.ClipY / 1.75f) - (CardSize * 0.5f * Lerp(VoteMenuScale, -0.5f, 1.f));
 	TempX = (C.ClipX / 2.f) - (CenterIndex * CardOffset);
 
 	for (Index = 0; Index < CurrentCardCount; Index++)
@@ -384,7 +399,7 @@ simulated function DrawSelectableCardList(Canvas C)
 			continue;	
 		}
 
-		CardSelectionScale = Lerp(CardRenderActorList[Index].Ratio, 1.f, 1.08f);
+		CardSelectionScale = Lerp(CardRenderActorList[Index].Ratio, 1.f, 1.15f);
 
 		CardRenderActorList[Index].CardActor.RenderOverlays(C);
 		
@@ -396,7 +411,7 @@ simulated function DrawSelectableCardList(Canvas C)
 
 	if (VotedCardIndex != -1)
 	{
-		CardSelectionScale = Lerp(CardRenderActorList[VotedCardIndex].Ratio, 1.f, 1.08f);
+		CardSelectionScale = Lerp(CardRenderActorList[VotedCardIndex].Ratio, 1.f, 1.15f);
 		CardScale = CardSize / float(CardRenderActorList[VotedCardIndex].CardActor.CardScriptedTexture.USize);
 		C.SetPos(VotedCardX + (CardOffset * 0.5f) - (CardSize * CardSelectionScale * 0.5f), TempY - ((CardSelectionScale - 1.f) * CardSize));
 		C.DrawTileScaled(CardRenderActorList[VotedCardIndex].CardActor.CardShader, CardScale * CardSelectionScale, CardScale * CardSelectionScale);
@@ -406,6 +421,7 @@ simulated function DrawSelectableCardList(Canvas C)
 	C.FontScaleY = C.FontScaleX;
 
 	TempX = ((C.ClipX / 2.f) - (CenterIndex * CardOffset)) + (CardOffset * 0.5f);
+	TempY -= CardSize * 0.05f;
 	for (Index = Level.GRI.PRIArray.Length - 1; Index >= 0; Index--)
 	{
 		if (Level.GRI.PRIArray[Index].bIsSpectator)
@@ -424,8 +440,8 @@ simulated function DrawSelectableCardList(Canvas C)
 	C.TextSize(HowToVoteString, TextSizeX, TextSizeY);
 	TempX -= TextSizeX * 0.5f;
 
-	TempX += 1.f + (Sin(Level.TimeSeconds * PI * 0.8f) * 6.f);
-	TempY += 1.f + (Sin(Level.TimeSeconds * PI * 0.6f) * 8.f);
+	TempX += 1.f + (Sin(Level.TimeSeconds * PI * 0.8f) * 6.3f);
+	TempY += 1.f + (Sin(Level.TimeSeconds * PI * 0.6f) * 4.125f);
 
 	C.SetDrawColor(0, 0, 0, 120);
 	C.SetPos(TempX + 2.f, TempY + 2.f);
@@ -498,7 +514,7 @@ simulated function DrawActiveCardList(Canvas C)
 		return;
 	}
 
-	C.Font = class'KFTurboFontHelper'.static.LoadFontStatic(5);
+	C.Font = class'KFTurboFontHelper'.static.LoadFontStatic(BaseFontSize + 1);
 	TempX = C.ClipX - 2.f;
 	TempY = ScrollDisplayY; //Remainder of CardSize for a given CardOffset, plus some extra padding.
 

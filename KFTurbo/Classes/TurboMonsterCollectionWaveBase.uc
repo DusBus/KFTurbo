@@ -254,8 +254,8 @@ function ApplyFinalSquad(int FinalSquadNumber, int PlayerCount, out array< class
           return;
      }
 
-	class'TurboWaveEventHandler'.static.BroadcastAddBossBuddySquad(KFTurboGameType(Outer), SpawnAmount);
-	class'TurboWaveEventHandler'.static.BroadcastNextSpawnSquadGenerated(KFTurboGameType(Outer), SquadMonsterList);
+	class'TurboWaveSpawnEventHandler'.static.BroadcastAddBossBuddySquad(KFTurboGameType(Outer), SpawnAmount);
+	class'TurboWaveSpawnEventHandler'.static.BroadcastNextSpawnSquadGenerated(KFTurboGameType(Outer), SquadMonsterList);
 
      while (SpawnAmount > OutNextSpawnSquad.Length)
      {

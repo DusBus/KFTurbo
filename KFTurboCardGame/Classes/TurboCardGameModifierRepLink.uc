@@ -40,10 +40,13 @@ var(Turbo) bool bMissingHealthStronglySlows;
 //Same as above but for max health.
 var(Turbo) float PlayerMaxHealthMultiplier;
 var(Turbo) int PlayerMaxCarryWeightModifier;
+
+var(Turbo) int PlayerZedTimeExtensionsModifier;
 var(Turbo) int PlayerDualPistolZedTimeExtensionsModifier;
 
 var(Turbo) float MedicHealPotencyMultiplier, NonMedicHealPotencyMultiplier;
 var(Turbo) float BodyArmorDamageModifier;
+var(Turbo) float HealRechargeMultiplier;
 
 replication
 {
@@ -55,7 +58,8 @@ replication
         WeaponPenetrationMultiplier, WeaponSpreadRecoilMultiplier,
         TraderCostMultiplier, TraderGrenadeCostMultiplier, bDisableArmorPurchase,
         PlayerMovementSpeedMultiplier, PlayerMovementAccelMultiplier, bFreezePlayersDuringWave, bMoneySlowsPlayers, bMissingHealthStronglySlows,
-        PlayerMaxHealthMultiplier;
+        PlayerMaxHealthMultiplier,
+        HealRechargeMultiplier;
 } 
 
 simulated function float GetFireRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other)
@@ -149,9 +153,14 @@ simulated function float GetPlayerMovementAccelMultiplier(KFPlayerReplicationInf
     return Super.GetPlayerMovementAccelMultiplier(KFPRI, KFGRI) * PlayerMovementAccelMultiplier;
 }
 
-function float GetPlayerMaxHealthMultiplier(Pawn Pawn)
+simulated function float GetPlayerMaxHealthMultiplier(Pawn Pawn)
 {
     return Super.GetPlayerMaxHealthMultiplier(Pawn) * PlayerMaxHealthMultiplier;
+}
+
+simulated function float GetHealRechargeMultiplier(KFPlayerReplicationInfo KFPRI)
+{
+    return Super.GetHealRechargeMultiplier(KFPRI) * HealRechargeMultiplier;
 }
 
 function GetPlayerCarryWeightModifier(KFPlayerReplicationInfo KFPRI, out int OutCarryWeightModifier)
@@ -164,6 +173,8 @@ function GetPlayerCarryWeightModifier(KFPlayerReplicationInfo KFPRI, out int Out
 function GetPlayerZedExtensionModifier(KFPlayerReplicationInfo KFPRI, out int OutZedExtensions)
 {
     Super.GetPlayerZedExtensionModifier(KFPRI, OutZedExtensions);
+
+    OutZedExtensions += PlayerZedTimeExtensionsModifier;
 
     if (PlayerDualPistolZedTimeExtensionsModifier != 0 && ShouldApplyDualPistolZedTimeExtensionModifier(KFPRI))
     {
@@ -266,4 +277,5 @@ defaultproperties
     MedicHealPotencyMultiplier=1.f
     NonMedicHealPotencyMultiplier=1.f
     BodyArmorDamageModifier=1.f
+    HealRechargeMultiplier=1.f
 }

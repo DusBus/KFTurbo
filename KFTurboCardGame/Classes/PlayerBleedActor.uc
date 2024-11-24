@@ -81,6 +81,6 @@ function Tick(float DeltaTime)
 defaultproperties
 {
     BleedInterval=1.f
-    BleedDamage=5.f
+    BleedDamage=2.f
     BleedCount=5
 }

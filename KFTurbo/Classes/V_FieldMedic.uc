@@ -106,7 +106,7 @@ static function class<Grenade> GetNadeType(KFPlayerReplicationInfo KFPRI)
 
 static function float GetSyringeChargeRate(KFPlayerReplicationInfo KFPRI)
 {
-	return LerpStat(KFPRI, 1.1f, 3.f);
+	return Super(TurboVeterancyTypes).GetHealPotency(KFPRI) * LerpStat(KFPRI, 1.1f, 3.f);
 }
 
 static function float GetHealPotency(KFPlayerReplicationInfo KFPRI)

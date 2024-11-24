@@ -22,6 +22,7 @@ var bool bHasSpawnedBoss;
 var array< class<TurboEventHandler> > EventHandlerList;
 var array< class<TurboHealEventHandler> > HealEventHandlerList;
 var array< class<TurboWaveEventHandler> > WaveEventHandlerList;
+var array< class<TurboWaveSpawnEventHandler> > WaveSpawnEventHandlerList;
 
 //Events that KFTurboServerMut binds to for bridging communication with ServerPerksMut.
 Delegate OnStatsAndAchievementsDisabled();
@@ -185,7 +186,7 @@ function BuildNextSquad()
 {
 	Super.BuildNextSquad();
 
-	class'TurboWaveEventHandler'.static.BroadcastNextSpawnSquadGenerated(Self, NextSpawnSquad);
+	class'TurboWaveSpawnEventHandler'.static.BroadcastNextSpawnSquadGenerated(Self, NextSpawnSquad);
 }
 
 function bool AddBoss()
@@ -195,7 +196,7 @@ function bool AddBoss()
         if (!bHasSpawnedBoss)
         {
             bHasSpawnedBoss = true;
-	        class'TurboWaveEventHandler'.static.BroadcasBossSpawned(Self);
+	        class'TurboWaveSpawnEventHandler'.static.BroadcasBossSpawned(Self);
         }
         return true;
     }
@@ -207,7 +208,7 @@ function AddSpecialSquad()
 {
 	Super.AddSpecialSquad();
 
-	class'TurboWaveEventHandler'.static.BroadcastNextSpawnSquadGenerated(Self, NextSpawnSquad);
+	class'TurboWaveSpawnEventHandler'.static.BroadcastNextSpawnSquadGenerated(Self, NextSpawnSquad);
 }
 
 function AddSpecialPatriarchSquad()
@@ -223,7 +224,7 @@ function AddSpecialPatriarchSquad()
 
     if (NextSpawnSquad.Length > 0)
     {
-	    class'TurboWaveEventHandler'.static.BroadcastNextSpawnSquadGenerated(Self, NextSpawnSquad);
+	    class'TurboWaveSpawnEventHandler'.static.BroadcastNextSpawnSquadGenerated(Self, NextSpawnSquad);
     }
 }
 
@@ -252,7 +253,7 @@ function AddBossBuddySquad()
         TotalZeds = 16;
     }
 	
-	class'TurboWaveEventHandler'.static.BroadcastAddBossBuddySquad(Self, TotalZeds);
+	class'TurboWaveSpawnEventHandler'.static.BroadcastAddBossBuddySquad(Self, TotalZeds);
 
     for (Index = 0; Index < 10; Index++)
     {
