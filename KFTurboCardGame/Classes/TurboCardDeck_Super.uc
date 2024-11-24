@@ -185,16 +185,16 @@ defaultproperties
     End Object
     DeckCardObjectList(5)=TurboCard'ScrakeDamage'
     
-    Begin Object Name=DeEvolution Class=TurboCard_Super
-        CardName(0)="De-Evolution"
-        CardDescriptionList(0)="All zeds have"
-        CardDescriptionList(1)="a chance to be"
-        CardDescriptionList(2)="replaced with"
-        CardDescriptionList(3)="weaker versions"
-        CardDescriptionList(4)="of themselves."
-        OnActivateCard=ActivateGorefastToClot
+    Begin Object Name=SuperGrenades Class=TurboCard_Super
+        CardName(0)="Super Grenades"
+        CardDescriptionList(0)="Increases grenade"
+        CardDescriptionList(1)="carry capacity by"
+        CardDescriptionList(2)="100% and increases"
+        CardDescriptionList(3)="power of all"
+        CardDescriptionList(4)="grenades by 100%."
+        OnActivateCard=ActivateSuperGrenades
     End Object
-    DeckCardObjectList(6)=TurboCard'DeEvolution'
+    DeckCardObjectList(6)=TurboCard'SuperGrenades'
     
     Begin Object Name=MaxHealth Class=TurboCard_Super
         CardName(0)="Overheal"
@@ -317,14 +317,16 @@ defaultproperties
     End Object
     DeckCardObjectList(19)=TurboCard'MyLegsAreOkay'
 
-    Begin Object Name=SuperGrenades Class=TurboCard_Super
-        CardName(0)="Super Grenades"
-        CardDescriptionList(0)="Increases grenade"
-        CardDescriptionList(1)="carry capacity by"
-        CardDescriptionList(2)="100% and increases"
-        CardDescriptionList(3)="power of all"
-        CardDescriptionList(4)="grenades by 100%."
-        OnActivateCard=ActivateSuperGrenades
+/*
+    Begin Object Name=DeEvolution Class=TurboCard_Super
+        CardName(0)="De-Evolution"
+        CardDescriptionList(0)="All zeds have"
+        CardDescriptionList(1)="a chance to be"
+        CardDescriptionList(2)="replaced with"
+        CardDescriptionList(3)="weaker versions"
+        CardDescriptionList(4)="of themselves."
+        OnActivateCard=ActivateGorefastToClot
     End Object
-    DeckCardObjectList(20)=TurboCard'SuperGrenades'
+    DeckCardObjectList(6)=TurboCard'DeEvolution'
+*/
 }
