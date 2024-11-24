@@ -286,7 +286,7 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
     {
         if (KFHumanPawn(InstigatedBy) != None)
         {
-            if (LowHealthDamageMultiplier != 1.f && ((float(InstigatedBy.Health) / InstigatedBy.HealthMax) < 0.5f))
+            if (LowHealthDamageMultiplier != 1.f && ((float(InstigatedBy.Health) / InstigatedBy.HealthMax) < 0.75f))
             {
                 DamageMultiplier *= LowHealthDamageMultiplier;
             }

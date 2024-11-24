@@ -105,11 +105,6 @@ function ActivatePackedShells(TurboCardReplicationInfo CGRI)
     CGRI.ModifyWeaponPelletCount(1.5f);
 }
 
-function ActivateMyLegsAreOkay(TurboCardReplicationInfo CGRI)
-{
-    CGRI.ModifyPlayerFallDamage(0.f);
-}
-
 function ActivateSuperGrenades(TurboCardReplicationInfo CGRI)
 {
     CGRI.ModifyGrenadeMaxAmmo(2.f);
@@ -306,16 +301,6 @@ defaultproperties
         OnActivateCard=ActivatePackedShells
     End Object
     DeckCardObjectList(18)=TurboCard'PackedShells'
-
-    Begin Object Name=MyLegsAreOkay Class=TurboCard_Super
-        CardName(0)="My Legs"
-        CardName(1)="Are Okay"
-        CardDescriptionList(0)="Players do"
-        CardDescriptionList(1)="not take"
-        CardDescriptionList(2)="fall damage."
-        OnActivateCard=ActivateMyLegsAreOkay
-    End Object
-    DeckCardObjectList(19)=TurboCard'MyLegsAreOkay'
 
 /*
     Begin Object Name=DeEvolution Class=TurboCard_Super

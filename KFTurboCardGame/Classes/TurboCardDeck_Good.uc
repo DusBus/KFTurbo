@@ -66,7 +66,7 @@ function ActivateTraderDiscount(TurboCardReplicationInfo CGRI)
 
 function ActivateTraderGrenadeDiscount(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyGrenadeTraderPriceMultiplier(0.5f);
+    CGRI.ModifyGrenadeTraderPriceMultiplier(0.7f);
 }
 
 function ActivateTrashHeadshotDamage(TurboCardReplicationInfo CGRI)
@@ -133,6 +133,11 @@ function ActivateRangedResistance(TurboCardReplicationInfo CGRI)
 function ActivateBetterArmor(TurboCardReplicationInfo CGRI)
 {
     CGRI.ModifyBodyArmorDamageModifier(0.9f);
+}
+
+function ActivateMyLegsAreOkay(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyPlayerFallDamage(0.f);
 }
 
 defaultproperties
@@ -232,7 +237,7 @@ defaultproperties
         CardName(0)="Grenade"
         CardName(1)="Clearance"
         CardDescriptionList(0)="Grenades receive"
-        CardDescriptionList(1)="a 50% discount"
+        CardDescriptionList(1)="a 30% discount"
         CardDescriptionList(2)="at the trader."
         OnActivateCard=ActivateTraderGrenadeDiscount
     End Object
@@ -311,7 +316,7 @@ defaultproperties
 
     Begin Object Name=Dauntless Class=TurboCard_Good
         CardName(0)="Dauntless"
-        CardDescriptionList(0)="When below 50%"
+        CardDescriptionList(0)="When below 75%"
         CardDescriptionList(1)="health players"
         CardDescriptionList(2)="deal 10% more"
         CardDescriptionList(3)="damage."
@@ -336,4 +341,14 @@ defaultproperties
         OnActivateCard=ActivateBetterArmor
     End Object
     DeckCardObjectList(21)=TurboCard'BetterArmor'
+
+    Begin Object Name=MyLegsAreOkay Class=TurboCard_Good
+        CardName(0)="My Legs"
+        CardName(1)="Are Okay"
+        CardDescriptionList(0)="Players do"
+        CardDescriptionList(1)="not take"
+        CardDescriptionList(2)="fall damage."
+        OnActivateCard=ActivateMyLegsAreOkay
+    End Object
+    DeckCardObjectList(22)=TurboCard'MyLegsAreOkay'
 }
