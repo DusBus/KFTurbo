@@ -149,7 +149,7 @@ function Timer()
     }
     else if (Random < 0.3f)
     {
-        RandomlySetOffPipebomb();
+        RandomlySetOffNearbyPipebomb();
     }
     else if (Random < 0.4f)
     {
@@ -168,21 +168,17 @@ function Timer()
 function RandomlyRageScrake()
 {
     local P_Scrake Scrake;
-    local array<P_Scrake> ScrakeList;
-    foreach DynamicActors(class'P_Scrake', Scrake)
-    {
-        ScrakeList.Length = ScrakeList.Length + 1;
-        ScrakeList[ScrakeList.Length - 1] = Scrake;
-    }
+    local array<Monster> MonsterPawnList;
+    MonsterPawnList = class'TurboGameplayHelper'.static.GetMonsterPawnList(Level, class'P_Scrake');
 
-    if (ScrakeList.Length == 0)
+    if (MonsterPawnList.Length == 0)
     {
         return;
     }
 
-    Scrake = ScrakeList[Rand(ScrakeList.Length)];
+    Scrake = P_Scrake(MonsterPawnList[Rand(MonsterPawnList.Length)]);
 
-    if (Scrake == None || Scrake.Health <= 0)
+    if (Scrake == None)
     {
         return;
     }
@@ -193,65 +189,65 @@ function RandomlyRageScrake()
 
 function RandomlyRageFleshpound()
 {
-    local AI_Fleshpound Fleshpound;
-    local array<AI_Fleshpound> FleshpoundList;
-    foreach DynamicActors(class'AI_Fleshpound', Fleshpound)
-    {
-        FleshpoundList.Length = FleshpoundList.Length + 1;
-        FleshpoundList[FleshpoundList.Length - 1] = Fleshpound;
-    }
+    local P_Fleshpound Fleshpound;
+    local array<Monster> MonsterPawnList;
+    MonsterPawnList = class'TurboGameplayHelper'.static.GetMonsterPawnList(Level, class'P_Fleshpound');
 
-    if (FleshpoundList.Length == 0)
+    if (MonsterPawnList.Length == 0)
     {
         return;
     }
 
-    Fleshpound = FleshpoundList[Rand(FleshpoundList.Length)];
+    Fleshpound = P_Fleshpound(MonsterPawnList[Rand(MonsterPawnList.Length)]);
 
-    if (Fleshpound == None || Fleshpound.Pawn == None || Fleshpound.Pawn.Health <= 0)
+    if (Fleshpound == None)
     {
         return;
     }
 
-	Fleshpound.bForcedRage = true;
-	P_Fleshpound(Fleshpound.Pawn).StartCharging();
-	P_Fleshpound(Fleshpound.Pawn).bFrustrated = true;
+    Fleshpound.StartCharging();
+    Fleshpound.bFrustrated = true;
+    AI_Fleshpound(Fleshpound.Controller).bForcedRage = true;
 }
 
-function RandomlySetOffPipebomb()
+function RandomlySetOffNearbyPipebomb()
 {
+    local array<TurboHumanPawn> HumanPawnList;
+    local TurboHumanPawn HumanPawn;
     local PipeBombProjectile Pipebomb;
-    local array<PipeBombProjectile> PipebombList;
-    foreach DynamicActors(class'PipeBombProjectile', Pipebomb)
-    {
-        PipebombList.Length = PipebombList.Length + 1;
-        PipebombList[PipebombList.Length - 1] = Pipebomb;
-    }
+    HumanPawnList = class'TurboGameplayHelper'.static.GetPlayerPawnList(Level);
 
-    if (PipebombList.Length == 0)
+    if (HumanPawnList.Length == 0)
     {
         return;
     }
 
-    Pipebomb = PipebombList[Rand(PipebombList.Length)];
+    HumanPawn = HumanPawnList[Rand(HumanPawnList.Length)];
+
+    if (HumanPawn == None)
+    {
+        return;
+    }
+
+    foreach CollidingActors(class'PipeBombProjectile', Pipebomb, 600.f, HumanPawn.Location)
+    {
+        break;
+    }
 
     if (Pipebomb == None)
     {
         return;
     }
 
-    Pipebomb.Explode(Pipebomb.Location,vect(0,0,1));
+    Pipebomb.bEnemyDetected = true;
 }
 
 function ForceAReload()
 {
     local TurboHumanPawn HumanPawn;
     local array<TurboHumanPawn> HumanPawnList;
-    foreach DynamicActors(class'TurboHumanPawn', HumanPawn)
-    {
-        HumanPawnList.Length = HumanPawnList.Length + 1;
-        HumanPawnList[HumanPawnList.Length - 1] = HumanPawn;
-    }
+    
+    HumanPawnList = class'TurboGameplayHelper'.static.GetPlayerPawnList(Level);
 
     if (HumanPawnList.Length == 0)
     {
@@ -272,11 +268,7 @@ function ForceDropCash()
 {
     local TurboHumanPawn HumanPawn;
     local array<TurboHumanPawn> HumanPawnList;
-    foreach DynamicActors(class'TurboHumanPawn', HumanPawn)
-    {
-        HumanPawnList.Length = HumanPawnList.Length + 1;
-        HumanPawnList[HumanPawnList.Length - 1] = HumanPawn;
-    }
+    HumanPawnList = class'TurboGameplayHelper'.static.GetPlayerPawnList(Level);
 
     if (HumanPawnList.Length == 0)
     {
@@ -296,24 +288,17 @@ function ForceDropCash()
 
 function KillRandomMonster()
 {
-    local Controller C;
-    local array<Monster> MonsterList;
+    local array<Monster> MonsterPawnList;
     local Monster SelectedMonster;
 
-	for (C = Level.ControllerList; C != None; C = C.NextController)
-	{
-		if(C != None && Monster(C.Pawn) != None && C.Pawn.Health > 0)
-		{
-			MonsterList[MonsterList.Length] = Monster(C.Pawn);
-		}
-	}
+    MonsterPawnList = class'TurboGameplayHelper'.static.GetMonsterPawnList(Level);
 
-    if (MonsterList.Length < 6)
+    if (MonsterPawnList.Length < 4)
     {
         return;
     }
 
-    SelectedMonster = MonsterList[Rand(MonsterList.Length)];
+    SelectedMonster = MonsterPawnList[Rand(MonsterPawnList.Length)];
     
     if (SelectedMonster == None || ZombieBoss(SelectedMonster) != None)
     {

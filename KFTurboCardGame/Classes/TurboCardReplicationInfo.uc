@@ -790,10 +790,17 @@ function ModifyWeaponSpreadAndRecoil(float Multiplier)
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
 
-function ModifyWeaponPelletCount(float Multiplier)
+function ModifyShotgunPelletCount(float Multiplier)
 {
-    OwnerMutator.TurboCardGameModifier.WeaponPelletCountMultiplier *= Multiplier;
-    log("WeaponPelletCountMultiplier"@OwnerMutator.TurboCardGameModifier.WeaponPelletCountMultiplier);
+    OwnerMutator.TurboCardGameModifier.ShotgunPelletCountMultiplier *= Multiplier;
+    log("ShotgunPelletCountMultiplier"@OwnerMutator.TurboCardGameModifier.ShotgunPelletCountMultiplier);
+    OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
+}
+
+function ModifyShotgunRecoil(float Multiplier)
+{
+    OwnerMutator.TurboCardGameModifier.ShotgunSpreadRecoilMultiplier *= Multiplier;
+    log("ShotgunSpreadRecoilMultiplier"@OwnerMutator.TurboCardGameModifier.ShotgunSpreadRecoilMultiplier);
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
 
@@ -1019,14 +1026,16 @@ function EnableRussianRoulette()
 
 function DisableSyringe()
 {
-    local KFHumanPawn Pawn;
+    local array<TurboHumanPawn> HumanPawnList;
+    local int Index;
 
     OwnerMutator.CardGameRules.bDisableSyringe = true;
     log("bDisableSyringe"@OwnerMutator.CardGameRules.bDisableSyringe);
 
-    foreach DynamicActors(class'KFHumanPawn', Pawn)
+    HumanPawnList = class'TurboGameplayHelper'.static.GetPlayerPawnList(Level);
+    for (Index = HumanPawnList.Length - 1; Index >= 0; Index--)
     {
-        OwnerMutator.CardGameRules.DestorySyringe(Pawn);
+        OwnerMutator.CardGameRules.DestorySyringe(HumanPawnList[Index]);
     }
 }
 

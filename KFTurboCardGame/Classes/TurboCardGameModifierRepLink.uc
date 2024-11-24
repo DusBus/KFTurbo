@@ -23,7 +23,8 @@ var(Turbo) float GrenadeMaxAmmoMultiplier;
 
 var(Turbo) float WeaponPenetrationMultiplier;
 var(Turbo) float WeaponSpreadRecoilMultiplier;
-var(Turbo) float WeaponPelletCountMultiplier;
+var(Turbo) float ShotgunPelletCountMultiplier;
+var(Turbo) float ShotgunSpreadRecoilMultiplier;
 var(Turbo) float ShotgunKickBackMultiplier;
 
 var(Turbo) float TraderCostMultiplier;
@@ -55,7 +56,8 @@ replication
         ReloadRateMultiplier, 
         MagazineAmmoMultiplier, CommandoMagazineAmmoMultiplier, MedicMagazineAmmoMultiplier,
         MaxAmmoMultiplier, MedicMaxAmmoMultiplier, GrenadeMaxAmmoMultiplier,
-        WeaponPenetrationMultiplier, WeaponSpreadRecoilMultiplier,
+        WeaponPenetrationMultiplier,
+        WeaponSpreadRecoilMultiplier, ShotgunSpreadRecoilMultiplier,
         TraderCostMultiplier, TraderGrenadeCostMultiplier, bDisableArmorPurchase,
         PlayerMovementSpeedMultiplier, PlayerMovementAccelMultiplier, bFreezePlayersDuringWave, bMoneySlowsPlayers, bMissingHealthStronglySlows,
         PlayerMaxHealthMultiplier,
@@ -112,7 +114,18 @@ simulated function float GetMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, cla
 simulated function float GetMedicMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType) { return Super.GetMedicMaxAmmoMultiplier(KFPRI, AmmoType) * MedicMaxAmmoMultiplier; }
 
 simulated function float GetWeaponPenetrationMultiplier(KFPlayerReplicationInfo KFPRI, WeaponFire Other) { return Super.GetWeaponPenetrationMultiplier(KFPRI, Other) * WeaponPenetrationMultiplier; }
-simulated function float GetWeaponSpreadRecoilMultiplier(KFPlayerReplicationInfo KFPRI, WeaponFire Other) { return Super.GetWeaponSpreadRecoilMultiplier(KFPRI, Other) * WeaponSpreadRecoilMultiplier; }
+simulated function float GetWeaponSpreadRecoilMultiplier(KFPlayerReplicationInfo KFPRI, WeaponFire Other)
+{
+    local float Multiplier;
+    Multiplier = Super.GetWeaponSpreadRecoilMultiplier(KFPRI, Other) * WeaponSpreadRecoilMultiplier;
+    
+    if (ShotgunSpreadRecoilMultiplier != 1.f && ShotgunFire(Other) != None && ShotgunFire(Other).default.ProjPerFire > 1)
+    {
+        Multiplier *= ShotgunSpreadRecoilMultiplier;
+    }
+
+    return Multiplier;
+}
 
 simulated function float GetTraderCostMultiplier(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)
 {
@@ -233,7 +246,11 @@ function GetBodyArmorDamageModifier(KFPlayerReplicationInfo KFPRI, out float Mul
 
 function OnShotgunFire(KFShotgunFire ShotgunFire)
 {
-    ShotgunFire.ProjPerFire = float(ShotgunFire.default.ProjPerFire) * WeaponPelletCountMultiplier;
+    if (ShotgunFire.default.ProjPerFire > 1)
+    {
+        ShotgunFire.ProjPerFire = float(ShotgunFire.default.ProjPerFire) * ShotgunPelletCountMultiplier;
+    }
+    
     ShotgunFire.KickMomentum = ShotgunFire.default.KickMomentum * ShotgunKickBackMultiplier;
 }
 
@@ -257,7 +274,8 @@ defaultproperties
 
     WeaponPenetrationMultiplier=1.f
     WeaponSpreadRecoilMultiplier=1.f
-    WeaponPelletCountMultiplier=1.f
+    ShotgunPelletCountMultiplier=1.f
+    ShotgunSpreadRecoilMultiplier=1.f
     ShotgunKickBackMultiplier=1.f
 
     TraderCostMultiplier=1.f

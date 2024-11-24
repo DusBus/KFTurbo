@@ -84,6 +84,8 @@ var(Turbo) float MonsterRangedDamageMultiplier;
 var(Turbo) float MonsterMeleeDamageMomentumMultiplier;
 var(Turbo) float MonsterStalkerDamageMultiplier;
 
+var Pawn MarkedForDeathPawn;
+
 static final function bool IsBerserker(Pawn Pawn)
 {
     if (Pawn == None || KFPlayerReplicationInfo(Pawn.PlayerReplicationInfo) == None)
@@ -275,6 +277,11 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
     }
 
     DamageMultiplier = 1.f;
+
+    if (MarkedForDeathPawn == Injured)
+    {
+        DamageMultiplier *= 4.f;
+    }
 
     if (class<SirenScreamDamage>(DamageType) != None)
     {   

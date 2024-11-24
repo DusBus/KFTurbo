@@ -190,14 +190,19 @@ function ClearMarkedActor()
 final function TurboPlayerMarkReplicationInfo GetPRIMarkingActor(Actor TargetActor)
 {
     local TurboPlayerMarkReplicationInfo TurboMarkPRI;
+    local array<PlayerReplicationInfo> PRIArray;
+    local int Index;
 
-    if (TargetActor == None)
+    if (TargetActor == None || TargetActor.bDeleteMe || TargetActor.Level.GRI == None)
     {
         return None;
     }
 
-    foreach TargetActor.DynamicActors(class'TurboPlayerMarkReplicationInfo', TurboMarkPRI)
+    PRIArray = TargetActor.Level.GRI.PRIArray;
+    for (Index = PRIArray.Length - 1; Index >= 0; Index--)
     {
+        TurboMarkPRI = GetTurboMarkPRI(PRIArray[Index]);
+
         if (TurboMarkPRI != Self && TurboMarkPRI.MarkedActor == TargetActor)
         {
             return TurboMarkPRI;

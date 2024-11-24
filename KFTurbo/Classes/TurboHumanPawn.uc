@@ -237,8 +237,7 @@ simulated function bool ShowStalkers()
 
 simulated function SpotCloakedMonsters()
 {
-	local P_Stalker Stalker;
-	local P_ZombieBoss Boss;
+	local KFMonster Monster;
 	local float SpottingRange;
 	SpottingRange = 1600.f;
 
@@ -254,19 +253,20 @@ simulated function SpotCloakedMonsters()
 		SpottingRange *= 0.5f;
 	}
 
-	foreach CollidingActors(class'P_Stalker', Stalker, SpottingRange)
+	foreach CollidingActors(class'KFMonster', Monster, SpottingRange)
 	{
-		if (Stalker.Health > 0)
+		if (Monster.Health <= 0)
 		{
-			Stalker.SpotStalker();
+			continue;
 		}
-	}
-
-	foreach CollidingActors(class'P_ZombieBoss', Boss, SpottingRange)
-	{
-		if (Boss.Health > 0)
+		
+		if (P_Stalker(Monster) != None)
 		{
-			Boss.SpotBoss();
+			P_Stalker(Monster).SpotStalker();
+		}
+		else if (P_ZombieBoss(Monster) != None)
+		{
+			P_ZombieBoss(Monster).SpotBoss();
 		}
 	}
 }

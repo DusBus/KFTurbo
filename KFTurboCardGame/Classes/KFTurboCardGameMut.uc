@@ -41,6 +41,31 @@ function AttemptModifyGameLength()
 	KFTurboGameType(Level.Game).SetFinalWaveOverride(14);
 }
 
+static final function KFTurboCardGameMut FindMutator(GameInfo GameInfo)
+{
+    local KFTurboCardGameMut CardGameMut;
+    local Mutator Mutator;
+
+	if (GameInfo == None)
+	{
+		return None;
+	}
+
+    for ( Mutator = GameInfo.BaseMutator; Mutator != None; Mutator = Mutator.NextMutator )
+    {
+        CardGameMut = KFTurboCardGameMut(Mutator);
+
+        if (CardGameMut == None)
+        {
+            continue;
+        }
+
+		return CardGameMut;
+    }
+
+	return None;
+}
+
 function TurboCardReplicationInfo CreateTurboCardReplicationInfo()
 {
 	local TurboCardReplicationInfo TCRI;

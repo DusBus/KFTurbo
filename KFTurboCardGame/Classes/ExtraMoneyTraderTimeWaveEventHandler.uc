@@ -26,6 +26,6 @@ static function OnWaveEnded(KFTurboGameType GameType, int EndedWave)
         }
     }
 
-    GameType.WaveCountDown = float(GameType.WaveCountDown) * 0.75f;
+    GameType.WaveCountDown = float(GameType.WaveCountDown) * 0.8f;
     KFGameReplicationInfo(GameType.GameReplicationInfo).TimeToNextWave = GameType.WaveCountDown;
 }

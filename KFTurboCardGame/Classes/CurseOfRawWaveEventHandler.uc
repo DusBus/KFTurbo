@@ -5,6 +5,8 @@ class CurseOfRawWaveEventHandler extends KFTurbo.TurboWaveSpawnEventHandler;
 
 static function OnBossSpawned(KFTurboGameType GameType)
 {
+    local Mutator Mutator;
+    local KFTurboCardGameMut CardGameMutator;
     local CurseOfRaManager Manager;
 
     if (GameType == None)
@@ -12,7 +14,20 @@ static function OnBossSpawned(KFTurboGameType GameType)
         return;
     }
 
-    foreach GameType.DynamicActors(class'CurseOfRaManager', Manager)
+    for (Mutator = GameType.BaseMutator; Mutator != None; Mutator = Mutator.NextMutator)
+    {
+        CardGameMutator = KFTurboCardGameMut(Mutator);
+
+        if (CardGameMutator == None)
+        {
+            continue;
+        }
+
+        Manager = CardGameMutator.TurboCardReplicationInfo.CurseOfRaManager;
+        break;
+    }
+
+    if (Manager != None)
     {
         Manager.OnBossSpawned();
     }

@@ -145,6 +145,35 @@ function ActivateRussianRoulette(TurboCardReplicationInfo CGRI)
     CGRI.EnableRussianRoulette();
 }
 
+function ActivateConcentratedHeal(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyMedicHealPotency(1.2f);
+    CGRI.ModifyNonMedicHealPotency(1.2f);
+    CGRI.ModifyHealRecharge(0.65f);
+}
+
+function ActivateDroppingBallast(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyGrenadeMaxAmmo(0.65f);
+    CGRI.ModifyWeaponMaxAmmo(1.2f);
+}
+
+function ActivateShotgunsMoreKick(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyShotgunPelletCount(1.2f);
+    CGRI.ModifyShotgunRecoil(1.2f);
+    CGRI.ModifyShotgunKickBack(1.2f);
+}
+
+function ActivateMoreToPlay(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyWeaponMaxAmmo(1.2f);
+    CGRI.ModifyPlayerDamage(1.1f);
+
+    class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'MoreToPlayWaveSizeModifier');
+    class'MoreToPlayWaveSizeModifier'.static.OnWaveStarted(KFTurboGameType(CGRI.Level.Game), KFTurboGameType(CGRI.Level.Game).WaveNum);
+}
+
 defaultproperties
 {
     Begin Object Name=ExtraMoneyTraderTime Class=TurboCard_ProCon
@@ -154,7 +183,7 @@ defaultproperties
         CardDescriptionList(1)="500 extra dosh"
         CardDescriptionList(2)="each wave but"
         CardDescriptionList(3)="trader time is"
-        CardDescriptionList(4)="reduced by 25%."
+        CardDescriptionList(4)="reduced by 20%."
         OnActivateCard=ActivateExtraMoneyTraderTime
     End Object
     DeckCardObjectList(0)=TurboCard'ExtraMoneyTraderTime'
@@ -196,7 +225,7 @@ defaultproperties
     Begin Object Name=BriskPace Class=TurboCard_ProCon
         CardName(0)="Brisk Pace"
         CardDescriptionList(0)="Reduces wave size"
-        CardDescriptionList(1)="by 25% but"
+        CardDescriptionList(1)="by 10% but"
         CardDescriptionList(2)="increases wave"
         CardDescriptionList(3)="speed by 200%."
         OnActivateCard=ActivateBriskPace
@@ -251,8 +280,8 @@ defaultproperties
         CardName(1)="Surplus"
         CardDescriptionList(0)="Increases dosh"
         CardDescriptionList(1)="received from"
-        CardDescriptionList(2)="kills by 15%"
-        CardDescriptionList(3)="and wave size by 25%."
+        CardDescriptionList(2)="kills by 15% and"
+        CardDescriptionList(3)="wave size by 25%."
         OnActivateCard=ActivateSurplus
     End Object
     DeckCardObjectList(9)=TurboCard'Surplus'
@@ -405,4 +434,51 @@ defaultproperties
         OnActivateCard=ActivateRussianRoulette
     End Object
     DeckCardObjectList(22)=TurboCard'RussianRoulette'
+    
+    Begin Object Name=ConcentratedHeal Class=TurboCard_ProCon
+        CardName(0)="Concentrated"
+        CardName(1)="Healing"
+        CardDescriptionList(0)="Increases heal"
+        CardDescriptionList(1)="potency by 20%"
+        CardDescriptionList(2)="but reduces"
+        CardDescriptionList(3)="heal charge"
+        CardDescriptionList(4)="rate by 35%."
+        OnActivateCard=ActivateConcentratedHeal
+    End Object
+    DeckCardObjectList(23)=TurboCard'ConcentratedHeal'
+    
+    Begin Object Name=DroppingBallast Class=TurboCard_ProCon
+        CardName(0)="Dropping"
+        CardName(1)="Ballast"
+        CardDescriptionList(0)="Increases max"
+        CardDescriptionList(1)="ammo by 20% but"
+        CardDescriptionList(2)="reduces grenade"
+        CardDescriptionList(3)="max ammo by 35%."
+        OnActivateCard=ActivateDroppingBallast
+    End Object
+    DeckCardObjectList(24)=TurboCard'DroppingBallast'
+    
+    Begin Object Name=ShotgunsMoreKick Class=TurboCard_ProCon
+        CardName(0)="With A Bit"
+        CardName(1)="More Kick"
+        CardDescriptionList(0)="Increases shotgun"
+        CardDescriptionList(1)="pellet count by"
+        CardDescriptionList(2)="20% but increases"
+        CardDescriptionList(3)="shotgun recoil and"
+        CardDescriptionList(4)="kickback by 20%."
+        OnActivateCard=ActivateShotgunsMoreKick
+    End Object
+    DeckCardObjectList(25)=TurboCard'ShotgunsMoreKick'
+    
+    Begin Object Name=MoreToPlay Class=TurboCard_ProCon
+        CardName(0)="More Game"
+        CardName(1)="To Play"
+        CardDescriptionList(0)="Increases max"
+        CardDescriptionList(1)="weapon ammo by"
+        CardDescriptionList(2)="20% and damage by"
+        CardDescriptionList(3)="10% but wave size is"
+        CardDescriptionList(4)="increased by 25%."
+        OnActivateCard=ActivateMoreToPlay
+    End Object
+    DeckCardObjectList(26)=TurboCard'MoreToPlay'
 }

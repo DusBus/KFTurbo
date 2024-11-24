@@ -168,7 +168,7 @@ function ActivateExtraGrenade(TurboCardReplicationInfo CGRI)
 
 function ActivateFasterMedical(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyHealRecharge(1.15f);
+    CGRI.ModifyHealRecharge(1.1f);
 }
 
 defaultproperties
@@ -356,7 +356,8 @@ defaultproperties
     DeckCardObjectList(19)=TurboCard'Dauntless'
 
     Begin Object Name=RangedResistance Class=TurboCard_Good
-        CardName(0)="Ranged Resistance"
+        CardName(0)="Ranged"
+        CardName(1)="Resistance"
         CardDescriptionList(0)="Decreases damage"
         CardDescriptionList(1)="taken by ranged"
         CardDescriptionList(2)="zed attacks by 10%."
@@ -376,9 +377,8 @@ defaultproperties
     Begin Object Name=MyLegsAreOkay Class=TurboCard_Good
         CardName(0)="My Legs"
         CardName(1)="Are Okay"
-        CardDescriptionList(0)="Players do"
-        CardDescriptionList(1)="not take"
-        CardDescriptionList(2)="fall damage."
+        CardDescriptionList(0)="Players no longer"
+        CardDescriptionList(1)="take fall damage."
         OnActivateCard=ActivateMyLegsAreOkay
     End Object
     DeckCardObjectList(22)=TurboCard'MyLegsAreOkay'
@@ -441,7 +441,7 @@ defaultproperties
         CardDescriptionList(0)="Increases medic"
         CardDescriptionList(1)="gun and syringe"
         CardDescriptionList(2)="recharge rate"
-        CardDescriptionList(3)="by 15%."
+        CardDescriptionList(3)="by 10%."
         OnActivateCard=ActivateFasterMedical
     End Object
     DeckCardObjectList(29)=TurboCard'FasterMedical'

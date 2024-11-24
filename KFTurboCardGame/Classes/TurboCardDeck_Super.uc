@@ -102,7 +102,7 @@ function ActivateMaximumPayne(TurboCardReplicationInfo CGRI)
 
 function ActivatePackedShells(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyWeaponPelletCount(1.5f);
+    CGRI.ModifyShotgunPelletCount(1.66f);
 }
 
 function ActivateSuperGrenades(TurboCardReplicationInfo CGRI)
@@ -297,7 +297,7 @@ defaultproperties
         CardName(0)="Packed Shells"
         CardDescriptionList(0)="Increases shotgun"
         CardDescriptionList(1)="pellet count"
-        CardDescriptionList(2)="by 50%."
+        CardDescriptionList(2)="by 66%."
         OnActivateCard=ActivatePackedShells
     End Object
     DeckCardObjectList(18)=TurboCard'PackedShells'

@@ -5,5 +5,5 @@ class SmallerFasterWavesWaveSizeModifier extends TurboCardWaveSizeModifier;
 
 defaultproperties
 {
-    WaveSizeModifier=0.75f
+    WaveSizeModifier=0.9f
 }

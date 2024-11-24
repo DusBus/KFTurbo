@@ -26,7 +26,7 @@ function ActivateOverclockedHusks(TurboCardReplicationInfo CGRI)
 
 function ActivateRecession(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyTraderPriceMultiplier(3.f);
+    CGRI.ModifyTraderPriceMultiplier(2.5f);
 }
 
 function ActivateFriendlyFire(TurboCardReplicationInfo CGRI)
@@ -144,6 +144,17 @@ function ActivateNoJunkies(TurboCardReplicationInfo CGRI)
     CGRI.DisableSyringe();
 }
 
+function ActivateMarkedForDeath(TurboCardReplicationInfo CGRI)
+{
+    class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'MarkedForDeathWaveEventHandler');
+    class'MarkedForDeathWaveEventHandler'.static.OnWaveStarted(KFTurboGameType(CGRI.Level.Game), KFTurboGameType(CGRI.Level.Game).WaveNum);
+}
+
+function ActivateRestrictedExplosives(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyExplosiveRadius(0.33f);
+}
+
 defaultproperties
 {
     Begin Object Name=Hyperbloats Class=TurboCard_Evil
@@ -188,7 +199,7 @@ defaultproperties
         CardName(1)="Recession"
         CardDescriptionList(0)="All prices in"
         CardDescriptionList(1)="trader cost"
-        CardDescriptionList(2)="200% more."
+        CardDescriptionList(2)="150% more."
         OnActivateCard=ActivateRecession
     End Object
     DeckCardObjectList(4)=TurboCard'Recession'
@@ -393,6 +404,25 @@ defaultproperties
         OnActivateCard=ActivateNoJunkies
     End Object
     DeckCardObjectList(25)=TurboCard'NoJunkies'
-
-    //Strong Winds.
+    
+    Begin Object Name=MarkedForDeath Class=TurboCard_Evil
+        CardName(0)="Marked For"
+        CardName(1)="Death"
+        CardDescriptionList(0)="Each wave a"
+        CardDescriptionList(1)="random player is"
+        CardDescriptionList(2)="chosen and takes"
+        CardDescriptionList(3)="300% more damage"
+        CardDescriptionList(4)="for a wave."
+        OnActivateCard=ActivateMarkedForDeath
+    End Object
+    DeckCardObjectList(26)=TurboCard'MarkedForDeath'
+    
+    Begin Object Name=RestrictedExplosives Class=TurboCard_Evil
+        CardName(0)="Restricted"
+        CardName(1)="Explosives"
+        CardDescriptionList(0)="Reduces explosive"
+        CardDescriptionList(1)="range by 66%."
+        OnActivateCard=ActivateRestrictedExplosives
+    End Object
+    DeckCardObjectList(27)=TurboCard'RestrictedExplosives'
 }

@@ -47,18 +47,17 @@ function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Mo
 //Stop boss cinematic and end game from occurring if multiple bosses are alive.
 function Died(Controller Killer, class<DamageType> DamageType, vector HitLocation)
 {
-	local ZombieBoss Patriarch;
+	local array<Monster> MonsterPawnList;
+	MonsterPawnList = class'TurboGameplayHelper'.static.GetMonsterPawnList(Level, class'ZombieBoss');
 
-    foreach DynamicActors(class 'ZombieBoss', Patriarch)
-    {
-        if(Patriarch != none && Patriarch != Self && Patriarch.Health > 0)
-        {
-			Super(KFMonster).Died(Killer, DamageType, HitLocation);
-            return;
-        }
-    }
+	//If we were the last one alive, do the cinematic.
+	if (MonsterPawnList.Length == 0 || (MonsterPawnList.Length == 1 && MonsterPawnList[0] == Self))
+	{
+		Super.Died(Killer, DamageType, HitLocation);
+		return;
+	}
 
-	Super.Died(Killer, DamageType, HitLocation);
+	Super(KFMonster).Died(Killer, DamageType, HitLocation);
 }
 
 function TakeFireDamage(int Damage, pawn DamageInstigator)
