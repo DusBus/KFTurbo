@@ -166,11 +166,6 @@ function ActivateExtraGrenade(TurboCardReplicationInfo CGRI)
     CGRI.ModifyGrenadeMaxAmmo(1.2f);
 }
 
-function ActivateExtraGrenade(TurboCardReplicationInfo CGRI)
-{
-    CGRI.ModifyGrenadeMaxAmmo(1.2f);
-}
-
 function ActivateFasterMedical(TurboCardReplicationInfo CGRI)
 {
     CGRI.ModifyHealRecharge(1.15f);
@@ -426,7 +421,7 @@ defaultproperties
         CardName(0)="Extended Cut"
         CardDescriptionList(0)="Increases player"
         CardDescriptionList(1)="max zed time"
-        CardDescriptionList(1)="extensions by 1."
+        CardDescriptionList(2)="extensions by 1."
         OnActivateCard=ActivateMoreSlomo
     End Object
     DeckCardObjectList(27)=TurboCard'MoreSlomo'
