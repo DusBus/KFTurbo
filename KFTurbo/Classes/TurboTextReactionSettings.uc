@@ -13,6 +13,22 @@ struct TextSoundMap
 
 var array<TextSoundMap> TextSoundList;
 
+static final function PlayLocalSound(TurboPlayerController PlayerController, Sound Sound)
+{
+    if (PlayerController.Pawn == None)
+    {
+        PlayerController.PlayOwnedSound(Sound, SLOT_None, 200.f,,,,false);
+    }
+    else if (PlayerController.Pawn.Weapon == None)
+    {
+        PlayerController.Pawn.PlayOwnedSound(Sound, SLOT_None, 200.f,,,,false);
+    }
+    else
+    {
+        PlayerController.Pawn.Weapon.PlayOwnedSound(Sound, SLOT_None, 200.f,,,,false);
+    }
+}
+
 simulated function ReceivedMessage(TurboPlayerController PlayerController, string M, class<LocalMessage> MessageClass, PlayerReplicationInfo PRI)
 {
     local int Index;
@@ -41,7 +57,7 @@ simulated function ReceivedMessage(TurboPlayerController PlayerController, strin
             }
 
             TextSoundList[Index].CooldownTime = PlayerController.Level.TimeSeconds + TextSoundList[Index].Sound.Duration + 0.5f;
-            PlayerController.PlayOwnedSound(TextSoundList[Index].Sound, SLOT_Talk, 200.f);
+            PlayLocalSound(PlayerController, TextSoundList[Index].Sound);
             return;
         }
     }
@@ -51,4 +67,5 @@ defaultproperties
 {
     TextSoundList(0)=(Text=":goosecooked:",SoundRef="KFTurbo.UI.goosecooked")
     TextSoundList(1)=(Text=":plink:",SoundRef="KFTurbo.UI.plink")
+    TextSoundList(2)=(Text=":nervous:",SoundRef="KFTurbo.UI.NervousTerran")
 }
