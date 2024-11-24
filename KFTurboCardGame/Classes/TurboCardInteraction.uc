@@ -31,10 +31,11 @@ simulated function bool KeyEvent( out EInputKey Key, out EInputAction Action, FL
 	{
 		if (Key == IK_MouseWheelUp || Key == IK_MouseWheelDown)
 		{
-			return FindCardOverlay(ViewportOwner.Actor).ReceivedKeyEvent(Key);
+			return FindCardOverlay(ViewportOwner.Actor).ReceivedKeyEvent(Key, Action);
 		}
 		if (Key == IK_Shift)
 		{
+			FindCardOverlay(ViewportOwner.Actor).ReceivedKeyEvent(Key, Action);
 			bShiftIsPressed = true;
 		}
 		else if (bShiftIsPressed)
@@ -46,6 +47,7 @@ simulated function bool KeyEvent( out EInputKey Key, out EInputAction Action, FL
 	{
 		if (Key == IK_Shift)
 		{
+			FindCardOverlay(ViewportOwner.Actor).ReceivedKeyEvent(Key, Action);
 			bShiftIsPressed = false;
 		}
 	}

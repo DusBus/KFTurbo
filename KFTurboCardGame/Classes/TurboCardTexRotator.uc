@@ -4,7 +4,7 @@
 class TurboCardTexRotator extends Engine.TexRotator;
 
 //Initialize with specified amplitude multiplier and phase phase.
-function Initialize(Material NewMaterial, float OscillationMultiplier, TurboHUDOverlay.Vector2D OscillationPhaseOffset)
+function Initialize(Material NewMaterial, float OscillationMultiplier, TurboHUDOverlay.Vector2D OscillationPhaseOffset, bool bIsLargeCard)
 {
     OscillationRate.Pitch = default.OscillationRate.Pitch * (1.f / OscillationMultiplier);
     OscillationRate.Yaw = default.OscillationRate.Yaw * (1.f / OscillationMultiplier);
@@ -16,6 +16,14 @@ function Initialize(Material NewMaterial, float OscillationMultiplier, TurboHUDO
     OscillationPhase.Yaw = OscillationPhaseOffset.Y;
 
     Material = NewMaterial;
+
+    if (bIsLargeCard)
+    {
+        OscillationAmplitude.Pitch *= 0.5f;
+        OscillationAmplitude.Yaw *= 0.5f;
+        UOffset = 512.f;
+        UOffset = 1024.f;
+    }
 }
 
 //Called when released to pool.

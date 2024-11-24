@@ -10,6 +10,7 @@ struct SelectableCardEntry
 	var float Ratio;
 };
 var array<SelectableCardEntry> CardRenderActorList;
+var bool bUseLargeCards;
 var int CurrentCardCount;
 var int VotedCardIndex;
  
@@ -35,6 +36,9 @@ var bool bHasPlayedMinuteWarning, bHasPlayedThirtySecondsWarning;
 var Sound MinuteWarningSound, ThirtySecondsWarningSound, TenSecondWarningSound;
 var int LastWarnTime;
 
+var float VoteMenuScale;
+var bool bHasShiftPressed;
+
 enum EBorrowedTimeWarnLevel
 {
 	NoWarning,
@@ -50,6 +54,44 @@ simulated function InitializeCardGameHUD(TurboCardReplicationInfo CGRI)
 	TCRI = CGRI;
 	CGRI.OnSelectableCardsUpdated = OnSelectableCardsUpdated;
 	CGRI.OnActiveCardsUpdated = OnActiveCardsUpdated;
+}
+
+simulated function bool CanUseLargeCards()
+{
+	switch(KFPHUD.PlayerOwner.ConsoleCommand("get ini:Engine.Engine.ViewportManager TextureDetailWorld"))
+	{
+		case "Higher":
+		case "High":
+		case "VeryHigh":
+		case "UltraHigh":
+			return true;
+	}
+
+	return false;
+}
+
+simulated function OnScreenSizeChange(Canvas C, Vector2D CurrentClipSize, Vector2D PreviousClipSize)
+{
+	Super.OnScreenSizeChange(C, CurrentClipSize, PreviousClipSize);
+
+	if (CanUseLargeCards())
+	{
+		bUseLargeCards = CurrentClipSize.Y >= 1440.f;
+	}
+	else
+	{
+		bUseLargeCards = false;
+	}
+}
+
+simulated function class<TurboCardActor> GetTurboCardActorClass()
+{
+	if (bUseLargeCards)
+	{
+		return class'TurboCardActorLarge';
+	}
+
+	return class'TurboCardActor';
 }
 
 simulated function int GetVoteIndex()
@@ -88,12 +130,21 @@ simulated function Tick(float DeltaTime)
 		{
 			if (Index == VotedCardIndex)
 			{
-				CardRenderActorList[Index].Ratio = FMin(Lerp(DeltaTime * 4.f, CardRenderActorList[Index].Ratio, 1.f), 1.f);
+				CardRenderActorList[Index].Ratio = FMin(Lerp(DeltaTime * 12.f, CardRenderActorList[Index].Ratio, 1.f), 1.f);
 			}
 			else
 			{
-				CardRenderActorList[Index].Ratio = FMax(Lerp(DeltaTime * 6.f, CardRenderActorList[Index].Ratio, 0.f), 0.f);
+				CardRenderActorList[Index].Ratio = FMax(Lerp(DeltaTime * 4.f, CardRenderActorList[Index].Ratio, 0.f), 0.f);
 			}
+		}
+
+		if (bHasShiftPressed || GetVoteIndex() == -1)
+		{
+			VoteMenuScale = FMin(Lerp(DeltaTime * 10.f, VoteMenuScale, 1.f), 1.f);
+		}
+		else
+		{
+			VoteMenuScale = FMax(Lerp(DeltaTime * 10.f, VoteMenuScale, 0.f), 0.f);
 		}
 	}
 
@@ -129,8 +180,23 @@ simulated function Tick(float DeltaTime)
 }
 
 //Mouse wheel key events are forwarded here. Returns true if the key event should be consumed.
-simulated function bool ReceivedKeyEvent(Interactions.EInputKey Key)
+simulated function bool ReceivedKeyEvent(Interactions.EInputKey Key, Interactions.EInputAction Action)
 {
+	if (TCRI.bCurrentlyVoting)
+	{
+		if (Key == IK_Shift)
+		{
+			if (Action == IST_Press)
+			{
+				bHasShiftPressed = true;
+			}
+			else if (Action == IST_Release)
+			{
+				bHasShiftPressed = false;
+			}
+		}
+	}
+	
 	if (!HUD(Owner).bShowScoreboard)
 	{
 		return false;
@@ -175,7 +241,7 @@ simulated function OnSelectableCardsUpdated(TurboCardReplicationInfo CGRI)
 			//Create a new card if we don't have one, or the one we had became an active card.
 			if (CardRenderActorList[Index].CardActor == None || CardRenderActorList[Index].CardActor.bIsActiveCard)
 			{
-				CardRenderActorList[Index].CardActor = Spawn(class'TurboCardActor', Self);
+				CardRenderActorList[Index].CardActor = Spawn(GetTurboCardActorClass(), Self);
 			}
 
 			CardRenderActorList[Index].CardActor.SetCardClass(TurboCard);
@@ -184,16 +250,22 @@ simulated function OnSelectableCardsUpdated(TurboCardReplicationInfo CGRI)
 		}
 
 		CardRenderActorList.Length = Index + 1;
-		CardRenderActorList[Index].CardActor = Spawn(class'TurboCardActor', Self);
+		CardRenderActorList[Index].CardActor = Spawn(GetTurboCardActorClass(), Self);
 		CardRenderActorList[Index].CardActor.SetCardClass(TurboCard);
 	}
 
 	CurrentCardCount = Index;
+
+	bHasShiftPressed = true;
+	VoteMenuScale = 1.f;
+
     log ("OnSelectableCardsUpdated - CurrentCardCount:"@CurrentCardCount);
 }
 
 simulated function Render(Canvas C)
 {
+	Super.Render(C);
+
 	if (TCRI == None)
 	{
 		return;
@@ -293,10 +365,9 @@ simulated function DrawSelectableCardList(Canvas C)
 	C.Font = class'KFTurboFontHelper'.static.LoadBoldFontStatic(4);
 
 	CenterIndex = float(CurrentCardCount) / 2.f;
-	CardSize = FMin(C.ClipX / 9.f, 256.f);
+	CardSize = FMin(C.ClipX / 10.f, (C.ClipY / 4.f)) * Lerp(VoteMenuScale, 0.66f, 1.f);
 	CardOffset = CardSize * 1.1f;
-	CardScale = CardSize / 256.f;
-	TempY = (C.ClipY / 1.75f) - (CardSize * 0.5f);
+	TempY = (C.ClipY / 1.75f) - (CardSize * 0.5f * VoteMenuScale);
 	TempX = (C.ClipX / 2.f) - (CenterIndex * CardOffset);
 
 	for (Index = 0; Index < CurrentCardCount; Index++)
@@ -317,6 +388,7 @@ simulated function DrawSelectableCardList(Canvas C)
 
 		CardRenderActorList[Index].CardActor.RenderOverlays(C);
 		
+		CardScale = CardSize / float(CardRenderActorList[Index].CardActor.CardScriptedTexture.USize);
 		C.SetPos(TempX + (CardOffset * 0.5f) - (CardSize * CardSelectionScale * 0.5f), TempY - ((CardSelectionScale - 1.f) * CardSize));
 		C.DrawTileScaled(CardRenderActorList[Index].CardActor.CardShader, CardScale * CardSelectionScale, CardScale * CardSelectionScale);
 		TempX += CardOffset;
@@ -325,12 +397,13 @@ simulated function DrawSelectableCardList(Canvas C)
 	if (VotedCardIndex != -1)
 	{
 		CardSelectionScale = Lerp(CardRenderActorList[VotedCardIndex].Ratio, 1.f, 1.08f);
+		CardScale = CardSize / float(CardRenderActorList[VotedCardIndex].CardActor.CardScriptedTexture.USize);
 		C.SetPos(VotedCardX + (CardOffset * 0.5f) - (CardSize * CardSelectionScale * 0.5f), TempY - ((CardSelectionScale - 1.f) * CardSize));
 		C.DrawTileScaled(CardRenderActorList[VotedCardIndex].CardActor.CardShader, CardScale * CardSelectionScale, CardScale * CardSelectionScale);
 	}
 
-	C.FontScaleX = 1.f;
-	C.FontScaleY = 1.f;
+	C.FontScaleX = Lerp(VoteMenuScale, 0.75f, 1.f);
+	C.FontScaleY = C.FontScaleX;
 
 	TempX = ((C.ClipX / 2.f) - (CenterIndex * CardOffset)) + (CardOffset * 0.5f);
 	for (Index = Level.GRI.PRIArray.Length - 1; Index >= 0; Index--)
@@ -343,6 +416,8 @@ simulated function DrawSelectableCardList(Canvas C)
 		DrawVoter(C, Level.GRI.PRIArray[Index], TempX, TempY, CardOffset, VoteList);
 	}
 
+	C.FontScaleX = 1.f;
+	C.FontScaleY = 1.f;
 	TempY += CardSize * 1.85f;
 	TempX = (C.ClipX / 2.f);
 
@@ -368,18 +443,17 @@ simulated function DrawActiveCardList(Canvas C)
 	local float CenterIndex;
 	local float TempX, TempY;
 	local float CardBonusScale;
-	local float DisplayCardY;
+	local float DisplayCardY, ScrollDisplayY;
 	local float TextSizeX, TextSizeY, MaxTextSizeX;
 
 	C.SetDrawColor(255, 255, 255, 255);
 
 	CenterIndex = float(ActiveCardRenderActorList.Length) / 2.f;
 
-	CardSize = FMin(C.ClipY / 6.f, 256.f);
-	CardScale = CardSize / 512.f;
-	CardOffset = CardSize * 0.175f;
+	CardSize = C.ClipY / 10.f;
+	CardOffset = CardSize * 0.33f;
 
-	TempX = C.ClipX - (256.f * 0.9f * CardScale);
+	TempX = C.ClipX;
 	TempY = (C.ClipY / 2.f) - (CenterIndex * CardOffset);
 	for (Index = 0; Index < ActiveCardRenderActorList.Length; Index++)
 	{
@@ -395,20 +469,28 @@ simulated function DrawActiveCardList(Canvas C)
 			continue;
 		}
 
-		CardBonusScale = Lerp(ActiveCardRenderActorList[Index].Ratio, 1.f, 2.f);
+		CardBonusScale = Lerp(ActiveCardRenderActorList[Index].Ratio, 1.f, 1.75f);
 
 		ActiveCardRenderActorList[Index].CardActor.RenderOverlays(C);
 		
-		C.SetPos(TempX - (CardScale * (CardBonusScale - 1.f) * 256.f), TempY + (CardOffset * 0.5f) - (CardSize * 0.5f * CardBonusScale));
+		CardScale = CardSize / float(ActiveCardRenderActorList[Index].CardActor.CardScriptedTexture.USize);
+
+		C.SetPos((TempX - (CardSize * 0.95f)) - ((CardBonusScale - 1.f) * CardSize * 0.95f), TempY + (CardOffset * 0.5f) - (CardSize * CardBonusScale));
 		C.DrawTileScaled(ActiveCardRenderActorList[Index].CardActor.CardShader, CardScale * CardBonusScale, CardScale * CardBonusScale);
+		ScrollDisplayY = FMax(ScrollDisplayY, TempY + (CardSize * CardBonusScale));
 		TempY += CardOffset;
 	}
 
 	if (CardIndexToDisplay != -1)
 	{
-		CardBonusScale = Lerp(ActiveCardRenderActorList[CardIndexToDisplay].Ratio, 1.f, 2.f);
-		C.SetPos(TempX - (CardScale * (CardBonusScale - 1.f) * 256.f), DisplayCardY + (CardOffset * 0.5f) - (CardSize * 0.5f * CardBonusScale));
+		CardBonusScale = Lerp(ActiveCardRenderActorList[CardIndexToDisplay].Ratio, 1.f, 1.75f);
+
+		CardScale = CardSize / float(ActiveCardRenderActorList[CardIndexToDisplay].CardActor.CardScriptedTexture.USize);
+
+		C.SetPos((TempX - (CardSize * 0.95f)) - ((CardBonusScale - 1.f) * CardSize * 0.95f), DisplayCardY + (CardOffset * 0.5f) - (CardSize * CardBonusScale));
 		C.DrawTileScaled(ActiveCardRenderActorList[CardIndexToDisplay].CardActor.CardShader, CardScale * CardBonusScale, CardScale * CardBonusScale);
+		
+		ScrollDisplayY = FMax(ScrollDisplayY, DisplayCardY + (CardSize * CardBonusScale));
 	}
 
 	if (ActiveCardRenderActorList.Length <= 1 || HowToScrollFade < 0.01f)
@@ -418,7 +500,7 @@ simulated function DrawActiveCardList(Canvas C)
 
 	C.Font = class'KFTurboFontHelper'.static.LoadFontStatic(5);
 	TempX = C.ClipX - 2.f;
-	TempY += CardSize * 0.7f; //Remainder of CardSize for a given CardOffset, plus some extra padding.
+	TempY = ScrollDisplayY; //Remainder of CardSize for a given CardOffset, plus some extra padding.
 
 	MaxTextSizeX = 0.f;
 	for (Index = 0; Index < HowToScrollCardsString.Length; Index++)
@@ -682,17 +764,17 @@ simulated function CheckSoundWarning(int TimeRemaining)
 	{
 		bHasPlayedThirtySecondsWarning = true;
 		bHasPlayedMinuteWarning = true;
-		KFPHUD.PlayerOwner.ClientPlaySound(TenSecondWarningSound,,, SLOT_Interface);
+		KFPHUD.PlayerOwner.ClientPlaySound(TenSecondWarningSound,,, SLOT_None);
 	}
 	else if (!bHasPlayedThirtySecondsWarning && TimeRemaining < 30)
 	{
 		bHasPlayedThirtySecondsWarning = true;
-		KFPHUD.PlayerOwner.ClientPlaySound(ThirtySecondsWarningSound,,, SLOT_Interface);
+		KFPHUD.PlayerOwner.ClientPlaySound(ThirtySecondsWarningSound,,, SLOT_None);
 	}
 	else if (!bHasPlayedMinuteWarning && TimeRemaining <= 60)
 	{
 		bHasPlayedMinuteWarning = true;
-		KFPHUD.PlayerOwner.ClientPlaySound(MinuteWarningSound,,, SLOT_Interface);
+		KFPHUD.PlayerOwner.ClientPlaySound(MinuteWarningSound,,, SLOT_None);
 	}
 }
 
@@ -700,6 +782,7 @@ defaultproperties
 {
 	VotedCardIndex=-1
 	CardIndexToDisplay=-1
+	VoteMenuScale=1.f
 
 	HowToVoteString="Press shift and a number to vote for a card!"
 	HowToScrollCardsString(0)="Scroll up and"

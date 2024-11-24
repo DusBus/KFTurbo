@@ -15,6 +15,8 @@ var Texture CardIcon;
 var bool bCanEverRepeat;
 
 var Texture BackplateTexture;
+var Texture BackplateMaskTexture;
+var Texture LargeBackplateMaskTexture;
 var Color BackplateColor;
 
 var Color CardNameColor;
@@ -27,8 +29,57 @@ var bool bCardDescriptionAllCaps;
 
 var Color CardIDColor;
 
-
 delegate OnActivateCard(TurboCardReplicationInfo CGRI);
+
+static function int GetTitleFontSize(ScriptedTexture Tex)
+{
+	if (Tex.USize >= 512)
+	{
+		return 2;
+	}
+
+	return 4;
+}
+
+static function int GetTextFontSize(ScriptedTexture Tex)
+{
+	if (Tex.USize >= 512)
+	{
+		return 2;
+	}
+
+	return 4;
+}
+
+static function int GetSubTitleFontSize(ScriptedTexture Tex)
+{
+	if (Tex.USize >= 512)
+	{
+		return 5;
+	}
+
+	return 7;
+}
+
+static function float GetTitleShadowOffset(ScriptedTexture Tex)
+{
+	if (Tex.USize >= 512)
+	{
+		return 6.f;
+	}
+
+	return 3.f;
+}
+
+static function float GetTextShadowOffset(ScriptedTexture Tex)
+{
+	if (Tex.USize >= 512)
+	{
+		return 4.f;
+	}
+
+	return 2.f;
+}
 
 function SetupScriptedTexture(ScriptedTexture Tex)
 {
@@ -40,20 +91,20 @@ function SetupScriptedTexture(ScriptedTexture Tex)
 	local string FullTitleString;
 
 	//Draw card backplate.
-	Tex.DrawTile(0, 0, Tex.USize, Tex.VSize, 0, 0, Tex.USize, Tex.VSize, BackplateTexture, BackplateColor);
+	Tex.DrawTile(0, 0, Tex.USize, Tex.VSize, 0, 0, BackplateTexture.USize, BackplateTexture.VSize, BackplateTexture, BackplateColor);
 
-	SizeX = 256;
-	SizeY = 512;
+	SizeX = Tex.USize;
+	SizeY = Tex.VSize;
 
 	FullTitleString = ApplyTitle(Tex);
 	
 	ApplyDescription(Tex);
 
 	FullTitleString = Caps(FullTitleString@"| Killing Floor Turbo");
-	TextFont = class'KFTurboFontHelper'.static.LoadFontStatic(8);
+	TextFont = class'KFTurboFontHelper'.static.LoadFontStatic(GetSubTitleFontSize(Tex));
 	Tex.TextSize(FullTitleString, TextFont, TextSizeX, TextSizeY);
-	TempX = (SizeX - 21) - TextSizeX;
-	TempY = (SizeY - 64) - (TextSizeY - 3);
+	TempX = (SizeX * 0.92f) - TextSizeX;
+	TempY = (SizeY * 0.8835f) - (TextSizeY);
 	Tex.DrawText(TempX, TempY, FullTitleString, TextFont, CardIDColor);
 }
 
@@ -82,18 +133,20 @@ function string ApplyTitle(ScriptedTexture Tex)
 	local int TextSizeX, TextSizeY;
 	local float TextLineBreakSize;
 	local Font TextFont;
+	local float ShadowOffset;
 	local int TitleIndex;
 
 	GetCardTitle(FullTitleString);
 	TitleString = "";
+	ShadowOffset = GetTitleShadowOffset(Tex);
 
 	if (FullTitleString.Length != 0)
 	{
-		TextFont = class'KFTurboFontHelper'.static.LoadBoldFontStatic(4);
+		TextFont = class'KFTurboFontHelper'.static.LoadBoldFontStatic(GetTitleFontSize(Tex));
 		Tex.TextSize(FullTitleString[0], TextFont, TextSizeX, TextSizeY);
 
 		//Space from top of texture to top of card + card margin + half of card header size
-		TempY = 64 + 8 + 40;
+		TempY = float(Tex.VSize) * 0.218f;
 		TextLineBreakSize = 0.8f ** (FullTitleString.Length - 1);
 		TempY = TempY - (TextSizeY * float(CardName.Length) * TextLineBreakSize * 0.5f);
 
@@ -103,8 +156,8 @@ function string ApplyTitle(ScriptedTexture Tex)
 			TitleString = TitleString @ StrippedTitleString;
 
 			Tex.TextSize(StrippedTitleString, TextFont, TextSizeX, TextSizeY);
-			TempX = (256.f * 0.5f) - (float(TextSizeX) * 0.5f);
-			Tex.DrawText(TempX + 3.f, TempY + 3.f, StrippedTitleString, TextFont, CardTextShadowColor);
+			TempX = (float(Tex.USize) * 0.5f) - (float(TextSizeX) * 0.5f);
+			Tex.DrawText(TempX + ShadowOffset, TempY + ShadowOffset, StrippedTitleString, TextFont, CardTextShadowColor);
 			Tex.DrawText(TempX, TempY, FullTitleString[TitleIndex], TextFont, CardNameColor);
 			TempY += float(TextSizeY) * TextLineBreakSize;
 		}
@@ -136,16 +189,19 @@ function ApplyDescription(ScriptedTexture Tex)
 	local float TempX, TempY;
 	local int TextSizeX, TextSizeY;
 	local Font TextFont;
+	local float ShadowOffset;
 	local int DescriptionIndex;
 
 	GetCardDescription(FullDescriptionString);
+	ShadowOffset = GetTextShadowOffset(Tex);
+
 	if (FullDescriptionString.Length != 0)
 	{
-		TextFont = class'KFTurboFontHelper'.static.LoadFontStatic(4);
+		TextFont = class'KFTurboFontHelper'.static.LoadFontStatic(GetTextFontSize(Tex));
 		Tex.TextSize(FullDescriptionString[0], TextFont, TextSizeX, TextSizeY);
 
 		//Space from top of texture to top of card + card margin + half of card header size
-		TempY = float(160 + 440) / 2.f;
+		TempY = float(Tex.VSize) * 0.586f;
 		TempY = TempY - (TextSizeY * float(FullDescriptionString.Length) * 0.4f);
 
 		for (DescriptionIndex = 0; DescriptionIndex < FullDescriptionString.Length; DescriptionIndex++)
@@ -153,8 +209,8 @@ function ApplyDescription(ScriptedTexture Tex)
 			StrippedDescriptionString = class'GUIComponent'.static.StripColorCodes(FullDescriptionString[DescriptionIndex]);
 
 			Tex.TextSize(FullDescriptionString[DescriptionIndex], TextFont, TextSizeX, TextSizeY);
-			TempX = (256.f * 0.5f) - (float(TextSizeX) * 0.5f);
-			Tex.DrawText(TempX + 3.f, TempY + 3.f, StrippedDescriptionString, TextFont, CardTextShadowColor);
+			TempX = (float(Tex.USize) * 0.5f) - (float(TextSizeX) * 0.5f);
+			Tex.DrawText(TempX + ShadowOffset, TempY + ShadowOffset, StrippedDescriptionString, TextFont, CardTextShadowColor);
 			Tex.DrawText(TempX, TempY, FullDescriptionString[DescriptionIndex], TextFont, CardDescriptionColor);
 			TempY += float(TextSizeY) * 0.8f;
 		}
@@ -166,6 +222,8 @@ defaultproperties
 	bCanEverRepeat=false
 
 	BackplateTexture=Texture'KFTurboCardGame.Card.CardBackplate_D'
+	BackplateMaskTexture=Texture'KFTurboCardGame.Card.CardBackplate_D'
+	LargeBackplateMaskTexture=Texture'KFTurboCardGame.Card.CardBackplate_Large_D'
 	BackplateColor=(R=255,G=255,B=255,A=255)
 	
 	CardNameColor=(R=0,G=0,B=0,A=255)

@@ -12,13 +12,23 @@ var TurboCardTexRotator CardOpacity;
 var TurboCardTexRotator CardDiffuse;
 var TurboCardShader CardShader;
 var Texture MaskTexture;
+var bool bLargeCard;
 
 function PostBeginPlay()
 {
     Super.PostBeginPlay();
 
-	CardScriptedTexture = TurboCardScriptedTexture(Level.ObjectPool.AllocateObject(class'TurboCardScriptedTexture'));
-	CardScriptedTexture.SetSize(256, 512);
+	if (bLargeCard)
+	{
+		CardScriptedTexture = TurboCardScriptedTexture(Level.ObjectPool.AllocateObject(class'TurboCardScriptedTextureLarge'));
+		CardScriptedTexture.SetSize(512, 1024);
+	}
+	else
+	{
+		CardScriptedTexture = TurboCardScriptedTexture(Level.ObjectPool.AllocateObject(class'TurboCardScriptedTexture'));
+		CardScriptedTexture.SetSize(256, 512);
+	}
+
 	CardScriptedTexture.Client = self;
 	
 	CardOpacity = TurboCardTexRotator(Level.ObjectPool.AllocateObject(class'TurboCardTexRotator'));
@@ -45,8 +55,8 @@ function RandomizeOscillation()
 		Multiplier *= -1.f;
 	}
 
-	CardOpacity.Initialize(MaskTexture, Multiplier, PhaseOffset);
-	CardDiffuse.Initialize(CardScriptedTexture, Multiplier, PhaseOffset);
+	CardOpacity.Initialize(MaskTexture, Multiplier, PhaseOffset, bLargeCard);
+	CardDiffuse.Initialize(CardScriptedTexture, Multiplier, PhaseOffset, bLargeCard);
 }
 
 function SetCardClass(TurboCard NewCard)
@@ -60,7 +70,15 @@ function SetCardClass(TurboCard NewCard)
 	RandomizeOscillation();
 
 	//Update mask material to backplate.
-	MaskTexture = Card.BackplateTexture;
+	if (bLargeCard)
+	{
+		MaskTexture = Card.LargeBackplateMaskTexture;
+	}
+	else
+	{
+		MaskTexture = Card.BackplateMaskTexture;
+	}
+	
 	if (CardOpacity != None)
 	{
 		CardOpacity.Material = MaskTexture;
@@ -120,4 +138,5 @@ simulated event Destroyed()
 defaultproperties
 {
 	bIsActiveCard=false
+	bLargeCard=false
 }

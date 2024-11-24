@@ -9,7 +9,7 @@ var Color CurseOfRaColor;
 function SetupScriptedTexture(ScriptedTexture Tex)
 {
 	Super.SetupScriptedTexture(Tex);
-	Tex.DrawTile(0, 0, Tex.USize, Tex.VSize, 0, 0, Tex.USize, Tex.VSize, CurseOfRaTexture, CurseOfRaColor);
+	Tex.DrawTile(0, 0, Tex.USize, Tex.VSize, 0, 0, CurseOfRaTexture.USize, CurseOfRaTexture.VSize, CurseOfRaTexture, CurseOfRaColor);
 }
 
 defaultproperties
