@@ -15,43 +15,33 @@ static function OnGameStarted(KFTurboGameType GameType, int StartedWave)
 static function OnWaveStarted(KFTurboGameType GameType, int StartedWave)
 {
     local KFTurboCardGameMut CardGameMut;
-    local Mutator Mutator;
-    for ( Mutator = GameType.BaseMutator; Mutator != None; Mutator = Mutator.NextMutator )
+    CardGameMut = class'KFTurboCardGameMut'.static.FindMutator(GameType);
+
+    if (CardGameMut == None)
     {
-        CardGameMut = KFTurboCardGameMut(Mutator);
-
-        if (CardGameMut == None)
-        {
-            continue;
-        }
-
-        CardGameMut.TurboCardReplicationInfo.OnSelectionTimeEnd();
-        break;
+        return;
     }
+    
+    CardGameMut.TurboCardReplicationInfo.OnSelectionTimeEnd();
 }
 
 static function OnWaveEnded(KFTurboGameType GameType, int EndedWave)
 {
     local KFTurboCardGameMut CardGameMut;
-    local Mutator Mutator;
 
     if (GameType.FinalWave <= EndedWave)
     {
         return;
     }
-    
-    for ( Mutator = GameType.BaseMutator; Mutator != None; Mutator = Mutator.NextMutator )
+
+    CardGameMut = class'KFTurboCardGameMut'.static.FindMutator(GameType);
+
+    if (CardGameMut == None)
     {
-        CardGameMut = KFTurboCardGameMut(Mutator);
-
-        if (CardGameMut == None)
-        {
-            continue;
-        }
-
-        CardGameMut.TurboCardReplicationInfo.StartSelection(EndedWave + 1);
-        break;
+        return;
     }
+
+    CardGameMut.TurboCardReplicationInfo.StartSelection(EndedWave + 1);
 }
 
 defaultproperties
