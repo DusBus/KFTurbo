@@ -76,17 +76,13 @@ simulated function HitWall( vector HitNormal, actor Wall )
 
 function HealOrHurt(float DamageAmount, float DamageRadius, class<DamageType> DamageType, float Momentum, vector HitLocation)
 {
-	local Actor Target;
-	local Pawn PawnTarget;
+	local Pawn Target;
 	local KFMonster MonsterTarget;
 	local KFPawn KFPawnTarget;
 
 	local float DamageScale;
     
 	local int NumKilled;
-	local array<Pawn> CheckedPawns;
-	local int i;
-	local bool bAlreadyChecked;
 	// Healing
 	local KFPlayerReplicationInfo PRI;
 	local int MedicReward;
@@ -114,9 +110,9 @@ function HealOrHurt(float DamageAmount, float DamageRadius, class<DamageType> Da
 
     PRI = KFPlayerReplicationInfo(Instigator.PlayerReplicationInfo);
 
-	foreach CollidingActors (class 'Actor', Target, DamageRadius, HitLocation)
+	foreach CollidingActors(class'Pawn', Target, DamageRadius, HitLocation)
 	{
-        if (Target == Self || Target == Hurtwall || Target.Role != ROLE_Authority || Target.IsA('FluidSurfaceInfo') )
+        if (Target.Role != ROLE_Authority)
         {
             continue;
         }
@@ -128,28 +124,11 @@ function HealOrHurt(float DamageAmount, float DamageRadius, class<DamageType> Da
             Target.SetDelayedDamageInstigatorController( InstigatorController );
         }
 
-		PawnTarget = Pawn(Target);
-
-        if (PawnTarget == None || PawnTarget.Health <= 0)
+        if (Target == None || Target.Health <= 0)
         {
             continue;
         }
 
-        for (i = 0; i < CheckedPawns.Length; i++)
-        {
-            if (CheckedPawns[i] == PawnTarget)
-            {
-                bAlreadyChecked = true;
-                break;
-            }
-        }
-
-        if( bAlreadyChecked )
-        {
-            bAlreadyChecked = false;
-            PawnTarget = none;
-            continue;
-        }
 
         MonsterTarget = KFMonster(Target);
         KFPawnTarget = KFPawn(Target);
@@ -162,10 +141,6 @@ function HealOrHurt(float DamageAmount, float DamageRadius, class<DamageType> Da
         {
             DamageScale *= KFPawnTarget.GetExposureTo(Location + 15 * -Normal(PhysicsVolume.Gravity));
         }
-
-        CheckedPawns[CheckedPawns.Length] = PawnTarget;
-
-        PawnTarget = none;
 
         if ( DamageScale <= 0 )
         {

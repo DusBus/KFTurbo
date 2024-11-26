@@ -105,13 +105,9 @@ simulated function Explode(vector HitLocation, vector HitNormal)
 
 simulated function HurtRadius( float DamageAmount, float DamageRadius, class<DamageType> DamageType, float Momentum, vector HitLocation )
 {
-	local actor Victim;
+	local Pawn Victim;
 	local int NumKilled;
 	local KFMonster KFMonsterVictim;
-	local Pawn P;
-	local array<Pawn> CheckedPawns;
-	local int i;
-	local bool bAlreadyChecked;
 	local bool bWasZapped;
 
 	if ( bHurtEntry )
@@ -121,53 +117,32 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 
 	bHurtEntry = true;
 
-	foreach CollidingActors (class 'Actor', Victim, DamageRadius, HitLocation)
+	foreach CollidingActors(class'Pawn', Victim, DamageRadius, HitLocation)
 	{
-		if ((Victim == Self) || (Hurtwall == Victim) || (Victim.Role != ROLE_Authority) || Victim.IsA('FluidSurfaceInfo') || (ExtendedZCollision(Victim) != None))
+		if (Victim.Role != ROLE_Authority)
 		{
 			continue;
 		}
 
-		if ( Instigator == None || Instigator.Controller == None )
+		if (Instigator == None || Instigator.Controller == None)
 		{
 			Victim.SetDelayedDamageInstigatorController( InstigatorController );
 		}
 
-		P = Pawn(Victim);
-
-		if ( P == None)
+		if ( Victim == None)
 		{
-			continue;
-		}
-
-		for (i = 0; i < CheckedPawns.Length; i++)
-		{
-			if (CheckedPawns[i] == P)
-			{
-				bAlreadyChecked = true;
-				break;
-			}
-		}
-
-		if( bAlreadyChecked )
-		{
-			bAlreadyChecked = false;
-			P = none;
 			continue;
 		}
 
 		KFMonsterVictim = KFMonster(Victim);
 
-		if( KFMonsterVictim != none && KFMonsterVictim.Health <= 0 )
+		if( KFMonsterVictim != None && KFMonsterVictim.Health <= 0 )
 		{
-			KFMonsterVictim = none;
+			KFMonsterVictim = None;
 		}
 
-		CheckedPawns[CheckedPawns.Length] = P;
-
-		if( KFMonsterVictim == none )
+		if(KFMonsterVictim == None)
 		{
-			P = none;
 			continue;
 		}
 		else
@@ -181,8 +156,6 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 				NumKilled++;
 			}
 		}
-
-		P = none;
 	}
 
 	if( Role == ROLE_Authority )
