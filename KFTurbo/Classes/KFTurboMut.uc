@@ -10,6 +10,7 @@ class KFTurboMut extends Mutator
 #exec obj load file="..\Textures\KFTurboHUD.utx" package=KFTurbo
 
 var TurboCustomZedHandler CustomZedHandler;
+var TurboDoorManager DoorManager;
 
 var config bool bDebugClientPerkRepLink;
 
@@ -41,6 +42,7 @@ simulated function PostBeginPlay()
 	}
 
 	CustomZedHandler = Spawn(class'TurboCustomZedHandler', self);
+	DoorManager = Spawn(class'TurboDoorManager', self);
 
 	if (bDebugClientPerkRepLink)
 	{
