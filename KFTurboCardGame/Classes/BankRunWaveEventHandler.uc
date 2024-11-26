@@ -6,7 +6,6 @@ class BankRunWaveEventHandler extends KFTurbo.TurboWaveEventHandler;
 static function OnWaveStarted(KFTurboGameType GameType, int EndedWave)
 {
 	local Controller Controller;
-    local CashPickup CashPickup;
 
     if (GameType == None)
     {
@@ -19,15 +18,5 @@ static function OnWaveStarted(KFTurboGameType GameType, int EndedWave)
         {
             Controller.PlayerReplicationInfo.Score = int(Controller.PlayerReplicationInfo.Score / 2.f);
         }
-    }
-
-    foreach GameType.DynamicActors(class'CashPickup', CashPickup)
-    {
-        if (CashPickup.bDeleteMe)
-        {
-            continue;
-        }
-
-        CashPickup.CashAmount = CashPickup.CashAmount / 2;
     }
 }
