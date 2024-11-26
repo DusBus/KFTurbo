@@ -11,7 +11,7 @@ simulated function HurtRadius(float DamageAmount, float Radius, class<DamageType
 
 	Super.HurtRadius(DamageAmount, Radius, DamageType, Momentum, HitLocation);
 
-	Radius *= 0.5f;
+	Radius *= 0.25f;
 
 	foreach CollidingActors (class'PipeBombProjectile', HitPipebomb, Radius, HitLocation)
 	{
