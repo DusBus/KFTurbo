@@ -40,7 +40,7 @@ const WIN_CARDGAME_1 = 25;
 const WIN_CARDGAME_2 = 26;
 const WIN_CARDGAME_3 = 27;
 const WIN_CARDGAME_4 = 28;
-const WIN_CARDGAME_5 = 29;
+const WIN_CARDGAME_CURSE = 29;
 
 const WIN_RANDOMIZER_1 = 30;
 const WIN_RANDOMIZER_2 = 31;
@@ -74,6 +74,9 @@ var float LastBullpupHeadshotTime;
 
 var bool bCanEarnMedicGame;
 
+var bool bIsPlayingCardGame;
+var bool bCanEarnCardGameWin;
+
 var float LastOrcaDamageTime;
 
 struct ScytheKillData
@@ -94,6 +97,11 @@ function MatchStarting()
         return;
     }
 
+    if (class'KFTurboCardGameMut'.static.FindMutator(Level.Game) != None)
+    {
+        bIsPlayingCardGame = true;
+    }
+
     bCanEarnMedicGame = class'V_FieldMedic'.static.IsFieldMedic(KFPlayerReplicationInfo(OwnerController.PlayerReplicationInfo));
 }
 
@@ -104,17 +112,76 @@ event MatchEnd(string mapname, float difficulty, int length, byte result, int wa
         return;
     }
 
-    if (Result == 2 && bCanEarnMedicGame && !IsAchievementComplete(MEDIC_GAME))
+    if (Result != 2)
+    {
+        return;
+    }
+
+    if (bCanEarnMedicGame && !IsAchievementComplete(MEDIC_GAME))
     {
         achievementCompleted(MEDIC_GAME);
     }
+
+    if (bCanEarnCardGameWin)
+    {
+        if (!IsAchievementComplete(WIN_CARDGAME_1))
+        {
+            achievementCompleted(WIN_CARDGAME_1);
+        }
+        else if (!IsAchievementComplete(WIN_CARDGAME_2))
+        {
+            achievementCompleted(WIN_CARDGAME_2);
+        }
+        else if (!IsAchievementComplete(WIN_CARDGAME_3))
+        {
+            achievementCompleted(WIN_CARDGAME_3);
+        }
+        else if (!IsAchievementComplete(WIN_CARDGAME_4))
+        {
+            achievementCompleted(WIN_CARDGAME_4);
+        }
+
+        CheckCurseOfRaGame();
+    }
 }
 
-event WaveStart(int waveNum)
+function CheckCurseOfRaGame()
+{
+    local KFTurboCardGameMut CardGameMutator;
+    local int CurseOfRaCardIndex;
+
+    if (IsAchievementComplete(WIN_CARDGAME_CURSE))
+    {
+        return;
+    }
+
+    CardGameMutator = class'KFTurboCardGameMut'.static.FindMutator(Level.Game);
+
+    if (CardGameMutator == None || CardGameMutator.TurboCardReplicationInfo == None)
+    {
+        return;
+    }
+
+    //Must be one of the first 8 cards.
+    CurseOfRaCardIndex = CardGameMutator.TurboCardReplicationInfo.GetCurseOfRaCardIndex();
+    if (CurseOfRaCardIndex < 0 || CurseOfRaCardIndex > 7)
+    {
+        return;
+    }
+
+    AchievementCompleted(WIN_CARDGAME_CURSE);
+}
+
+event WaveStart(int WaveNum)
 {
     if (!class'KFTurboGameType'.static.StaticAreStatsAndAchievementsEnabled(self))
     {
         return;
+    }
+
+    if (bIsPlayingCardGame && WaveNum < 5)
+    {
+        bCanEarnCardGameWin = true;
     }
 
     ResetCombatShotgunKills();
@@ -125,11 +192,6 @@ event WaveStart(int waveNum)
     {
         bCanEarnMedicGame = false;
     }
-}
-
-event WaveEnd(int waveNum)
-{
-
 }
 
 event PlayerDamaged(int Damage, Pawn Instigator, class<DamageType> DamageType)
@@ -757,11 +819,11 @@ defaultproperties
     Achievements(23)=(title="The Sword is Mightier than The Hat",Description="Kill 25 Classy Gorefasts as Berserker",MaxProgress=25,NotifyIncrement=0.2f,image=Texture'KFTurbo.Achievement.ZERKCLASSYKILL_D')
     Achievements(24)=(title="Duck Hunt",Description="Kill a Raptor Crawler while it is airborne 5 times",MaxProgress=5,image=Texture'KFTurbo.Achievement.JUMPERAIRSHOT_D')
 
-    //Achievements(25)=(title="High Card",Description="Win a game of KFTurbo Card Game.",image=Texture'KFTurbo.Achievement.JUMPERAIRSHOT_D')
-    //Achievements(26)=(title="Pair",Description="Win two games of KFTurbo Card Game.",image=Texture'KFTurbo.Achievement.JUMPERAIRSHOT_D')
-    //Achievements(27)=(title="Three Of A Kind",Description="Win three games of KFTurbo Card Game.",image=Texture'KFTurbo.Achievement.JUMPERAIRSHOT_D')
-    //Achievements(28)=(title="Four Of A Kind",Description="Win four games of KFTurbo Card Game.",image=Texture'KFTurbo.Achievement.JUMPERAIRSHOT_D')
-    //Achievements(29)=(title="Royal flush",Description="Win five game of KFTurbo Card Game.",image=Texture'KFTurbo.Achievement.JUMPERAIRSHOT_D')
+    Achievements(25)=(title="High Card",Description="Win a game of KFTurbo Card Game.",image=Texture'KFTurbo.Achievement.HighCard_D')
+    Achievements(26)=(title="Pair",Description="Win two games of KFTurbo Card Game.",image=Texture'KFTurbo.Achievement.TwoOfAKind_D')
+    Achievements(27)=(title="Three Of A Kind",Description="Win three games of KFTurbo Card Game.",image=Texture'KFTurbo.Achievement.ThreeOfAKind_D')
+    Achievements(28)=(title="Four Of A Kind",Description="Win four games of KFTurbo Card Game.",image=Texture'KFTurbo.Achievement.FourOfAKind_D')
+    Achievements(29)=(title="The Cursed Card",Description="Win a game of KFTurbo Card Game with the Curse of Ra being one of the first 8 cards selected.",image=Texture'KFTurbo.Achievement.CurseOfRa_D')
 
     //Achievements(30)=(title="Mixed Up",Description="Win a game of KFTurbo Randomizer.",image=Texture'KFTurbo.Achievement.JUMPERAIRSHOT_D')
     //Achievements(31)=(title="Well Shuffled",Description="Win two games of KFTurbo Randomizer.",image=Texture'KFTurbo.Achievement.JUMPERAIRSHOT_D')

@@ -21,7 +21,7 @@ struct CardReference
 const MAX_SELECTABLE_CARDS = 9;
 var TurboCard AuthSelectableCardList[MAX_SELECTABLE_CARDS]; //Needed to call activation delegate on server.
 var CardReference SelectableCardList[MAX_SELECTABLE_CARDS];
-//List of active cards. Game can have a maximum of 20 active cards.
+//List of active cards. Game can have a maximum of 30 active cards.
 const MAX_ACTIVE_CARDS = 30;
 var CardReference ActiveCardList[MAX_ACTIVE_CARDS];
 //Counter that is incremented whenever some action is done to the two above replicated arrays.
@@ -52,7 +52,7 @@ replication
 }
 
 //Resolves a card object from a deck CDO. DO NOT CALL INSTANCE FUNCTIONS ON THESE.
-static function TurboCard ResolveCard(CardReference Reference)
+static final function TurboCard ResolveCard(CardReference Reference)
 {
     if (Reference.Deck == None)
     {
@@ -62,7 +62,7 @@ static function TurboCard ResolveCard(CardReference Reference)
     return Reference.Deck.static.GetCardFromReference(Reference);
 }
 
-static function CardReference GetCardReference(TurboCard Card)
+static final function CardReference GetCardReference(TurboCard Card)
 {
     local CardReference Reference;
     if (Card.DeckClass == None)
@@ -75,6 +75,30 @@ static function CardReference GetCardReference(TurboCard Card)
     Reference.Deck = Card.DeckClass;
     Reference.CardIndex = Card.CardIndex;
     return Reference;
+}
+
+//Returns index (usually is wave - 1) that Curse Of Ra was selected.
+simulated function int GetCurseOfRaCardIndex()
+{
+    local int Index;
+    local TurboCard Card;
+
+    for (Index = 0; Index < ArrayCount(ActiveCardList); Index++)
+    {
+        Card = ResolveCard(ActiveCardList[Index]);
+
+        if (Card == None)
+        {
+            return -1;
+        }
+
+        if (TurboCard_Evil_Ra(Card) != None)
+        {
+            return Index;
+        }
+    }
+
+    return -1;
 }
 
 simulated function PostNetBeginPlay()
