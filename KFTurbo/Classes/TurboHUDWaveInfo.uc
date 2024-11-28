@@ -827,7 +827,7 @@ simulated function DrawTraderEndVote(Canvas C)
 	EntrySizeY *= 1.1f;
 
 	TempX = C.ClipX;
-	TempY = C.ClipY * 0.3f;
+	TempY = C.ClipY * 0.1f;
 
 	for (Index = EndTraderVoteList.Length - 1; Index >= 0; Index--)
 	{
