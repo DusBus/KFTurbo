@@ -336,6 +336,9 @@ function SetupWave()
 	class'TurboWaveEventHandler'.static.BroadcastWaveStarted(Self, WaveNum);
 }
 
+//Function needs to be declared outside of state scope if it wants to be called outside of the state's scope...
+function SelectShop() {}
+
 state MatchInProgress
 {
     function BeginState()
