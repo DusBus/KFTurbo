@@ -76,7 +76,7 @@
         - 66% wider spread 🔻
         - 14% slower reload speed 🔻
     - **AA-12**:
-        - Headshot bonus damage increased by 70% 🟢
+        - Headshot bonus damage increased by 55% 🟢
         
     - **Hunting Shotgun**:
         - Unchanged 🟦
@@ -418,7 +418,7 @@
 
 - **Weapons**
     - **Flamethrower**
-        - 50% reduced damage 🔻
+        - 50% reduced direct damage 🔻
         - 10% increased spread 🔻
         
     - **MAC10**
