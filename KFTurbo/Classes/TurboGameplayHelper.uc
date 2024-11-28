@@ -1,6 +1,50 @@
 class TurboGameplayHelper extends Object;
 
-const ASSUMED_PAWN_COUNT = 6;
+const ASSUMED_PLAYER_COUNT = 6;
+
+static final function array<TurboPlayerController> GetPlayerControllerList(LevelInfo Level)
+{
+    local Controller Controller;
+    local TurboPlayerController TurboPlayerController;
+    local array<TurboPlayerController> PlayerControllerList;
+    local int FoundControllers;
+
+    PlayerControllerList.Length = ASSUMED_PLAYER_COUNT;
+    FoundControllers = 0;
+
+    for ( Controller = Level.ControllerList; Controller != None; Controller = Controller.NextController )
+    {
+        if (Controller.bDeleteMe || !Controller.bIsPlayer)
+        {
+            continue;
+        }
+
+        if (Controller.PlayerReplicationInfo == None || Controller.PlayerReplicationInfo.bOnlySpectator)
+        {
+            continue;
+        }
+
+        TurboPlayerController = TurboPlayerController(Controller);
+
+        if (TurboPlayerController != None)
+        {
+            if (PlayerControllerList.Length <= FoundControllers)
+            {
+                PlayerControllerList.Length = FoundControllers + 2; //Allocate in steps of 2.
+            }
+
+            PlayerControllerList[FoundControllers] = TurboPlayerController;
+            FoundControllers++;
+        }
+    }
+
+    if (FoundControllers < PlayerControllerList.Length)
+    {
+        PlayerControllerList.Length = FoundControllers;
+    }
+
+    return PlayerControllerList;
+}
 
 static final function array<TurboHumanPawn> GetPlayerPawnList(LevelInfo Level)
 {
@@ -9,7 +53,7 @@ static final function array<TurboHumanPawn> GetPlayerPawnList(LevelInfo Level)
     local array<TurboHumanPawn> HumanPawnList;
     local int FoundPawns;
 
-    HumanPawnList.Length = ASSUMED_PAWN_COUNT;
+    HumanPawnList.Length = ASSUMED_PLAYER_COUNT;
     FoundPawns = 0;
 
     for ( Controller = Level.ControllerList; Controller != None; Controller = Controller.NextController )
@@ -45,7 +89,6 @@ static final function array<TurboHumanPawn> GetPlayerPawnList(LevelInfo Level)
 
     return HumanPawnList;
 }
-
 
 static final function array<Monster> GetMonsterPawnList(LevelInfo Level, optional class<Monster> FilterClass)
 {
