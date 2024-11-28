@@ -357,6 +357,11 @@ function ServerInitializeSteamStatInt(byte Index, int Value)
 
 	CPRL = class'ClientPerkRepLink'.static.FindStats(self);
 
+	if (!class'KFTurboGameType'.static.StaticAreStatsAndAchievementsEnabled(Self))
+	{
+		return;
+	}
+
 	if (CPRL == None)
 	{
 		return;
