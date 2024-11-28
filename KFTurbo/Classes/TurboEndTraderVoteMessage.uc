@@ -30,6 +30,6 @@ defaultproperties
     bIsUnique=true
     bFadeMessage=true
     StackMode=SM_None
-    PosY=0.75000
-    FontSize=-2
+    PosY=0.125
+    FontSize=-2 
 }
