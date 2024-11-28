@@ -90,7 +90,7 @@ static final function bool StaticAreStatsAndAchievementsEnabled( Actor Actor )
 	if (KFTurboGameType(Actor.Level.Game) != None)
 	{
         //If the class defines by default that stats are not enabled, stick to that!
-        if (!class<KFTurboGameType>(Actor.Level.Game).default.bStatsAndAchievementsEnabled)
+        if (!class<KFTurboGameType>(Actor.Level.Game.Class).default.bStatsAndAchievementsEnabled)
         {
             return false;
         }
