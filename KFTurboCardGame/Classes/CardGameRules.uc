@@ -86,6 +86,13 @@ var(Turbo) float MonsterStalkerDamageMultiplier;
 
 var Pawn MarkedForDeathPawn;
 
+struct NegateDamageEntry
+{
+    var TurboHumanPawn HumanPawn;
+    var int NegateCount;
+};
+var array<NegateDamageEntry> NegateDamageList;
+
 static final function bool IsBerserker(Pawn Pawn)
 {
     if (Pawn == None || KFPlayerReplicationInfo(Pawn.PlayerReplicationInfo) == None)
@@ -223,7 +230,7 @@ function bool PreventDeath(Pawn Killed, Controller Killer, class<DamageType> Dam
 	return false;
 }
 
-function bool AttemptCheatDeath(PlayerController Killed, Pawn KilledPawn, class<DamageType> DamageType)
+final function bool AttemptCheatDeath(PlayerController Killed, Pawn KilledPawn, class<DamageType> DamageType)
 {
     local int Index;
 
@@ -251,6 +258,33 @@ function bool AttemptCheatDeath(PlayerController Killed, Pawn KilledPawn, class<
     return true;
 }
 
+final function bool IsInCheatDeathGracePeriod(PlayerController Injured)
+{
+    local int Index;
+
+    if (Injured == None)
+    {
+        return false;
+    }
+
+    for (Index = CheatedDeathPlayerList.Length - 1; Index >= 0; Index--)
+    {
+        //Cheated Death list is in time order.
+        //If any entry we iterate to is expired, we can assume all the rest are as well.
+        if (CheatedDeathPlayerList[Index].DeathTime + 0.5f < Level.TimeSeconds)
+        {
+            return false;
+        }
+
+        if (CheatedDeathPlayerList[Index].Player == Injured)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn InstigatedBy, Vector HitLocation, out Vector Momentum, class<DamageType> DamageType )
 {
     local class<KFWeaponDamageType> WeaponDamageType;
@@ -262,25 +296,25 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
         return Damage;
     }
 
-    if (bRussianRouletteEnabled && FRand() < 0.001 && class<TurboHumanBurned_DT>(DamageType) == None)
+    //Check for outright damage blocking effects first.
+    if (KFHumanPawn(Injured) != None)
     {
-        if (InstigatedBy == None)
+        if (bCheatDeathEnabled && IsInCheatDeathGracePeriod(PlayerController(Injured.Controller)))
         {
-            Injured.Died(None, class'RussianRoulette_DT', Injured.Location);
-        }
-        else
-        {
-            Injured.Died(InstigatedBy.Controller, class'RussianRoulette_DT', Injured.Location);
+            return 0;
         }
 
-        return Damage;
+        if (NegateDamageList.Length > 0 && AttemptNegateDamage(KFHumanPawn(Injured)))
+        {
+            return 0;
+        }
     }
 
     DamageMultiplier = 1.f;
 
     if (MarkedForDeathPawn == Injured)
     {
-        DamageMultiplier *= 4.f;
+        DamageMultiplier *= 3.f;
     }
 
     if (class<SirenScreamDamage>(DamageType) != None)
@@ -343,7 +377,8 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
             DamageMultiplier *= ExplosiveDamageTakenMultiplier;
         }
     }
-    else if (KFMonster(InstigatedBy) != None)
+    
+    if (KFMonster(InstigatedBy) != None)
     {
         DamageMultiplier *= MonsterDamageMultiplier;
 
@@ -387,10 +422,12 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
         {
             DamageMultiplier *= FallDamageTakenMultiplier;
         }
-
-        if (MutatorOwner.TurboCardReplicationInfo.BleedManager != None && class<ZombieMeleeDamage>(DamageType) != None && class<TurboHumanBleed_DT>(DamageType) == None)
+        else if (KFMonster(InstigatedBy) != None)
         {
-            MutatorOwner.TurboCardReplicationInfo.BleedManager.ApplyBleedToPlayer(KFHumanPawn(Injured));
+            if (MutatorOwner.TurboCardReplicationInfo.BleedManager != None && class<ZombieMeleeDamage>(DamageType) != None && class<TurboHumanBleed_DT>(DamageType) == None)
+            {
+                MutatorOwner.TurboCardReplicationInfo.BleedManager.ApplyBleedToPlayer(KFHumanPawn(Injured));
+            }
         }
     }
 
@@ -400,6 +437,19 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
     if (KFMonster(InstigatedBy) != None && KFHumanPawn(Injured) != None)
     {
         ApplyThornsDamage(Damage, KFHumanPawn(Injured), KFMonster(InstigatedBy));
+    }
+    
+    //If resulting damage was more than 1, check russian roulette if it's enabled.
+    if (Damage > 0.f && bRussianRouletteEnabled && FRand() < 0.001 && class<TurboHumanBurned_DT>(DamageType) == None)
+    {
+        if (InstigatedBy == None)
+        {
+            Injured.Died(None, class'RussianRoulette_DT', Injured.Location);
+        }
+        else
+        {
+            Injured.Died(InstigatedBy.Controller, class'RussianRoulette_DT', Injured.Location);
+        }
     }
 
 	return Damage;
@@ -583,7 +633,7 @@ function PerformSuddenDeath()
         if (PC != None && PC.Pawn != None && !PC.Pawn.bDeleteMe && PC.Pawn.Health > 0)
         {
             //Allow Cheat Death to directly stop this.
-            if (!AttemptCheatDeath(PC, PC.Pawn, class'SuddenDeath_DT'))
+            if (!IsInCheatDeathGracePeriod(PC) && !AttemptCheatDeath(PC, PC.Pawn, class'SuddenDeath_DT'))
             {
                 PlayerController(C).Pawn.Died(None, class'SuddenDeath_DT', PlayerController(C).Pawn.Location);
             }
@@ -717,6 +767,45 @@ function DestorySyringe(Pawn Other)
     {
         Other.Controller.ClientSwitchToBestWeapon();
     }
+}
+
+final function ResetNegateDamageList()
+{
+    local array<TurboHumanPawn> PawnList;
+    local int Index;
+
+    PawnList = class'TurboGameplayHelper'.static.GetPlayerPawnList(Level);
+    NegateDamageList.Length = PawnList.Length;
+
+    for (Index = 0; Index < PawnList.Length; Index++)
+    {
+        NegateDamageList[Index].HumanPawn = PawnList[Index];
+        NegateDamageList[Index].NegateCount = 5;
+    }
+}
+
+final function bool AttemptNegateDamage(KFHumanPawn Injured)
+{
+    local int Index;
+
+    for (Index = NegateDamageList.Length - 1; Index >= 0; Index--)
+    {
+        if (NegateDamageList[Index].HumanPawn != Injured)
+        {
+            continue;
+        }
+
+        NegateDamageList[Index].NegateCount--;
+
+        if (NegateDamageList[Index].NegateCount <= 0)
+        {
+            NegateDamageList.Remove(Index, 1);
+        }
+
+        return true;
+    }
+
+    return false;
 }
 
 defaultproperties

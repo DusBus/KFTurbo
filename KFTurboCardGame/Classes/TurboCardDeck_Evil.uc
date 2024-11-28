@@ -155,6 +155,16 @@ function ActivateRestrictedExplosives(TurboCardReplicationInfo CGRI)
     CGRI.ModifyExplosiveRadius(0.33f);
 }
 
+function ActivateOopsAllScrakes(TurboCardReplicationInfo CGRI)
+{
+    class'TurboWaveSpawnEventHandler'.static.RegisterWaveHandler(CGRI, class'OopsAllScrakesWaveEventHandler');
+}
+
+function ActivateMixedSignals(TurboCardReplicationInfo CGRI)
+{
+    CGRI.EnableRandomlyChangingTrader();
+}
+
 defaultproperties
 {
     Begin Object Name=Hyperbloats Class=TurboCard_Evil
@@ -256,7 +266,10 @@ defaultproperties
         CardName(0)="Freeze Tag"
         CardDescriptionList(0)="During the"
         CardDescriptionList(1)="wave players"
-        CardDescriptionList(2)="cannot move."
+        CardDescriptionList(2)="cannot move"
+        CardDescriptionList(3)="unless they"
+        CardDescriptionList(4)="hold a melee"
+        CardDescriptionList(5)="weapon."
         OnActivateCard=ActivateFreezeTag
     End Object
     DeckCardObjectList(10)=TurboCard'FreezeTag'
@@ -411,7 +424,7 @@ defaultproperties
         CardDescriptionList(0)="Each wave a"
         CardDescriptionList(1)="random player is"
         CardDescriptionList(2)="chosen and takes"
-        CardDescriptionList(3)="300% more damage"
+        CardDescriptionList(3)="200% more damage"
         CardDescriptionList(4)="for a wave."
         OnActivateCard=ActivateMarkedForDeath
     End Object
@@ -425,4 +438,25 @@ defaultproperties
         OnActivateCard=ActivateRestrictedExplosives
     End Object
     DeckCardObjectList(27)=TurboCard'RestrictedExplosives'
+    
+    Begin Object Name=OopsAllScrakes Class=TurboCard_Evil
+        CardName(0)="Oops!"
+        CardName(1)="All Scrakes!"
+        CardDescriptionList(0)="All zeds have a"
+        CardDescriptionList(1)="5% chance to be"
+        CardDescriptionList(2)="replaced with"
+        CardDescriptionList(3)="a Scrake instead."
+        OnActivateCard=ActivateOopsAllScrakes
+    End Object
+    DeckCardObjectList(28)=TurboCard'OopsAllScrakes'
+    
+    Begin Object Name=MixedSignals Class=TurboCard_Evil
+        CardName(0)="Mixed Signals"
+        CardDescriptionList(0)="Next trader"
+        CardDescriptionList(1)="location randomly"
+        CardDescriptionList(2)="changes throughout"
+        CardDescriptionList(3)="the wave."
+        OnActivateCard=ActivateMixedSignals
+    End Object
+    DeckCardObjectList(29)=TurboCard'MixedSignals'
 }

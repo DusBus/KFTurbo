@@ -154,8 +154,8 @@ function ActivateConcentratedHeal(TurboCardReplicationInfo CGRI)
 
 function ActivateDroppingBallast(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyGrenadeMaxAmmo(0.65f);
-    CGRI.ModifyWeaponMaxAmmo(1.2f);
+    CGRI.ModifyGrenadeMaxAmmo(0.7f);
+    CGRI.ModifyWeaponMaxAmmo(1.15f);
 }
 
 function ActivateShotgunsMoreKick(TurboCardReplicationInfo CGRI)
@@ -451,9 +451,9 @@ defaultproperties
         CardName(0)="Dropping"
         CardName(1)="Ballast"
         CardDescriptionList(0)="Increases max"
-        CardDescriptionList(1)="ammo by 20% but"
+        CardDescriptionList(1)="ammo by 15% but"
         CardDescriptionList(2)="reduces grenade"
-        CardDescriptionList(3)="max ammo by 35%."
+        CardDescriptionList(3)="max ammo by 30%."
         OnActivateCard=ActivateDroppingBallast
     End Object
     DeckCardObjectList(24)=TurboCard'DroppingBallast'

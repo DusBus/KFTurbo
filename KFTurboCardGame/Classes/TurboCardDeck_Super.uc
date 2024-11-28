@@ -111,6 +111,11 @@ function ActivateSuperGrenades(TurboCardReplicationInfo CGRI)
     CGRI.EnableSuperGrenades();
 }
 
+function ActivateSubstitute(TurboCardReplicationInfo CGRI)
+{
+    class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'NegateDamageWaveEventHandler');
+}
+
 defaultproperties
 {
     Begin Object Name=Berserker Class=TurboCard_Super
@@ -301,6 +306,16 @@ defaultproperties
         OnActivateCard=ActivatePackedShells
     End Object
     DeckCardObjectList(18)=TurboCard'PackedShells'
+
+    Begin Object Name=NegateDamage Class=TurboCard_Super
+        CardName(0)="Substitute"
+        CardDescriptionList(0)="Negates the first"
+        CardDescriptionList(1)="5 times a player"
+        CardDescriptionList(2)="receives damage"
+        CardDescriptionList(3)="each wave."
+        OnActivateCard=ActivateSubstitute
+    End Object
+    DeckCardObjectList(19)=TurboCard'NegateDamage'
 
 /*
     Begin Object Name=DeEvolution Class=TurboCard_Super

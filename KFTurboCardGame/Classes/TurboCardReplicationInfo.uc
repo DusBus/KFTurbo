@@ -41,6 +41,7 @@ var PlayerBleedActor BleedManager;
 var PlayerBorrowedTimeActor BorrwedTimeManage;
 var PlayerNoRestForTheWickedActor NoRestForTheWickedManager;
 var CurseOfRaManager CurseOfRaManager;
+var RandomTraderManager RandomTraderManager;
 
 delegate OnSelectableCardsUpdated(TurboCardReplicationInfo CGRI);
 delegate OnActiveCardsUpdated(TurboCardReplicationInfo CGRI);
@@ -1150,6 +1151,16 @@ function EnablePlainSightSpawning()
         KFGT.ZedSpawnList[Index].MinDistanceToPlayer = FMax(768.f, KFGT.ZedSpawnList[Index].MinDistanceToPlayer);
         KFGT.ZedSpawnList[Index].bAllowPlainSightSpawns = true;
     }
+}
+
+function EnableRandomlyChangingTrader()
+{
+    if (RandomTraderManager != None)
+    {
+        return;
+    }
+
+    RandomTraderManager = Spawn(class'RandomTraderManager', Self);
 }
 
 defaultproperties
