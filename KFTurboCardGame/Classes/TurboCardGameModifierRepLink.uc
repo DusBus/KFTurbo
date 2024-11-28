@@ -143,7 +143,10 @@ simulated function float GetPlayerMovementSpeedMultiplier(KFPlayerReplicationInf
     local float Multiplier;
     if (bFreezePlayersDuringWave && KFGRI != None && KFGRI.bWaveInProgress)
     {
-        return 0.0001f;
+        if (KFMeleeGun(Controller(KFPRI.Owner).Pawn.Weapon) == None)
+        {
+            return 0.0001f;
+        }
     }
 
     Multiplier = PlayerMovementSpeedMultiplier;
