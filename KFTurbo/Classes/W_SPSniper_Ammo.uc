@@ -2,6 +2,6 @@ class W_SPSniper_Ammo extends SPSniperAmmo;
 
 defaultproperties
 {
-     MaxAmmo=48
-     InitialAmount=20
+     MaxAmmo=64
+     InitialAmount=32
 }

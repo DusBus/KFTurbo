@@ -135,7 +135,7 @@
         - Magazine capacity 10 -> 6 🔻
         - 17% more expensive 🔻
         - Headshot bonus damage reduced by 13% 🔻
-        - 40% less maximum ammo 🔻
+        - 20% less maximum ammo 🔻
     - **Crossbow**
         - 17% less maximum ammo 🔻
 
