@@ -28,7 +28,7 @@ defaultproperties
     End Object
 
     Begin Object Class=KFTurboRandomizerLoadout Name=MiscLoadout3
-        Perk=class'V_FieldMedic'
+        Perk=class'V_Sharpshooter'
         WeaponList(0)=class'KFTurbo.W_MP7M_Weap'
         WeaponList(1)=class'KFTurbo.W_Axe_Weap'
         WeaponList(2)=class'KFTurbo.W_SPSniper_Weap'
@@ -50,14 +50,14 @@ defaultproperties
     End Object
 
     Begin Object Class=KFTurboRandomizerLoadout Name=MiscLoadout6
-        Perk=class'V_FieldMedic'
+        Perk=class'V_Commando'
         WeaponList(0)=class'KFTurbo.W_M7A3M_Weap'
         WeaponList(1)=class'KFTurbo.W_MP7M_Weap'
         WeaponList(2)=class'KFTurbo.W_SCARMK17_Weap'
     End Object
 
     Begin Object Class=KFTurboRandomizerLoadout Name=MiscLoadout7
-        Perk=class'V_FieldMedic'
+        Perk=class'V_Demolitions'
         WeaponList(0)=class'KFTurbo.W_SealSqueal_Weap'
         WeaponList(1)=class'KFTurbo.W_MAC10_Weap'
         WeaponList(2)=class'KFTurbo.W_MP7M_Weap'
@@ -227,7 +227,7 @@ defaultproperties
     End Object
 
     Begin Object Class=KFTurboRandomizerLoadout Name=MiscLoadout35
-        Perk=class'V_FieldMedic'
+        Perk=class'V_Firebug'
         WeaponList(0)=class'KFTurbo.W_Trenchgun_Weap'
         WeaponList(1)=class'KFTurbo.W_Katana_Weap'
         WeaponList(2)=class'KFTurbo.W_KrissM_Weap'
@@ -317,7 +317,7 @@ defaultproperties
     End Object
 
     // Loadout tally - PLEASE INCREMENT IF YOU ADD LOADOUTS
-    // Misc: Medic: 14 | Firebug: 6 | Berserker: 8 | Demo: 1 | Commando: 7 | Support: 4 | Sharp: 5
+    // Misc: Medic: 10 | Firebug: 7 | Berserker: 8 | Demo: 2 | Commando: 8 | Support: 4 | Sharp: 6
 
     LoadoutList(0)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Misc.MiscLoadout0'
     LoadoutList(1)=KFTurboRandomizerLoadout'KFTurboRandomizer.LoadoutCollection_Misc.MiscLoadout1'
