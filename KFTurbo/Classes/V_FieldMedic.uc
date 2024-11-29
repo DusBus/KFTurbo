@@ -106,12 +106,12 @@ static function class<Grenade> GetNadeType(KFPlayerReplicationInfo KFPRI)
 
 static function float GetSyringeChargeRate(KFPlayerReplicationInfo KFPRI)
 {
-	return Super(TurboVeterancyTypes).GetHealPotency(KFPRI) * LerpStat(KFPRI, 1.1f, 3.f);
+	return Super.GetHealPotency(KFPRI) * LerpStat(KFPRI, 1.1f, 3.f);
 }
 
 static function float GetHealPotency(KFPlayerReplicationInfo KFPRI)
 {
-	return Super(TurboVeterancyTypes).GetHealPotency(KFPRI) * LerpStat(KFPRI, 1.1f, 1.75f);
+	return Super.GetHealPotency(KFPRI) * LerpStat(KFPRI, 1.1f, 1.75f);
 }
 
 static function float GetMovementSpeedModifier(KFPlayerReplicationInfo KFPRI, KFGameReplicationInfo KFGRI)
@@ -193,11 +193,11 @@ static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup
 	case class'W_MP5M_Pickup' :
 	case class'W_KrissM_Pickup' :
 	case class'W_M7A3M_Pickup' :
-	case class'BlowerThrowerPickup' :
-		Multiplier *= LerpStat(KFPRI, 0.25f, 0.13f);// Up to 87% discount on Medic Gun
+	case class'W_BlowerThrower_Pickup' :
+		Multiplier *= LerpStat(KFPRI, 0.75f, 0.5f);
 		break;
 	case class'Vest':
-		Multiplier *= LerpStat(KFPRI, 0.9f, 0.3f);// Up to 87% discount on Medic Gun
+		Multiplier *= LerpStat(KFPRI, 0.9f, 0.3f);
 		break;
 	}
 
@@ -207,7 +207,7 @@ static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup
 
 static function float GetBodyArmorDamageModifier(KFPlayerReplicationInfo KFPRI)
 {
-	return Super(TurboVeterancyTypes).GetBodyArmorDamageModifier(KFPRI) * LerpStat(KFPRI, 1.f, 0.25f);
+	return Super.GetBodyArmorDamageModifier(KFPRI) * LerpStat(KFPRI, 1.f, 0.25f);
 }
 
 static function AddDefaultInventory(KFPlayerReplicationInfo KFPRI, Pawn P)

@@ -45,11 +45,11 @@ function InitDroppedPickupFor(Inventory Inv)
 
 defaultproperties
 {
-     cost=1750
-     VariantClasses(0)=Class'KFTurbo.W_M4203_Pickup'
-     VariantClasses(1)=Class'KFTurbo.W_V_M4203_Camo_Pickup'
-     VariantClasses(2)=Class'KFTurbo.W_V_M4203_Retart_Pickup'
-     VariantClasses(3)=Class'KFTurbo.W_V_M4203_Scuddles_Pickup'
-     VariantClasses(4)=Class'KFTurbo.W_V_M4203_Turbo_Pickup'
-     InventoryType=Class'KFTurbo.W_M4203_Weap'
+	Cost=1200
+	VariantClasses(0)=Class'KFTurbo.W_M4203_Pickup'
+	VariantClasses(1)=Class'KFTurbo.W_V_M4203_Camo_Pickup'
+	VariantClasses(2)=Class'KFTurbo.W_V_M4203_Retart_Pickup'
+	VariantClasses(3)=Class'KFTurbo.W_V_M4203_Scuddles_Pickup'
+	VariantClasses(4)=Class'KFTurbo.W_V_M4203_Turbo_Pickup'
+	InventoryType=Class'KFTurbo.W_M4203_Weap'
 }

@@ -236,32 +236,35 @@
 - 50% more LAW rockets 🟢
 - 30% faster LAW fire rate 🟢
 - 40% faster LAW reload speed 🟢
-- Perk weapons discount 70% -> 30% 🔻
+- Perk weapons discount 70% -> 50% 🔻
 - Pipe bombs receive a 74% discount 🟦
 - Spawn with an M4 203 ⚠️
 
 - **Weapons**
     - **M79 Grenade Launcher**
-        - Unchanged 🟦
+        - 44% cheaper base price. 🟢
+        - On-perk price unchanged. 🟦
 
     - **M32 Grenade Launcher**
-        - Unchanged 🟦
+        - 40% cheaper base price. 🟢
+        - On-perk price unchanged. 🟦
 
     - **M4 203**
         - Replaces the original M4 ⚠️
         - Uses the scope from the M4 ⚠️
         - Underbarrel grenade launcher is now loaded manually instead of automatically by pressing alt-fire again ⚠️
         - Firing type is no longer high RoF ⚠️
-        - 36% cheaper than the M4 203 🟢
+        - 56% cheaper base price 🟢
         - 25% less recoil 🟢
         - 23% increased damage 🟢
         - 25% tighter spread 🟢
 
         - Single-shot fire mode removed 🔻
-        - 75% more expensive than the M4 🔻
         - 17% less maximum grenades 🔻
         - 28% slower fire rate 🔻
     - **Orca Bomb Propeller**
+        - 36% cheaper base price 🟢
+
         - High speed bounces multiply the damage output of the projectile 🆕
         - 42% less maximum and starting ammo 🔻
 
@@ -274,6 +277,7 @@
         - Has no spread and inaccuracy 🟢
         - 14% increased damage 🟢
         - Projectiles cannot be disintegrated by sirens 🟢
+        - 40% cheaper base price 🟢
 
         - 13% reduced explosion radius 🔻
         - 100% reduced impact damage 🔻
@@ -281,8 +285,8 @@
         - Weight 13 -> 11 🟢
         - 5% increased damage 🟢
         - 138% increased dud impact damage 🟢
-        - 8% cheaper 🟢
         - 20% more maximum and starting ammo 🟢
+        - 17% cheaper base price 🟢
 
         - 43% more player pushback on firing 🔻
     - **Pipe Bomb**
@@ -292,6 +296,7 @@
     - **Seeker Six Rocket Launcher** 
         - 250% increased explosive damage 🟢
         - 100% increased impact damage 🟢
+        - 24% cheaper base price 🟢
 
         - Weight 7 -> 8 🔻
         - 11% more expensive 🔻
@@ -305,6 +310,7 @@
 - Knife movement speed bonus now applies to all on-perk weapons. 🟢
 - Magazine capacity bonus on the M7A3 reduced to 50% from 100% 🔻
 - Movement speed bonus 25% -> 20% 🔻
+- Perk weapons discount 87% -> 50% 🔻
 - Spawns with an MP7 and full armor 🟦
 
 - **Weapons**
@@ -313,6 +319,7 @@
         - 33% stronger healing potency 🟢
         - 33% faster syringe recovery 🟢
         - 30% higher maximum healing charge 🟢
+        - 58% cheaper base price. 🟢
         - Firing type is no longer high RoF ⚠️
 
         - 13% more expensive 🔻
@@ -321,6 +328,7 @@
     - **MP5**
         - 17% increased damage 🟢
         - 12% faster reload speed 🟢
+        - 56% cheaper base price. 🟢
         - Firing type is no longer high RoF ⚠️
         
         - Magazine capacity 32 -> 30 🔻
@@ -333,6 +341,7 @@
         - 13% more maximum ammo 🟢
         - 50% tighter spread 🟢
         - 50% less recoil 🟢
+        - 70% cheaper base price. 🟢
         - Firing type is no longer high RoF ⚠️
 
         - Weight 3 -> 4 🔻
@@ -347,6 +356,7 @@
         - 7% increased damage 🟢
         - Headshot bonus damage increased by 105% 🟢
         - 30% tighter spread 🟢
+        - 51% cheaper base price. 🟢
 
         - 17% slower fire rate 🔻
         - 50% more charge consumed per dart 🔻
@@ -356,6 +366,7 @@
         - 50% slower syringe recovery 🔻
         - 66% less maximum ammo 🔻
     - **BlowerThrower Bile Launcher**
+        - 20% cheaper base price. 🟢
         - Moved to inventory group 4 ⚠️
 
 ### Berserker
