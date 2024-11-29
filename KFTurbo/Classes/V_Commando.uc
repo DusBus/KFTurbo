@@ -1,4 +1,4 @@
-class V_Commando extends KFTurbo.SRVetCommando
+class V_Commando extends TurboVeterancyTypes
 	abstract;
 
 
@@ -71,7 +71,7 @@ static function SpecialHUDInfo(KFPlayerReplicationInfo KFPRI, Canvas C)
 
 static function bool ShowStalkers(KFPlayerReplicationInfo KFPRI)
 {
-	return Super.ShowStalkers(KFPRI);
+	return true;
 }
 
 static function float GetStalkerViewDistanceMulti(KFPlayerReplicationInfo KFPRI)
@@ -238,17 +238,17 @@ static function int AddDamage(KFPlayerReplicationInfo KFPRI, KFMonster Injured, 
 
 static function float ModifyRecoilSpread(KFPlayerReplicationInfo KFPRI, WeaponFire Other, out float Recoil)
 {
+	Recoil = Super.ModifyRecoilSpread(KFPRI, Other, Recoil);
+
 	if (Bullpup(Other.Weapon) != none || AK47AssaultRifle(Other.Weapon) != none ||
 		SCARMK17AssaultRifle(Other.Weapon) != none || M4AssaultRifle(Other.Weapon) != none
 		|| FNFAL_ACOG_AssaultRifle(Other.Weapon) != none || MKb42AssaultRifle(Other.Weapon) != none
 		|| ThompsonSMG(Other.Weapon) != none || ThompsonDrumSMG(Other.Weapon) != none
 		|| SPThompsonSMG(Other.Weapon) != none || MAC10MP(Other.Weapon) != none)
 	{
-		Recoil = LerpStat(KFPRI, 0.95f, 0.6f);
-		return Recoil;
+		Recoil *= LerpStat(KFPRI, 0.95f, 0.6f);
 	}
 
-	Recoil = 1.f;
 	return Recoil;
 	//wtf is this syntax (by ref and return???)
 }
@@ -263,7 +263,7 @@ static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWe
 
 static function int ZedTimeExtensions(KFPlayerReplicationInfo KFPRI)
 {
-	return Super(TurboVeterancyTypes).ZedTimeExtensions(KFPRI) + LerpStat(KFPRI, 0, 4);
+	return Super.ZedTimeExtensions(KFPRI) + LerpStat(KFPRI, 0, 4);
 }
 
 static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)
@@ -305,8 +305,14 @@ defaultproperties
 {
 	StartingWeaponSellPriceLevel5=255.000000
 	StartingWeaponSellPriceLevel6=255.000000
+
+	OnHUDIcon=Texture'KillingFloorHUD.Perks.Perk_Commando'
 	OnHUDGoldIcon=Texture'KFTurbo.Perks.Commando_D'
 	OnHUDIconMaxTier=Shader'KFTurbo.Perks.Commando_SHDR'
+	
+	VeterancyName="Commando"
+    PerkIndex=3
+	CustomLevelInfo=""
+	Requirements(0)="Deal %x damage with Assault Rifles."
 	SRLevelEffects(6)="50% more damage with assault/battle rifles|40% less recoil with assault/battle rifles and SMGs|25% - 60% larger magazines for assault/battle rifles|25% more maximum ammo for assault/battle rifles|35% faster reload with all weapons|70% discount on assault/battle rifles|Spawn with an AK47|Can see cloaked Stalkers from 32m|Can see enemy health from 16m|Up to 4 zed-time extensions"
-
 }

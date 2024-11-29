@@ -341,7 +341,7 @@ static function string GetFullPerkName(byte Level)
 
 //Lerp function but written so that we mutate our exact behaviour in a centralized location.
 //Right now just immediately returns the highest value we want.
-static function float LerpStat(KFPlayerReplicationInfo KFPRI, float A, float B)
+static final function float LerpStat(KFPlayerReplicationInfo KFPRI, float A, float B)
 {
 	return B;
 

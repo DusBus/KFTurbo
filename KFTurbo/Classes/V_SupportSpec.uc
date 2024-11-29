@@ -1,4 +1,4 @@
-class V_SupportSpec extends KFTurbo.SRVetSupportSpec
+class V_SupportSpec extends TurboVeterancyTypes
 	abstract;
 
 static function AddCustomStats(ClientPerkRepLink Other)
@@ -63,7 +63,7 @@ static function int GetPerkProgressInt( ClientPerkRepLink StatOther, out int Fin
 
 static function int AddCarryMaxWeight(KFPlayerReplicationInfo KFPRI)
 {
-	return Super(TurboVeterancyTypes).AddCarryMaxWeight(KFPRI) + 9;
+	return Super.AddCarryMaxWeight(KFPRI) + 9;
 }
 
 static function float GetWeldSpeedModifier(KFPlayerReplicationInfo KFPRI)
@@ -179,7 +179,13 @@ static function string GetCustomLevelInfo(byte Level)
 
 defaultproperties
 {
+	OnHUDIcon=Texture'KillingFloorHUD.Perks.Perk_Support'
     OnHUDGoldIcon=Texture'KFTurbo.Perks.Support_D'
 	OnHUDIconMaxTier=Shader'KFTurbo.Perks.Support_SHDR'
+
+	VeterancyName="Support Specialist"
+	PerkIndex=1
+	CustomLevelInfo=""
+	Requirements(0)="Deal %x damage with shotguns."
 	SRLevelEffects(6)="60% more damage with shotguns|90% better shotgun penetration|30% extra shotgun ammo|50% more damage with grenades|120% increase in grenade capacity|60% increased carry weight|150% faster welding/unwelding|70% discount on shotguns|Spawn with a Shotgun"
 }

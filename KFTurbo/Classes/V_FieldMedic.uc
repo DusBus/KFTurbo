@@ -1,4 +1,4 @@
-class V_FieldMedic extends KFTurbo.SRVetFieldMedic
+class V_FieldMedic extends KFTurbo.TurboVeterancyTypes
 	abstract;
 
 static final function bool IsFieldMedic(KFPlayerReplicationInfo KFPRI)
@@ -223,7 +223,13 @@ static function string GetCustomLevelInfo(byte Level)
 
 defaultproperties
 {
+	OnHUDIcon=Texture'KillingFloorHUD.Perks.Perk_Medic'
 	OnHUDGoldIcon=Texture'KFTurbo.Perks.Medic_D'
 	OnHUDIconMaxTier=Shader'KFTurbo.Perks.Medic_SHDR'
+	
+	VeterancyName="Field Medic"
+	PerkIndex=0
+	CustomLevelInfo=""
+	Requirements(0)="Heal %x HP on your teammates."
 	SRLevelEffects(6)="200% faster syringe recharge|75% more potent healing|75% less damage from Bloat bile|20% faster movement speed|100% larger medic gun clips|75% better body armor|70% discount on body armor|87% discount on medic guns|Grenades heal teammates and hurt enemies|Spawn with full armor and MP7M"
 }

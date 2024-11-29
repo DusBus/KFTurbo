@@ -1,4 +1,4 @@
-class V_Berserker extends KFTurbo.SRVetBerserker
+class V_Berserker extends TurboVeterancyTypes
 	abstract;
 
 static function AddCustomStats(ClientPerkRepLink Other)
@@ -66,7 +66,6 @@ static function int AddDamage(KFPlayerReplicationInfo KFPRI, KFMonster Injured, 
 	return InDamage;
 }
 
-
 static function ApplyAdjustedFireRate(KFPlayerReplicationInfo KFPRI, Weapon Other, out float Multiplier)
 {
 	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
@@ -122,12 +121,12 @@ static function int ReduceDamage(KFPlayerReplicationInfo KFPRI, KFPawn Injured, 
 	return InDamage;
 }
 
-static function float GetBloatDamageReduction(KFPlayerReplicationInfo KFPRI)
+static final function float GetBloatDamageReduction(KFPlayerReplicationInfo KFPRI)
 {
 	return LerpStat(KFPRI, 1.f, 0.3f);
 }
 
-static function float GetSirenDamageReduction(KFPlayerReplicationInfo KFPRI)
+static final function float GetSirenDamageReduction(KFPlayerReplicationInfo KFPRI)
 {
 	return LerpStat(KFPRI, 1.f, 0.6f);
 }
@@ -139,12 +138,12 @@ static function bool CanMeleeStun()
 
 static function bool CanBeGrabbed(KFPlayerReplicationInfo KFPRI, KFMonster Other)
 {
-	return Super.CanBeGrabbed(KFPRI, Other);
+	return !Other.IsA('ZombieClot');
 }
 
 static function int ZedTimeExtensions(KFPlayerReplicationInfo KFPRI)
 {
-	return Super(TurboVeterancyTypes).ZedTimeExtensions(KFPRI) + LerpStat(KFPRI, 1, 4);
+	return Super.ZedTimeExtensions(KFPRI) + LerpStat(KFPRI, 1, 4);
 }
 
 static function class<Grenade> GetNadeType(KFPlayerReplicationInfo KFPRI)
@@ -187,7 +186,13 @@ static function string GetCustomLevelInfo(byte Level)
 
 defaultproperties
 {
+	OnHUDIcon=Texture'KillingFloorHUD.Perks.Perk_Berserker'
 	OnHUDGoldIcon=Texture'KFTurbo.Perks.Berserker_D'
 	OnHUDIconMaxTier=Shader'KFTurbo.Perks.Berserker_SHDR'
+
+	VeterancyName="Berserker"
+    PerkIndex=4
+	CustomLevelInfo=""
+    Requirements(0)="Deal %x damage with melee weapons."
 	SRLevelEffects(6)="100% extra melee damage|15% faster melee attacks|20% faster melee movement|20% less damage from Siren scream|60% less damage from Bloat bile|10% resistance to all damage|70% discount on melee weapons|20% increase in grenade capacity|Grenades put zeds into Stasis, increasing the damage they take|Spawn with a Machete|Can't be grabbed by Clots|Up to 4 zed-time extensions"
 }

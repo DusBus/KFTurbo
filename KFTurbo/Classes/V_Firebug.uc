@@ -1,4 +1,4 @@
-class V_Firebug extends KFTurbo.SRVetFirebug
+class V_Firebug extends TurboVeterancyTypes
 	abstract;
 
 static function AddCustomStats(ClientPerkRepLink Other)
@@ -110,17 +110,6 @@ static function int AddDamage(KFPlayerReplicationInfo KFPRI, KFMonster Injured, 
 
 static function int ExtraRange(KFPlayerReplicationInfo KFPRI)
 {
-	switch (KFPRI.ClientVeteranSkillLevel)
-	{
-	case 0:
-	case 1:
-	case 2:
-		return 0;
-	case 3:
-	case 4:
-		return 1;
-	}
-
 	return 2;
 }
 
@@ -177,7 +166,7 @@ static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup
 
 static function AddDefaultInventory(KFPlayerReplicationInfo KFPRI, Pawn P)
 {
-		KFHumanPawn(P).CreateInventoryVeterancy(string(class'KFTurbo.W_MAC10_Weap'), default.StartingWeaponSellPriceLevel6);
+	KFHumanPawn(P).CreateInventoryVeterancy(string(class'KFTurbo.W_MAC10_Weap'), default.StartingWeaponSellPriceLevel6);
 }
 
 static function class<DamageType> GetMAC10DamageType(KFPlayerReplicationInfo KFPRI)
@@ -194,8 +183,14 @@ defaultproperties
 {
 	StartingWeaponSellPriceLevel5=255.000000
 	StartingWeaponSellPriceLevel6=255.000000
+
+	OnHUDIcon=Texture'KillingFloorHUD.Perks.Perk_Firebug'
 	OnHUDGoldIcon=Texture'KFTurbo.Perks.Firebug_D'
 	OnHUDIconMaxTier=Shader'KFTurbo.Perks.Firebug_SHDR'
-	SRLevelEffects(6)="60% extra damage with Flamethrower and Husk Gun|15% extra damage with MAC10, Trenchgun and Thompson Incendiary|60% faster reload speed with perk weapons|60% larger magazine for Flamethrower, MAC-10 and Thompson Incendiary|60% more ammo for with perk weapons|100% resistance to fire|100% extra Flamethrower range|Grenades set enemies on fire|70% discount on perk weapons|Spawn with a MAC-10"
+
+    VeterancyName="Firebug"
+	PerkIndex=5
+	CustomLevelInfo=""
 	Requirements(0)="Deal %x damage with weapons that cause Burning."
+	SRLevelEffects(6)="60% extra damage with Flamethrower and Husk Gun|15% extra damage with MAC10, Trenchgun and Thompson Incendiary|60% faster reload speed with perk weapons|60% larger magazine for Flamethrower, MAC-10 and Thompson Incendiary|60% more ammo for with perk weapons|100% resistance to fire|100% extra Flamethrower range|Grenades set enemies on fire|70% discount on perk weapons|Spawn with a MAC-10"
 }

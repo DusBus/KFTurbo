@@ -1,4 +1,4 @@
-class V_Sharpshooter extends KFTurbo.SRVetSharpshooter
+class V_Sharpshooter extends TurboVeterancyTypes
 	abstract;
 
 static function AddCustomStats(ClientPerkRepLink Other)
@@ -53,7 +53,7 @@ static function float GetHeadShotDamMulti(KFPlayerReplicationInfo KFPRI, KFPawn 
 {
 	local float Multiplier;
 
-	Multiplier = Super(TurboVeterancyTypes).GetHeadShotDamMulti(KFPRI, Pawn, DamageType);
+	Multiplier = Super.GetHeadShotDamMulti(KFPRI, Pawn, DamageType);
 
 	switch (DamageType)
 	{
@@ -89,17 +89,17 @@ static function float GetHeadShotDamMulti(KFPlayerReplicationInfo KFPRI, KFPawn 
 
 static function float ModifyRecoilSpread(KFPlayerReplicationInfo KFPRI, WeaponFire Other, out float Recoil)
 {
+	Recoil = Super.ModifyRecoilSpread(KFPRI, Other, Recoil);
+
 	if (Crossbow(Other.Weapon) != none || Winchester(Other.Weapon) != none
 		|| Single(Other.Weapon) != none || Dualies(Other.Weapon) != none
 		|| Deagle(Other.Weapon) != none || DualDeagle(Other.Weapon) != none
 		|| M14EBRBattleRifle(Other.Weapon) != none || M99SniperRifle(Other.Weapon) != none
 		|| SPSniperRifle(Other.Weapon) != none)
 	{
-		Recoil = 0.25;
-		return Recoil;
+		Recoil *= 0.25;
 	}
 
-	Recoil = 1.f;
 	return Recoil;
 }
 
@@ -211,7 +211,14 @@ defaultproperties
 
 	StartingWeaponSellPriceLevel5=255.000000
 	StartingWeaponSellPriceLevel6=255.000000
+
+	OnHUDIcon=Texture'KillingFloorHUD.Perks.Perk_SharpShooter'
 	OnHUDGoldIcon=Texture'KFTurbo.Perks.Sharpshooter_D'
 	OnHUDIconMaxTier=Shader'KFTurbo.Perks.Sharpshooter_SHDR'
+
+	VeterancyName="Sharpshooter"
+	PerkIndex=2
+	CustomLevelInfo=""
+	Requirements(0)="Get %x headshot kills with Sharpshooter weapons."
 	SRLevelEffects(6)="2.4x bonus headshot multiplier for perk weapons|1.5x bonus headshot multiplier for off-perk weapons|60% faster reload with perk weapons|75% less recoil with perk weapons|70% discount on Pistols, M14 and S.P. Musket|30% faster firing rate on single-shot perk weapons|Spawn with a Lever Action Rifle"
 }
