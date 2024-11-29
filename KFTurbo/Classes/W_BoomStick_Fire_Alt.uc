@@ -9,4 +9,5 @@ function DoFireEffect()
 defaultproperties
 {
      AmmoClass=Class'KFTurbo.W_BoomStick_Ammo'
+     ProjectileClass=Class'KFTurbo.W_BoomStick_Proj'
 }
