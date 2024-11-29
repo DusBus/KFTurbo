@@ -294,8 +294,9 @@
         - 100% increased impact damage 🟢
 
         - Weight 7 -> 8 🔻
+        - 11% more expensive 🔻
         - 7% slower reload speed 🔻
-        - 50% less maximum ammo 🔻
+        - 63% less maximum ammo 🔻
 
 ### Field Medic
 - Healing grenades now have a new model and bounce more 🆕
