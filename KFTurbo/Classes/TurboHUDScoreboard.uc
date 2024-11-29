@@ -62,6 +62,11 @@ simulated function UpdateScoreBoard(Canvas Canvas)
 	local int Index, PlayerCount;
 	local float EntrySizeY, TempY;
 
+	if (Level.GRI == None)
+	{
+		return;
+	}
+
 	Canvas.Reset();
 	Canvas.DrawColor = class'HudBase'.default.WhiteColor;
 	Canvas.Style = ERenderStyle.STY_Alpha;
