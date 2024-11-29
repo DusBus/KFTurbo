@@ -1,13 +1,32 @@
 class TurboTab_BuyMenu extends SRKFTab_BuyMenu;
 
-function DoFillOneAmmo(GUIBuyable Buyable)
+function bool InvDblClick(GUIComponent Sender)
 {
-    if (Buyable == None)
-    {
-		return;
-    }
+	local GUIBuyable DoubleClickedBuyable;
+	if (InvSelect.List.MouseOverXIndex != 0)
+	{
+		return false;
+	}
 
-	Super.DoFillOneAmmo(Buyable);
+	SaleSelect.List.Index = -1;
+
+	DoubleClickedBuyable = InvSelect.GetSelectedBuyable();
+	if (DoubleClickedBuyable != None)
+	{
+		TheBuyable = DoubleClickedBuyable;
+	}
+
+	GUIBuyMenu(OwnerPage()).WeightBar.NewBoxes = 0;
+
+	if (TheBuyable == None || !TheBuyable.bSellable)
+	{
+		return false;
+	}
+
+	DoSell();
+	TheBuyable = None;
+	OnAnychange();
+	return true;
 }
 
 function DoBuy()
@@ -26,12 +45,30 @@ function DoBuy()
 		MakeSomeBuyNoise();
 
 		SaleSelect.List.SetIndex(-1);
-		SaleSelect.List.BuyableToDisplay = none;
-		TheBuyable = none;
-		LastBuyable = none;
+		SaleSelect.List.BuyableToDisplay = None;
+		TheBuyable = None;
+		LastBuyable = None;
 
 		UpdateBuySellButtons();
 	}
+}
+
+function DoFillOneAmmo(GUIBuyable Buyable)
+{
+    if (Buyable != None && Buyable.ItemAmmoClass != None && KFPawn(PlayerOwner().Pawn) != None )
+    {
+        KFPawn(PlayerOwner().Pawn).ServerBuyAmmo(Buyable.ItemAmmoClass, false);
+        GetUpdatedBuyable(true);
+    }
+}
+
+function DoBuyClip(GUIBuyable Buyable)
+{
+    if (Buyable != None && Buyable.ItemAmmoClass != None && KFPawn(PlayerOwner().Pawn) != none )
+    {
+        KFPawn(PlayerOwner().Pawn).ServerBuyAmmo(Buyable.ItemAmmoClass, true);
+        GetUpdatedBuyable(true);
+    }
 }
 
 function OnAnychange()
@@ -83,14 +120,14 @@ function SetInfoText()
 {
 	local string TempString;
 
-	if (TheBuyable == None && !bDidBuyableUpdate)
+	if ((TheBuyable == None || TheBuyable.ItemWeaponClass == None) && !bDidBuyableUpdate)
 	{
 		InfoScrollText.SetContent(InfoText[0]);
 		bDidBuyableUpdate = true;
 		return;
 	}
 
-	if (TheBuyable != None && OldPickupClass != TheBuyable.ItemPickupClass)
+	if (TheBuyable != None && TheBuyable.ItemWeaponClass != None && OldPickupClass != TheBuyable.ItemPickupClass)
 	{
 		// Unowned Weapon DLC
 		if (TheBuyable.ItemWeaponClass.Default.AppID > 0 && !PlayerOwner().SteamStatsAndAchievements.PlayerOwnsWeaponDLC(TheBuyable.ItemWeaponClass.Default.AppID))
@@ -127,10 +164,23 @@ function SetInfoText()
 	}
 }
 
+function SaleItemClicked(TurboGUIBuyable SelectedSaleItem)
+{
+	TheBuyable = SelectedSaleItem;
+	OnAnychange();
+}
+
+function InvItemClicked(GUIBuyable SelectedInvItem)
+{
+	TheBuyable = SelectedInvItem;
+	OnAnychange();
+}
+
 defaultproperties
 {
      Begin Object Class=TurboBuyMenuInvListBox Name=InventoryBox
          OnCreateComponent=InventoryBox.InternalOnCreateComponent
+		 OnInvItemClicked=InvItemClicked
          WinTop=0.070841
          WinLeft=0.000108
          WinWidth=0.328204
@@ -148,6 +198,7 @@ defaultproperties
 
      Begin Object Class=TurboBuyMenuSaleListBox Name=SaleBox
          OnCreateComponent=SaleBox.InternalOnCreateComponent
+		 OnSaleItemClicked=SaleItemClicked
          WinTop=0.064312
          WinLeft=0.672632
          WinWidth=0.325857

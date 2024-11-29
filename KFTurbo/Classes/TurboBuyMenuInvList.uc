@@ -1,5 +1,26 @@
 class TurboBuyMenuInvList extends SRKFBuyMenuInvList;
 
+delegate OnInvItemClicked(GUIBuyable SelectedInvItem);
+
+final function GUIBuyable AllocateTurboEntry( ClientPerkRepLink L )
+{
+	local GUIBuyable G;
+
+	if( L.AllocatedObjects.Length==0 )
+		return new Class'GUIBuyable';
+	G = L.AllocatedObjects[0];
+	L.ResetItem(G);
+	
+	if (TurboGUIBuyable(G) != None)
+	{
+		TurboGUIBuyable(G).VariantList.Length = 0;
+		TurboGUIBuyable(G).VariantSelection = -1;
+	}
+
+	L.AllocatedObjects.Remove(0,1);
+	return G;
+}
+
 function UpdateMyBuyables()
 {
 	local GUIBuyable MyBuyable, KnifeBuyable, FragBuyable;
@@ -59,7 +80,7 @@ function UpdateMyBuyables()
 			MyPrimaryPickup = MyPickup;
 		} 
 
-		MyBuyable = AllocateEntry(KFLR);
+		MyBuyable = AllocateTurboEntry(KFLR);
 
 		MyBuyable.ItemName 		= MyPickup.default.ItemShortName;
 		MyBuyable.ItemDescription 	= KFWeapon(CurInv).default.Description;
@@ -121,7 +142,7 @@ function UpdateMyBuyables()
 		// Add secondary ammo.
 		KFWeapon(CurInv).GetSecondaryAmmoCount(MaxAmmo, CurAmmo);
 
-		MyBuyable = AllocateEntry(KFLR);
+		MyBuyable = AllocateTurboEntry(KFLR);
 
 		MyBuyable.ItemName 		= MyPickup.default.SecondaryAmmoShortName;
 		MyBuyable.ItemDescription 	= KFWeapon(CurInv).default.Description;
@@ -154,7 +175,7 @@ function UpdateMyBuyables()
 		SecTypes[SecTypes.Length] = MyBuyable;
 	}
 
-	MyBuyable = AllocateEntry(KFLR);
+	MyBuyable = AllocateTurboEntry(KFLR);
 
 	MyBuyable.ItemName 		= class'BuyableVest'.default.ItemName;
 	MyBuyable.ItemDescription 	= class'BuyableVest'.default.ItemDescription;
@@ -210,6 +231,76 @@ function UpdateMyBuyables()
 
 	//Now Update the list
 	UpdateList();
+}
+
+function bool InternalOnClick(GUIComponent Sender)
+{
+	local int NewIndex;
+	local float RelativeMouseX;
+	local GUIBuyable ClickedBuyable;
+
+	if (!IsInClientBounds())
+	{
+		return false;
+	}
+
+	NewIndex = CalculateIndex();
+	ClickedBuyable = MyBuyables[NewIndex];
+
+	if (ClickedBuyable == None)
+	{
+		SetIndex(-1);
+		return false;
+	}
+
+	//  Figure out which Item we're clicking on
+	NewIndex = CalculateIndex();
+	RelativeMouseX = Controller.MouseX - ClientBounds[0];
+	if ( RelativeMouseX < ActualWidth() * ItemBGWidthScale )
+	{
+		SetIndex(NewIndex);
+		MouseOverXIndex = 0;
+		return true;
+	}
+
+	RelativeMouseX -= ActualWidth() * (ItemBGWidthScale + AmmoBGWidthScale);
+
+	if ( RelativeMouseX > 0 )
+	{
+		if ( ClickedBuyable.bIsVest )
+		{
+			if ( (PlayerOwner().Pawn.ShieldStrength > 0 && PlayerOwner().PlayerReplicationInfo.Score >= ClickedBuyable.ItemAmmoCost) || PlayerOwner().PlayerReplicationInfo.Score >= ClickedBuyable.ItemCost )
+			{
+				OnBuyVestClick();
+			}
+		}
+		else if ( RelativeMouseX < ActualWidth() * (1.0 - ItemBGWidthScale - AmmoBGWidthScale) * ClipButtonWidthScale )
+		{
+			// Buy Clip
+			OnBuyClipClick(ClickedBuyable);
+		}
+		else
+		{
+			// Fill Ammo
+			OnFillAmmoClick(ClickedBuyable);
+		}
+	}
+
+	return false;
+}
+
+function IndexChanged(GUIComponent Sender)
+{
+	Super.IndexChanged(Sender);
+
+	if (Index >= 0 && Index < MyBuyables.Length)
+	{
+		OnInvItemClicked(MyBuyables[Index]);
+	}
+	else
+	{
+		OnInvItemClicked(None);
+	}
 }
 
 defaultproperties

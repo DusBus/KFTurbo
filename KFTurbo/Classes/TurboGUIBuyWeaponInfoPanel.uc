@@ -7,14 +7,21 @@ function Display(GUIBuyable NewBuyable)
 	
 	Super.Display(NewBuyable);
 
-	TurboBuyable = TurboGUIBuyable(NewBuyable);
-
-	if (TurboBuyable == None)
+	if (NewBuyable == None)
 	{
 		return;
 	}
 
-	PickupClass = class<KFWeaponPickup>(TurboBuyable.GetPickup());
+	TurboBuyable = TurboGUIBuyable(NewBuyable);
+
+	if (TurboBuyable != None)
+	{
+		PickupClass = class<KFWeaponPickup>(TurboBuyable.GetPickup());
+	}
+	else
+	{
+		PickupClass = NewBuyable.ItemPickupClass;
+	}
 
 	if (PickupClass == None)
 	{
