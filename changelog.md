@@ -243,11 +243,9 @@
 - **Weapons**
     - **M79 Grenade Launcher**
         - 44% cheaper base price. 🟢
-        - On-perk price unchanged. 🟦
 
     - **M32 Grenade Launcher**
         - 40% cheaper base price. 🟢
-        - On-perk price unchanged. 🟦
 
     - **M4 203**
         - Replaces the original M4 ⚠️
