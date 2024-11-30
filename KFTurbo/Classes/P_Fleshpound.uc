@@ -12,6 +12,16 @@ var(KFTurbo) float UnstunTime;
 
 var AI_Fleshpound ProAI;
 
+simulated function PostNetBeginPlay()
+{
+	if (AvoidArea == None)
+    {
+        AvoidArea = Spawn(class'P_FleshPound_AvoidArea',self);
+    }
+
+	Super.PostNetBeginPlay();
+}
+
 simulated function PostBeginPlay()
 {
 	Super.PostBeginPlay();
@@ -20,7 +30,6 @@ simulated function PostBeginPlay()
 
     class'PawnHelper'.static.InitializePawnHelper(self, AfflictionData);
 }
-
 
 function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
 {
