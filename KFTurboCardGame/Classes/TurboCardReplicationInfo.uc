@@ -169,10 +169,18 @@ simulated function Destroyed()
 
 simulated function AddOverlay(PlayerController PlayerController)
 {
-    TurboCardOverlay = Spawn(class'TurboCardOverlay', PlayerController.myHUD);
-    TurboCardOverlay.Initialize(TurboHUDKillingFloor(PlayerController.myHUD));
+    local TurboHUDKillingFloor TurboHUD;
+    TurboHUD = TurboHUDKillingFloor(PlayerController.myHUD);
+
+    if (TurboHUD == None)
+    {
+        return;
+    }
+
+    TurboCardOverlay = Spawn(class'TurboCardOverlay', TurboHUD);
+    TurboCardOverlay.Initialize(TurboHUD);
     TurboCardOverlay.InitializeCardGameHUD(Self);
-    PlayerController.myHUD.AddHudOverlay(TurboCardOverlay);
+    TurboHUD.AddPreDrawOverlay(TurboCardOverlay);
 }
 
 simulated function PostNetReceive()
@@ -738,6 +746,13 @@ function ModifyDualWeaponMagazineAmmo(float Multiplier)
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
 
+function ModifyDualWeaponReloadRate(float Multiplier)
+{
+    OwnerMutator.TurboCardGameModifier.DualWeaponMagazineAmmoMultiplier *= Multiplier;
+    log("DualWeaponMagazineAmmoMultiplier"@OwnerMutator.TurboCardGameModifier.DualWeaponMagazineAmmoMultiplier);
+    OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
+}
+
 function ModifyBerserkerWeaponFireRate(float Multiplier)
 {
     OwnerMutator.TurboCardGameModifier.BerserkerFireRateMultiplier *= Multiplier;
@@ -756,6 +771,13 @@ function ModifyWeaponReloadRate(float Multiplier)
 {
     OwnerMutator.TurboCardGameModifier.ReloadRateMultiplier *= Multiplier;
     log("ReloadRateMultiplier"@OwnerMutator.TurboCardGameModifier.ReloadRateMultiplier);
+    OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
+}
+
+function ModifyCommandoWeaponReloadRate(float Multiplier)
+{
+    OwnerMutator.TurboCardGameModifier.CommandoReloadRateMultiplier *= Multiplier;
+    log("CommandoReloadRateMultiplier"@OwnerMutator.TurboCardGameModifier.CommandoReloadRateMultiplier);
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
 
@@ -784,6 +806,13 @@ function ModifyWeaponMaxAmmo(float Multiplier)
 {
     OwnerMutator.TurboCardGameModifier.MaxAmmoMultiplier *= Multiplier;
     log("MaxAmmoMultiplier"@OwnerMutator.TurboCardGameModifier.MaxAmmoMultiplier);
+    OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
+}
+
+function ModifyCommandoWeaponMaxAmmo(float Multiplier)
+{
+    OwnerMutator.TurboCardGameModifier.CommandoMaxAmmoMultiplier *= Multiplier;
+    log("CommandoMaxAmmoMultiplier"@OwnerMutator.TurboCardGameModifier.CommandoMaxAmmoMultiplier);
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
 
@@ -1148,7 +1177,7 @@ function EnablePlainSightSpawning()
             continue;
         }
 
-        KFGT.ZedSpawnList[Index].MinDistanceToPlayer = FMax(768.f, KFGT.ZedSpawnList[Index].MinDistanceToPlayer);
+        KFGT.ZedSpawnList[Index].MinDistanceToPlayer = FMax(620.f, KFGT.ZedSpawnList[Index].MinDistanceToPlayer);
         KFGT.ZedSpawnList[Index].bAllowPlainSightSpawns = true;
     }
 }

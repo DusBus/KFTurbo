@@ -168,7 +168,7 @@ function ActivateExtraGrenade(TurboCardReplicationInfo CGRI)
 
 function ActivateFasterMedical(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyHealRecharge(1.1f);
+    CGRI.ModifyHealRecharge(1.05f);
 }
 
 defaultproperties
@@ -441,7 +441,7 @@ defaultproperties
         CardDescriptionList(0)="Increases medic"
         CardDescriptionList(1)="gun and syringe"
         CardDescriptionList(2)="recharge rate"
-        CardDescriptionList(3)="by 10%."
+        CardDescriptionList(3)="by 5%."
         OnActivateCard=ActivateFasterMedical
     End Object
     DeckCardObjectList(29)=TurboCard'FasterMedical'

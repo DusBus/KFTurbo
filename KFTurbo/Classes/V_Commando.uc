@@ -81,20 +81,15 @@ static function float GetStalkerViewDistanceMulti(KFPlayerReplicationInfo KFPRI)
 
 static function ApplyAdjustedMagCapacityModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other, out float Multiplier)
 {
-	if (!IsHighDifficulty(KFPRI))
-	{
-		if (Multiplier > 1.f && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-		{
-			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetCommandoMagazineAmmoMultiplier(KFPRI, Other);
-		}
-
-		Super.ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
-		return;
-	}
-
-	if (Multiplier > 1.f && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	if (Multiplier > 1.f && Other.default.MagCapacity > 1 && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
 	{
 		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetCommandoMagazineAmmoMultiplier(KFPRI, Other);
+	}
+
+	if (!IsHighDifficulty(KFPRI))
+	{
+		Super.ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
+		return;
 	}
 
 	if(SCARMK17AssaultRifle(Other) != None)
@@ -200,6 +195,14 @@ static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammu
 {
 	if (!IsHighDifficulty(KFPRI))
 	{
+		if (Multiplier > 1.f)
+		{
+			if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+			{
+				Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetCommandoMaxAmmoMultiplier(KFPRI, AmmoType);
+			}
+		}
+
 		Super.ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 		return;
 	}
@@ -251,6 +254,19 @@ static function float ModifyRecoilSpread(KFPlayerReplicationInfo KFPRI, WeaponFi
 
 	return Recoil;
 	//wtf is this syntax (by ref and return???)
+}
+
+static function ApplyAdjustedReloadRate(KFPlayerReplicationInfo KFPRI, Weapon Other, out float Multiplier)
+{
+	if (class'V_Commando'.static.IsPerkWeapon(class<KFWeapon>(Other.Class)))
+	{
+		if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+		{
+			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetCommandoReloadRateMultiplier(KFPRI, Other);
+		}
+	}
+
+	Super.ApplyAdjustedReloadRate(KFPRI, Other, Multiplier);
 }
 
 static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other)

@@ -11,6 +11,8 @@ var(Turbo) float BerserkerFireRateMultiplier;
 var(Turbo) float FirebugFireRateMultiplier;
 
 var(Turbo) float ReloadRateMultiplier;
+var(Turbo) float DualWeaponReloadRateMultiplier;
+var(Turbo) float CommandoReloadRateMultiplier;
 
 var(Turbo) float MagazineAmmoMultiplier;
 var(Turbo) float DualWeaponMagazineAmmoMultiplier;
@@ -18,6 +20,7 @@ var(Turbo) float CommandoMagazineAmmoMultiplier;
 var(Turbo) float MedicMagazineAmmoMultiplier;
 
 var(Turbo) float MaxAmmoMultiplier;
+var(Turbo) float CommandoMaxAmmoMultiplier;
 var(Turbo) float MedicMaxAmmoMultiplier;
 var(Turbo) float GrenadeMaxAmmoMultiplier;
 
@@ -53,9 +56,9 @@ replication
 {
     reliable if(bNetDirty && Role == ROLE_Authority)
         FireRateMultiplier, ZedTimeDualPistolFireRateMultiplier, BerserkerFireRateMultiplier, FirebugFireRateMultiplier,
-        ReloadRateMultiplier, 
+        ReloadRateMultiplier, DualWeaponReloadRateMultiplier, CommandoReloadRateMultiplier,
         MagazineAmmoMultiplier, CommandoMagazineAmmoMultiplier, MedicMagazineAmmoMultiplier,
-        MaxAmmoMultiplier, MedicMaxAmmoMultiplier, GrenadeMaxAmmoMultiplier,
+        MaxAmmoMultiplier, CommandoMaxAmmoMultiplier, MedicMaxAmmoMultiplier, GrenadeMaxAmmoMultiplier,
         WeaponPenetrationMultiplier,
         WeaponSpreadRecoilMultiplier, ShotgunSpreadRecoilMultiplier,
         TraderCostMultiplier, TraderGrenadeCostMultiplier, bDisableArmorPurchase,
@@ -81,7 +84,20 @@ simulated function float GetFireRateMultiplier(KFPlayerReplicationInfo KFPRI, We
 simulated function float GetBerserkerFireRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { return Super.GetBerserkerFireRateMultiplier(KFPRI, Other) * BerserkerFireRateMultiplier; }
 simulated function float GetFirebugFireRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { return Super.GetFirebugFireRateMultiplier(KFPRI, Other) * FirebugFireRateMultiplier; }
 
-simulated function float GetReloadRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { return Super.GetFirebugFireRateMultiplier(KFPRI, Other) * ReloadRateMultiplier; }
+simulated function float GetReloadRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other)
+{
+    local float Multiplier;
+    Multiplier = Super.GetReloadRateMultiplier(KFPRI, Other) * ReloadRateMultiplier;
+
+    if (IsDualWeapon(KFWeapon(Other)))
+    {
+        Multiplier *= DualWeaponReloadRateMultiplier;
+    }
+    
+    return Multiplier;
+}
+
+simulated function float GetCommandoReloadRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { return Super.GetCommandoReloadRateMultiplier(KFPRI, Other) * CommandoReloadRateMultiplier; }
 
 simulated function float GetMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
 {
@@ -111,6 +127,7 @@ simulated function float GetMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, cla
     return Super.GetMaxAmmoMultiplier(KFPRI, AmmoType) * Multiplier;
 }
 
+simulated function float GetCommandoMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType) { return Super.GetCommandoMaxAmmoMultiplier(KFPRI, AmmoType) * CommandoMagazineAmmoMultiplier; }
 simulated function float GetMedicMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType) { return Super.GetMedicMaxAmmoMultiplier(KFPRI, AmmoType) * MedicMaxAmmoMultiplier; }
 
 simulated function float GetWeaponPenetrationMultiplier(KFPlayerReplicationInfo KFPRI, WeaponFire Other) { return Super.GetWeaponPenetrationMultiplier(KFPRI, Other) * WeaponPenetrationMultiplier; }
@@ -192,13 +209,13 @@ function GetPlayerZedExtensionModifier(KFPlayerReplicationInfo KFPRI, out int Ou
 
     OutZedExtensions += PlayerZedTimeExtensionsModifier;
 
-    if (PlayerDualPistolZedTimeExtensionsModifier != 0 && ShouldApplyDualPistolZedTimeExtensionModifier(KFPRI))
+    if (PlayerDualPistolZedTimeExtensionsModifier != 0 && IsPlayerHoldingDualWeapon(KFPRI))
     {
         OutZedExtensions += PlayerDualPistolZedTimeExtensionsModifier;
     }
 }
 
-function bool ShouldApplyDualPistolZedTimeExtensionModifier(KFPlayerReplicationInfo KFPRI)
+static final function bool IsPlayerHoldingDualWeapon(KFPlayerReplicationInfo KFPRI)
 {
     local Controller Controller;
     local Pawn Pawn;
@@ -216,13 +233,12 @@ function bool ShouldApplyDualPistolZedTimeExtensionModifier(KFPlayerReplicationI
         return false;
     }
 
-    Weapon = KFWeapon(Pawn.Weapon);
-    if (Weapon == None)
-    {
-        return false;
-    }
+    return IsDualWeapon(KFWeapon(Pawn.Weapon));
+}
 
-    return Weapon.bDualWeapon;
+static final function bool IsDualWeapon(KFWeapon Weapon)
+{
+    return Weapon != None && Weapon.bDualWeapon;
 }
 
 function float GetHealPotencyMultiplier(KFPlayerReplicationInfo KFPRI)
@@ -265,6 +281,8 @@ defaultproperties
     FirebugFireRateMultiplier=1.f
 
     ReloadRateMultiplier=1.f
+    DualWeaponReloadRateMultiplier=1.f
+    CommandoReloadRateMultiplier=1.f
 
     MagazineAmmoMultiplier=1.f
     DualWeaponMagazineAmmoMultiplier=1.f
@@ -272,6 +290,7 @@ defaultproperties
     MedicMagazineAmmoMultiplier=1.f
 
     MaxAmmoMultiplier=1.f
+    CommandoMaxAmmoMultiplier=1.f
     MedicMaxAmmoMultiplier=1.f
     GrenadeMaxAmmoMultiplier=1.f
 

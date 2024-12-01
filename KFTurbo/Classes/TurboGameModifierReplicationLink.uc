@@ -20,12 +20,14 @@ simulated function float GetBerserkerFireRateMultiplier(KFPlayerReplicationInfo 
 simulated function float GetFirebugFireRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetFirebugFireRateMultiplier(KFPRI, Other); } return 1.f; }
 
 simulated function float GetReloadRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetReloadRateMultiplier(KFPRI, Other); } return 1.f; }
+simulated function float GetCommandoReloadRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetCommandoReloadRateMultiplier(KFPRI, Other); } return 1.f; }
 
 simulated function float GetMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI, KFWeapon Other) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetMagazineAmmoMultiplier(KFPRI, Other); } return 1.f; }
 simulated function float GetCommandoMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI, KFWeapon Other) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetCommandoMagazineAmmoMultiplier(KFPRI, Other); } return 1.f; }
 simulated function float GetMedicMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI, KFWeapon Other) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetMedicMagazineAmmoMultiplier(KFPRI, Other); } return 1.f; }
 
 simulated function float GetMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetMaxAmmoMultiplier(KFPRI, AmmoType); } return 1.f; }
+simulated function float GetCommandoMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetMaxAmmoMultiplier(KFPRI, AmmoType); } return 1.f; }
 simulated function float GetMedicMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetMedicMaxAmmoMultiplier(KFPRI, AmmoType); } return 1.f; }
 
 simulated function float GetWeaponPenetrationMultiplier(KFPlayerReplicationInfo KFPRI, WeaponFire Other) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetWeaponPenetrationMultiplier(KFPRI, Other); } return 1.f; }

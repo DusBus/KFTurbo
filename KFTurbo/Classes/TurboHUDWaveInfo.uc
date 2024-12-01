@@ -873,7 +873,7 @@ simulated function DrawTraderEndVote(Canvas C)
 	{
 		C.SetDrawColor(255, 255, 255);
 		C.DrawColor.A = byte(EndTraderVoteRatio * 255.f);
-		TempY = C.ClipY * 0.3f;
+		TempY = C.ClipY * 0.1f;
 		C.TextSize(EndTraderVoteTitle, TextSizeX, TextSizeY);
 
 		C.SetPos(TempX - TextSizeX - 8.f, TempY - (TextSizeY + 8.f));

@@ -27,6 +27,9 @@ var TurboHUDOverlay MarkInfoHUD;
 var class<TextReactionSettings> TextReactionSettingsClass;
 var TextReactionSettings TextReactionSettings;
 
+//Overlays that are drawn before the player HUD.
+var array<HudOverlay> PreDrawOverlays;
+
 simulated event PostRender( canvas Canvas )
 {
 	bUseBloom = bool(ConsoleCommand("get ini:Engine.Engine.ViewportManager Bloom"));
@@ -40,6 +43,49 @@ simulated event PostRender( canvas Canvas )
 	if (bUseBloom)
 	{
 		PlayerOwner.PostFX_SetActive(0, bUseBloom);
+	}
+}
+
+//Adds overlay that will draw under the player HUD.
+//Helpful for stuff like Card Game where it doesn't want to draw on top of other HUD widgets.
+simulated function AddPreDrawOverlay(HudOverlay Overlay)
+{
+	local int i;
+
+	for (i = 0; i < PreDrawOverlays.Length; i++)
+	{
+		if (PreDrawOverlays[i] == Overlay)
+		{
+			return;
+		}
+	}
+
+	PreDrawOverlays[PreDrawOverlays.length] = Overlay;
+	Overlay.SetOwner(self);
+}
+
+simulated function RemoveHudOverlay(HudOverlay Overlay)
+{
+	local int i;
+	Super.RemoveHudOverlay(Overlay);
+
+	for (i = 0; i < PreDrawOverlays.length; i++)
+	{
+		if (PreDrawOverlays[i] == Overlay)
+		{
+			Overlays.Remove(i, 1);
+			Overlay.SetOwner(None);
+			return;
+		}
+	}
+}
+
+simulated function RenderPreDrawOverlays(Canvas C)
+{
+	local int i;
+	for (i = 0; i < PreDrawOverlays.length; i++)
+	{
+		PreDrawOverlays[i].Render(C);
 	}
 }
 
@@ -86,7 +132,7 @@ simulated function PostBeginPlay()
 	}
 }
 
-simulated function SetScoreBoardClass (class<Scoreboard> ScoreBoardClass)
+simulated function SetScoreBoardClass(class<Scoreboard> ScoreBoardClass)
 {
 	if (ScoreBoardClass == class'KFScoreBoard' || ScoreBoardClass == class'SRScoreBoard')
 	{
@@ -143,17 +189,23 @@ simulated function DrawHud(Canvas C)
 
 	RenderDelta = Level.TimeSeconds - LastHUDRenderTime;
     LastHUDRenderTime = Level.TimeSeconds;
+
+	C.Reset();
+	C.DrawColor = class'HudBase'.default.WhiteColor;
+	C.Style = ERenderStyle.STY_Alpha;
+
+	RenderPreDrawOverlays(C);
 	
 	C.Reset();
 	C.DrawColor = class'HudBase'.default.WhiteColor;
 	C.Style = ERenderStyle.STY_Alpha;
 
-	if ( FontsPrecached < 2 )
+	if (FontsPrecached < 2)
 	{
 		PrecacheFonts(C);
 	}
 
-	if ( !KFPlayerReplicationInfo(PlayerOwner.PlayerReplicationInfo).bViewingMatineeCinematic )
+	if (!KFPlayerReplicationInfo(PlayerOwner.PlayerReplicationInfo).bViewingMatineeCinematic)
 	{
 		DrawGameHud(C);
 	}

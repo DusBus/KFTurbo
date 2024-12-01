@@ -6,12 +6,13 @@ class TurboCardDeck_Super extends TurboCardDeck;
 function ActivateBerserker(TurboCardReplicationInfo CGRI)
 {
     CGRI.ModifyBerserkerWeaponFireRate(3.f);
-    CGRI.ModifyBerserkerMeleeDamage(1.25f);
 }
 
 function ActivateCommando(TurboCardReplicationInfo CGRI)
 {
     CGRI.ModifyCommandoWeaponMagazineAmmo(2.f);
+    CGRI.ModifyCommandoWeaponReloadRate(1.25f);
+    CGRI.ModifyCommandoWeaponMaxAmmo(1.25f);
 }
 
 function ActivateFirebug(TurboCardReplicationInfo CGRI)
@@ -98,6 +99,7 @@ function ActivateMaximumPayne(TurboCardReplicationInfo CGRI)
     CGRI.ModifyWeaponZedTimeDualPistolFireRate(2.f);
     CGRI.ModifyWeaponZedTimeDualPistolExtensions(100);
     CGRI.ModifyDualWeaponMagazineAmmo(1.5f);
+    CGRI.ModifyDualWeaponReloadRate(2.f);
 }
 
 function ActivatePackedShells(TurboCardReplicationInfo CGRI)
@@ -124,8 +126,7 @@ defaultproperties
         CardDescriptionList(0)="Increases Berserker"
         CardDescriptionList(1)="on-perk melee"
         CardDescriptionList(2)="weapon firerate"
-        CardDescriptionList(3)="by 200% and"
-        CardDescriptionList(4)="damage by 25%."
+        CardDescriptionList(3)="by 200%."
         OnActivateCard=ActivateBerserker
     End Object
     DeckCardObjectList(0)=TurboCard'Berserker'
@@ -137,7 +138,10 @@ defaultproperties
         CardDescriptionList(0)="Increases"
         CardDescriptionList(1)="Commando on-perk"
         CardDescriptionList(2)="weapon magazine"
-        CardDescriptionList(3)="size by 200%."
+        CardDescriptionList(3)="size by 200%,"
+        CardDescriptionList(4)="reload speed by"
+        CardDescriptionList(5)="25% and max"
+        CardDescriptionList(6)="ammo by 25%."
         OnActivateCard=ActivateCommando
     End Object
     DeckCardObjectList(1)=TurboCard'Commando'
@@ -292,8 +296,9 @@ defaultproperties
         CardDescriptionList(0)="Increases dual"
         CardDescriptionList(1)="pistol's magazine"
         CardDescriptionList(2)="size by 50% and"
-        CardDescriptionList(3)="firerate during"
-        CardDescriptionList(4)="zed time by 100%."
+        CardDescriptionList(3)="firerate/reload"
+        CardDescriptionList(4)="speed during zed"
+        CardDescriptionList(5)="time by 100%."
         OnActivateCard=ActivateMaximumPayne
     End Object
     DeckCardObjectList(17)=TurboCard'MaximumPayne'
