@@ -347,7 +347,7 @@ simulated function DrawVoter(Canvas C, PlayerReplicationInfo PRI, float X, float
 	}
 
 	//Dim spectator selection (as their votes are not counted).
-	if (!PRI.bIsSpectator)
+	if (!PRI.bOnlySpectator)
 	{
 		Opacity = 255;
 	}
@@ -424,11 +424,6 @@ simulated function DrawSelectableCardList(Canvas C)
 	TempY -= CardSize * 0.05f;
 	for (Index = Level.GRI.PRIArray.Length - 1; Index >= 0; Index--)
 	{
-		if (Level.GRI.PRIArray[Index].bIsSpectator)
-		{
-			continue;
-		}
-
 		DrawVoter(C, Level.GRI.PRIArray[Index], TempX, TempY, CardOffset, VoteList);
 	}
 

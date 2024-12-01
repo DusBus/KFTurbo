@@ -505,7 +505,7 @@ function OnSelectionTimeEnd()
     //Voting is done via 1-based indexing but the selectable card array and the vote tally array are 0-based so index conversion is done during tally. 
     for (Index = 0; Index < Level.GRI.PRIArray.Length; Index++)
     {
-        if (Level.GRI.PRIArray[Index].bIsSpectator)
+        if (Level.GRI.PRIArray[Index].bOnlySpectator)
         {
             continue;
         }
