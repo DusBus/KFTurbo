@@ -23,7 +23,7 @@ simulated function Render(Canvas C)
 	{
 		return;
 	}
-
+	
 	if (LastKnownClipSize.X != C.ClipX || LastKnownClipSize.Y != C.ClipY)
 	{
 		ClipSize.X = C.ClipX;

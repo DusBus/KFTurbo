@@ -357,6 +357,12 @@ simulated function DrawSpectatingHud(Canvas C)
 	{
 		return;
 	}
+	
+	C.Reset();
+	C.DrawColor = class'HudBase'.default.WhiteColor;
+	C.Style = ERenderStyle.STY_Alpha;
+
+	RenderPreDrawOverlays(C);
 
 	C.Reset();
 	C.DrawColor = class'HudBase'.default.WhiteColor;

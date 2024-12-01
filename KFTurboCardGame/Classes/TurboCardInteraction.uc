@@ -10,32 +10,18 @@ static final function CardGamePlayerReplicationInfo FindCGPRI(PlayerController P
 	return class'CardGamePlayerReplicationInfo'.static.GetCardGameLRI(PlayerController.PlayerReplicationInfo);
 }
 
-static final function TurboCardOverlay FindCardOverlay(PlayerController PlayerController)
-{
-	local int Index;
-
-	for (Index = 0; Index < PlayerController.myHUD.Overlays.Length; Index++)
-	{
-		if (TurboCardOverlay(PlayerController.myHUD.Overlays[Index]) != None)
-		{
-			return TurboCardOverlay(PlayerController.myHUD.Overlays[Index]);
-		}
-	}
-
-	return None;
-}
-
 simulated function bool KeyEvent( out EInputKey Key, out EInputAction Action, FLOAT Delta )
 {
 	if (Action == IST_Press)
 	{
 		if (Key == IK_MouseWheelUp || Key == IK_MouseWheelDown)
 		{
-			return FindCardOverlay(ViewportOwner.Actor).ReceivedKeyEvent(Key, Action);
+			return class'TurboCardOverlay'.static.FindCardOverlay(ViewportOwner.Actor).ReceivedKeyEvent(Key, Action);
 		}
+
 		if (Key == IK_Shift)
 		{
-			FindCardOverlay(ViewportOwner.Actor).ReceivedKeyEvent(Key, Action);
+			class'TurboCardOverlay'.static.FindCardOverlay(ViewportOwner.Actor).ReceivedKeyEvent(Key, Action);
 			bShiftIsPressed = true;
 		}
 		else if (bShiftIsPressed)
@@ -47,7 +33,7 @@ simulated function bool KeyEvent( out EInputKey Key, out EInputAction Action, FL
 	{
 		if (Key == IK_Shift)
 		{
-			FindCardOverlay(ViewportOwner.Actor).ReceivedKeyEvent(Key, Action);
+			class'TurboCardOverlay'.static.FindCardOverlay(ViewportOwner.Actor).ReceivedKeyEvent(Key, Action);
 			bShiftIsPressed = false;
 		}
 	}

@@ -54,20 +54,17 @@ simulated function Timer()
 
 simulated function bool RegisterToOverlay(PlayerController PlayerController)
 {
-    local int Index;
+    local TurboCardOverlay CardOverlay;
 
-    log("Registering to overlay.");
-    for (Index = PlayerController.myHUD.Overlays.Length - 1; Index >= 0; Index--)
+    CardOverlay = class'TurboCardOverlay'.static.FindCardOverlay(PlayerController);
+
+    if (CardOverlay == None)
     {
-        if (TurboCardOverlay(PlayerController.myHUD.Overlays[Index]) != None)
-        {
-            log("TurboCardOverlay found, setting BorrowedTimeActor");
-            TurboCardOverlay(PlayerController.myHUD.Overlays[Index]).BorrowedTimeActor = Self;
-            return true;
-        }
+        return false;
     }
 
-    return false;
+    CardOverlay.BorrowedTimeActor = Self;
+    return true;
 }
 
 function StartBorrowedTime()

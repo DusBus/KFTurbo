@@ -26,6 +26,7 @@ var array<ActiveCardEntry> ActiveCardRenderActorList;
 var int CardIndexToDisplay;
 
 var localized string HowToVoteString;
+var localized string HowCardsWorkString;
 
 var localized array<string> HowToScrollCardsString;
 var float HowToScrollFade;
@@ -49,6 +50,23 @@ enum EBorrowedTimeWarnLevel
 	TenSecondsLeft,
 	OutOfTime
 };
+
+static final function TurboCardOverlay FindCardOverlay(PlayerController PlayerController)
+{
+	local int Index;
+	local TurboHUDKillingFloor TurboHUD;
+	TurboHUD = TurboHUDKillingFloor(PlayerController.myHUD);
+
+	for (Index = 0; Index < TurboHUD.PreDrawOverlays.Length; Index++)
+	{
+		if (TurboCardOverlay(TurboHUD.PreDrawOverlays[Index]) != None)
+		{
+			return TurboCardOverlay(TurboHUD.PreDrawOverlays[Index]);
+		}
+	}
+
+	return None;
+}
 
 //Bind to updates.
 simulated function InitializeCardGameHUD(TurboCardReplicationInfo CGRI)
@@ -421,7 +439,7 @@ simulated function DrawSelectableCardList(Canvas C)
 	C.FontScaleY = C.FontScaleX;
 
 	TempX = ((C.ClipX / 2.f) - (CenterIndex * CardOffset)) + (CardOffset * 0.5f);
-	TempY -= CardSize * 0.05f;
+	TempY -= CardSize * 0.15f;
 	for (Index = Level.GRI.PRIArray.Length - 1; Index >= 0; Index--)
 	{
 		DrawVoter(C, Level.GRI.PRIArray[Index], TempX, TempY, CardOffset, VoteList);
@@ -429,7 +447,7 @@ simulated function DrawSelectableCardList(Canvas C)
 
 	C.FontScaleX = 1.f;
 	C.FontScaleY = 1.f;
-	TempY += CardSize * 1.85f;
+	TempY += CardSize * 2.f;
 	TempX = (C.ClipX / 2.f);
 
 	C.TextSize(HowToVoteString, TextSizeX, TextSizeY);
@@ -445,6 +463,20 @@ simulated function DrawSelectableCardList(Canvas C)
 	C.SetDrawColor(255, 255, 255, 255);
 	C.SetPos(TempX, TempY);
 	C.DrawText(HowToVoteString);
+
+	C.Font = class'KFTurboFontHelper'.static.LoadBoldFontStatic(BaseFontSize + 2);
+	TempX += TextSizeX * 0.5f;
+	TempY += TextSizeY;
+	C.TextSize(HowCardsWorkString, TextSizeX, TextSizeY);
+	TempX -= TextSizeX * 0.5f;
+
+	C.SetDrawColor(0, 0, 0, 120);
+	C.SetPos(TempX + 2.f, TempY + 2.f);
+	C.DrawText(HowCardsWorkString);
+
+	C.SetDrawColor(255, 255, 255, 255);
+	C.SetPos(TempX, TempY);
+	C.DrawText(HowCardsWorkString);
 }
 
 simulated function DrawActiveCardList(Canvas C)
@@ -796,6 +828,7 @@ defaultproperties
 	VoteMenuScale=1.f
 
 	HowToVoteString="Press shift and a number to vote for a card!"
+	HowCardsWorkString="Choose wisely! The selected card will last the whole game."
 	HowToScrollCardsString(0)="Scroll up and"
 	HowToScrollCardsString(1)="down to show"
 	HowToScrollCardsString(2)="other cards!"
