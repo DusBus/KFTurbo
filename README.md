@@ -18,10 +18,10 @@ KFTurbo has a changelog containing all gameplay changes [here](./changelog.md).
 
 ## Official Servers
 KFTurbo has the following official servers:
-* New York - 38.180.25.144:7707
-* Ireland - 38.180.21.26:7707
-* Poland - 38.180.227.82:7707
-* Japan - 38.180.202.205:7707
+* New York - `38.180.25.144:7707`
+* Ireland - `38.180.21.26:7707`
+* Poland - `38.180.227.82:7707`
+* Japan - `38.180.202.205:7707`
 
 ## Setup
 For information on how to setup a server with KFTurbo, read the setup instructions [here](./SETUP.md).
