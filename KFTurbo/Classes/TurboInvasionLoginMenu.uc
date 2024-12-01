@@ -11,16 +11,16 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 	Panels[0].ClassName = string(class'TurboTab_ServerNews');
 	Panels[1].ClassName = string(class'TurboTab_MidGamePerks');
 	Panels[2].ClassName = string(class'SRTab_MidGameVoiceChat');
-	Panels[3].ClassName = string(class'SRTab_MidGameHelp');
+	Panels[3].ClassName = string(class'TurboTab_EmoteList');
 	Panels[4].ClassName = string(class'SRTab_MidGameStats');
 
 	// Setup localization.
 	Panels[1].Caption = Class'KFInvasionLoginMenu'.Default.Panels[1].Caption;
 	Panels[2].Caption = Class'KFInvasionLoginMenu'.Default.Panels[2].Caption;
-	Panels[3].Caption = Class'KFInvasionLoginMenu'.Default.Panels[3].Caption;
+	Panels[3].Caption = Class'TurboInvasionLoginMenu'.Default.Panels[3].Caption;
 	Panels[1].Hint = Class'KFInvasionLoginMenu'.Default.Panels[1].Hint;
 	Panels[2].Hint = Class'KFInvasionLoginMenu'.Default.Panels[2].Hint;
-	Panels[3].Hint = Class'KFInvasionLoginMenu'.Default.Panels[3].Hint;
+	Panels[3].Hint = Class'TurboInvasionLoginMenu'.Default.Panels[3].Hint;
 	b_Spec.Caption=class'KFTab_MidGamePerks'.default.b_Spec.Caption;
 	b_MatchSetup.Caption=class'KFTab_MidGamePerks'.default.b_MatchSetup.Caption;
 	b_KickVote.Caption=class'KFTab_MidGamePerks'.default.b_KickVote.Caption;
@@ -208,4 +208,5 @@ function Closed(GUIComponent Sender, bool bCancelled)
 
 defaultproperties
 {
+    Panels(3)=(ClassName="KFTurbo.TurboTab_EmoteList",Caption="Emotes",Hint="List of all emotes.")
 }

@@ -219,7 +219,6 @@ static final function bool IsPlayerHoldingDualWeapon(KFPlayerReplicationInfo KFP
 {
     local Controller Controller;
     local Pawn Pawn;
-    local KFWeapon Weapon;
 
     Controller = Controller(KFPRI.Owner);
     if (Controller == None)
