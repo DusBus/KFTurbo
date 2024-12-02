@@ -50,7 +50,7 @@ simulated function UpdateWeaponTier(byte NewWeaponTier)
 		class'VetWeaponHelper'.static.PreloadVeterancyAttachmentAssets(None, class'W_V_Deagle_Vet_Attachment'.default.LoadedStateMaterialRefList, class'W_V_Deagle_Vet_Attachment'.default.LoadedStateMaterialList);
 	}
 
-	class'VetWeaponHelper'.static.UpdateWeaponAttachmentTier(Self, NewWeaponTier, PreviousTier, class'W_V_Deagle_Vet_Attachment'.default.LoadedStateMaterialList);
+	class'VetWeaponHelper'.static.UpdateWeaponAttachmentTier(Self, NewWeaponTier, PreviousTier, class'W_V_Deagle_Vet_Attachment'.default.LoadedStateMaterialRefList, class'W_V_Deagle_Vet_Attachment'.default.LoadedStateMaterialList);
 	PreviousTier = WeaponTier;
 }
 

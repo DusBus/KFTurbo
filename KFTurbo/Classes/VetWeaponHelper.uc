@@ -34,7 +34,7 @@ static final function byte GetPlayerWeaponTier(Pawn Pawn, class<TurboVeterancyTy
     return 0;
 }
 
-static final function UpdateWeaponAttachmentTier(KFWeaponAttachment Attachment, byte WeaponTier, byte PreviousWeaponTier, out array<Material> LoadedSkinList)
+static final function UpdateWeaponAttachmentTier(KFWeaponAttachment Attachment, byte WeaponTier, byte PreviousWeaponTier, array<string> SkinRefList, out array<Material> LoadedSkinList)
 {
     WeaponTier = Clamp(WeaponTier, 0, LoadedSkinList.Length);
 
@@ -43,15 +43,21 @@ static final function UpdateWeaponAttachmentTier(KFWeaponAttachment Attachment, 
         return;
     }
 
+    //Last chance attempt to load veterancy weapon skins.
     if (LoadedSkinList.Length == 0)
     {
-        return;
+        PreloadVeterancyAttachmentAssets(Attachment, SkinRefList, LoadedSkinList);
+
+        if (LoadedSkinList.Length == 0)
+        {
+            return;
+        }
     }
 
     Attachment.Skins[0] = LoadedSkinList[WeaponTier];
 }
 
-static final function PreloadVeterancyAttachmentAssets(KFWeaponAttachment Spawned, out array<string> SkinRefList, out array<Material> LoadedSkinList)
+static final function PreloadVeterancyAttachmentAssets(KFWeaponAttachment Spawned, array<string> SkinRefList, out array<Material> LoadedSkinList)
 {
     local int Index;
 

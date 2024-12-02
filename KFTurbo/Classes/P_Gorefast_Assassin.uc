@@ -10,8 +10,16 @@ simulated function PostBeginPlay()
       }
 }
 
+static simulated function PreCacheMaterials(LevelInfo myLevel)
+{
+      Super.PreCacheMaterials(myLevel);
+	myLevel.AddPrecacheMaterial(Shader'KFTurbo.Assassin.Assassin_SHDR');
+}
+
 defaultproperties
 {
-      MeleeDamage=29
       MenuName="Assassin"
+      Skins(0)=Shader'KFTurbo.Assassin.Assassin_SHDR'
+      
+      MeleeDamage=29
 }

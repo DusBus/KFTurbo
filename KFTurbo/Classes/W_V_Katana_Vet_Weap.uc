@@ -40,7 +40,7 @@ simulated function UpdateSkin()
      local array<int> SkinIndexList;
      class'VetWeaponHelper'.static.UpdateWeaponSkin(Self, WeaponTier, SkinIndexList);
 
-     if (Shader(BloodyMaterial) != None)
+     if (Level.NetMode != NM_DedicatedServer && Shader(BloodyMaterial) != None)
      {
           Shader(BloodyMaterial).SelfIllumination = class'VetWeaponHelper'.default.VeterancyColorTextureList[WeaponTier];
      }

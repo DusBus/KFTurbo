@@ -46,7 +46,7 @@ function SetWeaponTier(byte NewWeaponTier)
 
 simulated function UpdateWeaponTier(byte NewWeaponTier)
 {
-     class'VetWeaponHelper'.static.UpdateWeaponAttachmentTier(Self, NewWeaponTier, PreviousTier, LoadedStateMaterialList);
+     class'VetWeaponHelper'.static.UpdateWeaponAttachmentTier(Self, NewWeaponTier, PreviousTier, LoadedStateMaterialRefList, LoadedStateMaterialList);
      PreviousTier = WeaponTier;
 }
 
