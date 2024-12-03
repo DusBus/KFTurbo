@@ -12,7 +12,6 @@ static function OnBurnMitigatedDamage(Pawn Instigator, Pawn Target, int Damage, 
 
 static function OnPawnPushedWithMCZThrower(Pawn Instigator, Pawn Target, Vector VelocityAdded);
 
-
 //Event registration.
 static final function RegisterHandler(Actor Context, class<TurboEventHandler> EventHandlerClass)
 {

@@ -3,12 +3,12 @@ class TurboPerkSelectList extends SRPerkSelectList;
 function InitList(KFSteamStatsAndAchievements StatsAndAchievements)
 {
 	local int i;
-	local KFPlayerController KFPC;
+	local TurboPlayerController KFPC;
 	local ClientPerkRepLink ST;
 	local class<KFVeterancyTypes> CurCL;
 
 	// Grab the Player Controller for later use
-	KFPC = KFPlayerController(PlayerOwner());
+	KFPC = TurboPlayerController(PlayerOwner());
 
 	if (KFPC == None)
 	{
@@ -21,7 +21,7 @@ function InitList(KFSteamStatsAndAchievements StatsAndAchievements)
 	}
 
 	// Hold onto our reference
-	ST = Class'ClientPerkRepLink'.Static.FindStats(PlayerOwner());
+	ST = KFPC.GetClientPerkRepLink();
 
 	if (ST == None)
 	{

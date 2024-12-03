@@ -1,5 +1,7 @@
 class TurboPlayerController extends KFPCServ;
 
+var private ClientPerkRepLink ClientPerkRepLink;	
+var private TurboRepLink TurboRepLink;
 var class<WeaponRemappingSettings> WeaponRemappingSettings;
 var TurboInteraction TurboInteraction;
 var TurboChatInteraction TurboChatInteraction;
@@ -48,6 +50,26 @@ simulated function Tick(float DeltaTime)
 simulated final function bool IsLocalPlayerController()
 {
 	return Viewport(Player) != None;
+}
+
+function ClientPerkRepLink GetClientPerkRepLink()
+{
+	if (ClientPerkRepLink == none)
+	{
+		ClientPerkRepLink = Class'ClientPerkRepLink'.Static.FindStats(Self);
+	}
+
+	return ClientPerkRepLink;
+}
+
+function TurboRepLink GetTurboRepLink()
+{
+	if (TurboRepLink == none)
+	{
+		TurboRepLink = class'TurboRepLink'.static.FindTurboRepLink(PlayerReplicationInfo);
+	}
+
+	return TurboRepLink;
 }
 
 simulated function SetupTurboInteraction()
@@ -355,7 +377,7 @@ function ServerInitializeSteamStatInt(byte Index, int Value)
 	local SRCustomProgressInt Progress;
 	local class<SRCustomProgressInt> ProgressClass;
 
-	CPRL = class'ClientPerkRepLink'.static.FindStats(self);
+	CPRL = GetClientPerkRepLink();
 
 	if (!class'KFTurboGameType'.static.StaticAreStatsAndAchievementsEnabled(Self))
 	{

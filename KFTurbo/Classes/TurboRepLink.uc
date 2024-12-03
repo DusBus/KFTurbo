@@ -408,7 +408,7 @@ simulated function GetVariantsForWeapon(class<KFWeaponPickup> Pickup, out array<
     }
 }
 
-static function TurboRepLink GetTurboRepLink(PlayerReplicationInfo PRI)
+static function TurboRepLink FindTurboRepLink(PlayerReplicationInfo PRI)
 {
     local LinkedReplicationInfo LRI;
     local TurboRepLink KFPLRI;

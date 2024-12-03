@@ -30,12 +30,13 @@ function UpdateMyBuyables()
 	local class<KFWeaponPickup> MyPickup,MyPrimaryPickup, AdjustedPickup;
 	local int DualDivider,i;
 	local class<KFVeterancyTypes> KFV;
-	local ClientPerkRepLink KFLR;
+	local ClientPerkRepLink CPRL;
 	local KFPlayerReplicationInfo PRI;
 
 	PRI = KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo);
-	KFLR = Class'ClientPerkRepLink'.Static.FindStats(PlayerOwner());
-	if( KFLR==None || PRI==None )
+	CPRL = TurboPlayerController(PlayerOwner()).GetClientPerkRepLink();
+	
+	if( CPRL==None || PRI==None )
 		return; // Hmmmm?
 
 	// Let's start with our current inventory
@@ -80,7 +81,7 @@ function UpdateMyBuyables()
 			MyPrimaryPickup = MyPickup;
 		} 
 
-		MyBuyable = AllocateTurboEntry(KFLR);
+		MyBuyable = AllocateTurboEntry(CPRL);
 
 		MyBuyable.ItemName 		= MyPickup.default.ItemShortName;
 		MyBuyable.ItemDescription 	= KFWeapon(CurInv).default.Description;
@@ -142,7 +143,7 @@ function UpdateMyBuyables()
 		// Add secondary ammo.
 		KFWeapon(CurInv).GetSecondaryAmmoCount(MaxAmmo, CurAmmo);
 
-		MyBuyable = AllocateTurboEntry(KFLR);
+		MyBuyable = AllocateTurboEntry(CPRL);
 
 		MyBuyable.ItemName 		= MyPickup.default.SecondaryAmmoShortName;
 		MyBuyable.ItemDescription 	= KFWeapon(CurInv).default.Description;
@@ -175,7 +176,7 @@ function UpdateMyBuyables()
 		SecTypes[SecTypes.Length] = MyBuyable;
 	}
 
-	MyBuyable = AllocateTurboEntry(KFLR);
+	MyBuyable = AllocateTurboEntry(CPRL);
 
 	MyBuyable.ItemName 		= class'BuyableVest'.default.ItemName;
 	MyBuyable.ItemDescription 	= class'BuyableVest'.default.ItemDescription;
