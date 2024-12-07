@@ -1,5 +1,6 @@
 class TurboTab_EmoteList_VertList extends GUIVertList;
 
+var Texture IconBackground;
 var	Texture EntryBackplate;
 
 var array<SRHUDKillingFloor.SmileyMessageType> SmileyTags;
@@ -48,6 +49,7 @@ function DrawEmote(Canvas Canvas, int CurIndex, float X, float Y, float Width, f
 		Canvas.Style = 1;
 	}
 
+	Height *= 0.95f;
 	EmoteEntryWidth = Width / float(EMOTES_PER_ENTRY);
 
 	for (EmoteIndex = (CurIndex * EMOTES_PER_ENTRY) + (EMOTES_PER_ENTRY - 1); EmoteIndex >= (CurIndex * EMOTES_PER_ENTRY); EmoteIndex--)
@@ -58,18 +60,22 @@ function DrawEmote(Canvas Canvas, int CurIndex, float X, float Y, float Width, f
 			continue;
 		}
 
+		RatioX = float(SmileyTags[EmoteIndex].SmileyTex.USize) / float(SmileyTags[EmoteIndex].SmileyTex.VSize);
+
 		TempX = (X + Width) - EmoteEntryWidth;
 		TempY = Y;
 
 		Canvas.SetDrawColor(255, 255, 255, 255);
-		Canvas.SetPos(TempX, TempY + 1.f);
-		Canvas.DrawTileStretched(EntryBackplate, EmoteEntryWidth, Height);
+		Canvas.SetPos(TempX + (Height * RatioX), TempY + (Height * 0.05f));
+		Canvas.DrawTileStretched(EntryBackplate, (EmoteEntryWidth - (Height * RatioX)) - 2.f, Height * 0.9f);
 
-		TempX += Height * 0.2f;
+		Canvas.SetPos(TempX, TempY);
+		Canvas.DrawTileStretched(IconBackground, Height * RatioX, Height);
+
+		TempX += Height * RatioX * 0.1f;
 
 		Canvas.SetPos(TempX, TempY + (0.1f * Height));
 
-		RatioX = float(SmileyTags[EmoteIndex].SmileyTex.USize) / float(SmileyTags[EmoteIndex].SmileyTex.VSize);
 		Canvas.DrawRect(SmileyTags[EmoteIndex].SmileyTex, (RatioX * Height * 0.8f), (0.8f * Height));
 		
 		TempX += RatioX * Height * 0.9f;
@@ -89,11 +95,12 @@ function DrawEmote(Canvas Canvas, int CurIndex, float X, float Y, float Width, f
 
 function float GetEmoteEntryHeight(Canvas C)
 {
-	return (MenuOwner.ActualHeight() / 14.f) - 1.f;
+	return (MenuOwner.ActualHeight() / 10.f) - 1.f;
 }
 
 defaultproperties
 {
+	IconBackground=Texture'KF_InterfaceArt_tex.Menu.Item_box_box'
 	EntryBackplate=Texture'KF_InterfaceArt_tex.Menu.Item_box_bar'
 	FontScale=FNS_Medium
 

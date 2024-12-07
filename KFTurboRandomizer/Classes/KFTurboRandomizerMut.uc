@@ -85,6 +85,30 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 
 	return true;
 }
+static final function KFTurboRandomizerMut FindMutator(GameInfo GameInfo)
+{
+    local KFTurboRandomizerMut RandomizerMut;
+    local Mutator Mutator;
+
+	if (GameInfo == None)
+	{
+		return None;
+	}
+
+    for ( Mutator = GameInfo.BaseMutator; Mutator != None; Mutator = Mutator.NextMutator )
+    {
+        RandomizerMut = KFTurboRandomizerMut(Mutator);
+
+        if (RandomizerMut == None)
+        {
+            continue;
+        }
+
+		return RandomizerMut;
+    }
+
+	return None;
+}
 
 function Timer()
 {

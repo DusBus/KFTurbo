@@ -1,100 +1,16 @@
 class TurboInteraction extends Engine.Interaction
 	dependson(TurboPlayerMarkReplicationInfo)
+	dependson(TurboRepLink)
 	config(KFTurbo);
 
 var globalconfig bool bTraderBindingInitialized;
 var globalconfig bool bMarkActorBindingInitialized;
 var globalconfig TurboPlayerMarkReplicationInfo.EMarkColor MarkColor;
 
-simulated function ApplyTurboKeybinds()
-{
-	if (ViewportOwner == None || ViewportOwner.Actor == None)
-	{
-		return;
-	}
+var bool bHasInitializedPerkTierPreference;
+var globalconfig TurboRepLink.VeterancyTierPreference PerkTierPreferenceList[7];
 
-	if (class'KFTurboGameType'.static.StaticIsHighDifficulty(ViewportOwner.Actor))
-	{
-		ApplyTraderKeybind();
-	}
-
-	ApplyMarkActorKeybind();
-}
-
-final function bool SetOrAppendCommandToKey(String Key, String Command)
-{
-	local String GetInputResult, CapsGetInputResult;
-
-	GetInputResult = ViewportOwner.Actor.ConsoleCommand("get input"@Key);
-	CapsGetInputResult = Caps(GetInputResult);
-
-	while (CapsGetInputResult != "" && Left(CapsGetInputResult, 1) == " ")
-	{
-		CapsGetInputResult = Right(CapsGetInputResult, Len(CapsGetInputResult) - 1);
-	}
-
-	while (CapsGetInputResult != "" && Right(CapsGetInputResult, 1) == " ")
-	{
-		CapsGetInputResult = Left(CapsGetInputResult, Len(CapsGetInputResult) - 1);
-	}
-
-	if (CapsGetInputResult == Caps(Command))
-	{
-		return false;
-	}
-
-	if (InStr(CapsGetInputResult, Caps(Command)@"|") == 0 || InStr(CapsGetInputResult, "|"@Caps(Command)) != -1)
-	{
-		return false;
-	}
-	
-	ViewportOwner.Actor.ConsoleCommand("set input"@Key@GetInputResult@"|"@Command);
-	
-	return true;
-}
-
-simulated function ApplyTraderKeybind()
-{
-	if (bTraderBindingInitialized)
-	{
-		return;
-	}
-
-	bTraderBindingInitialized = true;
-
-	if (!SetOrAppendCommandToKey("H", "Trade"))
-	{
-		return;
-	}
-
-	ViewportOwner.Actor.ClientMessage("Welcome to KFTurbo+. Your keybind to open trader has been initialized to the H key.");
-}
-
-simulated function ApplyMarkActorKeybind()
-{
-	if (bMarkActorBindingInitialized)
-	{
-		return;
-	}
-
-	bMarkActorBindingInitialized = true;
-
-	if (!SetOrAppendCommandToKey("X", "MarkActor"))
-	{
-		return;
-	}
-
-	if (class'KFTurboGameType'.static.StaticIsHighDifficulty(ViewportOwner.Actor))
-	{
-		ViewportOwner.Actor.ClientMessage("Welcome to KFTurbo+. Your keybind to mark actors has been initialized to the X key.");
-	}
-	else
-	{
-		ViewportOwner.Actor.ClientMessage("Welcome to KFTurbo. Your keybind to mark actors has been initialized to the X key.");
-	}
-}
-
-exec function Trade()
+exec simulated function Trade()
 {
 	if (ViewportOwner == None || ViewportOwner.Actor == None || ViewportOwner.Actor.Pawn == None)
 	{
@@ -120,13 +36,13 @@ exec function Trade()
 	KFPlayerController(ViewportOwner.Actor).ShowBuyMenu("WeaponLocker", KFHumanPawn(ViewportOwner.Actor.Pawn).MaxCarryWeight);
 }
 
-exec function SetMarkColor(TurboPlayerMarkReplicationInfo.EMarkColor Color)
+exec simulated function SetMarkColor(TurboPlayerMarkReplicationInfo.EMarkColor Color)
 {
 	MarkColor = Color;
 	SaveConfig();
 }
 
-exec function MarkActor(optional TurboPlayerMarkReplicationInfo.EMarkColor Color)
+exec simulated function MarkActor(optional TurboPlayerMarkReplicationInfo.EMarkColor Color)
 {
 	local Vector HitLocation, HitNormal;
 	local Vector StartMarkTrace, X, Y, Z;
@@ -185,7 +101,7 @@ exec function MarkActor(optional TurboPlayerMarkReplicationInfo.EMarkColor Color
 	}
 }
 
-function CheckForVoiceCommandMark(Name Type, int Index)
+simulated function CheckForVoiceCommandMark(Name Type, int Index)
 {
 	local int VoiceCommandMarkData;
 
@@ -206,7 +122,79 @@ function CheckForVoiceCommandMark(Name Type, int Index)
 	TurboPlayerController(ViewportOwner.Actor).AttemptMarkActor(ViewportOwner.Actor.Pawn.Location, ViewportOwner.Actor.Pawn.Location, ViewportOwner.Actor.Pawn, class'TurboMarkerType_VoiceCommand', VoiceCommandMarkData, MarkColor);
 }
 
+simulated function SetVeterancyTierPreference(class<TurboVeterancyTypes> PerkClass, int TierPreference)
+{
+	local TurboRepLink TurboRepLink;
+
+	TierPreference = Min(TierPreference, 7);
+	switch(PerkClass)
+	{
+		case class'V_FieldMedic':
+			PerkTierPreferenceList[0].TierPreference = TierPreference;
+			break;
+		case class'V_SupportSpec':
+			PerkTierPreferenceList[1].TierPreference = TierPreference;
+			break;
+		case class'V_Sharpshooter':
+			PerkTierPreferenceList[2].TierPreference = TierPreference;
+			break;
+		case class'V_Commando':
+			PerkTierPreferenceList[3].TierPreference = TierPreference;
+			break;
+		case class'V_Berserker':
+			PerkTierPreferenceList[4].TierPreference = TierPreference;
+			break;
+		case class'V_Firebug':
+			PerkTierPreferenceList[5].TierPreference = TierPreference;
+			break;
+		case class'V_Demolitions':
+			PerkTierPreferenceList[6].TierPreference = TierPreference;
+			break;
+		default:
+			return;
+	}
+
+	TurboRepLink = TurboPlayerController(ViewportOwner.Actor).GetTurboRepLink();
+	if (TurboRepLink == None)
+	{
+		return;
+	}
+
+	TurboRepLink.SetVeterancyTierPreference(PerkClass, TierPreference);
+	SaveConfig();
+}
+
+simulated function bool InitializeVeterancyTierPreferences()
+{
+	local int Index;
+	local TurboRepLink TurboRepLink;
+
+	TurboRepLink = TurboPlayerController(ViewportOwner.Actor).GetTurboRepLink();
+
+	if (TurboRepLink == None)
+	{
+		return false;
+	}
+
+	for (Index = 0; Index < ArrayCount(PerkTierPreferenceList); Index++)
+	{
+		TurboRepLink.SetVeterancyTierPreference(PerkTierPreferenceList[Index].PerkClass, PerkTierPreferenceList[Index].TierPreference);
+	}
+
+	bHasInitializedPerkTierPreference = true;
+	return true;
+}
+
 defaultproperties
 {
 	bNativeEvents=true
+	
+	bHasInitializedPerkTierPreference=false
+	PerkTierPreferenceList(0)=(PerkClass=class'V_FieldMedic',TierPreference=7)
+	PerkTierPreferenceList(1)=(PerkClass=class'V_SupportSpec',TierPreference=7)
+	PerkTierPreferenceList(2)=(PerkClass=class'V_Sharpshooter',TierPreference=7)
+	PerkTierPreferenceList(3)=(PerkClass=class'V_Commando',TierPreference=7)
+	PerkTierPreferenceList(4)=(PerkClass=class'V_Berserker',TierPreference=7)
+	PerkTierPreferenceList(5)=(PerkClass=class'V_Firebug',TierPreference=7)
+	PerkTierPreferenceList(6)=(PerkClass=class'V_Demolitions',TierPreference=7)
 }

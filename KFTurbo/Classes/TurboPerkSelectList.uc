@@ -1,5 +1,8 @@
 class TurboPerkSelectList extends SRPerkSelectList;
 
+var Texture PerkIconBackground;
+var Texture SelectedPerkIconBackground;
+
 function InitList(KFSteamStatsAndAchievements StatsAndAchievements)
 {
 	local int i;
@@ -68,6 +71,103 @@ function InitList(KFSteamStatsAndAchievements StatsAndAchievements)
 	}
 }
 
+function DrawPerk(Canvas Canvas, int CurIndex, float X, float Y, float Width, float Height, bool bSelected, bool bPending)
+{
+	local float TempX, TempY;
+	local float PerkIconOffset;
+	local float IconSize, ProgressBarWidth;
+	local float TempWidth, TempHeight;
+	local ClientPerkRepLink CPRL;
+	local Material M,SM;
+
+	CPRL = TurboPlayerController(Canvas.Viewport.Actor).GetClientPerkRepLink();
+
+	if (CPRL == None)
+	{
+		return;
+	}
+
+	// Offset for the Background
+	TempX = X;
+	TempY = Y + ItemSpacing / 2.0;
+
+	// Initialize the Canvas
+	Canvas.Style = 1;
+	Canvas.Font = class'ROHUD'.Static.GetSmallMenuFont(Canvas);
+	Canvas.SetDrawColor(255, 255, 255, 255);
+
+	// Draw Item Background
+	IconSize = Height - ItemSpacing - (ItemBorder * 2.0 * Height);
+	PerkIconOffset = IconSize + (ItemBorder * Height * 2.f);
+	Canvas.SetPos(TempX + PerkIconOffset, Y + 7.0);
+	if (bSelected)
+	{
+		Canvas.DrawTileStretched(SelectedInfoBackground, Width - PerkIconOffset, Height - ItemSpacing - 14);
+	}
+	else
+	{
+		Canvas.DrawTileStretched(InfoBackground, Width - PerkIconOffset, Height - ItemSpacing - 14);
+	}
+
+	Canvas.SetPos(TempX, TempY);
+	if (bSelected)
+	{
+		Canvas.DrawTileStretched(SelectedPerkBackground, PerkIconOffset, PerkIconOffset);
+	}
+	else
+	{
+		Canvas.DrawTileStretched(PerkBackground, PerkIconOffset, PerkIconOffset);
+	}
+
+	// Offset and Calculate Icon's Size
+	TempX += ItemBorder * Height;
+	TempY += ItemBorder * Height;
+
+	// Draw Icon
+	Canvas.SetPos(TempX, TempY);
+	CPRL.CachePerks[CurIndex].PerkClass.Static.PreDrawPerk(Canvas, Max(CPRL.CachePerks[CurIndex].CurrentLevel, 1) - 1, M, SM);
+	Canvas.DrawTile(M, IconSize, IconSize, 0, 0, M.MaterialUSize(), M.MaterialVSize());
+
+	TempX += IconSize + (IconToInfoSpacing * Width);
+	TempY += TextTopOffset * Height;
+
+	ProgressBarWidth = Width - (TempX - X) - (IconToInfoSpacing * Width);
+
+	// Select Text Color
+	if (CurIndex == MouseOverIndex)
+	{
+		Canvas.SetDrawColor(255, 0, 0, 255);
+	}
+	else 
+	{
+		Canvas.SetDrawColor(255, 255, 255, 255);
+	}
+
+	// Draw the Perk's Level Name
+	Canvas.StrLen(PerkName[CurIndex], TempWidth, TempHeight);
+	Canvas.SetPos(TempX, TempY);
+	Canvas.DrawText(PerkName[CurIndex]);
+
+	// Draw the Perk's Level
+	if ( PerkLevelString[CurIndex] != "" )
+	{
+		Canvas.StrLen(PerkLevelString[CurIndex], TempWidth, TempHeight);
+		Canvas.SetPos(TempX + ProgressBarWidth - TempWidth, TempY);
+		Canvas.DrawText(PerkLevelString[CurIndex]);
+	}
+
+	TempY += TempHeight + (0.01 * Height);
+
+	// Draw Progress Bar
+	Canvas.SetDrawColor(255, 255, 255, 255);
+	Canvas.SetPos(TempX, TempY);
+	Canvas.DrawTileStretched(ProgressBarBackground, ProgressBarWidth, ProgressBarHeight * Height);
+	Canvas.SetPos(TempX, TempY);
+	Canvas.DrawTileStretched(ProgressBarForeground, ProgressBarWidth * PerkProgress[CurIndex], ProgressBarHeight * Height);
+}
+
 defaultproperties
 {
+	PerkIconBackground=Texture'KF_InterfaceArt_tex.Menu.Item_box_box'
+	SelectedPerkIconBackground=Texture'KF_InterfaceArt_tex.Menu.Item_box_box_Highlighted'
 }

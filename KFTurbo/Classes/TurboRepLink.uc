@@ -45,10 +45,19 @@ var bool bNeedsDestroy;
 var bool bHasPerformedSetup;
 var bool bHasPerformedVariantStatusUpdate;
 
+struct VeterancyTierPreference
+{
+	var class<TurboVeterancyTypes> PerkClass;
+	var int TierPreference;
+};
+var array<VeterancyTierPreference> VeterancyTierPreferenceList;
+
 replication
 {
     reliable if (Role == ROLE_Authority)
         Client_Reliable_SetupComplete;
+    reliable if (Role < ROLE_Authority)
+        ServerSetVeterancyTierPreference;
 }
 
 simulated function PreBeginPlay()
@@ -131,7 +140,7 @@ Begin:
     
     if (NetConnection(OwningController.Player) == None)
     {
-        UpdateVariantStatus();
+        OnSetupComplete();
     }
     else
     {
@@ -389,7 +398,17 @@ simulated function DebugVariantInfo(bool bFilterStatus)
 
 simulated function Client_Reliable_SetupComplete()
 {
+    OnSetupComplete();
+}
+
+simulated function OnSetupComplete()
+{
     UpdateVariantStatus();
+    
+    if (TurboPlayerController(OwningController).TurboInteraction != None)
+    {
+        TurboPlayerController(OwningController).TurboInteraction.InitializeVeterancyTierPreferences();
+    }
 }
 
 simulated function GetVariantsForWeapon(class<KFWeaponPickup> Pickup, out array<VariantWeapon> VariantList)
@@ -475,6 +494,75 @@ static final function bool IsGenericSteampunkSkin(class<Pickup> PickupClass)
 static final function bool IsGenericVeterancySkin(class<Pickup> PickupClass)
 {
 	return InStr(Caps(PickupClass), "_VET_") != -1;
+}
+
+function ServerSetVeterancyTierPreference(class<TurboVeterancyTypes> PerkClass, int TierPreference)
+{
+    if (Role == ROLE_Authority)
+    {
+        SetVeterancyTierPreference(PerkClass, TierPreference);
+    }
+}
+
+simulated function SetVeterancyTierPreference(class<TurboVeterancyTypes> PerkClass, int TierPreference)
+{
+    if (VeterancyTierPreferenceList.Length == 0)
+    {
+        VeterancyTierPreferenceList.Length = 7;
+    }
+
+	switch(PerkClass)
+	{
+		case class'V_FieldMedic':
+			VeterancyTierPreferenceList[0].TierPreference = TierPreference;
+			break;
+		case class'V_SupportSpec':
+			VeterancyTierPreferenceList[1].TierPreference = TierPreference;
+			break;
+		case class'V_Sharpshooter':
+			VeterancyTierPreferenceList[2].TierPreference = TierPreference;
+			break;
+		case class'V_Commando':
+			VeterancyTierPreferenceList[3].TierPreference = TierPreference;
+			break;
+		case class'V_Berserker':
+			VeterancyTierPreferenceList[4].TierPreference = TierPreference;
+			break;
+		case class'V_Firebug':
+			VeterancyTierPreferenceList[5].TierPreference = TierPreference;
+			break;
+		case class'V_Demolitions':
+			VeterancyTierPreferenceList[6].TierPreference = TierPreference;
+			break;
+	}
+
+    if (Role != ROLE_Authority)
+    {
+        ServerSetVeterancyTierPreference(PerkClass, TierPreference);
+    }
+}
+
+simulated function int GetVeterancyTierPreference(class<TurboVeterancyTypes> PerkClass)
+{
+	switch(PerkClass)
+	{
+		case class'V_FieldMedic':
+			return VeterancyTierPreferenceList[0].TierPreference;
+		case class'V_SupportSpec':
+			return VeterancyTierPreferenceList[1].TierPreference;
+		case class'V_Sharpshooter':
+			return VeterancyTierPreferenceList[2].TierPreference;
+		case class'V_Commando':
+			return VeterancyTierPreferenceList[3].TierPreference;
+		case class'V_Berserker':
+			return VeterancyTierPreferenceList[4].TierPreference;
+		case class'V_Firebug':
+			return VeterancyTierPreferenceList[5].TierPreference;
+		case class'V_Demolitions':
+			return VeterancyTierPreferenceList[6].TierPreference;
+	}
+
+	return 7;
 }
 
 defaultproperties

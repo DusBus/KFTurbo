@@ -316,10 +316,6 @@ function Possess(Pawn P)
 	Super.Possess(P);
 
 	SetupTurboInteraction();
-	if ((Level.NetMode == NM_Standalone || Level.NetMode == NM_ListenServer) && TurboInteraction != None)
-	{
-		TurboInteraction.ApplyTurboKeybinds();
-	}
 }
 
 simulated function AcknowledgePossession(Pawn P)
@@ -327,10 +323,6 @@ simulated function AcknowledgePossession(Pawn P)
 	Super.AcknowledgePossession(P);
 
 	SetupTurboInteraction();
-	if (TurboInteraction != None)
-	{
-		TurboInteraction.ApplyTurboKeybinds();
-	}
 }
 
 function ServerSetWantsTraderPath(bool bNewWantsTraderPath)

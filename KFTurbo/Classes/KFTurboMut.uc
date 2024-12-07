@@ -6,6 +6,7 @@ class KFTurboMut extends Mutator
 	config(KFTurbo);
 
 #exec obj load file="..\Animations\KFTurboContent.ukx" package=KFTurbo
+#exec obj load file="..\Textures\KFTurboVet.utx" package=KFTurbo
 #exec obj load file="..\Animations\KFTurboExtra.ukx" package=KFTurbo
 #exec obj load file="..\Textures\KFTurboHUD.utx" package=KFTurbo
 

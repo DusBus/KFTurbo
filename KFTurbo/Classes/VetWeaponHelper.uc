@@ -9,25 +9,33 @@ var array<Material> VeterancyColorTextureList;
 static final function byte GetPlayerWeaponTier(Pawn Pawn, class<TurboVeterancyTypes> VeterancyClass)
 {
     local ClientPerkRepLink CPRL;
+    local TurboRepLink TRL;
     local int Index;
 
-    if (Pawn == None || PlayerController(Pawn.Controller) == None)
+    if (Pawn == None || TurboPlayerController(Pawn.Controller) == None)
     {
         return 0;
     }
 
-    CPRL = class'ClientPerkRepLink'.static.FindStats(PlayerController(Pawn.Controller));
+    CPRL = TurboPlayerController(Pawn.Controller).GetClientPerkRepLink();
 
     if (CPRL == None)
     {
         return 0;
     }
 
-	for( Index = 0; Index < CPRL.CachePerks.Length; Index++ )
+	for(Index = 0; Index < CPRL.CachePerks.Length; Index++)
 	{
 		if (CPRL.CachePerks[Index].PerkClass == VeterancyClass)
 		{
-            return VeterancyClass.static.GetPerkTier(CPRL.CachePerks[Index].CurrentLevel - 1);
+            TRL = TurboPlayerController(Pawn.Controller).GetTurboRepLink();
+
+            if (TRL == None)
+            {
+                return VeterancyClass.static.GetPerkTier(CPRL.CachePerks[Index].CurrentLevel - 1);
+            }
+            
+            return Min(VeterancyClass.static.GetPerkTier(CPRL.CachePerks[Index].CurrentLevel - 1), TRL.GetVeterancyTierPreference(VeterancyClass));
 		}
 	}
 

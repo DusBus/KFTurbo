@@ -77,6 +77,9 @@ var bool bCanEarnMedicGame;
 var bool bIsPlayingCardGame;
 var bool bCanEarnCardGameWin;
 
+var bool bIsPlayingRandomizer;
+var bool bCanEarnRandomizerWin;
+
 var float LastOrcaDamageTime;
 
 struct ScytheKillData
@@ -100,6 +103,10 @@ function MatchStarting()
     if (class'KFTurboCardGameMut'.static.FindMutator(Level.Game) != None)
     {
         bIsPlayingCardGame = true;
+    }
+    else if (class'KFTurboRandomizerMut'.static.FindMutator(Level.Game) != None)
+    {
+        bIsPlayingRandomizer = true;
     }
 
     bCanEarnMedicGame = class'V_FieldMedic'.static.IsFieldMedic(KFPlayerReplicationInfo(OwnerController.PlayerReplicationInfo));
@@ -143,6 +150,22 @@ event MatchEnd(string mapname, float difficulty, int length, byte result, int wa
 
         CheckCurseOfRaGame();
     }
+
+    if (bCanEarnRandomizerWin)
+    {
+        if (!IsAchievementComplete(WIN_RANDOMIZER_1))
+        {
+            achievementCompleted(WIN_RANDOMIZER_1);
+        }
+        else if (!IsAchievementComplete(WIN_RANDOMIZER_2))
+        {
+            achievementCompleted(WIN_RANDOMIZER_2);
+        }
+        else if (!IsAchievementComplete(WIN_RANDOMIZER_3))
+        {
+            achievementCompleted(WIN_RANDOMIZER_3);
+        }
+    }
 }
 
 function CheckCurseOfRaGame()
@@ -179,16 +202,33 @@ event WaveStart(int WaveNum)
         return;
     }
 
-    if (bIsPlayingCardGame && WaveNum < 5)
+    if (WaveNum < 5)
     {
-        bCanEarnCardGameWin = true;
+        if (bIsPlayingCardGame)
+        {
+            bCanEarnCardGameWin = true;
+        }
+        
+        if (bIsPlayingRandomizer)
+        {
+            bCanEarnRandomizerWin = true;
+        }
+    }
+    else
+    {
+        if (OwnerController.PlayerReplicationInfo.bOnlySpectator)
+        {
+            bCanEarnCardGameWin = false;
+            bCanEarnRandomizerWin = false;
+        }
     }
 
     ResetCombatShotgunKills();
     ResetMagnumHeadshots();
     ResetM14Headshots();
     
-    if (bCanEarnMedicGame && !class'V_FieldMedic'.static.IsFieldMedic(KFPlayerReplicationInfo(OwnerController.PlayerReplicationInfo)))
+    if (bCanEarnMedicGame && (OwnerController.PlayerReplicationInfo.bOnlySpectator ||
+        !class'V_FieldMedic'.static.IsFieldMedic(KFPlayerReplicationInfo(OwnerController.PlayerReplicationInfo))))
     {
         bCanEarnMedicGame = false;
     }
@@ -825,7 +865,7 @@ defaultproperties
     Achievements(28)=(title="Four Of A Kind",Description="Win four games of KFTurbo Card Game.",image=Texture'KFTurbo.Achievement.FourOfAKind_D')
     Achievements(29)=(title="The Cursed Card",Description="Win a game of KFTurbo Card Game with the Curse of Ra being one of the first 8 cards selected.",image=Texture'KFTurbo.Achievement.CurseOfRa_D')
 
-    //Achievements(30)=(title="Mixed Up",Description="Win a game of KFTurbo Randomizer.",image=Texture'KFTurbo.Achievement.JUMPERAIRSHOT_D')
-    //Achievements(31)=(title="Well Shuffled",Description="Win two games of KFTurbo Randomizer.",image=Texture'KFTurbo.Achievement.JUMPERAIRSHOT_D')
-    //Achievements(32)=(title="Thoroughly Blended",Description="Win three games of KFTurbo Randomizer.",image=Texture'KFTurbo.Achievement.JUMPERAIRSHOT_D')
+    Achievements(30)=(title="Mixed Up",Description="Win a game of KFTurbo Randomizer.",image=Texture'KFTurbo.Achievement.Randomizer1_D')
+    Achievements(31)=(title="Well Shuffled",Description="Win two games of KFTurbo Randomizer.",image=Texture'KFTurbo.Achievement.Randomizer2_D')
+    Achievements(32)=(title="Thoroughly Blended",Description="Win three games of KFTurbo Randomizer.",image=Texture'KFTurbo.Achievement.Randomizer3_D')
 }
