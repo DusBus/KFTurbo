@@ -1,8 +1,5 @@
 class TurboPerkSelectList extends SRPerkSelectList;
 
-var Texture PerkIconBackground;
-var Texture SelectedPerkIconBackground;
-
 function InitList(KFSteamStatsAndAchievements StatsAndAchievements)
 {
 	local int i;
@@ -168,6 +165,5 @@ function DrawPerk(Canvas Canvas, int CurIndex, float X, float Y, float Width, fl
 
 defaultproperties
 {
-	PerkIconBackground=Texture'KF_InterfaceArt_tex.Menu.Item_box_box'
-	SelectedPerkIconBackground=Texture'KF_InterfaceArt_tex.Menu.Item_box_box_Highlighted'
+	
 }
