@@ -54,17 +54,16 @@ static function SpecialHUDInfo(KFPlayerReplicationInfo KFPRI, Canvas C)
 	local HUDKillingFloor HKF;
 	local Pawn P;
 
-	if (KFPRI.ClientVeteranSkillLevel > 0)
-	{
-		HKF = HUDKillingFloor(C.ViewPort.Actor.myHUD);
-		P = Pawn(C.ViewPort.Actor.ViewTarget);
-		if (HKF == none || P == none || P.Health <= 0)
-			return;
+	HKF = HUDKillingFloor(C.ViewPort.Actor.myHUD);
+	P = Pawn(C.ViewPort.Actor.ViewTarget);
+	if (HKF == none || P == none || P.Health <= 0)
+		return;
 
-		foreach P.CollidingActors(class'KFMonster', KFEnemy, LerpStat(KFPRI, 0.f, 800.f))
+	foreach P.CollidingActors(class'KFMonster', KFEnemy, LerpStat(KFPRI, 0.f, 800.f))
+	{
+		if (KFEnemy.Health > 0 && (!KFEnemy.Cloaked() || KFEnemy.bZapped || KFEnemy.bSpotted))
 		{
-			if (KFEnemy.Health > 0 && (!KFEnemy.Cloaked() || KFEnemy.bZapped || KFEnemy.bSpotted))
-				HKF.DrawHealthBar(C, KFEnemy, KFEnemy.Health, KFEnemy.HealthMax, 50.0);
+			HKF.DrawHealthBar(C, KFEnemy, KFEnemy.Health, KFEnemy.HealthMax, 50.0);
 		}
 	}
 }
