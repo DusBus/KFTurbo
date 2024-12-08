@@ -4,12 +4,14 @@
 class TurboVeterancyTypes extends SRVeterancyTypes
 	abstract;
 
+const MAX_PERK_TIER = 7;
+
 var int LevelRankRequirement; //Denotes levels between new rank names.
 var float HighDifficultyExtraAmmoMultiplier;
 
 var	Texture StarTexture;
 
-var() Color LevelColors[7];
+var() Color LevelColors[MAX_PERK_TIER];
 
 var() localized string MaxTierTitle;
 var() Color MaxTierColor;
@@ -357,7 +359,7 @@ static final function byte GetPerkTier(byte Level)
 
 static final function byte GetMaxTier()
 {
-	return ArrayCount(Default.LevelNames);
+	return MAX_PERK_TIER;
 }
 
 static function string GetPerkTierTitle(byte Tier)

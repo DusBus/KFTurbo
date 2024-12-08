@@ -43,7 +43,7 @@ simulated function HitWall( vector HitNormal, actor Wall )
         Timer();
         SetTimer(0.0,False);
 
-		class'WeaponHelper'.static.BeginGrenadeSmoothRotation(self, 20);
+		class'WeaponHelper'.static.BeginGrenadeSmoothRotation(self, 4);
 
 		if( Fear == none )
 		{
@@ -236,7 +236,7 @@ defaultproperties
 	bUseCylinderCollision = false
 	bFixedRotationDir = true
 
-	CollisionRadius=3
-    CollisionHeight=3
+	CollisionRadius=0
+    CollisionHeight=0
     RotationRate=(Roll=0)
 }

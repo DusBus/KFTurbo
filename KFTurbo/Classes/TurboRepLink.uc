@@ -1,4 +1,5 @@
-class TurboRepLink extends LinkedReplicationInfo;
+class TurboRepLink extends LinkedReplicationInfo
+    dependson(TurboVeterancyTypes);
 
 // Built-in Variant Set Names:
 //Common variants - accessible to all players.
@@ -508,7 +509,7 @@ simulated function SetVeterancyTierPreference(class<TurboVeterancyTypes> PerkCla
 {
     if (VeterancyTierPreferenceList.Length == 0)
     {
-        VeterancyTierPreferenceList.Length = 7;
+        VeterancyTierPreferenceList.Length = class'TurboVeterancyTypes'.static.GetMaxTier();
     }
 
 	switch(PerkClass)
@@ -544,6 +545,11 @@ simulated function SetVeterancyTierPreference(class<TurboVeterancyTypes> PerkCla
 
 simulated function int GetVeterancyTierPreference(class<TurboVeterancyTypes> PerkClass)
 {
+    if (VeterancyTierPreferenceList.Length == 0)
+    {
+        return class'TurboVeterancyTypes'.static.GetMaxTier();
+    }
+
 	switch(PerkClass)
 	{
 		case class'V_FieldMedic':
@@ -562,7 +568,7 @@ simulated function int GetVeterancyTierPreference(class<TurboVeterancyTypes> Per
 			return VeterancyTierPreferenceList[6].TierPreference;
 	}
 
-	return 7;
+	return class'TurboVeterancyTypes'.static.GetMaxTier();
 }
 
 defaultproperties

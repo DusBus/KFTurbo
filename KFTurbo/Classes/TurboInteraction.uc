@@ -8,7 +8,7 @@ var globalconfig bool bMarkActorBindingInitialized;
 var globalconfig TurboPlayerMarkReplicationInfo.EMarkColor MarkColor;
 
 var bool bHasInitializedPerkTierPreference;
-var globalconfig TurboRepLink.VeterancyTierPreference PerkTierPreferenceList[7];
+var globalconfig array<TurboRepLink.VeterancyTierPreference> PerkTierPreferenceList;
 
 exec simulated function Trade()
 {
@@ -176,7 +176,13 @@ simulated function bool InitializeVeterancyTierPreferences()
 		return false;
 	}
 
-	for (Index = 0; Index < ArrayCount(PerkTierPreferenceList); Index++)
+	//Somehow we nuked the list. Reset it.
+	if (PerkTierPreferenceList.Length == 0)
+	{
+		PerkTierPreferenceList = default.PerkTierPreferenceList;
+	}
+
+	for (Index = 0; Index < PerkTierPreferenceList.Length; Index++)
 	{
 		TurboRepLink.SetVeterancyTierPreference(PerkTierPreferenceList[Index].PerkClass, PerkTierPreferenceList[Index].TierPreference);
 	}

@@ -36,6 +36,13 @@ simulated function PostBeginPlay()
 	}
 }
 
+simulated function InitInputSystem()
+{
+	Super.InitInputSystem();
+
+	SetupTurboInteraction();
+}
+
 simulated function Tick(float DeltaTime)
 {
 	Super.Tick(DeltaTime);
@@ -75,6 +82,11 @@ function TurboRepLink GetTurboRepLink()
 simulated function SetupTurboInteraction()
 {
 	if (Level.NetMode == NM_DedicatedServer)
+	{
+		return;
+	}
+
+	if (Player == None || Player.InteractionMaster == None)
 	{
 		return;
 	}
@@ -309,20 +321,6 @@ function ShowBuyMenu(string wlTag,float maxweight)
 {
 	StopForceFeedback();
 	ClientOpenMenu(string(Class'TurboGUIBuyMenu'),,wlTag,string(maxweight));
-}
-
-function Possess(Pawn P)
-{
-	Super.Possess(P);
-
-	SetupTurboInteraction();
-}
-
-simulated function AcknowledgePossession(Pawn P)
-{
-	Super.AcknowledgePossession(P);
-
-	SetupTurboInteraction();
 }
 
 function ServerSetWantsTraderPath(bool bNewWantsTraderPath)

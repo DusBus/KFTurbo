@@ -53,7 +53,7 @@ simulated function HitWall( vector HitNormal, actor Wall )
     if ( Speed < 10 )
     {
         bBounce = False;
-		class'WeaponHelper'.static.BeginGrenadeSmoothRotation(self, 5);
+		class'WeaponHelper'.static.BeginGrenadeSmoothRotation(self, 2);
 
         if ( Trail != None )
             Trail.mRegen = false; // stop the emitter from regenerating
@@ -202,8 +202,8 @@ defaultproperties
 	bUseCylinderCollision = false
 	bFixedRotationDir = true
 
-	CollisionRadius=3
-    CollisionHeight=3
+	CollisionRadius=0
+    CollisionHeight=0
     RotationRate=(Roll=0)
 	PrePivot=(Z=6);
 }
