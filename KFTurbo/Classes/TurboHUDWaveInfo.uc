@@ -5,7 +5,7 @@
 class TurboHUDWaveInfo extends TurboHUDOverlay
     hidecategories(Advanced,Collision,Display,Events,Force,Karma,LightColor,Lighting,Movement,Object,Sound);
 
-var KFGameReplicationInfo KFGRI;
+var TurboGameReplicationInfo TGRI;
 
 //Trader
 var bool bNeedTraderWaveInitialization;
@@ -71,18 +71,18 @@ simulated function Initialize(TurboHUDKillingFloor OwnerHUD)
 {
 	Super.Initialize(OwnerHUD);
 
-	KFGRI = KFGameReplicationInfo(KFPHUD.Level.GRI);
+	TGRI = TurboGameReplicationInfo(Level.GRI);
 
 	ActiveBackplateSize = BackplateSize;
 }
 
 simulated function Tick(float DeltaTime)
 {
-	if (KFGRI == None)
+	if (TGRI == None)
 	{
-		KFGRI = KFGameReplicationInfo(KFPHUD.Level.GRI);
+		TGRI = TurboGameReplicationInfo(Level.GRI);
 
-		if (KFGRI == None)
+		if (TGRI == None)
 		{
 			return;
 		}
@@ -90,11 +90,11 @@ simulated function Tick(float DeltaTime)
 
 	TickKillFeed(DeltaTime);
 
-	if (KFGRI.bWaveInProgress && !IsInState('ActiveWave'))
+	if (TGRI.bWaveInProgress && !IsInState('ActiveWave'))
 	{
 		GotoState('ActiveWave');
 	}
-	else if (!KFGRI.bWaveInProgress && !IsInState('WaitingWave'))
+	else if (!TGRI.bWaveInProgress && !IsInState('WaitingWave'))
 	{
 		GotoState('WaitingWave');
 	}	
@@ -106,7 +106,7 @@ simulated function Render(Canvas C)
 	
 	Super.Render(C);
 
-	if (KFGRI == None)
+	if (TGRI == None)
 	{
 		return;
 	}
@@ -185,9 +185,9 @@ simulated function DrawCurrentWave(Canvas C, Vector2D Center)
 	local float TextSizeX, TextSizeY, TextScale;
 
 	C.DrawColor = C.MakeColor(255, 255, 255, 220);
-	CurrentWaveString = FillStringWithZeroes(string(KFGRI.WaveNumber + 1), 2);
+	CurrentWaveString = FillStringWithZeroes(string(TGRI.WaveNumber + 1), 2);
 	CurrentWaveString = CurrentWaveString $ "/";
-	CurrentWaveString = CurrentWaveString $ FillStringWithZeroes(string(KFGRI.FinalWave), 2);
+	CurrentWaveString = CurrentWaveString $ FillStringWithZeroes(string(TGRI.FinalWave), 2);
 	
 	C.FontScaleX = 1.f;
 	C.FontScaleY = 1.f;
@@ -281,22 +281,27 @@ state ActiveWave
 {
 	simulated function BeginState()
 	{
-		NumberZedsRemaining = KFGRI.MaxMonsters;
+		NumberZedsRemaining = TGRI.MaxMonsters;
 		ActiveWaveFadeRatio = 0.f;
 		EndTraderVoteList.Length = 0;
 	}
 
 	simulated function Tick(float DeltaTime)
 	{
-		if (KFGRI == None)
+		if (TGRI == None)
 		{
-			return;
+			TGRI = TurboGameReplicationInfo(Level.GRI);
+
+			if (TGRI == None)
+			{
+				return;
+			}
 		}
 
 		TickActiveWave(DeltaTime);
 		TickKillFeed(DeltaTime);
 
-		if (!KFGRI.bWaveInProgress)
+		if (!TGRI.bWaveInProgress)
 		{
 			TickActiveFadeOut(DeltaTime);
 		}
@@ -357,7 +362,7 @@ simulated function TickActiveFadeIn(float DeltaTime)
 
 simulated function TickActiveWave(float DeltaTime)
 {
-	NumberZedsRemaining = Lerp(DeltaTime * NumberZedsInterpRate, NumberZedsRemaining, float(KFGRI.MaxMonsters));
+	NumberZedsRemaining = Lerp(DeltaTime * NumberZedsInterpRate, NumberZedsRemaining, float(TGRI.MaxMonsters));
 }
 
 simulated function DrawActiveWave(Canvas C, Vector2D Center)
@@ -597,22 +602,27 @@ state WaitingWave
 {
 	simulated function BeginState()
 	{
-		WaveTimeSecondsRemaining = KFGRI.TimeToNextWave;
+		WaveTimeSecondsRemaining = TGRI.TimeToNextWave;
 		TraderFadeRatio = 0.f;
 		EndTraderVoteList.Length = 0;
 	}
 
 	simulated function Tick(float DeltaTime)
 	{
-		if (KFGRI == None)
+		if (TGRI == None)
 		{
-			return;
+			TGRI = TurboGameReplicationInfo(Level.GRI);
+
+			if (TGRI == None)
+			{
+				return;
+			}
 		}
 
 		TickTraderWave(DeltaTime);
 		TickKillFeed(DeltaTime);
 
-		if (KFGRI.bWaveInProgress)
+		if (TGRI.bWaveInProgress)
 		{
 			TickTraderFadeOut(DeltaTime);
 		}
@@ -636,10 +646,10 @@ simulated function TickTraderWave(float DeltaTime)
 	local TurboPlayerReplicationInfo TPRI;
 	local bool bFoundEntry;
 
-	if (KFGRI.TimeToNextWave != WaveTimeSecondsRemaining && Abs(WaveTimeRemaining - float(KFGRI.TimeToNextWave)) > 0.15f)
+	if (TGRI.TimeToNextWave != WaveTimeSecondsRemaining && Abs(WaveTimeRemaining - float(TGRI.TimeToNextWave)) > 0.15f)
 	{
-		WaveTimeSecondsRemaining = KFGRI.TimeToNextWave;
-		WaveTimeRemaining = (float(KFGRI.TimeToNextWave) - 0.0001f);
+		WaveTimeSecondsRemaining = TGRI.TimeToNextWave;
+		WaveTimeRemaining = (float(TGRI.TimeToNextWave) - 0.0001f);
 	}
 	else
 	{
@@ -656,7 +666,7 @@ simulated function TickTraderWave(float DeltaTime)
 		}
 	}
 
-	if (TurboGameReplicationInfo(Level.GRI).TimeToNextWave <= 10)
+	if (TGRI.TimeToNextWave <= 10)
 	{
 		for (EndTraderVoteIndex = EndTraderVoteList.Length - 1; EndTraderVoteIndex >= 0; EndTraderVoteIndex--)
 		{
@@ -667,9 +677,9 @@ simulated function TickTraderWave(float DeltaTime)
 		return;
 	}
 
-	for (Index = Level.GRI.PRIArray.Length - 1; Index >= 0; Index--)
+	for (Index = TGRI.PRIArray.Length - 1; Index >= 0; Index--)
 	{
-		TPRI = TurboPlayerReplicationInfo(Level.GRI.PRIArray[Index]);
+		TPRI = TurboPlayerReplicationInfo(TGRI.PRIArray[Index]);
 
 		if (TPRI == None || TPRI.bOnlySpectator || !TPRI.bVotedForTraderEnd)
 		{
