@@ -48,9 +48,53 @@ Begin:
 final function CheckUseTrigger(KFUseTrigger UseTrigger)
 {
     local int DoorIndex;
+    local KFDoorMover Door;
+    local bool bWasSealed;
+
+    if (IsPartiallyBroken(UseTrigger))
+    {
+        for (DoorIndex = 0; DoorIndex < UseTrigger.DoorOwners.Length; DoorIndex++)
+        {
+            Door = UseTrigger.DoorOwners[DoorIndex];
+
+            if (Door.bDoorIsDead)
+            {
+                continue;
+            }
+
+            Door.GoBang(None, Door.Location, vect(0.f, 0.f, 0.f), None);
+        }
+
+        return;
+    }
+
+    if (IsPartiallyOpen(UseTrigger))
+    {
+        for (DoorIndex = 0; DoorIndex < UseTrigger.DoorOwners.Length; DoorIndex++)
+        {
+            Door = UseTrigger.DoorOwners[DoorIndex];
+
+            if (Door.bClosed)
+            {
+                continue;
+            }
+
+            //Temporarily unseal door and tell it to close before resealing.
+            bWasSealed = Door.bSealed;
+            Door.bSealed = false;
+            Door.DoClose();
+            Door.bSealed = bWasSealed;
+        }
+
+        return;
+    }
+}
+
+final function bool IsPartiallyBroken(KFUseTrigger UseTrigger)
+{
+    local int DoorIndex;
     local bool bHasBrokenDoor;
     local bool bHasAliveDoor;
-    local KFDoorMover Door;
 
     bHasBrokenDoor = false;
     bHasAliveDoor = false;
@@ -67,21 +111,31 @@ final function CheckUseTrigger(KFUseTrigger UseTrigger)
         }
     }
 
-    //Check if both are present.
-    if (bHasBrokenDoor && bHasAliveDoor)
+    return bHasBrokenDoor && bHasAliveDoor;
+}
+
+final function bool IsPartiallyOpen(KFUseTrigger UseTrigger)
+{
+    local int DoorIndex;
+    local bool bHasOpenDoor;
+    local bool bHasClosedDoor;
+
+    bHasOpenDoor = false;
+    bHasClosedDoor = false;
+
+    for (DoorIndex = 0; DoorIndex < UseTrigger.DoorOwners.Length; DoorIndex++)
     {
-        for (DoorIndex = 0; DoorIndex < UseTrigger.DoorOwners.Length; DoorIndex++)
+        if (UseTrigger.DoorOwners[DoorIndex].bClosed)
         {
-            Door = UseTrigger.DoorOwners[DoorIndex];
-
-            if (Door.bDoorIsDead)
-            {
-                continue;
-            }
-
-            Door.GoBang(None, Door.Location, vect(0.f, 0.f, 0.f), None);
+            bHasClosedDoor = true;
+        }
+        else
+        {
+            bHasOpenDoor = true;
         }
     }
+
+    return bHasOpenDoor && bHasClosedDoor;
 }
 
 defaultproperties
