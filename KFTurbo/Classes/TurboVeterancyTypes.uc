@@ -425,9 +425,9 @@ defaultproperties
 	StarTexture=Texture'KFTurbo.Perks.Star_D'
 	OnHUDIconMaxTier=None
 
-	LevelNames(0)="Experienced"
-	LevelNames(1)="Skilled"
-	LevelNames(2)="Adept"
+	LevelNames(0)="Skilled"
+	LevelNames(1)="Adept"
+	LevelNames(2)="Veteran"
 	LevelNames(3)="Masterful"
 	LevelNames(4)="Inhuman"
 	LevelNames(5)="Godlike"

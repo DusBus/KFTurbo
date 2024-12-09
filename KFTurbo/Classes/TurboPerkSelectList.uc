@@ -94,8 +94,8 @@ function DrawPerk(Canvas Canvas, int CurIndex, float X, float Y, float Width, fl
 	Canvas.SetDrawColor(255, 255, 255, 255);
 
 	// Draw Item Background
-	IconSize = Height - ItemSpacing - (ItemBorder * 2.0 * Height);
-	PerkIconOffset = IconSize + (ItemBorder * Height * 2.f);
+	PerkIconOffset = Height - ItemSpacing;
+	IconSize = PerkIconOffset - (ItemBorder * 0.5f * Height);
 	Canvas.SetPos(TempX + PerkIconOffset, Y + 7.0);
 	if (bSelected)
 	{
@@ -117,8 +117,8 @@ function DrawPerk(Canvas Canvas, int CurIndex, float X, float Y, float Width, fl
 	}
 
 	// Offset and Calculate Icon's Size
-	TempX += ItemBorder * Height;
-	TempY += ItemBorder * Height;
+	TempX += ItemBorder * Height * 0.25f;
+	TempY += ItemBorder * Height * 0.25f;
 
 	// Draw Icon
 	Canvas.SetPos(TempX, TempY);
@@ -127,6 +127,7 @@ function DrawPerk(Canvas Canvas, int CurIndex, float X, float Y, float Width, fl
 
 	TempX += IconSize + (IconToInfoSpacing * Width);
 	TempY += TextTopOffset * Height;
+	TempY += ItemBorder * Height * 0.75f;
 
 	ProgressBarWidth = Width - (TempX - X) - (IconToInfoSpacing * Width);
 
@@ -137,7 +138,7 @@ function DrawPerk(Canvas Canvas, int CurIndex, float X, float Y, float Width, fl
 	}
 	else 
 	{
-		Canvas.SetDrawColor(255, 255, 255, 255);
+		Canvas.SetDrawColor(0, 0, 0, 255);
 	}
 
 	// Draw the Perk's Level Name
@@ -153,7 +154,8 @@ function DrawPerk(Canvas Canvas, int CurIndex, float X, float Y, float Width, fl
 		Canvas.DrawText(PerkLevelString[CurIndex]);
 	}
 
-	TempY += TempHeight + (0.01 * Height);
+	TempY = (Y + Height) - (ItemBorder * Height * 2.f);
+	TempY -= ProgressBarHeight * Height;
 
 	// Draw Progress Bar
 	Canvas.SetDrawColor(255, 255, 255, 255);

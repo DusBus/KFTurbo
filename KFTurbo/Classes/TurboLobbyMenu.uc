@@ -100,9 +100,9 @@ function DrawPerk(Canvas Canvas)
 	Canvas.DrawTileStretched(InfoBackground, Width - IconSize, Height - ItemSpacing - 16);
 
 	// Offset and Calculate Icon's Size
-	TempX += ItemBorder * Height;
-	TempY += ItemBorder * Height;
-	IconSize = Height - (ItemBorder * 2.0 * Height);
+	TempX += ItemBorder * Height * 0.25f;
+	TempY += ItemBorder * Height * 0.25f;
+	IconSize = Height - (ItemBorder * 0.5f * Height);
 
 	// Draw Icon
 	Canvas.SetPos(TempX, TempY);
@@ -112,6 +112,7 @@ function DrawPerk(Canvas Canvas)
 	Canvas.DrawTile(M, IconSize, IconSize, 0, 0, M.MaterialUSize(), M.MaterialVSize());
 
 	TempX += IconSize + (IconToInfoSpacing * Width);
+	TempY += ItemBorder * Height * 0.75f;
 	TempY += TextTopOffset * Height;
 
 	ProgressBarWidth = Width - (TempX - X) - (IconToInfoSpacing * Width);
@@ -125,7 +126,7 @@ function DrawPerk(Canvas Canvas)
 	Canvas.DrawText(PerkName);
 
 	// Draw the Perk's Level
-	if ( PerkLevelString != "" )
+	if (PerkLevelString != "")
 	{
 		Canvas.StrLen(PerkLevelString, TempWidth, TempHeight);
 		Canvas.SetPos(TempX + ProgressBarWidth - TempWidth, TempY);
@@ -134,7 +135,7 @@ function DrawPerk(Canvas Canvas)
 
 	TempY += TempHeight + (0.01 * Height);
 
-	if( CurrentVeterancy!=KFPRI.ClientVeteranSkill || CurrentVeterancyLevel!=LevelIndex )
+	if (CurrentVeterancy != KFPRI.ClientVeteranSkill || CurrentVeterancyLevel!=LevelIndex)
 	{
 		CurrentVeterancy = KFPRI.ClientVeteranSkill;
 		CurrentVeterancyLevel = LevelIndex;
