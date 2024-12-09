@@ -71,4 +71,5 @@ defaultproperties
     TextSoundList(3)=(Text=":peasant:",SoundRef="KFTurbo.UI.Peasant")
     TextSoundList(4)=(Text=":shame:",SoundRef="KFTurbo.UI.WhatAShame")
     TextSoundList(5)=(Text=":abouttime:",SoundRef="KFTurbo.UI.abouttime")
+    TextSoundList(6)=(Text=":thatsterror:",SoundRef="KFTurbo.UI.ThatsTerror")
 }
