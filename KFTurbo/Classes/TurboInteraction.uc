@@ -10,6 +10,23 @@ var globalconfig TurboPlayerMarkReplicationInfo.EMarkColor MarkColor;
 var bool bHasInitializedPerkTierPreference;
 var globalconfig array<TurboRepLink.VeterancyTierPreference> PerkTierPreferenceList;
 
+var globalconfig bool bReplaceTraderWithMerchant;
+var string MerchantMeshRef;
+var Mesh MerchantMesh;
+var string MerchantAnimRef;
+var MeshAnimation MerchantAnim;
+var string MerchantMaterialRef;
+var Material MerchantMaterial;
+
+var Material DefaultTraderMaterial;
+
+
+simulated function InitializeTurboInteraction()
+{
+	InitializeVeterancyTierPreferences();
+	UpdateMerchant();
+}
+
 exec simulated function Trade()
 {
 	if (ViewportOwner == None || ViewportOwner.Actor == None || ViewportOwner.Actor.Pawn == None)
@@ -191,6 +208,74 @@ simulated function bool InitializeVeterancyTierPreferences()
 	return true;
 }
 
+simulated function SetUseMerchantReplacement(bool bReplaceTrader)
+{
+	bReplaceTraderWithMerchant = bReplaceTrader;
+	SaveConfig();
+
+	UpdateMerchant();
+}
+
+simulated function UpdateMerchant()
+{
+	local WeaponLocker Trader;
+
+	if (ViewportOwner.Actor != None && TurboHUDKillingFloor(ViewportOwner.Actor.myHUD) != None)
+	{
+		TurboHUDKillingFloor(ViewportOwner.Actor.myHUD).UpdateTraderPortrait(bReplaceTraderWithMerchant);
+	}
+	
+	if (ViewportOwner.Actor != None)
+	{
+		if (MerchantMesh == None)
+		{
+			MerchantMesh = Mesh(DynamicLoadObject(MerchantMeshRef, class'Mesh'));
+		}
+
+		if (MerchantAnim == None)
+		{
+			MerchantAnim = MeshAnimation(DynamicLoadObject(MerchantAnimRef, class'MeshAnimation'));
+		}
+		
+		if (MerchantMaterial == None)
+		{
+			MerchantMaterial = Material(DynamicLoadObject(MerchantMaterialRef, class'Material'));
+		}
+
+		foreach ViewportOwner.Actor.AllActors(class'WeaponLocker', Trader)
+		{
+			if ((Trader.Mesh == Trader.default.Mesh && (Trader.Skins.Length == 0 || Trader.Skins[0] == DefaultTraderMaterial)) || Trader.Mesh == MerchantMesh)
+			{
+				if (bReplaceTraderWithMerchant)
+				{
+					Trader.LinkMesh(MerchantMesh, false);
+					Trader.LinkSkelAnim(MerchantAnim);
+					Trader.Skins.Length = 1;
+					Trader.Skins[0] = MerchantMaterial;
+				}
+				else
+				{
+					Trader.LinkMesh(Trader.default.Mesh, false);
+					Trader.LinkSkelAnim(MeshAnimation'KF_Soldier_Trip.shopkeeper_anim');
+					Trader.LoopAnim('Idle');
+					Trader.Skins.Length = 1;
+					Trader.Skins[0] = DefaultTraderMaterial;
+				}
+			}
+		}
+	}
+}
+
+static final function bool UseMerchantReplacement(TurboPlayerController PlayerController)
+{
+	if (PlayerController != None && PlayerController.TurboInteraction != None)
+	{
+		return PlayerController.TurboInteraction.bReplaceTraderWithMerchant;
+	}
+
+	return false;
+}
+
 defaultproperties
 {
 	bNativeEvents=true
@@ -203,4 +288,11 @@ defaultproperties
 	PerkTierPreferenceList(4)=(PerkClass=class'V_Berserker',TierPreference=7)
 	PerkTierPreferenceList(5)=(PerkClass=class'V_Firebug',TierPreference=7)
 	PerkTierPreferenceList(6)=(PerkClass=class'V_Demolitions',TierPreference=7)
+
+	bReplaceTraderWithMerchant=false
+	MerchantMeshRef="KFTurbo.Merchant_Trip"
+	MerchantAnimRef="KFTurbo.Merchant_anim"
+	MerchantMaterialRef="KFTurboExtra.Merchant.Merchant_D"
+
+	DefaultTraderMaterial=Texture'KF_Soldier_Trip_T.Uniforms.shopkeeper_diff'
 }

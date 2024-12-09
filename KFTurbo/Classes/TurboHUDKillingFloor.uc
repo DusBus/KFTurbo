@@ -30,6 +30,9 @@ var TextReactionSettings TextReactionSettings;
 //Overlays that are drawn before the player HUD.
 var array<HudOverlay> PreDrawOverlays;
 
+var Texture MerchantPortrait;
+var localized string MerchantString;
+
 simulated event PostRender( canvas Canvas )
 {
 	bUseBloom = bool(ConsoleCommand("get ini:Engine.Engine.ViewportManager Bloom"));
@@ -1056,6 +1059,20 @@ simulated function UpdateKillMessage(Object OptionalObject, PlayerReplicationInf
 	//LocalMessage list no longer handles kill messages.
 }
 
+simulated function UpdateTraderPortrait(bool bReplaceWithMerchant)
+{
+	if (bReplaceWithMerchant)
+	{
+		TraderPortrait = default.MerchantPortrait;
+		TraderString = default.MerchantString;
+	}
+	else
+	{
+		TraderPortrait = default.TraderPortrait;
+		TraderString = default.TraderString;
+	}
+}
+
 static function Font LoadFontStatic(int i)
 {
 	return class'KFTurboFontHelper'.static.LoadFontStatic(i);
@@ -1069,6 +1086,9 @@ simulated function Font LoadFont(int i)
 defaultproperties
 {
 	TextReactionSettingsClass=class'TurboTextReactionSettings'
+	
+	MerchantPortrait=Texture'KFTurbo.Merchant.Merchant_Portrait'
+	MerchantString="Merchant"
 
 	WinSound=Sound'KFTurbo.UI.YouWin_S'
 	LoseSound=Sound'KFTurbo.UI.YouLose_S'

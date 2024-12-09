@@ -1,7 +1,8 @@
 class TurboTab_TurboSettings extends SRTab_Base;
 
-var automated GUISectionBackground LeftSection;// RightSection;
+var automated GUISectionBackground LeftSection, RightSection;
 var automated GUIButton DesiredRankButton;
+var automated moCheckbox MerchantReplacementCheckBox;
 var Color PerkLabelTextColor;
 var localized string TierOptionList[8];
 
@@ -67,6 +68,7 @@ function bool IsVeterancyTierPreferenceReady()
 
 function InitializePage()
 {
+    local TurboPlayerController PlayerController;
     local ClientPerkRepLink CPRL;
     local TurboRepLink TRL;
     local int Index, ComboIndex;
@@ -74,8 +76,9 @@ function InitializePage()
     local GUILabel Label;
     local GUIComboBox ComboBox;
 
-    CPRL = TurboPlayerController(PlayerOwner()).GetClientPerkRepLink();
-    TRL = TurboPlayerController(PlayerOwner()).GetTurboRepLink();
+    PlayerController = TurboPlayerController(PlayerOwner());
+    CPRL = PlayerController.GetClientPerkRepLink();
+    TRL = PlayerController.GetTurboRepLink();
 
     VeterancyClassList.Length = CPRL.CachePerks.Length;
     VeterancyTierComboBoxList.Length = VeterancyClassList.Length;
@@ -112,6 +115,9 @@ function InitializePage()
 
         ComboBox.SetIndex(TRL.GetVeterancyTierPreference(VeterancyClassList[Index]));
     }
+
+    RightSection.ManageComponent(MerchantReplacementCheckBox);
+    MerchantReplacementCheckBox.Checked(class'TurboInteraction'.static.UseMerchantReplacement(PlayerController));
 }
 
 function UpdatePage()
@@ -146,6 +152,20 @@ function bool ApplyDesiredRank(GUIComponent Sender)
     return true;
 }
 
+function OnMerchantReplacementChanged(GUIComponent Sender)
+{
+	local TurboInteraction TurboInteraction;
+
+    TurboInteraction = TurboPlayerController(PlayerOwner()).TurboInteraction;
+
+    if (TurboInteraction == None)
+    {
+        return;
+    }
+
+    TurboInteraction.SetUseMerchantReplacement(MerchantReplacementCheckBox.IsChecked());
+}
+
 defaultproperties
 {
     bHasInitialized = false
@@ -172,18 +192,16 @@ defaultproperties
     End Object
     LeftSection=GUISectionBackground'BGLeftSection'
 
-/*
     Begin Object Class=GUISectionBackground Name=BGRightSection
         bFillClient=True
-        Caption="Marker Options"
+        Caption="Turbo Settings"
         WinTop=0.012063
-        WinLeft=0.5
-        WinWidth=0.48076
+        WinLeft=0.68076
+        WinWidth=0.3
         WinHeight=0.796032
         OnPreDraw=BGRightSection.InternalPreDraw
     End Object
     RightSection=GUISectionBackground'BGRightSection'
-*/
 
     Begin Object Class=GUIButton Name=ApplyDesiredRankButton
         Caption="Apply"
@@ -196,4 +214,13 @@ defaultproperties
         OnKeyEvent=ApplyDesiredRankButton.InternalOnKeyEvent
     End Object
     DesiredRankButton=GUIButton'ApplyDesiredRankButton'
+
+    Begin Object Class=moCheckBox Name=MerchantReplacement
+        Caption="Use Merchant"
+        OnCreateComponent=MerchantReplacement.InternalOnCreateComponent
+        Hint="Replaces default Trader with Merchant."
+        TabOrder=51
+        OnChange=TurboTab_TurboSettings.OnMerchantReplacementChanged
+    End Object
+    MerchantReplacementCheckBox=moCheckBox'MerchantReplacement'
 }

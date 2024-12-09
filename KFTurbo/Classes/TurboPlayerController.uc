@@ -191,7 +191,16 @@ simulated event ReceiveLocalizedMessage( class<LocalMessage> Message, optional i
 
 function ClientLocationalVoiceMessage(PlayerReplicationInfo Sender, PlayerReplicationInfo Recipient, name MessageType, byte MessageIndex, optional Pawn SoundSender, optional vector SenderLocation)
 {
+	local class<VoicePack> VoicePack;
+	VoicePack = Sender.VoiceType;
+	if (MessageType == 'TRADER' && class'TurboInteraction'.static.UseMerchantReplacement(Self))
+	{
+		Sender.VoiceType = class'MerchantVoicePack';
+	}
+
 	Super.ClientLocationalVoiceMessage(Sender, Recipient, MessageType, MessageIndex, SoundSender, SenderLocation);
+
+	Sender.VoiceType = VoicePack;
 
 	if (TurboHUDKillingFloor(myHUD) != None)
 	{

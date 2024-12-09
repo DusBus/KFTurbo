@@ -408,7 +408,7 @@ simulated function OnSetupComplete()
     
     if (TurboPlayerController(OwningController).TurboInteraction != None)
     {
-        TurboPlayerController(OwningController).TurboInteraction.InitializeVeterancyTierPreferences();
+        TurboPlayerController(OwningController).TurboInteraction.InitializeTurboInteraction();
     }
 }
 
