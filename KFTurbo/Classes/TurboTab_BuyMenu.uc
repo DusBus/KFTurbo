@@ -71,6 +71,12 @@ function DoBuyClip(GUIBuyable Buyable)
     }
 }
 
+function DoFillAllAmmo()
+{
+	UpdateTraderSounds();
+	Super.DoFillAllAmmo();
+}
+
 function OnAnychange()
 {
 	LastBuyable = TheBuyable;
@@ -174,6 +180,18 @@ function InvItemClicked(GUIBuyable SelectedInvItem)
 {
 	TheBuyable = SelectedInvItem;
 	OnAnychange();
+}
+
+function UpdateTraderSounds()
+{
+	if (class'TurboInteraction'.static.UseMerchantReplacement(TurboPlayerController(PlayerOwner())))
+	{
+		TraderSoundTooExpensive = class'MerchantVoicePack'.default.TraderSound[8];
+	}
+	else
+	{
+		TraderSoundTooExpensive = default.TraderSoundTooExpensive;
+	}
 }
 
 defaultproperties
