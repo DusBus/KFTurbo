@@ -10,5 +10,4 @@ defaultproperties
      PickupClass=Class'KFTurbo.W_V_Benelli_Gold_Pickup'
      AttachmentClass=Class'KFTurbo.W_V_Benelli_Gold_Attachment'
      ItemName="Golden Combat Shotgun"
-     Skins(0)=Combiner'KF_Weapons_Gold_T.Weapons.Gold_Benelli_cmb'
 }

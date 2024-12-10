@@ -190,7 +190,22 @@ static final function bool IsWorldHit(Actor Other)
 		return false;
 	}
 
-	return Other.bWorldGeometry || Other == Other.Level;
+	if (Other.bWorldGeometry || Other == Other.Level)
+	{
+		return true;
+	}
+
+	if (Mover(Other) != None)
+	{
+		return true;
+	}
+
+	if (BlockingVolume(Other) != None)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 static final function bool ShouldSkipActor(Actor Other, Pawn Instigator)

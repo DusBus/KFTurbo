@@ -6,5 +6,4 @@ defaultproperties
      PickupClass=Class'KFTurbo.W_V_SealSqueal_WL_Pickup'
      AttachmentClass=Class'KFTurbo.W_V_SealSqueal_WL_Attachment'
      ItemName="WestLondon SealSqueal Harpoon Bomber"
-     Skins(0)=Combiner'KFTurbo.WestLondon.SealSqueal_WL_CMB'
 }

@@ -104,5 +104,4 @@ defaultproperties
      PickupClass=Class'KFTurbo.W_V_DualMK23_Cyber_Pickup'
      AttachmentClass=Class'KFTurbo.W_V_DualMK23_Cyber_Attachment'
      DemoReplacement=Class'KFTurbo.W_V_MK23_Cyber_Weap'
-     Skins(0)=Shader'KFTurbo.Turbo.MK23_Turbo_SHDR'
 }

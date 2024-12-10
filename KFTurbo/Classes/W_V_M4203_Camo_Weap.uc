@@ -9,5 +9,4 @@ defaultproperties
      TraderInfoTexture=Texture'KFTurbo.Camo.Trader_M4203_Camo'
      PickupClass=Class'KFTurbo.W_V_M4203_Camo_Pickup'
      AttachmentClass=Class'KFTurbo.W_V_M4203_Camo_Attachment'
-     Skins(0)=Combiner'KFTurbo.Camo.M4_Camo_CMB1'
 }

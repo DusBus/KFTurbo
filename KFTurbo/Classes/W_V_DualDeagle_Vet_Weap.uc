@@ -49,9 +49,10 @@ simulated function UpdateSkin()
 defaultproperties
 {
 	ItemName="Dual Neon Handcannons"
-
+     SkinRefs(0)="KFTurbo.Vet.Handcannon_Vet_SHDR"
 	DemoReplacement=Class'KFTurbo.W_V_Deagle_Vet_Weap'
 	PickupClass=Class'KFTurbo.W_V_DualDeagle_Vet_Pickup' 
 	AttachmentClass=Class'KFTurbo.W_V_DualDeagle_Vet_Attachment'
-	Skins(0)=Shader'KFTurbo.Vet.Handcannon_Vet_SHDR'
+     Mesh=None
+     MeshRef="KF_Weapons_Trip.Dual50_Trip"
 }

@@ -136,9 +136,20 @@ function SetInfoText()
 	if (TheBuyable != None && TheBuyable.ItemWeaponClass != None && OldPickupClass != TheBuyable.ItemPickupClass)
 	{
 		// Unowned Weapon DLC
-		if (TheBuyable.ItemWeaponClass.Default.AppID > 0 && !PlayerOwner().SteamStatsAndAchievements.PlayerOwnsWeaponDLC(TheBuyable.ItemWeaponClass.Default.AppID))
+		if(TheBuyable.bSaleList && TheBuyable.ItemAmmoCurrent > 0)
 		{
-			InfoScrollText.SetContent(Repl(InfoText[4], "%1", PlayerOwner().SteamStatsAndAchievements.GetWeaponDLCPackName(TheBuyable.ItemWeaponClass.Default.AppID)));
+			if (TheBuyable.ItemAmmoCurrent == 1)
+			{
+				InfoScrollText.SetContent(Repl(InfoText[4], "%1", GetDLCName(TheBuyable.ItemWeaponClass.Default.AppID)));
+			}
+			else if (TheBuyable.ItemAmmoCurrent == 2)
+			{
+				InfoScrollText.SetContent(Repl(ArchivementGetInfo, "%1", Class'SRSteamStatsGet'.Default.Achievements[TheBuyable.ItemWeaponClass.Default.UnlockedByAchievement].DisplayName));
+			}
+			else
+			{
+				InfoScrollText.SetContent(Mid(TheBuyable.ItemCategorie, InStr(TheBuyable.ItemCategorie, ":") + 1));
+			}
 		}
 		// Too expensive
 		else if (TheBuyable.ItemCost > PlayerOwner().PlayerReplicationInfo.Score && TheBuyable.bSaleList)
@@ -161,7 +172,7 @@ function SetInfoText()
 			}
 			else
 			{
-				InfoScrollText.SetContent(TheBuyable.ItemDescription);
+				InfoScrollText.SetContent(TheBuyable.ItemWeaponClass.default.Description);
 			}
 		}
 

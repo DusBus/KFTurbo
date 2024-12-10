@@ -47,5 +47,4 @@ defaultproperties
      SkinRefs(0)="KFTurbo.Vet.KSG_Vet_SHDR"
      PickupClass=Class'KFTurbo.W_V_KSG_Vet_Pickup'
      AttachmentClass=Class'KFTurbo.W_V_KSG_Vet_Attachment'
-     Skins(0)=Shader'KFTurbo.Vet.KSG_Vet_SHDR'
 }

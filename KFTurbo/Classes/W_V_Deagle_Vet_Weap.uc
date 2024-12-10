@@ -48,5 +48,4 @@ defaultproperties
 
 	ItemName="Neon Handcannon"
 	SkinRefs(0)="KFTurbo.Vet.Handcannon_Vet_SHDR"
-	Skins(0)=Shader'KFTurbo.Vet.Handcannon_Vet_SHDR'
 }

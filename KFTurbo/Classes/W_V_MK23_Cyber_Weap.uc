@@ -139,5 +139,4 @@ defaultproperties
      SkinRefs(0)="KFTurbo.Turbo.MK23_Turbo_SHDR"
      PickupClass=Class'KFTurbo.W_V_MK23_Cyber_Pickup'
      AttachmentClass=Class'KFTurbo.W_V_MK23_Cyber_Attachment'
-     Skins(0)=Shader'KFTurbo.Turbo.MK23_Turbo_SHDR'
 }

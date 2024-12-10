@@ -310,14 +310,14 @@ simulated event RenderOverlays(Canvas Canvas)
 
 defaultproperties
 {
-     SpotProjectorPullback=1.000000
-     LaserAttachmentClass=Class'KFTurbo.W_NailGun_LaserAttachment1st'
-     MagCapacity=3
-     Weight=11.000000
-     FireModeClass(0)=Class'KFTurbo.W_NailGun_Fire'
-     FireModeClass(1)=Class'KFMod.NoFire'
-     InventoryGroup=4
-     PickupClass=Class'KFTurbo.W_NailGun_Pickup'
-     AttachmentClass=Class'KFTurbo.W_NailGun_Attachment'
-     Skins(0)=Combiner'KF_Weapons8_Trip_T.Weapons.Vlad_9000_cmb'
+	SpotProjectorPullback=1.000000
+	LaserAttachmentClass=Class'KFTurbo.W_NailGun_LaserAttachment1st'
+	MagCapacity=3
+	Weight=11.000000
+	FireModeClass(0)=Class'KFTurbo.W_NailGun_Fire'
+	FireModeClass(1)=Class'KFMod.NoFire'
+	InventoryGroup=4
+	PickupClass=Class'KFTurbo.W_NailGun_Pickup'
+	AttachmentClass=Class'KFTurbo.W_NailGun_Attachment'
+	SkinRefs(0)="KF_Weapons8_Trip_T.Weapons.Vlad_9000_cmb"
 }

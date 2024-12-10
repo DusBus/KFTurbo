@@ -160,18 +160,18 @@ simulated function Timer()
 
 defaultproperties
 {
-     bAwaitingSecondaryStatus=True
-     MagCapacity=30
-     HudImage=Texture'KillingFloor2HUD.WeaponSelect.M4_203_unselected'
-     SelectedHudImage=Texture'KillingFloor2HUD.WeaponSelect.M4_203'
-     MeshRef="KFTurbo.M4M203Aimpoint_1st"
-     SkinRefs(1)="KF_Weapons2_Trip_T.Special.Aimpoint_sight_shdr"
-     FireModeClass(0)=Class'KFTurbo.W_M4203_Fire_Bullet'
-     FireModeClass(1)=Class'KFTurbo.W_M4203_Fire'
-     InventoryGroup=3
-     PickupClass=Class'KFTurbo.W_M4203_Pickup'
-     AttachmentClass=Class'KFTurbo.W_M4203_Attachment'
-     Mesh=SkeletalMesh'KFTurbo.M4M203Aimpoint_1st'
-     Skins(0)=Combiner'KF_Weapons4_Trip_T.Weapons.m4_cmb'
-     Skins(1)=Shader'KF_Weapons2_Trip_T.Special.Aimpoint_sight_shdr'
+	bAwaitingSecondaryStatus=True
+	MagCapacity=30
+	ItemName="M4 203"
+	HudImage=Texture'KillingFloor2HUD.WeaponSelect.M4_203_unselected'
+	SelectedHudImage=Texture'KillingFloor2HUD.WeaponSelect.M4_203'
+	SkinRefs(0)="KF_Weapons4_Trip_T.Weapons.m4_cmb"
+	SkinRefs(1)="KF_Weapons2_Trip_T.Special.Aimpoint_sight_shdr"
+	FireModeClass(0)=Class'KFTurbo.W_M4203_Fire_Bullet'
+	FireModeClass(1)=Class'KFTurbo.W_M4203_Fire'
+	InventoryGroup=3
+	PickupClass=Class'KFTurbo.W_M4203_Pickup'
+	AttachmentClass=Class'KFTurbo.W_M4203_Attachment'
+	Mesh=None
+	MeshRef="KFTurbo.M4M203Aimpoint_1st"
 }

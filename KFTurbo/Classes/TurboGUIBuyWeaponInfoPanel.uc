@@ -12,15 +12,25 @@ function Display(GUIBuyable NewBuyable)
 		return;
 	}
 
-	TurboBuyable = TurboGUIBuyable(NewBuyable);
-
-	if (TurboBuyable != None)
+	if (NewBuyable.bSaleList)
 	{
-		PickupClass = class<KFWeaponPickup>(TurboBuyable.GetPickup());
+		TurboBuyable = TurboGUIBuyable(NewBuyable);
+
+		if (TurboBuyable != None)
+		{
+			PickupClass = class<KFWeaponPickup>(TurboBuyable.GetPickup());
+		}
+		else
+		{
+			PickupClass = NewBuyable.ItemPickupClass;
+		}
 	}
 	else
 	{
-		PickupClass = NewBuyable.ItemPickupClass;
+		if (NewBuyable.ItemWeaponClass != None)
+		{
+			PickupClass = class<KFWeaponPickup>(NewBuyable.ItemWeaponClass.default.PickupClass);
+		}
 	}
 
 	if (PickupClass == None)

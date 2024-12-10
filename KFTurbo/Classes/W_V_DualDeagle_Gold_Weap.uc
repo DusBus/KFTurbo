@@ -13,5 +13,4 @@ defaultproperties
 	Description="Dual golden .50 calibre action express handgun. Dual golden 50's is double the fun."
 	AttachmentClass=Class'KFMod.GoldenDualDeagleAttachment'
 	ItemName="Dual Golden Handcannons"
-	Skins(0)=Combiner'KF_Weapons_Gold_T.Weapons.Gold_deagle_cmb'
 }
