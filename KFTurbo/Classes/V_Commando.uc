@@ -198,7 +198,7 @@ static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, class<Ammun
 
 static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
 {
-	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None && IsPerkAmmunition(AmmoType))
 	{
 		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetCommandoMaxAmmoMultiplier(KFPRI, AmmoType);
 	}

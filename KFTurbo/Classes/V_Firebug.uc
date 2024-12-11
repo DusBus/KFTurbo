@@ -60,12 +60,9 @@ static function ApplyAdjustedFireRate(KFPlayerReplicationInfo KFPRI, Weapon Othe
 {
 	Super.ApplyAdjustedFireRate(KFPRI, Other, Multiplier);
 
-	if (Flamethrower(Other) != none || MAC10MP(Other) != none || Trenchgun(Other) != none || FlareRevolver(Other) != none || DualFlareRevolver(Other) != none || ThompsonSMG(Other) != none || HuskGun(Other) != None)
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None && IsPerkWeapon(class<KFWeapon>(Other.Class)))
 	{
-		if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-		{
-			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetFirebugFireRateMultiplier(KFPRI, Other);
-		}
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetFirebugFireRateMultiplier(KFPRI, Other);
 	}
 }
 
