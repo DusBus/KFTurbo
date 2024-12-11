@@ -110,9 +110,9 @@ defaultproperties
 {
     bDebugReplacement = false
 
-    ReplacementList(0)=(TargetParentClass=class'P_Gorefast',ReplacementClass=class'P_Gorefast_Assassin',ReplacementRate=0.15f)
+    ReplacementList(0)=(TargetParentClass=class'P_Gorefast',ReplacementClass=class'P_Gorefast_Assassin',ReplacementRate=0.075f)
     ReplacementList(1)=(TargetParentClass=class'P_Crawler',ReplacementClass=class'P_Crawler_Jumper',ReplacementRate=0.1f)
-    ReplacementList(2)=(TargetParentClass=class'P_Bloat',ReplacementClass=class'P_Bloat_Fathead',ReplacementRate=0.1f)
-    ReplacementList(3)=(TargetParentClass=class'P_Siren',ReplacementClass=class'P_Siren_Caroler',ReplacementRate=0.1f)
-    ReplacementList(4)=(TargetParentClass=class'P_Gorefast',ReplacementClass=class'P_Gorefast_Classy',ReplacementRate=0.1f)
+    ReplacementList(2)=(TargetParentClass=class'P_Bloat',ReplacementClass=class'P_Bloat_Fathead',ReplacementRate=0.05f)
+    ReplacementList(3)=(TargetParentClass=class'P_Siren',ReplacementClass=class'P_Siren_Caroler',ReplacementRate=0.075f)
+    ReplacementList(4)=(TargetParentClass=class'P_Gorefast',ReplacementClass=class'P_Gorefast_Classy',ReplacementRate=0.05f)
 }
