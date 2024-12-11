@@ -512,4 +512,21 @@ defaultproperties
     ScreenShotName="KFTurbo.Generic.KFTurbo_FB"
 
 	ScoreBoardType="KFTurbo.TurboHUDScoreboard"
+
+    Waves(0)=(WaveMask=196611,WaveMaxMonsters=20,WaveDuration=255,WaveDifficulty=0.100000)
+    Waves(1)=(WaveMask=19662621,WaveMaxMonsters=32,WaveDuration=255,WaveDifficulty=0.100000)
+    Waves(2)=(WaveMask=39337661,WaveMaxMonsters=35,WaveDuration=255,WaveDifficulty=0.200000)
+    Waves(3)=(WaveMask=73378265,WaveMaxMonsters=42,WaveDuration=255,WaveDifficulty=0.300000)
+    Waves(4)=(WaveMask=20713149,WaveMaxMonsters=35,WaveDuration=255,WaveDifficulty=0.200000)
+    Waves(5)=(WaveMask=39337661,WaveMaxMonsters=35,WaveDuration=255,WaveDifficulty=0.200000)
+    Waves(6)=(WaveMask=39337661,WaveMaxMonsters=35,WaveDuration=255,WaveDifficulty=0.200000)
+    Waves(7)=(WaveMask=41839087,WaveMaxMonsters=40,WaveDuration=255,WaveDifficulty=0.300000)
+    Waves(8)=(WaveMask=41839087,WaveMaxMonsters=40,WaveDuration=255,WaveDifficulty=0.300000)
+    Waves(9)=(WaveMask=39840217,WaveMaxMonsters=45,WaveDuration=255,WaveDifficulty=0.300000)
+    Waves(10)=(WaveMask=65026687,WaveMaxMonsters=45,WaveDuration=255,WaveDifficulty=0.300000)
+    Waves(11)=(WaveMask=63750079,WaveMaxMonsters=45,WaveDuration=255,WaveDifficulty=0.300000)
+    Waves(12)=(WaveMask=64810679,WaveMaxMonsters=50,WaveDuration=255,WaveDifficulty=0.300000)
+    Waves(13)=(WaveMask=62578607,WaveMaxMonsters=50,WaveDuration=255,WaveDifficulty=0.300000)
+    Waves(14)=(WaveMask=100663295,WaveMaxMonsters=50,WaveDuration=255,WaveDifficulty=0.300000)
+    Waves(15)=(WaveMask=125892608,WaveMaxMonsters=50,WaveDuration=255,WaveDifficulty=0.300000)
 }

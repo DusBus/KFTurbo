@@ -88,11 +88,11 @@ defaultproperties
      TotalMonsters=32
      
      WaveDifficulty=1.f
-     NextSquadSpawnTime=-1.f
+     NextSquadSpawnTime=1.f
 
-     RegularSequenceSize=8
-     MinMixInSquadCount=2
-     MaxMixInSquadCount=4
+     RegularSequenceSize=10
+     MinMixInSquadCount=1
+     MaxMixInSquadCount=1
      BeatSize=1
 
      RegularWaveMask=-1

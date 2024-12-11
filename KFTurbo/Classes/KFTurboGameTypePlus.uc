@@ -272,41 +272,17 @@ defaultproperties
     LongWaves(8)=(WaveMask=258042,WaveMaxMonsters=55,WaveDifficulty=2.000000)
     LongWaves(9)=(WaveMask=16515072,WaveMaxMonsters=60,WaveDifficulty=2.000000)
 
-    MonsterCollection = Class'KFTurbo.MC_DEF'
-    StandardMonsterSquads(0) = "4A4B4C"
-    StandardMonsterSquads(1) = "2G4D1H"
-    StandardMonsterSquads(2) = "2A2B2C1E"
-    StandardMonsterSquads(3) = "2A2B2C1I"
-    StandardMonsterSquads(4) = "4D1H1I1G"
-    StandardMonsterSquads(5) = "2A5C2D2G"
-    StandardMonsterSquads(6) = "4A4B4C"
-    StandardMonsterSquads(7) = "1C2D2H1I1E1F"
-    StandardMonsterSquads(8) = "2A2B2C2I1I"
-    StandardMonsterSquads(9) = "1D1H1I1G2E1F"
-    StandardMonsterSquads(10) = "4D1H2I2G"
-    StandardMonsterSquads(11) = "2A2D1H1I1E2F"
-    StandardMonsterSquads(12) = "4A4B4C"
-    StandardMonsterSquads(13) = "1C2D2H1I1E2F"
-    StandardMonsterSquads(14) = "2A2B2C2I2I"
-    StandardMonsterSquads(15) = "1D1H1I1G2E1F"
-    StandardMonsterSquads(16) = "2B4D1H2I1G"
-    StandardMonsterSquads(17) = "2A2D1H1I2E3F"
-    StandardMonsterSquads(18) = "4A4B4C"
-    StandardMonsterSquads(19) = "1C2D2H1I2E1F"
-    StandardMonsterSquads(20) = "2A2B2C2I2I1F"
-    StandardMonsterSquads(21) = "1D1H1I1G2E2F"
-    StandardMonsterSquads(22) = "2B4D2H2I1G"
-    StandardMonsterSquads(23) = "2A2D2H1I2E3F"
+    MonsterCollection=Class'KFTurbo.MC_DEF'
 
     StandardMonsterSquads=()
     MonsterSquad=()
     FinalSquads=()
     MonsterClasses=()
 
-    SpecialEventMonsterCollections(0) = Class'KFTurbo.MC_Turbo'
-    SpecialEventMonsterCollections(1) = Class'KFTurbo.MC_Turbo'
-    SpecialEventMonsterCollections(2) = Class'KFTurbo.MC_Turbo'
-    SpecialEventMonsterCollections(3) = Class'KFTurbo.MC_Turbo'
+    SpecialEventMonsterCollections(0)=Class'KFTurbo.MC_Turbo'
+    SpecialEventMonsterCollections(1)=Class'KFTurbo.MC_Turbo'
+    SpecialEventMonsterCollections(2)=Class'KFTurbo.MC_Turbo'
+    SpecialEventMonsterCollections(3)=Class'KFTurbo.MC_Turbo'
 
     GameName = "Killing Floor Turbo+ Game Type"
     Description = "Turbo+ mode of the vanilla Killing Floor Game Type."
