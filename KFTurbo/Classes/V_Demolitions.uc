@@ -220,8 +220,8 @@ static function string GetCustomLevelInfo(byte Level)
 
 defaultproperties
 {
-	HighDifficultyExtraAmmoMultiplier=1.5f
-	HighDifficultyExtraGrenadeAmmoMultiplier=1.3334f
+	HighDifficultyExtraAmmoMultiplier=1.25f
+	HighDifficultyExtraGrenadeAmmoMultiplier=1.5f
 
 	StartingWeaponSellPriceLevel5=0.000000
 	StartingWeaponSellPriceLevel6=255.000000
