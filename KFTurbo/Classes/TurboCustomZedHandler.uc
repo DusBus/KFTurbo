@@ -4,24 +4,36 @@ struct MonsterReplacement
 {
     var class<KFMonster> TargetParentClass;
     var class<KFMonster> ReplacementClass;
-    var float ChanceToReplace;
+    var float ReplacementRate;
+    var float ReplacementProgress;
 };
 
 var array<MonsterReplacement> ReplacementList; //List of KFMonster parent classes, their replacement, and individual chance to be applied.
 
-var KFGameType KFGT;
+var KFTurboGameType TurboGT;
 var float LastCheckedNextMonsterTime;
 
 var bool bDebugReplacement;
 
 function PostBeginPlay()
 {
+    local int ReplacementIndex;
+
     Super.PostBeginPlay();
     
     SetTimer(0.15f, true); //Relatively frequently. We're watching for squad changes via Invasion::NextMonsterTime.
 
-    KFGT = KFGameType(Level.Game);
+    TurboGT = KFTurboGameType(Level.Game);
     LastCheckedNextMonsterTime = -1.f;
+
+    //High difficulty reduces special zed spawn rate.
+    if (TurboGT.IsHighDifficulty())
+    {
+        for (ReplacementIndex = 0; ReplacementIndex < ReplacementList.Length; ReplacementIndex++)
+        {
+            ReplacementList[ReplacementIndex].ReplacementProgress = ReplacementList[ReplacementIndex].ReplacementProgress * 0.5f;
+        }
+    }
 }
 
 static final function DebugLog(string String)
@@ -34,21 +46,21 @@ static final function DebugLog(string String)
 
 event Timer()
 {
-    if (KFGT == None || !KFGT.bWaveInProgress)
+    if (TurboGT == None || !TurboGT.bWaveInProgress)
     {
         return;
     }
 
     //We detect new squads by asking when was the last time a squad was generated.
-    if (LastCheckedNextMonsterTime >= KFGT.NextMonsterTime)
+    if (LastCheckedNextMonsterTime >= TurboGT.NextMonsterTime)
     {
         return;
     }
 
-    LastCheckedNextMonsterTime = KFGT.NextMonsterTime + 0.15f;
+    LastCheckedNextMonsterTime = TurboGT.NextMonsterTime + 0.15f;
 
     DebugLog("Applying Replacement");
-    ApplyReplacementList(KFGT.NextSpawnSquad);
+    ApplyReplacementList(TurboGT.NextSpawnSquad);
 }
 
 function bool ApplyReplacementList(out array< class<KFMonster> > NextSpawnSquad)
@@ -68,15 +80,27 @@ function bool AttemptReplaceMonster(out class<KFMonster> Monster)
     local int ReplacementIndex;
     local bool bReplacedMonster;
 
+    bReplacedMonster = false;
+
     for (ReplacementIndex = 0; ReplacementIndex < ReplacementList.Length; ReplacementIndex++)
     {
-        if ((FRand() < ReplacementList[ReplacementIndex].ChanceToReplace) && ClassIsChildOf(Monster, ReplacementList[ReplacementIndex].TargetParentClass))
+        if (!ClassIsChildOf(Monster, ReplacementList[ReplacementIndex].TargetParentClass))
         {
-            Monster = ReplacementList[ReplacementIndex].ReplacementClass;
-            DebugLog("- Successful Replacement"@ReplacementList[ReplacementIndex].ReplacementClass);
-            bReplacedMonster = true;
+            continue;
+        }
+
+        ReplacementList[ReplacementIndex].ReplacementProgress += ReplacementList[ReplacementIndex].ReplacementRate;
+
+        if (ReplacementList[ReplacementIndex].ReplacementProgress < 1.f)
+        {
             break;
         }
+
+        ReplacementList[ReplacementIndex].ReplacementProgress -= 1.f;
+        Monster = ReplacementList[ReplacementIndex].ReplacementClass;
+        DebugLog("- Successful Replacement"@ReplacementList[ReplacementIndex].ReplacementClass);
+        bReplacedMonster = true;
+        break;
     }
 
     return bReplacedMonster;
@@ -86,9 +110,9 @@ defaultproperties
 {
     bDebugReplacement = false
 
-    ReplacementList(0)=(TargetParentClass=class'P_Gorefast',ReplacementClass=class'P_Gorefast_Classy',ChanceToReplace=0.2f)
-    ReplacementList(1)=(TargetParentClass=class'P_Gorefast',ReplacementClass=class'P_Gorefast_Assassin',ChanceToReplace=0.1f)
-    ReplacementList(2)=(TargetParentClass=class'P_Crawler',ReplacementClass=class'P_Crawler_Jumper',ChanceToReplace=0.1f)
-    ReplacementList(3)=(TargetParentClass=class'P_Bloat',ReplacementClass=class'P_Bloat_Fathead',ChanceToReplace=0.1f)
-    ReplacementList(4)=(TargetParentClass=class'P_Siren',ReplacementClass=class'P_Siren_Caroler',ChanceToReplace=0.1f)
+    ReplacementList(0)=(TargetParentClass=class'P_Gorefast',ReplacementClass=class'P_Gorefast_Assassin',ReplacementRate=0.15f)
+    ReplacementList(1)=(TargetParentClass=class'P_Crawler',ReplacementClass=class'P_Crawler_Jumper',ReplacementRate=0.1f)
+    ReplacementList(2)=(TargetParentClass=class'P_Bloat',ReplacementClass=class'P_Bloat_Fathead',ReplacementRate=0.1f)
+    ReplacementList(3)=(TargetParentClass=class'P_Siren',ReplacementClass=class'P_Siren_Caroler',ReplacementRate=0.1f)
+    ReplacementList(4)=(TargetParentClass=class'P_Gorefast',ReplacementClass=class'P_Gorefast_Classy',ReplacementRate=0.1f)
 }
