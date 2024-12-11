@@ -23,7 +23,7 @@ defaultproperties
      TweenTime=0.025000
      FireForce="AssaultRifleFire"
      FireRate=0.096000
-     AmmoClass=Class'KFMod.MAC10Ammo'
+     AmmoClass=Class'W_MAC10_Ammo'
      AmmoPerFire=1
      ShakeRotMag=(X=35.000000,Y=35.000000,Z=200.000000)
      ShakeRotRate=(X=8000.000000,Y=8000.000000,Z=8000.000000)

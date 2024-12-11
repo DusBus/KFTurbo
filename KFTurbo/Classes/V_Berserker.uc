@@ -39,6 +39,17 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 	return Min(StatOther.RMeleeDamageStat + StatOther.GetCustomValueInt(class'VP_MeleeDamage'), FinalInt);
 }
 
+static function bool IsPerkAmmunition(class<Ammunition> AmmoType)
+{
+	switch (AmmoType)
+	{
+		case class'W_Crossbuzzsaw_Ammo':
+			return true;
+	}
+
+	return false;
+}
+
 static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, Class<Ammunition> AmmoType)
 {
 	local float Multiplier;
@@ -186,6 +197,9 @@ static function string GetCustomLevelInfo(byte Level)
 
 defaultproperties
 {
+	HighDifficultyExtraAmmoMultiplier=1.5f
+	HighDifficultyExtraGrenadeAmmoMultiplier=1.6f
+
 	OnHUDIcon=Texture'KillingFloorHUD.Perks.Perk_Berserker'
 	OnHUDGoldIcon=Texture'KFTurbo.Perks.Berserker_D'
 	OnHUDIconMaxTier=Shader'KFTurbo.Perks.Berserker_SHDR'

@@ -61,6 +61,24 @@ static function int GetPerkProgressInt( ClientPerkRepLink StatOther, out int Fin
 	return Min(StatOther.RShotgunDamageStat + StatOther.GetCustomValueInt(class'VP_ShotgunDamage'),FinalInt);
 }
 
+static function bool IsPerkAmmunition(class<Ammunition> AmmoType)
+{
+	switch (AmmoType)
+	{
+		case class'W_Shotgun_Ammo':
+		case class'W_BoomStick_Ammo':
+		case class'W_KSG_Ammo':
+		case class'W_Benelli_Ammo':
+		case class'W_NailGun_Ammo':
+		case class'W_SPShotgun_Ammo':
+		case class'W_AA12_Ammo':
+			return true;
+	}
+	
+	return false;
+}
+
+
 static function int AddCarryMaxWeight(KFPlayerReplicationInfo KFPRI)
 {
 	return Super.AddCarryMaxWeight(KFPRI) + 9;
@@ -179,6 +197,9 @@ static function string GetCustomLevelInfo(byte Level)
 
 defaultproperties
 {
+	HighDifficultyExtraAmmoMultiplier=1.5f
+	HighDifficultyExtraGrenadeAmmoMultiplier=1.3334f
+	
 	OnHUDIcon=Texture'KillingFloorHUD.Perks.Perk_Support'
     OnHUDGoldIcon=Texture'KFTurbo.Perks.Support_D'
 	OnHUDIconMaxTier=Shader'KFTurbo.Perks.Support_SHDR'

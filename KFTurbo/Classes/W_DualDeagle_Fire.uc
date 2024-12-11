@@ -9,4 +9,5 @@ defaultproperties
 {
      maxVerticalRecoilAngle=850
      maxHorizontalRecoilAngle=150
+     AmmoClass=Class'W_Deagle_Ammo'
 }

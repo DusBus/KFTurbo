@@ -41,4 +41,9 @@ defaultproperties
 	FireModeClass(0)=Class'KFTurbo.W_DualDeagle_Fire'
 	DemoReplacement=Class'KFTurbo.W_Deagle_Weap'
 	PickupClass=Class'KFTurbo.W_DualDeagle_Pickup'
+
+	HudImage=None
+	SelectedHudImage=None
+	HudImageRef="KillingFloorHUD.WeaponSelect.dual_handcannon_unselected"
+	SelectedHudImageRef="KillingFloorHUD.WeaponSelect.dual_handcannon"
 }

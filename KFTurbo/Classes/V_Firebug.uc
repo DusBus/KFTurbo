@@ -39,6 +39,23 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 	return Min(StatOther.RFlameThrowerDamageStat + StatOther.GetCustomValueInt(class'VP_FlamethrowerDamage'), FinalInt);
 }
 
+static function bool IsPerkAmmunition(class<Ammunition> AmmoType)
+{
+	switch (AmmoType)
+	{
+		case class'FragAmmo':
+		case class'W_MAC10_Ammo':
+		case class'W_FlareRevolver_Ammo':
+		case class'W_Flamethrower_Ammo':
+		case class'W_ThompsonSMG_Ammo':
+		case class'W_Trenchgun_Ammo':
+		case class'W_Huskgun_Ammo':
+			return true;
+	}
+	
+	return false;
+}
+
 static function ApplyAdjustedFireRate(KFPlayerReplicationInfo KFPRI, Weapon Other, out float Multiplier)
 {
 	Super.ApplyAdjustedFireRate(KFPRI, Other, Multiplier);
@@ -68,7 +85,7 @@ static function float GetMagCapacityMod(KFPlayerReplicationInfo KFPRI, KFWeapon 
 
 static function float GetAmmoPickupMod(KFPlayerReplicationInfo KFPRI, KFAmmunition Other)
 {
-	if ((FlameAmmo(Other) != none || MAC10Ammo(Other) != none || HuskGunAmmo(Other) != none || TrenchgunAmmo(Other) != none || ThompsonAmmo(Other) != none || FlareRevolverAmmo(Other) != none) && KFPRI.ClientVeteranSkillLevel > 0)
+	if ((W_Flamethrower_Ammo(Other) != none || W_MAC10_Ammo(Other) != none || W_Huskgun_Ammo(Other) != none || W_Trenchgun_Ammo(Other) != none || W_ThompsonSMG_Ammo(Other) != none || W_FlareRevolver_Ammo(Other) != none))
 		return LerpStat(KFPRI, 1.f, 1.6f);
 	return 1.0;
 }
@@ -80,9 +97,11 @@ static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, Class<Ammun
 
 	ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 
-	if (AmmoType == class'FlameAmmo' || AmmoType == class'MAC10Ammo' || AmmoType == class'W_Huskgun_Ammo'
-		|| AmmoType == class'W_ThompsonSMG_Ammo' || AmmoType == class'TrenchgunAmmo'
-		|| AmmoType == class'W_FlareRevolver_Ammo' || AmmoType == class'GoldenFlameAmmo')
+	if (class<FragAmmo>(AmmoType) != None)
+	{
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.2f);
+	}
+	else if (IsPerkAmmunition(AmmoType))
 	{
 		Multiplier *= LerpStat(KFPRI, 1.f, 1.6f);
 	}
@@ -181,6 +200,9 @@ static function string GetCustomLevelInfo(byte Level)
 
 defaultproperties
 {
+	HighDifficultyExtraAmmoMultiplier=1.5f
+	HighDifficultyExtraGrenadeAmmoMultiplier=1.2f
+
 	StartingWeaponSellPriceLevel5=255.000000
 	StartingWeaponSellPriceLevel6=255.000000
 

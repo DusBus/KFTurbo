@@ -48,6 +48,24 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 	return Min(GetStalkerKillStatAsDamage(StatOther), FinalInt);
 }
 
+static function bool IsPerkAmmunition(class<Ammunition> AmmoType)
+{
+	switch (AmmoType)
+	{
+	case class'W_SCARMK17_Ammo':
+	case class'W_MKb42_Ammo':
+	case class'W_ThompsonSMG_Ammo':
+	case class'W_Bullpup_Ammo':
+	case class'W_AK47_Ammo':
+	case class'W_ThompsonDrum_Ammo':
+	case class'W_M4203_Ammo_Bullet':
+	case class'W_FNFAL_Ammo':
+		return true;
+	}
+
+	return false;
+}
+
 static function SpecialHUDInfo(KFPlayerReplicationInfo KFPRI, Canvas C)
 {
 	local KFMonster KFEnemy;
@@ -80,24 +98,26 @@ static function float GetStalkerViewDistanceMulti(KFPlayerReplicationInfo KFPRI)
 
 static function ApplyAdjustedMagCapacityModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other, out float Multiplier)
 {
-	if (Multiplier > 1.f && Other.default.MagCapacity > 1 && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	if (Other.default.MagCapacity <= 2)
 	{
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetCommandoMagazineAmmoMultiplier(KFPRI, Other);
-	}
-
-	if (!IsHighDifficulty(KFPRI))
-	{
-		Super.ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
 		return;
 	}
 
-	if(SCARMK17AssaultRifle(Other) != None)
+	if (IsPerkWeapon(Other.Class))
 	{
-		Multiplier *= 1.2f;
-	}
-	else if(Other.default.MagCapacity > 1 && Multiplier > 1.f)
-	{
-		Multiplier *= 1.25f;
+		if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+		{
+			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetCommandoMagazineAmmoMultiplier(KFPRI, Other);
+		}
+
+		if(SCARMK17AssaultRifle(Other) != None)
+		{
+			Multiplier *= 1.2f;
+		}
+		else
+		{
+			Multiplier *= 1.25f;
+		}
 	}
 
 	Super.ApplyAdjustedMagCapacityModifier(KFPRI, Other, Multiplier);
@@ -108,31 +128,26 @@ static function float GetMagCapacityMod(KFPlayerReplicationInfo KFPRI, KFWeapon 
 	local float Multiplier;
 	Multiplier = 1.f;
 
-	if (Bullpup(Other) != none 
-		|| AK47AssaultRifle(Other) != none 
-		|| SCARMK17AssaultRifle(Other) != none 
-		|| FNFAL_ACOG_AssaultRifle(Other) != none 
-		|| MKb42AssaultRifle(Other) != none)
+	if (Bullpup(Other) != None 
+		|| AK47AssaultRifle(Other) != None 
+		|| SCARMK17AssaultRifle(Other) != None
+		|| MKb42AssaultRifle(Other) != None)
 	{
 		Multiplier *= LerpStat(KFPRI, 1.f, 1.25f);
 	}
-
-	if (ThompsonDrumSMG(Other) != None || SPThompsonSMG(Other) != none)
+	else if (ThompsonDrumSMG(Other) != None || SPThompsonSMG(Other) != none)
 	{
 		Multiplier *= LerpStat(KFPRI, 1.f, 1.6f);
 	}
-
-	if (ThompsonSMG(Other) != None)
+	else if (ThompsonSMG(Other) != None)
 	{
 		Multiplier *= LerpStat(KFPRI, 1.f, 1.2f);
 	}
-
-	if (M4AssaultRifle(Other) != None)
+	else if (M4AssaultRifle(Other) != None)
 	{
 		Multiplier *= LerpStat(KFPRI, 1.f, 1.34f);
 	}
-
-	if (W_FNFAL_Weap(Other) != None)
+	else if (W_FNFAL_Weap(Other) != None)
 	{
 		Multiplier *= LerpStat(KFPRI, 1.f, 1.67f);
 	}
@@ -148,12 +163,12 @@ static function float GetAmmoPickupMod(KFPlayerReplicationInfo KFPRI, KFAmmuniti
 
 	Multiplier = 1.f;
 
-	if ((BullpupAmmo(Other) != none || AK47Ammo(Other) != none ||
-		SCARMK17Ammo(Other) != none || M4Ammo(Other) != none
-		|| FNFALAmmo(Other) != none || MKb42Ammo(Other) != none
-		|| ThompsonAmmo(Other) != none || GoldenAK47Ammo(Other) != none
-		|| ThompsonDrumAmmo(Other) != none || SPThompsonAmmo(Other) != none
-		|| CamoM4Ammo(Other) != none || NeonAK47Ammo(Other) != none) &&
+	if ((BullpupAmmo(Other) != None || AK47Ammo(Other) != None ||
+		SCARMK17Ammo(Other) != None || M4Ammo(Other) != None
+		|| FNFALAmmo(Other) != None || MKb42Ammo(Other) != None
+		|| ThompsonAmmo(Other) != None || GoldenAK47Ammo(Other) != None
+		|| ThompsonDrumAmmo(Other) != None || SPThompsonAmmo(Other) != None
+		|| CamoM4Ammo(Other) != None || NeonAK47Ammo(Other) != None) &&
 		KFPRI.ClientVeteranSkillLevel > 0)
 	{
 		Multiplier *= LerpStat(KFPRI, 1.f, 1.25f);
@@ -171,18 +186,9 @@ static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, class<Ammun
 	local float Multiplier;
 	Multiplier = 1.f;
 
-	switch (AmmoType)
+	if (IsPerkAmmunition(AmmoType))
 	{
-	case class'SCARMK17Ammo' :
-	case class'MKb42Ammo' :
-	case class'W_ThompsonSMG_Ammo' :
-	case class'W_Bullpup_Ammo' :
-	case class'W_AK47_Ammo' :
-	case class'W_ThompsonDrum_Ammo' :
-	case class'W_M4203_Ammo_Bullet' :
-	case class'W_FNFAL_Ammo' :
 		Multiplier *= LerpStat(KFPRI, 1.f, 1.25f);
-		break;
 	}
 
 	ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
@@ -192,25 +198,9 @@ static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, class<Ammun
 
 static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
 {
-	if (!IsHighDifficulty(KFPRI))
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
 	{
-		if (Multiplier > 1.f)
-		{
-			if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-			{
-				Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetCommandoMaxAmmoMultiplier(KFPRI, AmmoType);
-			}
-		}
-
-		Super.ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
-		return;
-	}
-
-	switch (AmmoType)
-	{
-		case class'FragAmmo':
-			Multiplier *= 1.1f;
-			break;
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetCommandoMaxAmmoMultiplier(KFPRI, AmmoType);
 	}
 
 	Super.ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
@@ -318,6 +308,9 @@ static function string GetCustomLevelInfo(byte Level)
 
 defaultproperties
 {
+	HighDifficultyExtraAmmoMultiplier=1.5f
+	HighDifficultyExtraGrenadeAmmoMultiplier=1.1f
+
 	StartingWeaponSellPriceLevel5=255.000000
 	StartingWeaponSellPriceLevel6=255.000000
 

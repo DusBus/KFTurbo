@@ -4,4 +4,5 @@ defaultproperties
 {
      ProjectileClass=Class'KFTurbo.W_FlameThrower_Proj'
      Spread=0.002200
+     AmmoClass=class'W_Flamethrower_Ammo'
 }

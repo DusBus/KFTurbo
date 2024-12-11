@@ -15,4 +15,5 @@ defaultproperties
      FireRate=0.150000
      Spread=0.008000
      MaxSpread=0.108000
+     AmmoClass=class'W_Magnum44_Ammo'
 }

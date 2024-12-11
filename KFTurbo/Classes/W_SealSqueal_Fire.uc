@@ -7,4 +7,5 @@ defaultproperties
      ProjectileClass=Class'KFTurbo.W_SealSqueal_Proj'
      Spread=0.005000
      SpreadStyle=SS_None
+     AmmoClass=Class'W_SealSqueal_Ammo'
 }

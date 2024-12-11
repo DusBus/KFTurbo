@@ -7,7 +7,8 @@ class TurboVeterancyTypes extends SRVeterancyTypes
 const MAX_PERK_TIER = 7;
 
 var int LevelRankRequirement; //Denotes levels between new rank names.
-var float HighDifficultyExtraAmmoMultiplier;
+var float HighDifficultyExtraAmmoMultiplier; //On-perk weapon ammo bonus on high difficulty.
+var float HighDifficultyExtraGrenadeAmmoMultiplier; //Grenade ammo bonus on high difficulty. Demo's HighDifficultyExtraAmmoMultiplier will stack on top of this.
 
 var	Texture StarTexture;
 
@@ -23,16 +24,6 @@ static final function bool IsHighDifficulty( Actor Actor )
 	return class'KFTurboGameType'.static.StaticIsHighDifficulty(Actor);
 }
 
-static final function bool IsPerkDamageType( class<KFWeaponDamageType> WeaponDamageType )
-{
-	if (WeaponDamageType == None || default.PerkIndex == 255 || class<KFWeapon>(WeaponDamageType.default.WeaponClass) == None)
-	{
-		return false;
-	}
-
-	return IsPerkWeapon(class<KFWeapon>(WeaponDamageType.default.WeaponClass));
-}
-
 static final function bool IsPerkWeapon( class<KFWeapon> Weapon )
 {
 	if (Weapon == None || default.PerkIndex == 255)
@@ -45,6 +36,21 @@ static final function bool IsPerkWeapon( class<KFWeapon> Weapon )
 		return class<KFWeaponPickup>(Weapon.default.PickupClass).default.CorrespondingPerkIndex == default.PerkIndex;
 	}
 
+	return false;
+}
+
+static final function bool IsPerkDamageType( class<KFWeaponDamageType> WeaponDamageType )
+{
+	if (WeaponDamageType == None || default.PerkIndex == 255 || class<KFWeapon>(WeaponDamageType.default.WeaponClass) == None)
+	{
+		return false;
+	}
+
+	return IsPerkWeapon(class<KFWeapon>(WeaponDamageType.default.WeaponClass));
+}
+
+static function bool IsPerkAmmunition(class<Ammunition> AmmoType)
+{
 	return false;
 }
 
@@ -103,19 +109,17 @@ static function float GetHeadShotDamMulti(KFPlayerReplicationInfo KFPRI, KFPawn 
 //Split off from AddExtraAmmoFor. Applies HighDifficultyExtraAmmoMultiplier on High Difficulty game types and anyone else who wants to mutate ammo amounts separately from perk bonuses.
 static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
 {
-	if (!IsHighDifficulty(KFPRI))
+	if (IsHighDifficulty(KFPRI))
 	{
-		if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+		if (IsPerkAmmunition(AmmoType))
 		{
-			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMaxAmmoMultiplier(KFPRI, AmmoType);
+			Multiplier *= default.HighDifficultyExtraAmmoMultiplier;
 		}
-
-		return;
-	}
-
-	if (Multiplier > 1.f)
-	{
-		Multiplier *= default.HighDifficultyExtraAmmoMultiplier;
+		
+		if (class<FragAmmo>(AmmoType) != None)
+		{
+			Multiplier *= default.HighDifficultyExtraGrenadeAmmoMultiplier;
+		}
 	}
 
 	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
@@ -166,7 +170,7 @@ static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWe
 
 static function ApplyAdjustedMagCapacityModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other, out float Multiplier)
 {
-	if (Other.default.MagCapacity > 1 && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	if (Other.default.MagCapacity > 2 && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
 	{
 		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMagazineAmmoMultiplier(KFPRI, Other);
 	}
@@ -421,6 +425,7 @@ defaultproperties
 {
 	LevelRankRequirement=5
 	HighDifficultyExtraAmmoMultiplier=1.5f
+	HighDifficultyExtraGrenadeAmmoMultiplier=1.f
 	
 	StarTexture=Texture'KFTurbo.Perks.Star_D'
 	OnHUDIconMaxTier=None

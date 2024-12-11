@@ -44,37 +44,28 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 	return Min(StatOther.RDamageHealedStat + StatOther.GetCustomValueInt(class'VP_DamageHealed'), FinalInt);
 }
 
+static function bool IsPerkAmmunition(class<Ammunition> AmmoType)
+{
+	switch (AmmoType)
+	{
+		case class'FragAmmo':
+		case class'W_MP7M_Ammo':
+		case class'W_MP5M_Ammo':
+		case class'W_KrissM_Ammo':
+		case class'W_M7A3M_Ammo':
+		case class'BlowerThrowerAmmo':
+			return true;
+	}
+
+	return false;
+}
+
 static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
 {
-	if (!IsHighDifficulty(KFPRI))
-	{
-		if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-		{
-			if (class<MP7MAmmo>(AmmoType) != none || class<MP5MAmmo>(AmmoType) != none || class<M7A3MAmmo>(AmmoType) != none
-       			|| class<KrissMAmmo>(AmmoType) != none || class<BlowerThrowerAmmo>(AmmoType) != none)
-			{
-				Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMedicMaxAmmoMultiplier(KFPRI, AmmoType);
-			}
+	Super.ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 
-			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMaxAmmoMultiplier(KFPRI, AmmoType);
-		}
-
-		return;
-	}
-
-	if (Multiplier > 1.f)
-	{
-		Multiplier *= default.HighDifficultyExtraAmmoMultiplier;
-	}
-
-	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-	{
-		if (class<MP7MAmmo>(AmmoType) != none || class<MP5MAmmo>(AmmoType) != none || class<M7A3MAmmo>(AmmoType) != none
-			|| class<KrissMAmmo>(AmmoType) != none || class<BlowerThrowerAmmo>(AmmoType) != none)
-		{
-			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMedicMaxAmmoMultiplier(KFPRI, AmmoType);
-		}
-		
+	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None && IsPerkAmmunition(AmmoType))
+	{	
 		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMaxAmmoMultiplier(KFPRI, AmmoType);
 	}
 }
@@ -138,7 +129,12 @@ static function int ReduceDamage(KFPlayerReplicationInfo KFPRI, KFPawn Injured, 
 }
 static function ApplyAdjustedMagCapacityModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other, out float Multiplier)
 {
-	if (Multiplier > 1.f && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	if (Other.default.MagCapacity <= 2)
+	{
+		return;
+	}
+
+	if (IsPerkWeapon(Other.Class) && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
 	{
 		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMedicMagazineAmmoMultiplier(KFPRI, Other);
 	}
@@ -223,6 +219,9 @@ static function string GetCustomLevelInfo(byte Level)
 
 defaultproperties
 {
+	HighDifficultyExtraAmmoMultiplier=1.5f
+	HighDifficultyExtraGrenadeAmmoMultiplier=1.1f
+
 	OnHUDIcon=Texture'KillingFloorHUD.Perks.Perk_Medic'
 	OnHUDGoldIcon=Texture'KFTurbo.Perks.Medic_D'
 	OnHUDIconMaxTier=Shader'KFTurbo.Perks.Medic_SHDR'

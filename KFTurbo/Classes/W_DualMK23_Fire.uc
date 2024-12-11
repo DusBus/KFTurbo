@@ -8,4 +8,5 @@ function DoTrace(Vector Start, Rotator Direction)
 defaultproperties
 {
      Spread=0.011000
+     AmmoClass=class'W_MK23_Ammo'
 }

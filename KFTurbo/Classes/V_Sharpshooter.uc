@@ -39,6 +39,26 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 	return Min(StatOther.RHeadshotKillsStat + StatOther.GetCustomValueInt(class'VP_HeadshotKills'), FinalInt);
 }
 
+static function bool IsPerkAmmunition(class<Ammunition> AmmoType)
+{
+	switch (AmmoType)
+	{
+		case class'SingleAmmo':
+		case class'DualiesAmmo':
+		case class'WinchesterAmmo':
+		case class'W_Magnum44_Ammo':
+		case class'W_Deagle_Ammo':
+		case class'W_M32_Ammo':
+		case class'W_Crossbow_Ammo':
+		case class'W_SPSniper_Ammo':
+		case class'W_M14_Ammo':
+		case class'W_M99_Ammo':
+			return true;
+	}
+	
+	return false;
+}
+
 static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, Class<Ammunition> AmmoType)
 {
 	return Super.AddExtraAmmoFor(KFPRI, AmmoType);
@@ -208,6 +228,7 @@ static function string GetCustomLevelInfo(byte Level)
 defaultproperties
 {
 	HighDifficultyExtraAmmoMultiplier=1.25f
+	HighDifficultyExtraGrenadeAmmoMultiplier=1.2f
 
 	StartingWeaponSellPriceLevel5=255.000000
 	StartingWeaponSellPriceLevel6=255.000000

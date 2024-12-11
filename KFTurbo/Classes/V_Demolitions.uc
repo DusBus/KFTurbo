@@ -39,6 +39,25 @@ static function int GetPerkProgressInt(ClientPerkRepLink StatOther, out int Fina
 	return Min(StatOther.RExplosivesDamageStat + StatOther.GetCustomValueInt(class'VP_ExplosiveDamage'), FinalInt);
 }
 
+static function bool IsPerkAmmunition(class<Ammunition> AmmoType)
+{
+	switch (AmmoType)
+	{
+		case class'FragAmmo':
+		case class'W_LAW_Ammo':
+		case class'W_SealSqueal_Ammo':
+		case class'W_M79_Ammo':
+		case class'W_M32_Ammo':
+		case class'W_M4203_Ammo':
+		case class'W_SPGrenade_Ammo':
+		case class'W_SeekerSix_Ammo':
+		case class'W_Pipebomb_Ammo':
+			return true;
+	}
+
+	return false;
+}
+
 static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, Class<Ammunition> AmmoType)
 {
 	local float Multiplier;
@@ -63,24 +82,6 @@ static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, Class<Ammun
 	ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 
 	return Multiplier;
-}
-
-static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
-{
-	if (!IsHighDifficulty(KFPRI))
-	{
-		Super.ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
-		return;
-	}
-
-	switch (AmmoType)
-	{
-		case class'FragAmmo':
-			Multiplier *= 1.3334f;
-			break;
-	}
-	
-	Super.ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 }
 
 static function int AddDamage(KFPlayerReplicationInfo KFPRI, KFMonster Injured, KFPawn DamageTaker, int InDamage, class<DamageType> DmgType)
@@ -219,6 +220,9 @@ static function string GetCustomLevelInfo(byte Level)
 
 defaultproperties
 {
+	HighDifficultyExtraAmmoMultiplier=1.5f
+	HighDifficultyExtraGrenadeAmmoMultiplier=1.3334f
+
 	StartingWeaponSellPriceLevel5=0.000000
 	StartingWeaponSellPriceLevel6=255.000000
 
