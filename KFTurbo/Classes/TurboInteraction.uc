@@ -1,3 +1,6 @@
+//Killing Floor Turbo TurboInteraction
+//Contains user configuration and some special input handling for KFTurbo.
+//For more information see https://github.com/KFPilot/KFTurbo.
 class TurboInteraction extends Engine.Interaction
 	dependson(TurboPlayerMarkReplicationInfo)
 	dependson(TurboRepLink)
@@ -20,6 +23,17 @@ var Material MerchantMaterial;
 
 var Material DefaultTraderMaterial;
 
+var globalconfig bool bShiftOpensTrader;
+
+simulated function bool KeyEvent( out EInputKey Key, out EInputAction Action, FLOAT Delta )
+{
+	if (Action == IST_Press && Key == IK_Shift && bShiftOpensTrader)
+	{
+		Trade();
+	}
+
+	return false;
+}
 
 simulated function InitializeTurboInteraction()
 {
@@ -216,6 +230,16 @@ simulated function SetUseMerchantReplacement(bool bReplaceTrader)
 	UpdateMerchant();
 }
 
+static final function bool UseMerchantReplacement(TurboPlayerController PlayerController)
+{
+	if (PlayerController != None && PlayerController.TurboInteraction != None)
+	{
+		return PlayerController.TurboInteraction.bReplaceTraderWithMerchant;
+	}
+
+	return false;
+}
+
 simulated function UpdateMerchant()
 {
 	local WeaponLocker Trader;
@@ -266,20 +290,25 @@ simulated function UpdateMerchant()
 	}
 }
 
-static final function bool UseMerchantReplacement(TurboPlayerController PlayerController)
+simulated function SetShiftTradeEnabled(bool bNewShiftOpensTrader)
+{
+	bShiftOpensTrader = bNewShiftOpensTrader;
+	SaveConfig();
+}
+
+static final function bool IsShiftTradeEnabled(TurboPlayerController PlayerController)
 {
 	if (PlayerController != None && PlayerController.TurboInteraction != None)
 	{
-		return PlayerController.TurboInteraction.bReplaceTraderWithMerchant;
+		return PlayerController.TurboInteraction.bShiftOpensTrader;
 	}
 
 	return false;
 }
 
+
 defaultproperties
 {
-	bNativeEvents=true
-	
 	bHasInitializedPerkTierPreference=false
 	PerkTierPreferenceList(0)=(PerkClass=class'V_FieldMedic',TierPreference=7)
 	PerkTierPreferenceList(1)=(PerkClass=class'V_SupportSpec',TierPreference=7)
@@ -293,6 +322,8 @@ defaultproperties
 	MerchantMeshRef="KFTurbo.Merchant_Trip"
 	MerchantAnimRef="KFTurbo.Merchant_anim"
 	MerchantMaterialRef="KFTurboExtra.Merchant.Merchant_D"
+
+	bShiftOpensTrader=true
 
 	DefaultTraderMaterial=Texture'KF_Soldier_Trip_T.Uniforms.shopkeeper_diff'
 }

@@ -75,6 +75,8 @@ State MatchInProgress
         Super.BeginState();
 
         WaveCountDown = WAVE_COUNTDOWN;
+        
+        BroadcastLocalizedMessage(class'KFTurboPlusMessage', 0); //ETurboPlusMessage.TraderHint
     }
 
     // Don't select shops.
@@ -88,10 +90,16 @@ State MatchInProgress
     function OpenShops()
     {
         local Controller C;
+        local int Index;
 
         if (bTradingDoorsOpen)
         {
             return;
+        }
+    
+        for (Index = 0; Index < ShopList.Length; Index++)
+        {
+            ShopList[Index].OpenShop();
         }
     
         bTradingDoorsOpen = True;
@@ -116,6 +124,10 @@ State MatchInProgress
                 }
             }
         }
+
+        BroadcastLocalizedMessage(class'KFTurboPlusMessage', 0); //ETurboPlusMessage.TraderHint
+        
+        Super.OpenShops();
     }
 
     // It's ok to call this I think.
@@ -175,6 +187,7 @@ function SetupWave()
 
     BuildNextSquad();
     
+    ClearTraderEndVotes();
 	class'TurboWaveEventHandler'.static.BroadcastWaveStarted(Self, WaveNum);
 }
 

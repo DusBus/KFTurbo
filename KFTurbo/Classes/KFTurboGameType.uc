@@ -361,6 +361,11 @@ state MatchInProgress
 
     function OpenShops()
     {
+        if (WaveNum % 3 == 0)
+        {
+            BroadcastLocalizedMessage(class'TurboEndTraderVoteMessage', 0); //EEndTraderVoteMessage.VoteHint
+        }
+
 		if (!HasAnyTraders())
 		{
 			return;
@@ -425,7 +430,7 @@ function AttemptTraderEnd(TurboPlayerController VoteInstigator)
 	{
 		TPRI = TurboPlayerReplicationInfo(Level.GRI.PRIArray[Index]);
 
-        if (TPRI == None)
+        if (TPRI == None || TPRI.bOnlySpectator)
         {
             continue;
         }
@@ -450,7 +455,7 @@ function AttemptTraderEnd(TurboPlayerController VoteInstigator)
         //This means someone instigated a vote.
         if (NumVotes == 1)
         {
-            BroadcastLocalizedMessage(class'TurboEndTraderVoteMessage',,VoteInstigator.PlayerReplicationInfo);
+            BroadcastLocalizedMessage(class'TurboEndTraderVoteMessage', 1, VoteInstigator.PlayerReplicationInfo); //EEndTraderVoteMessage.VoteStarted
         }
         return;
     }

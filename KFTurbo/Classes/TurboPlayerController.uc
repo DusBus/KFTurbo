@@ -1,3 +1,5 @@
+//Killing Floor Turbo TurboPlayerController
+//For more information see https://github.com/KFPilot/KFTurbo.
 class TurboPlayerController extends KFPCServ;
 
 var private ClientPerkRepLink ClientPerkRepLink;	
@@ -164,7 +166,7 @@ event ClientOpenMenu(string Menu, optional bool bDisconnect,optional string Msg1
 	Super.ClientOpenMenu(Menu, bDisconnect, Msg1, Msg2);	
 }
 
-simulated event ReceiveLocalizedMessage( class<LocalMessage> Message, optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject )
+simulated event ReceiveLocalizedMessage(class<LocalMessage> Message, optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject )
 {
 	switch(Message)
 	{
@@ -179,10 +181,8 @@ simulated event ReceiveLocalizedMessage( class<LocalMessage> Message, optional i
 			break;
 	}
 
-	//Accolades are a bit special.
-	if (class<TurboAccoladeLocalMessage>(Message) != None)
+	if (class<TurboLocalMessage>(Message) != None && class<TurboLocalMessage>(Message).static.IgnoreLocalMessage(Self, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject))
 	{
-		CheckAccoladeLocalizedMessage(class<TurboAccoladeLocalMessage>(Message), Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject);
 		return;
 	}
 	
@@ -205,39 +205,6 @@ function ClientLocationalVoiceMessage(PlayerReplicationInfo Sender, PlayerReplic
 	if (TurboHUDKillingFloor(myHUD) != None)
 	{
 		TurboHUDKillingFloor(myHUD).ReceivedVoiceMessage(Sender, MessageType, MessageIndex, SoundSender, SenderLocation);
-	}
-}
-
-simulated function CheckAccoladeLocalizedMessage(class<TurboAccoladeLocalMessage> Message, optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject)
-{
-	if (!Message.default.bDisplayForAccoladeEarner && PlayerReplicationInfo == RelatedPRI_1)
-	{
-		return;
-	}
-
-	AccoladeMessage(RelatedPRI_1, Message, Message.static.GetString(Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject));
-}
-
-simulated function AccoladeMessage(PlayerReplicationInfo PRI, class<TurboAccoladeLocalMessage> Message, string AccoladeMessage)
-{
-	if ( Level.NetMode == NM_DedicatedServer || GameReplicationInfo == None )
-	{
-		return;
-	}
-
-	if( AllowTextToSpeech(PRI, 'Accolade') )
-	{
-		TextToSpeech(AccoladeMessage, TextToSpeechVoiceVolume );
-	}
-
-	if ( myHUD != None )
-	{
-		myHUD.AddTextMessage(AccoladeMessage, Message, PRI);
-	}
-
-	if (Player != None && Player.Console != None)
-	{
-		Player.Console.Chat(AccoladeMessage, 6.0, PRI );
 	}
 }
 

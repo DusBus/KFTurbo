@@ -660,7 +660,7 @@ simulated function TickTraderWave(float DeltaTime)
 
 	for (EndTraderVoteIndex = EndTraderVoteList.Length - 1; EndTraderVoteIndex >= 0; EndTraderVoteIndex--)
 	{
-		if (EndTraderVoteList[EndTraderVoteIndex].PRI == None || !EndTraderVoteList[EndTraderVoteIndex].PRI.bVotedForTraderEnd)
+		if (EndTraderVoteList[EndTraderVoteIndex].PRI == None || EndTraderVoteList[EndTraderVoteIndex].PRI.bOnlySpectator || !EndTraderVoteList[EndTraderVoteIndex].PRI.bVotedForTraderEnd)
 		{
 			EndTraderVoteList.Remove(EndTraderVoteIndex, 1);
 		}

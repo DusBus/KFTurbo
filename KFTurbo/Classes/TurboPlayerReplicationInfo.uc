@@ -1,3 +1,5 @@
+//Killing Floor Turbo TurboPlayerReplicationInfo
+//For more information see https://github.com/KFPilot/KFTurbo.
 class TurboPlayerReplicationInfo extends KFPlayerReplicationInfo;
 
 var int ShieldStrength;

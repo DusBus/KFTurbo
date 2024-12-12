@@ -3,6 +3,7 @@ class TurboTab_TurboSettings extends SRTab_Base;
 var automated GUISectionBackground LeftSection, RightSection;
 var automated GUIButton DesiredRankButton;
 var automated moCheckbox MerchantReplacementCheckBox;
+var automated moCheckbox ShiftToTradeCheckBox;
 var Color PerkLabelTextColor;
 var localized string TierOptionList[8];
 
@@ -118,6 +119,8 @@ function InitializePage()
 
     RightSection.ManageComponent(MerchantReplacementCheckBox);
     MerchantReplacementCheckBox.Checked(class'TurboInteraction'.static.UseMerchantReplacement(PlayerController));
+    RightSection.ManageComponent(ShiftToTradeCheckBox);
+    ShiftToTradeCheckBox.Checked(class'TurboInteraction'.static.IsShiftTradeEnabled(PlayerController));
 }
 
 function UpdatePage()
@@ -164,6 +167,20 @@ function OnMerchantReplacementChanged(GUIComponent Sender)
     }
 
     TurboInteraction.SetUseMerchantReplacement(MerchantReplacementCheckBox.IsChecked());
+}
+
+function OnShiftToTradeChanged(GUIComponent Sender)
+{
+	local TurboInteraction TurboInteraction;
+
+    TurboInteraction = TurboPlayerController(PlayerOwner()).TurboInteraction;
+
+    if (TurboInteraction == None)
+    {
+        return;
+    }
+
+    TurboInteraction.SetShiftTradeEnabled(ShiftToTradeCheckBox.IsChecked());
 }
 
 defaultproperties
@@ -223,4 +240,13 @@ defaultproperties
         OnChange=TurboTab_TurboSettings.OnMerchantReplacementChanged
     End Object
     MerchantReplacementCheckBox=moCheckBox'MerchantReplacement'
+
+    Begin Object Class=moCheckBox Name=ShiftTradeMenu
+        Caption="Press Shift To Trade"
+        OnCreateComponent=MerchantReplacement.InternalOnCreateComponent
+        Hint="Open trader menu in KFTurbo+ by pressing Shift key."
+        TabOrder=52
+        OnChange=TurboTab_TurboSettings.OnShiftToTradeChanged
+    End Object
+    ShiftToTradeCheckBox=moCheckBox'ShiftTradeMenu'
 }
