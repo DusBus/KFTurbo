@@ -218,6 +218,21 @@ exec function Speech( Name Type, int Index, string CallSign )
 	Super.Speech(Type, Index, CallSign);
 }
 
+function bool AllowTextMessage(string Msg)
+{
+	if (Level.NetMode == NM_Standalone || PlayerReplicationInfo.bAdmin || PlayerReplicationInfo.bSilentAdmin)
+	{
+		return true;
+	}
+
+	if (Level.TimeSeconds - LastBroadcastTime > 1.f)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 function AttemptMarkActor(vector Start, vector End, Actor TargetActor, class<TurboMarkerType> DataClassOverride, int DataOverride, TurboPlayerMarkReplicationInfo.EMarkColor Color)
 {
 	local TurboPlayerMarkReplicationInfo TurboMarkPRI;
