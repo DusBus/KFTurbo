@@ -37,10 +37,10 @@ static function bool IgnoreLocalMessage(TurboPlayerController PlayerController, 
 
 defaultproperties
 {
-    bIsSpecial=False
-    bIsConsoleMessage=False
-    Lifetime=3
-    DrawColor=(B=255,G=255,R=255,A=255)
-
     HowToTradeHint="During trader time, press SHIFT to open the trader menu anywhere. The console command TRADE can also be used."
+
+    Lifetime=10
+    bIsSpecial=false
+    bIsConsoleMessage=true
+    DrawColor=(B=255,G=255,R=255,A=255)
 }
