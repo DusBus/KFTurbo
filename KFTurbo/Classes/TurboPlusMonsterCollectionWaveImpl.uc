@@ -2,87 +2,91 @@ class TurboPlusMonsterCollectionWaveImpl extends TurboMonsterCollectionWaveBase;
 
 defaultproperties
 {
-     //Early Game Waves:
+     //Early-Game Waves:
 	Begin Object Class=TurboPlusWaveEarly Name=Wave1
           MaxMonsters=40
-          TotalMonsters=45
+          TotalMonsters=15
           BeatSize=1
-          RegularSequenceSize=10
-          MixInWaveMask=1 //Mask will filter out all MixIn squads in the list except for the first one (2^0 = 1).
+	     WaveDifficulty=2.f
+	     NextSquadSpawnTime=1.6f
 	End Object
 	WaveList(0)=TurboMonsterWave'Wave1'
 
 	Begin Object Class=TurboPlusWaveEarly Name=Wave2
-          MaxMonsters=40
-          TotalMonsters=50
-          RegularSequenceSize=10
-          BeatSize=1
+          MaxMonsters=42
+          TotalMonsters=20
+	     WaveDifficulty=2.15f
+	     NextSquadSpawnTime=1.55f
 	End Object
 	WaveList(1)=TurboMonsterWave'Wave2'
 
-     //Mid Game Waves:
 	Begin Object Class=TurboPlusWaveEarly Name=Wave3
-          MaxMonsters=40
-          TotalMonsters=55
-          RegularSequenceSize=10
-          BeatSize=1
+          MaxMonsters=44
+          TotalMonsters=25
+	     WaveDifficulty=2.3f
+	     NextSquadSpawnTime=1.45f
 	End Object
 	WaveList(2)=TurboMonsterWave'Wave3'
 
 	Begin Object Class=TurboPlusWaveEarly Name=Wave4
           MaxMonsters=45
-          TotalMonsters=60
-          RegularSequenceSize=9
-          BeatSize=1
+          TotalMonsters=29
+	     WaveDifficulty=2.4f
+	     NextSquadSpawnTime=1.4f
 	End Object
 	WaveList(3)=TurboMonsterWave'Wave4'
 
+     //Mid-Game Waves:
 	Begin Object Class=TurboPlusWaveMidGame Name=Wave5
           MaxMonsters=45
-          TotalMonsters=64
-          RegularSequenceSize=9
-          BeatSize=2
+          TotalMonsters=33
+          WaveDifficulty=2.5f
+	     NextSquadSpawnTime=1.375f
 	End Object
 	WaveList(4)=TurboMonsterWave'Wave5'
 
 	Begin Object Class=TurboPlusWaveMidGame Name=Wave6
-          MaxMonsters=45
-          TotalMonsters=68
-          RegularSequenceSize=9
-          BeatSize=2
+          MaxMonsters=46
+          TotalMonsters=37
+          WaveDifficulty=2.55f
+	     NextSquadSpawnTime=1.35f
 	End Object
 	WaveList(5)=TurboMonsterWave'Wave6'
-     
+
 	Begin Object Class=TurboPlusWaveMidGame Name=Wave7
-          MaxMonsters=50
-          TotalMonsters=71
-          RegularSequenceSize=8
-          BeatSize=2
+          MaxMonsters=47
+          TotalMonsters=40
+          WaveDifficulty=2.6f
+	     NextSquadSpawnTime=1.325f
 	End Object
 	WaveList(6)=TurboMonsterWave'Wave7'
-     
-     //Late Game Waves:
+
 	Begin Object Class=TurboPlusWaveMidGame Name=Wave8
-          MaxMonsters=50
-          TotalMonsters=74
+          MaxMonsters=48
+          TotalMonsters=43
           RegularSequenceSize=8
-          BeatSize=2 
+          WaveDifficulty=2.65f
+	     NextSquadSpawnTime=1.3f
 	End Object
 	WaveList(7)=TurboMonsterWave'Wave8'
-     
-	Begin Object Class=TurboPlusWaveLateGame Name=Wave9
-          MaxMonsters=50
-          TotalMonsters=76
+
+     //End-Game Waves:
+     Begin Object Class=TurboPlusWaveLateGame Name=Wave9
+          MaxMonsters=49
+          TotalMonsters=46
           RegularSequenceSize=8
-          BeatSize=2
-	End Object
+	     WaveDifficulty=2.7f
+	     NextSquadSpawnTime=1.275f
+     End Object
 	WaveList(8)=TurboMonsterWave'Wave9'
      
 	Begin Object Class=TurboPlusWaveLateGame Name=Wave10
-          MaxMonsters=55
-          TotalMonsters=78
-          RegularSequenceSize=8
-          BeatSize=3
+          MaxMonsters=50
+          TotalMonsters=48
+          RegularSequenceSize=7
+          BeatSize=2
+	     WaveDifficulty=2.75f
+	     NextSquadSpawnTime=1.25f
 	End Object
 	WaveList(9)=TurboMonsterWave'Wave10'
 
