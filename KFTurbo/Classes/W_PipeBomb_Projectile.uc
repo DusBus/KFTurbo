@@ -1,8 +1,27 @@
 class W_PipeBomb_Projectile extends PipeBombProjectile;
 
+var Sound DeflectSound;
+var string DeflectSoundRef;
+
+static function PreloadAssets()
+{
+    Super.PreloadAssets();
+
+    default.DeflectSound = Sound(DynamicLoadObject(default.DeflectSoundRef, class'Sound', true));
+}
+
+static function bool UnloadAssets()
+{
+    Super.UnloadAssets();
+
+    default.DeflectSound = None;
+
+	return true;
+}
+
 function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
 {
-    if (ClassIsChildOf(DamageType, class'DamTypePipeBomb') || ClassIsChildOf(DamageType, class'DamTypeMelee') || (Damage < 25 && ClassIsChildOf(DamageType, class'SirenScreamDamage')))
+    if (bDisintegrated || ClassIsChildOf(DamageType, class'DamTypePipeBomb') || ClassIsChildOf(DamageType, class'DamTypeMelee'))
     {
         return;
     }
@@ -14,17 +33,22 @@ function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector M
         return;
     }
 
-     if (class<SirenScreamDamage>(DamageType) != None)
+    if (bHasExploded && class<KFWeaponDamageType>(DamageType) != None && !class<KFWeaponDamageType>(DamageType).default.bIsExplosive)
     {
-        if (Damage >= 5)
+        PlaySound(DeflectSound, ESoundSlot.SLOT_Misc, 150,, 500.f);
+    }
+
+    if (class<SirenScreamDamage>(DamageType) != None)
+    {
+        if (Damage >= 25)
         {
             Disintegrate(HitLocation, vect(0,0,1));
         }
+        
+        return;
     }
-    else
-    {
-        Explode(HitLocation, vect(0,0,1));
-    }
+    
+    Explode(HitLocation, vect(0,0,1));
 }
 
 simulated function Explode(vector HitLocation, vector HitNormal)
@@ -40,4 +64,5 @@ simulated function Explode(vector HitLocation, vector HitNormal)
 defaultproperties
 {
     ShrapnelClass=Class'KFTurbo.W_PipeBomb_Shrapnel'
+    DeflectSoundRef="ProjectileSounds.cannon_rounds.AP_deflect"
 }
