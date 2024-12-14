@@ -19,12 +19,11 @@ simulated function HurtRadius(float DamageAmount, float Radius, class<DamageType
 {
 	local PipeBombProjectile HitPipebomb;
 	local bool bFoundPipebomb;
-	local float OriginalRadius;
 
 	bFoundPipebomb = false;
 	foreach CollidingActors (class'PipeBombProjectile', HitPipebomb, Radius * 0.33f, HitLocation)
 	{
-		HitPipebomb.TakeDamage(default.Damage, DetonationInstigator, Pipebomb.Location, vect(0,0,0), default.ImpactDamageType);
+		HitPipebomb.TakeDamage(default.Damage, Instigator, HitPipebomb.Location, vect(0,0,0), default.ImpactDamageType);
 		bFoundPipebomb = true;
 	}
 
