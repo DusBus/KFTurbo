@@ -5,36 +5,40 @@ function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector M
 	class'WeaponHelper'.static.LawProjTakeDamage(self, Damage, InstigatedBy, Hitlocation, Momentum, DamageType, HitIndex);
 }
 
-simulated function HurtRadius(float DamageAmount, float Radius, class<DamageType> DamageType, float Momentum, vector HitLocation)
+simulated function Explode(vector HitLocation, vector HitNormal)
 {
-	local PipeBombProjectile HitPipebomb;
-
-	Super.HurtRadius(DamageAmount, Radius, DamageType, Momentum, HitLocation);
-
-	Radius *= 0.25f;
-
-	foreach CollidingActors (class'PipeBombProjectile', HitPipebomb, Radius, HitLocation)
-	{
-		DetonatePipebomb(HitPipebomb, Instigator);
-	}
-}
-
-static final function DetonatePipebomb(Actor Actor, Pawn DetonationInstigator)
-{
-	local PipeBombProjectile Pipebomb;
-	Pipebomb = PipeBombProjectile(Actor);
-
-	if(Pipebomb == None)
+	if (bHasExploded)
 	{
 		return;
 	}
 
-	Pipebomb.TakeDamage(default.Damage, DetonationInstigator, Actor.Location, vect(0,0,0), default.ImpactDamageType);
+	Super.Explode(HitLocation, HitNormal);
+}
+
+simulated function HurtRadius(float DamageAmount, float Radius, class<DamageType> DamageType, float Momentum, vector HitLocation)
+{
+	local PipeBombProjectile HitPipebomb;
+	local bool bFoundPipebomb;
+	local float OriginalRadius;
+
+	bFoundPipebomb = false;
+	foreach CollidingActors (class'PipeBombProjectile', HitPipebomb, Radius * 0.33f, HitLocation)
+	{
+		HitPipebomb.TakeDamage(default.Damage, DetonationInstigator, Pipebomb.Location, vect(0,0,0), default.ImpactDamageType);
+		bFoundPipebomb = true;
+	}
+
+	if (bFoundPipebomb)
+	{
+		DamageAmount *= 2.f;
+	}
+
+	Super.HurtRadius(DamageAmount, Radius, DamageType, Momentum, HitLocation);
 }
 
 defaultproperties
 {
-     ArmDistSquared=202500.000000
-     ImpactDamage=475
-     Damage=1000.000000
+	ArmDistSquared=202500.000000
+	ImpactDamage=475
+	Damage=1000.000000
 }
