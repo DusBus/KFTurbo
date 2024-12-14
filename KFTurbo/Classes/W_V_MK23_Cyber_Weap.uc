@@ -136,7 +136,9 @@ defaultproperties
 
      ItemName="Cyber MK23"
 
-     SkinRefs(0)="KFTurbo.Turbo.MK23_Turbo_SHDR"
+     SkinRefs(0)="KFTurbo.Cyber.Cyber_MK23_SHDR"
      PickupClass=Class'KFTurbo.W_V_MK23_Cyber_Pickup'
      AttachmentClass=Class'KFTurbo.W_V_MK23_Cyber_Attachment'
+
+     LastKnownMagAmmo=-1
 }
