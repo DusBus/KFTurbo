@@ -463,6 +463,45 @@ exec function EndTrader()
 	TurboPlayerReplicationInfo(PlayerReplicationInfo).RequestTraderEnd();
 }
 
+simulated function ClientWeaponSpawned(class<Weapon> WeaponClass, Inventory Inv)
+{
+	local class<KFWeapon> KFWeaponClass;
+	local class<KFWeaponAttachment> KFAttachmentClass;
+	local bool bNeedsWeaponLoad, bNeedsAttachmentLoad;
+
+	KFWeaponClass = class<KFWeapon>(WeaponClass);
+
+	if (KFWeaponClass == None)
+	{
+		return;
+	}
+
+	bNeedsWeaponLoad = KFWeaponClass.default.Mesh == None || (KFWeaponClass.default.MeshRef != "" && string(KFWeaponClass.default.Mesh) != KFWeaponClass.default.MeshRef);
+	
+	if (bNeedsWeaponLoad)
+	{
+		KFWeaponClass.static.PreloadAssets(Inv);
+	}
+
+	KFAttachmentClass = class<KFWeaponAttachment>(KFWeaponClass.default.AttachmentClass);
+	bNeedsAttachmentLoad = KFAttachmentClass != None && (KFAttachmentClass.default.Mesh == None || (KFAttachmentClass.default.MeshRef != "" && string(KFAttachmentClass.default.Mesh) != KFAttachmentClass.default.MeshRef));
+
+	if (bNeedsAttachmentLoad)
+	{
+		if (Inv != None)
+		{
+			KFAttachmentClass.static.PreloadAssets(KFWeaponAttachment(Inv.ThirdPersonActor));    
+		}
+		else
+		{
+			KFAttachmentClass.static.PreloadAssets();
+		}
+	}
+
+	PreloadFireModeAssets(KFWeaponClass.default.FireModeClass[0]);
+	PreloadFireModeAssets(KFWeaponClass.default.FireModeClass[1]);
+}
+
 defaultproperties
 {
 	LobbyMenuClassString="KFTurbo.TurboLobbyMenu"
