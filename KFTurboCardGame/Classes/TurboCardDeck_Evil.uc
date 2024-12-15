@@ -165,6 +165,14 @@ function ActivateMixedSignals(TurboCardReplicationInfo CGRI)
     CGRI.EnableRandomlyChangingTrader();
 }
 
+function ActivateHighThroughput(TurboCardReplicationInfo CGRI)
+{
+    class'MaxZedsWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'MaxZedsWaveEventHandler');
+    class'MaxZedsWaveEventHandler'.static.OnWaveStarted(KFTurboGameType(CGRI.Level.Game), KFTurboGameType(CGRI.Level.Game).WaveNum);
+    
+    CGRI.ModifyWaveSpeed(1.15f);
+}
+
 defaultproperties
 {
     Begin Object Name=Hyperbloats Class=TurboCard_Evil
@@ -459,4 +467,13 @@ defaultproperties
         OnActivateCard=ActivateMixedSignals
     End Object
     DeckCardObjectList(29)=TurboCard'MixedSignals'
+    
+    Begin Object Name=HighThroughput Class=TurboCard_Evil
+        CardName(0)="High Throughput"
+        CardDescriptionList(0)="Increases maximum"
+        CardDescriptionList(1)="alive zeds at"
+        CardDescriptionList(2)="once by 40%."
+        OnActivateCard=ActivateHighThroughput
+    End Object
+    DeckCardObjectList(30)=TurboCard'HighThroughput'
 }

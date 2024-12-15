@@ -174,6 +174,21 @@ function ActivateMoreToPlay(TurboCardReplicationInfo CGRI)
     class'MoreToPlayWaveSizeModifier'.static.OnWaveStarted(KFTurboGameType(CGRI.Level.Game), KFTurboGameType(CGRI.Level.Game).WaveNum);
 }
 
+function ActivateCollateralDamage(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyExplosiveDamage(1.15f);
+
+    CGRI.ModifyFriendlyFireScale(1.08f);
+}
+
+function ActivateHealingAndHurting(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyNonMedicHealPotency(1.15f);
+    CGRI.ModifyMedicHealPotency(1.15f);
+
+    CGRI.ModifyFriendlyFireScale(1.08f);
+}
+
 defaultproperties
 {
     Begin Object Name=ExtraMoneyTraderTime Class=TurboCard_ProCon
@@ -481,4 +496,25 @@ defaultproperties
         OnActivateCard=ActivateMoreToPlay
     End Object
     DeckCardObjectList(26)=TurboCard'MoreToPlay'
+    
+    Begin Object Name=CollateralDamage Class=TurboCard_ProCon
+        CardName(0)="Collateral Damage"
+        CardDescriptionList(0)="Increases explosive"
+        CardDescriptionList(1)="damage by 15% but"
+        CardDescriptionList(2)="increases friendly"
+        CardDescriptionList(3)="fire damage by 8%."
+        OnActivateCard=ActivateCollateralDamage
+    End Object
+    DeckCardObjectList(27)=TurboCard'CollateralDamage'
+    
+    Begin Object Name=MoreHealingAndHurting Class=TurboCard_ProCon
+        CardName(0)="More Healing"
+        CardName(1)="More Hurting"
+        CardDescriptionList(0)="Increases heal"
+        CardDescriptionList(1)="potency by 15% but"
+        CardDescriptionList(2)="increases friendly"
+        CardDescriptionList(3)="fire damage by 8%."
+        OnActivateCard=ActivateHealingAndHurting
+    End Object
+    DeckCardObjectList(28)=TurboCard'MoreHealingAndHurting'
 }
