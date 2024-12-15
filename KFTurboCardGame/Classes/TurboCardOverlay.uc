@@ -489,6 +489,11 @@ simulated function DrawActiveCardList(Canvas C)
 	local float DisplayCardY, ScrollDisplayY;
 	local float TextSizeX, TextSizeY, MaxTextSizeX;
 
+	if (ActiveCardRenderActorList.Length == 0)
+	{
+		return;
+	}
+
 	C.SetDrawColor(255, 255, 255, 255);
 
 	CenterIndex = float(ActiveCardRenderActorList.Length) / 2.f;
