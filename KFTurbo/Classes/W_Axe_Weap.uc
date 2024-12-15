@@ -10,5 +10,7 @@ simulated function BringUp(optional Weapon PrevWeapon)
 
 defaultproperties
 {
-     PickupClass=Class'KFTurbo.W_Axe_Pickup'
+    PickupClass=Class'KFTurbo.W_Axe_Pickup'
+    FireModeClass(0)=Class'KFTurbo.W_Axe_Fire'
+    FireModeClass(1)=Class'KFTurbo.W_Axe_Fire_Alt'
 }

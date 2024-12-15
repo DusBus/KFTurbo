@@ -15,5 +15,7 @@ static function PreloadAssets(Inventory Inv, optional bool bSkipRefCount)
 
 defaultproperties
 {
-     PickupClass=Class'KFTurbo.W_Katana_Pickup'
+	PickupClass=Class'KFTurbo.W_Katana_Pickup'
+	FireModeClass(0)=Class'KFTurbo.W_Katana_Fire'
+	FireModeClass(1)=Class'KFTurbo.W_Katana_Fire_Alt'
 }
