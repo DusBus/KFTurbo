@@ -378,6 +378,64 @@ simulated function ChangedWeapon()
 	}
 }
 
+function ThrowGrenade()
+{
+    local Inventory Inv;
+    local Frag FragWeapon;
+	local KFWeapon CurrentWeapon;
+
+	if (!AllowGrenadeTossing() || bThrowingNade || KFWeapon(Weapon) == None)
+	{
+		return;
+	}
+
+	CurrentWeapon = KFWeapon(Weapon);
+	if (CurrentWeapon == None || (Weapon.GetFireMode(0) != None && Weapon.GetFireMode(0).NextFireTime - Level.TimeSeconds > 0.1)
+		|| (CurrentWeapon.bIsReloading && !CurrentWeapon.InterruptReload()))
+	{
+		return;
+	}
+
+	if (KFMeleeGun(Weapon) != None && Weapon.GetFireMode(1) != None && (Weapon.GetFireMode(1).NextFireTime - Level.TimeSeconds > 0.1))
+	{
+		return;
+	}
+
+    for (Inv = Inventory; Inv != none; Inv = Inv.Inventory)
+    {
+        FragWeapon = Frag(Inv);
+
+		if (FragWeapon != None)
+		{
+			break;
+		}
+    }
+
+	if (FragWeapon == None || !FragWeapon.HasAmmo())
+	{
+		return;
+	}
+
+	CurrentWeapon.ClientGrenadeState = GN_TempDown;
+	Weapon.PutDown();
+}
+
+simulated function ThrowGrenadeFinished()
+{
+	SecondaryItem = None;
+
+	if (Weapon != None)
+	{
+		if (KFWeapon(Weapon) != None)
+		{
+			KFWeapon(Weapon).ClientGrenadeState = GN_BringUp;
+		}
+		Weapon.BringUp();
+	}
+
+	bThrowingNade = false;
+}
+
 simulated function UpdateHealth()
 {
 	local int NewHealthHealingTo;
