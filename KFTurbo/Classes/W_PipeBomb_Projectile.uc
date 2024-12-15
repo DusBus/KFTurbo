@@ -35,7 +35,7 @@ function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector M
 
     if (bHasExploded && class<KFWeaponDamageType>(DamageType) != None && !class<KFWeaponDamageType>(DamageType).default.bIsExplosive)
     {
-        PlaySound(DeflectSound, ESoundSlot.SLOT_Misc, 150,, 500.f);
+        PlaySound(DeflectSound, ESoundSlot.SLOT_None, 150,, 500.f);
     }
 
     if (class<SirenScreamDamage>(DamageType) != None)
