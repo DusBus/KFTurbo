@@ -99,8 +99,9 @@ simulated function Explode(vector HitLocation, vector HitNormal)
 	LocalPlayer = Level.GetLocalPlayerController();
 	if ( (LocalPlayer != None) && (VSize(Location - LocalPlayer.ViewTarget.Location) < (DamageRadius * 1.5)) )
 		LocalPlayer.ShakeView(RotMag, RotRate, RotTime, OffsetMag, OffsetRate, OffsetTime);
-
-	Destroy();
+	
+	bHidden = true;
+	LifeSpan = 0.1f;
 }
 
 simulated function HurtRadius( float DamageAmount, float DamageRadius, class<DamageType> DamageType, float Momentum, vector HitLocation )
