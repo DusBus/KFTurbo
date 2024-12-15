@@ -100,7 +100,6 @@ simulated function Explode(vector HitLocation, vector HitNormal)
 	if ( (LocalPlayer != None) && (VSize(Location - LocalPlayer.ViewTarget.Location) < (DamageRadius * 1.5)) )
 		LocalPlayer.ShakeView(RotMag, RotRate, RotTime, OffsetMag, OffsetRate, OffsetTime);
 	
-	bHidden = true;
 	LifeSpan = 0.1f;
 }
 
