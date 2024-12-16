@@ -7,6 +7,8 @@ class TurboCardClientModifierRepLink extends TurboClientModifierReplicationLink
 var(Turbo) float MonsterHeadSizeModifier;
 var(Turbo) float StalkerDistractionModifier;
 var(Turbo) float GroundFrictionModifier, LastGroundFrictionModifier;
+var(Turbo) float WeaponBringUpSpeedModifier, LastWeaponBringUpSpeedModifier;
+var(Turbo) float WeaponPutDownSpeedModifier, LastWeaponPutDownSpeedModifier;
 
 struct PhysicsVolumeEntry
 {
@@ -27,7 +29,8 @@ replication
 {
     reliable if(bNetDirty && Role == ROLE_Authority)
         StalkerDistractionModifier, MonsterHeadSizeModifier,
-        GroundFrictionModifier;
+        GroundFrictionModifier,
+        WeaponBringUpSpeedModifier, WeaponPutDownSpeedModifier;
 }
 
 simulated function PostBeginPlay()
@@ -42,6 +45,7 @@ simulated function PostNetBeginPlay()
     Super.PostNetBeginPlay();
 
     UpdatePhysicsVolumes();
+    UpdateWeaponEquipSpeed();
 }
 
 simulated function PostNetReceive()
@@ -49,6 +53,7 @@ simulated function PostNetReceive()
     Super.PostNetReceive();
 
     UpdatePhysicsVolumes();
+    UpdateWeaponEquipSpeed();
 }
 
 simulated function CollectAllPhysicsVolumes()
@@ -83,11 +88,6 @@ simulated function UpdatePhysicsVolumes()
 
 simulated function ModifyMonster(KFMonster Monster) 
 {
-    if (Monster == None)
-    {
-        return;
-    }
-
     Super.ModifyMonster(Monster);
 
     if (MonsterHeadSizeModifier != 1.f) 
@@ -122,6 +122,64 @@ simulated function ModifyStalker(P_Stalker Monster)
     }
 }
 
+
+simulated function OnWeaponChange(KFWeapon CurrentWeapon, KFWeapon PendingWeapon)
+{
+    Super.OnWeaponChange(CurrentWeapon, PendingWeapon);
+    
+    ApplyEquipSpeedModifier(PendingWeapon);
+}
+
+simulated function UpdateWeaponEquipSpeed()
+{
+    local PlayerController PlayerController;
+    local Pawn Pawn;
+    local Inventory Inv;
+
+    if (WeaponBringUpSpeedModifier == LastWeaponBringUpSpeedModifier && WeaponPutDownSpeedModifier == LastWeaponPutDownSpeedModifier)
+    {
+        return;
+    }
+
+    LastWeaponBringUpSpeedModifier = WeaponBringUpSpeedModifier;
+    LastWeaponPutDownSpeedModifier = WeaponPutDownSpeedModifier;
+
+    PlayerController = Level.GetLocalPlayerController();
+
+    if (PlayerController == None)
+    {
+        return;
+    }
+    
+    Pawn = PlayerController.Pawn;
+
+    if (Pawn == None)
+    {
+        return;
+    }
+    
+    Inv = Pawn.Inventory;
+
+    for (Inv = Inventory; Inv != None; Inv = Inv.Inventory)
+    {
+        ApplyEquipSpeedModifier(KFWeapon(Inv));
+    }    
+}
+
+simulated final function ApplyEquipSpeedModifier(KFWeapon Weapon)
+{
+    if (Weapon == None)
+    {
+        return;
+    }
+
+    Weapon.BringUpTime = Weapon.default.BringUpTime * WeaponBringUpSpeedModifier;
+    Weapon.SelectAnimRate = Weapon.default.SelectAnimRate / WeaponBringUpSpeedModifier;
+    
+    Weapon.PutDownTime = Weapon.default.PutDownTime * WeaponPutDownSpeedModifier;
+    Weapon.PutDownAnimRate = Weapon.default.PutDownAnimRate / WeaponPutDownSpeedModifier;
+}
+
 defaultproperties
 {
     bNetNotify=true
@@ -131,4 +189,9 @@ defaultproperties
 
     GroundFrictionModifier=1.f
     LastGroundFrictionModifier=1.f
+
+    WeaponBringUpSpeedModifier=1.f
+    LastWeaponBringUpSpeedModifier=1.f
+    WeaponPutDownSpeedModifier=1.f
+    LastWeaponPutDownSpeedModifier=1.f
 }

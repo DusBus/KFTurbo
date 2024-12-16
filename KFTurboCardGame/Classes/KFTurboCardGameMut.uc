@@ -125,6 +125,8 @@ function AddTurboCardGameModifier(TurboGameReplicationInfo TGRI)
 	TurboCardClientModifier.OwnerGRI = TGRI;
 	TurboCardClientModifier.NextClientModifierLink = TGRI.CustomTurboClientModifier;
 	TGRI.CustomTurboClientModifier = TurboCardClientModifier;
+
+	TGRI.ForceNetUpdate();
 }
 
 function ModifyPlayer(Pawn Other)

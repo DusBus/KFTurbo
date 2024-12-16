@@ -785,7 +785,7 @@ final function ResetNegateDamageList()
     for (Index = 0; Index < PawnList.Length; Index++)
     {
         NegateDamageList[Index].HumanPawn = PawnList[Index];
-        NegateDamageList[Index].NegateCount = 5;
+        NegateDamageList[Index].NegateCount = 10;
     }
 }
 

@@ -781,6 +781,17 @@ function ModifyCommandoWeaponReloadRate(float Multiplier)
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
 
+function ModifyWeaponEquipSpeed(float Multiplier)
+{
+    OwnerMutator.TurboCardClientModifier.WeaponBringUpSpeedModifier *= Multiplier;
+    OwnerMutator.TurboCardClientModifier.WeaponPutDownSpeedModifier *= Multiplier;
+    
+    log("WeaponBringUpSpeedModifier"@OwnerMutator.TurboCardClientModifier.WeaponBringUpSpeedModifier);
+    log("WeaponPutDownSpeedModifier"@OwnerMutator.TurboCardClientModifier.WeaponPutDownSpeedModifier);
+
+    OwnerMutator.TurboCardClientModifier.ForceNetUpdate();
+}
+
 function ModifyWeaponMagazineAmmo(float Multiplier)
 {
     OwnerMutator.TurboCardGameModifier.MagazineAmmoMultiplier *= Multiplier;
@@ -995,6 +1006,7 @@ function GrantThorns(float ThornsPower)
 function ModifyPlayerSpeed(float Multiplier)
 {
     OwnerMutator.TurboCardGameModifier.PlayerMovementSpeedMultiplier *= Multiplier;
+    log("PlayerMovementSpeedMultiplier"@OwnerMutator.TurboCardGameModifier.PlayerMovementSpeedMultiplier);
     TurboGameReplicationInfo(Level.GRI).NotifyPlayerMovementSpeedChanged();
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
@@ -1002,6 +1014,7 @@ function ModifyPlayerSpeed(float Multiplier)
 function ModifyPlayerAccel(float Multiplier)
 {
     OwnerMutator.TurboCardGameModifier.PlayerMovementAccelMultiplier *= Multiplier;
+    log("PlayerMovementAccelMultiplier"@OwnerMutator.TurboCardGameModifier.PlayerMovementAccelMultiplier);
     TurboGameReplicationInfo(Level.GRI).NotifyPlayerMovementSpeedChanged();
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
@@ -1009,6 +1022,7 @@ function ModifyPlayerAccel(float Multiplier)
 function ModifyMovementFriction(float Multiplier)
 {
     OwnerMutator.TurboCardClientModifier.GroundFrictionModifier *= Multiplier;
+    log("GroundFrictionModifier"@OwnerMutator.TurboCardClientModifier.GroundFrictionModifier);
     OwnerMutator.TurboCardClientModifier.UpdatePhysicsVolumes();
 
     OwnerMutator.TurboCardClientModifier.ForceNetUpdate();
@@ -1017,6 +1031,7 @@ function ModifyMovementFriction(float Multiplier)
 function ModifyPlayerMaxHealth(float Multiplier)
 {
     OwnerMutator.TurboCardGameModifier.PlayerMaxHealthMultiplier *= Multiplier;
+    log("PlayerMaxHealthMultiplier"@OwnerMutator.TurboCardGameModifier.PlayerMaxHealthMultiplier);
     TurboGameReplicationInfo(Level.GRI).NotifyPlayerMaxHealthChanged();
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
@@ -1043,6 +1058,7 @@ function ModifyBodyArmorDamageModifier(float Multiplier)
 function EnableWaveMovementFreeze()
 {
     OwnerMutator.TurboCardGameModifier.bFreezePlayersDuringWave = true;
+    log("bFreezePlayersDuringWave"@OwnerMutator.TurboCardGameModifier.bFreezePlayersDuringWave);
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
 

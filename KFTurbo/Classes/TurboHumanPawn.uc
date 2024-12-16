@@ -344,9 +344,15 @@ simulated function ChangedWeapon()
 		return;
 	}
 
-	Super(KFPawn).ChangedWeapon();
-
 	CurrentWeapon = KFWeapon(Weapon);
+
+	//Let TurboClientModifiers know we're about to swap weapons so they can make changes if they feel like it.
+	if (Level.NetMode != NM_DedicatedServer && TurboGameReplicationInfo(Level.GRI) != None)
+	{
+		TurboGameReplicationInfo(Level.GRI).OnWeaponChange(CurrentWeapon, KFWeapon(PendingWeapon));
+	}
+
+	Super(KFPawn).ChangedWeapon();
 
 	if (CurrentWeapon == None)
 	{
@@ -401,7 +407,7 @@ function ThrowGrenade()
 		return;
 	}
 
-    for (Inv = Inventory; Inv != none; Inv = Inv.Inventory)
+    for (Inv = Inventory; Inv != None; Inv = Inv.Inventory)
     {
         FragWeapon = Frag(Inv);
 

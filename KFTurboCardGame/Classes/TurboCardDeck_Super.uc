@@ -125,7 +125,7 @@ function ActivateDeepestAmmoPockets(TurboCardReplicationInfo CGRI)
 
 function ActivateFastHands(TurboCardReplicationInfo CGRI)
 {
-    
+    CGRI.ModifyWeaponEquipSpeed(0.33f);
 }
 
 defaultproperties
@@ -325,7 +325,7 @@ defaultproperties
     Begin Object Name=NegateDamage Class=TurboCard_Super
         CardName(0)="Substitute"
         CardDescriptionList(0)="Negates the first"
-        CardDescriptionList(1)="5 times a player"
+        CardDescriptionList(1)="10 times a player"
         CardDescriptionList(2)="receives damage"
         CardDescriptionList(3)="each wave."
         OnActivateCard=ActivateSubstitute
@@ -341,15 +341,15 @@ defaultproperties
     End Object
     DeckCardObjectList(20)=TurboCard'DeepestAmmoPockets'
 
-/*
     Begin Object Name=FastHands Class=TurboCard_Super
-        CardName(0)="Fast Hands"
+        CardName(0)="Fastest Hands"
+        CardName(1)="In The West"
         CardDescriptionList(0)="Increases weapon"
-        CardDescriptionList(1)="swap speed by 30%."
+        CardDescriptionList(1)="swap speed by 66%."
         OnActivateCard=ActivateFastHands
     End Object
     DeckCardObjectList(21)=TurboCard'FastHands'
-*/
+
 /*
     Begin Object Name=DeEvolution Class=TurboCard_Super
         CardName(0)="De-Evolution"

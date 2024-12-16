@@ -16,6 +16,9 @@ replication
 
 simulated function ModifyMonster(KFMonster Monster) { if (NextClientModifierLink != None) { NextClientModifierLink.ModifyMonster(Monster); } }
 
+//Called right before a PendingWeapon becomes the equipped weapon.
+simulated function OnWeaponChange(KFWeapon CurrentWeapon, KFWeapon PendingWeapon) { if (NextClientModifierLink != None) { NextClientModifierLink.OnWeaponChange(CurrentWeapon, PendingWeapon); } }
+
 //Make NetUpdateTime want to update now.
 simulated function ForceNetUpdate()
 {
@@ -24,5 +27,5 @@ simulated function ForceNetUpdate()
 
 defaultproperties
 {
-    NetUpdateFrequency=0.1f
+    NetUpdateFrequency=0.01f
 }
