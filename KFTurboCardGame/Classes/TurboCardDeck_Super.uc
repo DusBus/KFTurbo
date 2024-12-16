@@ -11,14 +11,14 @@ function ActivateBerserker(TurboCardReplicationInfo CGRI)
 function ActivateCommando(TurboCardReplicationInfo CGRI)
 {
     CGRI.ModifyCommandoWeaponMagazineAmmo(2.f);
-    CGRI.ModifyCommandoWeaponReloadRate(1.25f);
-    CGRI.ModifyCommandoWeaponMaxAmmo(1.25f);
+    CGRI.ModifyCommandoWeaponReloadRate(1.2f);
+    CGRI.ModifyCommandoWeaponMaxAmmo(1.2f);
 }
 
 function ActivateFirebug(TurboCardReplicationInfo CGRI)
 {
     CGRI.ModifyFireDamage(1.5f);
-    CGRI.ModifyFirebugWeaponFireRate(2.f);
+    CGRI.ModifyFirebugWeaponFireRate(2.5f);
 }
 
 function ActivateUberMedic(TurboCardReplicationInfo CGRI)
@@ -39,7 +39,7 @@ function ActivateScrakeDamage(TurboCardReplicationInfo CGRI)
     CGRI.ModifyPlayerScrakeDamage(1.5f);
 }
 
-function ActivateGorefastToClot(TurboCardReplicationInfo CGRI)
+function ActivateDeEvolution(TurboCardReplicationInfo CGRI)
 {
     class'TurboWaveSpawnEventHandler'.static.RegisterWaveHandler(CGRI, class'DeEvolutionWaveEventHandler');
 }
@@ -118,6 +118,16 @@ function ActivateSubstitute(TurboCardReplicationInfo CGRI)
     class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'NegateDamageWaveEventHandler');
 }
 
+function ActivateDeepestAmmoPockets(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyWeaponMaxAmmo(1.35f);
+}
+
+function ActivateFastHands(TurboCardReplicationInfo CGRI)
+{
+    
+}
+
 defaultproperties
 {
     Begin Object Name=Berserker Class=TurboCard_Super
@@ -140,8 +150,8 @@ defaultproperties
         CardDescriptionList(2)="weapon magazine"
         CardDescriptionList(3)="size by 200%,"
         CardDescriptionList(4)="reload speed by"
-        CardDescriptionList(5)="25% and max"
-        CardDescriptionList(6)="ammo by 25%."
+        CardDescriptionList(5)="20% and max"
+        CardDescriptionList(6)="ammo by 20%."
         OnActivateCard=ActivateCommando
     End Object
     DeckCardObjectList(1)=TurboCard'Commando'
@@ -151,7 +161,7 @@ defaultproperties
         CardDescriptionList(0)="Increases Firebug"
         CardDescriptionList(1)="on-perk weapon fire"
         CardDescriptionList(2)="damage by 50%"
-        CardDescriptionList(3)="and firerate by 200%."
+        CardDescriptionList(3)="and firerate by 150%."
         OnActivateCard=ActivateFirebug
     End Object
     DeckCardObjectList(2)=TurboCard'Firebug'
@@ -322,6 +332,24 @@ defaultproperties
     End Object
     DeckCardObjectList(19)=TurboCard'NegateDamage'
 
+    Begin Object Name=DeepestAmmoPockets Class=TurboCard_Super
+        CardName(0)="The Deepest of"
+        CardName(1)="Ammo Pockets"
+        CardDescriptionList(0)="Increases max"
+        CardDescriptionList(1)="ammo by 35%."
+        OnActivateCard=ActivateDeepestAmmoPockets
+    End Object
+    DeckCardObjectList(20)=TurboCard'DeepestAmmoPockets'
+
+/*
+    Begin Object Name=FastHands Class=TurboCard_Super
+        CardName(0)="Fast Hands"
+        CardDescriptionList(0)="Increases weapon"
+        CardDescriptionList(1)="swap speed by 30%."
+        OnActivateCard=ActivateFastHands
+    End Object
+    DeckCardObjectList(21)=TurboCard'FastHands'
+*/
 /*
     Begin Object Name=DeEvolution Class=TurboCard_Super
         CardName(0)="De-Evolution"
@@ -330,8 +358,8 @@ defaultproperties
         CardDescriptionList(2)="replaced with"
         CardDescriptionList(3)="weaker versions"
         CardDescriptionList(4)="of themselves."
-        OnActivateCard=ActivateGorefastToClot
+        OnActivateCard=ActivateDeEvolution
     End Object
-    DeckCardObjectList(6)=TurboCard'DeEvolution'
+    DeckCardObjectList(22)=TurboCard'DeEvolution'
 */
 }
