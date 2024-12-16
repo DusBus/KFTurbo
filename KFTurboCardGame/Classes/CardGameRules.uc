@@ -620,6 +620,7 @@ function PerformSuddenDeath()
 {
     local Controller C;
     local PlayerController PC;
+
     if (bPerformingSuddenDeath)
     {
         return;
@@ -632,11 +633,15 @@ function PerformSuddenDeath()
 
         if (PC != None && PC.Pawn != None && !PC.Pawn.bDeleteMe && PC.Pawn.Health > 0)
         {
-            //Allow Cheat Death to directly stop this.
-            if (!IsInCheatDeathGracePeriod(PC) && !AttemptCheatDeath(PC, PC.Pawn, class'SuddenDeath_DT'))
+            if (bCheatDeathEnabled)
             {
-                PlayerController(C).Pawn.Died(None, class'SuddenDeath_DT', PlayerController(C).Pawn.Location);
+                if (IsInCheatDeathGracePeriod(PC) || AttemptCheatDeath(PC, PC.Pawn, class'SuddenDeath_DT'))
+                {
+                    continue;
+                }
             }
+
+            PlayerController(C).Pawn.Died(None, class'SuddenDeath_DT', PlayerController(C).Pawn.Location);
         }
     }
     bPerformingSuddenDeath = false;
