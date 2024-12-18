@@ -39,15 +39,29 @@ event InitGame( string Options, out string Error )
 //Provide full context on something dying to TurboGameRules.
 function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<DamageType> DamageType)
 {
-    local GameRules NextGameRules;
+    local GameRules GameRules;
+    local TurboGameRules TurboGameRules;
+
     Super.Killed(Killer, Killed, KilledPawn, DamageType);
 
-    for (NextGameRules = GameRulesModifiers; NextGameRules != None; NextGameRules = NextGameRules.NextGameRules)
+    GameRules = GameRulesModifiers;
+
+    //Find the first TurboGameRules in the chain and start the event flow.
+    while (GameRules != None)
     {
-        if (TurboGameRules(NextGameRules) != None)
+        TurboGameRules = TurboGameRules(GameRules);
+
+        if (TurboGameRules != None)
         {
-            TurboGameRules(NextGameRules).Killed(Killer, Killed, KilledPawn, DamageType);
+            break;
         }
+
+        GameRules = GameRules.NextGameRules;
+    }
+
+    if (TurboGameRules != None)
+    {
+        TurboGameRules.Killed(Killer, Killed, KilledPawn, DamageType);
     }
 }
 
@@ -345,6 +359,11 @@ state MatchInProgress
     {
         Super.BeginState();
 
+        if (class'KFTurboMut'.static.HasVersionUpdate(Self))
+        {
+            BroadcastLocalized(Level.GRI, class'TurboVersionLocalMessage');
+        }
+
 		class'TurboWaveEventHandler'.static.BroadcastGameStarted(Self, WaveNum);
     }
 
@@ -361,7 +380,7 @@ state MatchInProgress
 
     function OpenShops()
     {
-        if (WaveNum % 3 == 0)
+        if ( WaveCountDown == 59 && WaveNum % 3 == 0)
         {
             BroadcastLocalizedMessage(class'TurboEndTraderVoteMessage', 0); //EEndTraderVoteMessage.VoteHint
         }

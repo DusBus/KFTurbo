@@ -514,12 +514,12 @@ simulated function InitializeEndGameUI(bool bVictory)
 	if ( bVictory )
 	{
 		EndGameHUDMaterial = Texture'KFTurbo.EndGame.You_Won_D';
-		PlayerOwner.PlaySound(WinSound, SLOT_Talk, 255.0,,,, false);
+		PlayerOwner.PlaySound(WinSound, SLOT_None, 255.0,,,, false);
 	}
 	else
 	{
 		EndGameHUDMaterial = Texture'KFTurbo.EndGame.You_Died_D';
-		PlayerOwner.PlaySound(LoseSound, SLOT_Talk, 255.0,,,, false);
+		PlayerOwner.PlaySound(LoseSound, SLOT_None, 255.0,,,, false);
 	}
 }
 

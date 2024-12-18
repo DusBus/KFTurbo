@@ -128,6 +128,11 @@ function ActivateFastHands(TurboCardReplicationInfo CGRI)
     CGRI.ModifyWeaponEquipSpeed(0.33f);
 }
 
+function ActivateMassDetonation(TurboCardReplicationInfo CGRI)
+{
+    CGRI.EnableMassDetonation();
+}
+
 defaultproperties
 {
     Begin Object Name=Berserker Class=TurboCard_Super
@@ -349,6 +354,19 @@ defaultproperties
         OnActivateCard=ActivateFastHands
     End Object
     DeckCardObjectList(21)=TurboCard'FastHands'
+
+    Begin Object Name=MassDetonation Class=TurboCard_Super
+        CardName(0)="Mass"
+        CardName(1)="Detonation"
+        CardDescriptionList(0)="Explosive kills"
+        CardDescriptionList(1)="have a 10% chance"
+        CardDescriptionList(2)="to trigger explosions"
+        CardDescriptionList(3)="that deal 50% of"
+        CardDescriptionList(4)="the killed zed's"
+        CardDescriptionList(5)="max health."
+        OnActivateCard=ActivateMassDetonation
+    End Object
+    DeckCardObjectList(22)=TurboCard'MassDetonation'
 
 /*
     Begin Object Name=DeEvolution Class=TurboCard_Super

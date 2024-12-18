@@ -13,7 +13,11 @@ class KFTurboMut extends Mutator
 var TurboCustomZedHandler CustomZedHandler;
 var TurboDoorManager DoorManager;
 
-var config bool bDebugClientPerkRepLink;
+var globalconfig bool bDebugClientPerkRepLink;
+
+var globalconfig bool bCheckLatestTurboVersion;
+var private string TurboVersion;
+var private bool bHasVersionUpdate;
 
 delegate SetPerkSwitchEnabled(bool bEnable);
 
@@ -60,6 +64,11 @@ simulated function PostBeginPlay()
 		{
 			TeamGame(Level.Game).FriendlyFireScale = 0.001f;
 		}
+	}
+
+	if (bCheckLatestTurboVersion)
+	{
+		Spawn(class'TurboVersionTcpLink', Self);
 	}
 }
 
@@ -161,6 +170,70 @@ function ApplySpeedModification(Pawn Pawn)
 	Pawn.AccelRate = Pawn.default.AccelRate * FMax(0.f, TurboGameReplicationInfo(Level.GRI).GetPlayerMovementAccelMultiplier(KFPlayerReplicationInfo(Pawn.PlayerReplicationInfo), TurboGameReplicationInfo(Level.GRI)));
 }
 
+static final function KFTurboMut FindMutator(GameInfo GameInfo)
+{
+    local KFTurboMut TurboMut;
+    local Mutator Mutator;
+
+	if (GameInfo == None)
+	{
+		return None;
+	}
+
+    for ( Mutator = GameInfo.BaseMutator; Mutator != None; Mutator = Mutator.NextMutator )
+    {
+        TurboMut = KFTurboMut(Mutator);
+
+        if (TurboMut == None)
+        {
+            continue;
+        }
+
+		return TurboMut;
+    }
+
+	return None;
+}
+
+static final function string GetTurboVersionID()
+{
+	return default.TurboVersion;
+}
+
+final function bool CheckIfNewerVersion(string LatestVersion)
+{
+	local array<string> CurrentVersionList, LatestVersionList;
+	Split(default.TurboVersion, ".", CurrentVersionList);
+	Split(LatestVersion, ".", LatestVersionList);
+
+	if (int(CurrentVersionList[0]) < int(LatestVersionList[0]))
+	{
+		bHasVersionUpdate = true;
+		return true;
+	}
+
+	if (int(CurrentVersionList[1]) < int(LatestVersionList[1]))
+	{
+		bHasVersionUpdate = true;
+		return true;
+	}
+
+	return false;
+}
+
+static final function bool HasVersionUpdate(GameInfo Game)
+{
+    local KFTurboMut Mutator;
+    Mutator = class'KFTurboMut'.static.FindMutator(Game);
+
+	if (Mutator == None)
+	{
+		return false;
+	}
+
+	return Mutator.bHasVersionUpdate;
+}
+
 simulated function String GetHumanReadableName()
 {
 	return FriendlyName;
@@ -168,9 +241,14 @@ simulated function String GetHumanReadableName()
 
 defaultproperties
 {
-	bDebugClientPerkRepLink=false
 	bAddToServerPackages=True
 	GroupName="KF-KFTurbo"
 	FriendlyName="Killing Floor Turbo"
 	Description="Mutator for KFTurbo."
+
+	bDebugClientPerkRepLink=false
+
+	bCheckLatestTurboVersion=true
+	TurboVersion="4.4.0"
+	bHasVersionUpdate=false
 }

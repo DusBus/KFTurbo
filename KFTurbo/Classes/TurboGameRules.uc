@@ -6,7 +6,28 @@ class TurboGameRules extends Engine.GameRules;
 
 function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<DamageType> DamageType)
 {
-    //...
+    local GameRules GameRules;
+    local TurboGameRules TurboGameRules;
+
+    GameRules = Self;
+
+    //Find next TurboGameRules.
+    while (GameRules != None)
+    {
+        TurboGameRules = TurboGameRules(GameRules);
+
+        if (TurboGameRules != None)
+        {
+            break;
+        }
+        
+        GameRules = GameRules.NextGameRules;
+    }
+
+    if (TurboGameRules != None)
+    {
+        TurboGameRules.Killed(Killer, Killed, KilledPawn, DamageType);
+    }
 }
 
 defaultproperties

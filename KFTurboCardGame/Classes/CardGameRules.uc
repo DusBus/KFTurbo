@@ -93,6 +93,16 @@ struct NegateDamageEntry
 };
 var array<NegateDamageEntry> NegateDamageList;
 
+
+var bool bMassDetonationEnabled;
+struct MassDetonationEntry
+{
+    var vector Location;
+    var int MaxHealth;
+    var PlayerController Controller; //Instigator of the entry.
+};
+var array<MassDetonationEntry> MassDetonationList;
+
 static final function bool IsBerserker(Pawn Pawn)
 {
     if (Pawn == None || KFPlayerReplicationInfo(Pawn.PlayerReplicationInfo) == None)
@@ -189,8 +199,9 @@ function Tick(float DeltaTime)
         }
 	}
 
-
 	ScrakePawnList.Length = 0;
+
+    ProcessMassDetonationList();
 }
 
 function InitializeMonster(KFMonster Monster)
@@ -563,40 +574,6 @@ function ScoreKill(Controller Killer, Controller Killed)
     }
 }
 
-function bool ShouldTriggerSuddenDeath(Controller Killed, class<DamageType> DamageType)
-{
-    //Don't trigger sudden death on suicide during trader time.
-    if (class<Suicided>(DamageType) != None && KFGameType(Level.Game) != None && !KFGameType(Level.Game).bWaveInProgress)
-    {
-        return false;
-    }
-
-    //Don't trigger sudden death from sudden death.
-    if (class<SuddenDeath_DT>(DamageType) != None)
-    {
-        return false;
-    }
-
-    return true;
-}
-
-function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<DamageType> DamageType)
-{
-    if (Killed == None)
-    {
-        return;
-    }
-
-    if (bSuddenDeathEnabled && PlayerController(Killed) != None && KFHumanPawn(Killed.Pawn) != None
-        && Killed.PlayerReplicationInfo != None && Killed.PlayerReplicationInfo.Ping < 255)
-    {
-        if (ShouldTriggerSuddenDeath(Killed, DamageType))
-        {
-            PerformSuddenDeath();
-        }
-    }
-}
-
 function RemoveMonsterFromHeadshotList(KFMonster Monster)
 {
     local int Index;
@@ -616,6 +593,48 @@ function RemoveMonsterFromHeadshotList(KFMonster Monster)
     }
 }
 
+function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<DamageType> DamageType)
+{
+    if (Killed == None)
+    {
+        return;
+    }
+
+    if (bSuddenDeathEnabled && PlayerController(Killed) != None && KFHumanPawn(Killed.Pawn) != None
+        && Killed.PlayerReplicationInfo != None && Killed.PlayerReplicationInfo.Ping < 255)
+    {
+        if (ShouldTriggerSuddenDeath(Killed, DamageType))
+        {
+            PerformSuddenDeath();
+        }
+    }
+
+    if (bMassDetonationEnabled && FRand() < 0.1f && KFMonster(KilledPawn) != None && PlayerController(Killer) != None)
+    {
+        if (class<KFWeaponDamageType>(DamageType) != None && class<KFWeaponDamageType>(DamageType).default.bIsExplosive)
+        {
+            AddMassDetonationEntry(KFMonster(KilledPawn), PlayerController(Killer));
+        }
+    }
+}
+
+function bool ShouldTriggerSuddenDeath(Controller Killed, class<DamageType> DamageType)
+{
+    //Don't trigger sudden death on suicide during trader time.
+    if (class<Suicided>(DamageType) != None && KFGameType(Level.Game) != None && !KFGameType(Level.Game).bWaveInProgress)
+    {
+        return false;
+    }
+
+    //Don't trigger sudden death from sudden death.
+    if (class<SuddenDeath_DT>(DamageType) != None)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 function PerformSuddenDeath()
 {
     local Controller C;
@@ -627,6 +646,7 @@ function PerformSuddenDeath()
     }
 
     bPerformingSuddenDeath = true;
+
     for (C = Level.ControllerList; C != None; C = C.NextController)
     {
         PC = PlayerController(C);
@@ -644,7 +664,68 @@ function PerformSuddenDeath()
             PlayerController(C).Pawn.Died(None, class'SuddenDeath_DT', PlayerController(C).Pawn.Location);
         }
     }
+
     bPerformingSuddenDeath = false;
+}
+
+function AddMassDetonationEntry(KFMonster KilledMonster, PlayerController Killer)
+{
+    MassDetonationList.Length = MassDetonationList.Length + 1;
+
+    MassDetonationList[MassDetonationList.Length - 1].Location = KilledMonster.Location;
+    MassDetonationList[MassDetonationList.Length - 1].MaxHealth = KilledMonster.HealthMax;
+    MassDetonationList[MassDetonationList.Length - 1].Controller = Killer;
+}
+
+function ProcessMassDetonationList()
+{
+    local array<MassDetonationEntry> CachedDetonationList;
+    local int Index;
+
+    CachedDetonationList = MassDetonationList;
+    MassDetonationList.Length = 0;
+
+    for (Index = 0; Index < CachedDetonationList.Length; Index++)
+    {
+        PerformMassDetonation(CachedDetonationList[Index]);
+    }
+}
+
+final function PerformMassDetonation(MassDetonationEntry Detonation)
+{
+    local Pawn HitPawn;
+    local float DamageRadius;
+    local float Distance, DamageScale;
+    local vector Direction;
+    local vector HitMomentum;
+
+    if (Detonation.Controller == None)
+    {
+        return;
+    }
+
+    DamageRadius = class'W_Frag_Proj'.default.DamageRadius;
+
+    foreach CollidingActors(class'Pawn', HitPawn, DamageRadius, Detonation.Location)
+    {
+		Distance = class'WeaponHelper'.static.GetDistanceToClosestPointOnActor(Detonation.Location, HitPawn);
+		DamageScale = 1.f - FMax(0.f, Distance / DamageRadius);
+
+        if(KFPawn(HitPawn) != None)
+        {
+            DamageScale *= KFPawn(HitPawn).GetExposureTo(Detonation.Location);
+        }
+        else if(KFMonster(HitPawn) != None)
+        {
+            DamageScale *= KFMonster(HitPawn).GetExposureTo(Detonation.Location);
+        }
+
+		Direction = Normal(HitPawn.Location - Detonation.Location);
+		HitMomentum = DamageScale * class'W_Frag_Proj'.default.MomentumTransfer * Direction * 0.25f;
+        
+		HitPawn.TakeDamage(DamageScale * float(Detonation.MaxHealth) * 0.5f, Detonation.Controller.Pawn, Detonation.Location, HitMomentum, class'MassDetonation_DT');
+        Spawn(class'MassDetonationExplosion', Self,, Detonation.Location);
+    }
 }
 
 function float GetAdjustedScoreValue(float Score)
@@ -820,6 +901,7 @@ defaultproperties
 
     bSuddenDeathEnabled=false
     bPerformingSuddenDeath=false
+    bMassDetonationEnabled=false
     PlayerThornsDamageMultiplier=1.f
 
     FleshpoundDamageMultiplier=1.f

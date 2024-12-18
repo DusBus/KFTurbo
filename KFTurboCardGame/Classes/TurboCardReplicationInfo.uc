@@ -1208,6 +1208,12 @@ function EnableRandomlyChangingTrader()
     RandomTraderManager = Spawn(class'RandomTraderManager', Self);
 }
 
+function EnableMassDetonation()
+{
+    OwnerMutator.CardGameRules.bMassDetonationEnabled = true;
+    log("bMassDetonationEnabled"@OwnerMutator.CardGameRules.bMassDetonationEnabled);
+}
+
 defaultproperties
 {
     bAlwaysRelevant=true
