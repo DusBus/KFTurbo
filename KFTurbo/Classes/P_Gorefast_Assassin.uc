@@ -10,6 +10,16 @@ simulated function PostBeginPlay()
       }
 }
 
+function RangedAttack(Actor Target)
+{
+	Super(ZombieGoreFastBase).RangedAttack(Target);
+
+	if(!bShotAnim && !bDecapitated && Target != None && VSize(Target.Location-Location) <= 1800)
+      {
+		GoToState('RunningState');
+      }
+}
+
 static simulated function PreCacheMaterials(LevelInfo myLevel)
 {
       Super.PreCacheMaterials(myLevel);
