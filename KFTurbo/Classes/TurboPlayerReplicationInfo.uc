@@ -38,15 +38,21 @@ function Timer()
 function RequestTraderEnd()
 {
     local KFTurboGameType GameType;
-
-    if (bVotedForTraderEnd)
+    GameType = KFTurboGameType(Level.Game);
+    
+    if (GameType == None || GameType.bWaveInProgress || GameType.WaveCountDown <= 10)
     {
         return;
     }
 
-    GameType = KFTurboGameType(Level.Game);
+    if (bAdmin)
+    {
+        bVotedForTraderEnd = true;
+        GameType.AttemptTraderEnd(TurboPlayerController(Owner));
+        return;
+    }
 
-    if (GameType == None || GameType.bWaveInProgress || GameType.WaveCountDown <= 10)
+    if (bVotedForTraderEnd)
     {
         return;
     }

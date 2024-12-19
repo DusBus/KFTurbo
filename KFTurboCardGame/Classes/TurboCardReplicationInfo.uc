@@ -579,7 +579,7 @@ function ResetPlayerVotes()
     {
         CardLRI = class'CardGamePlayerReplicationInfo'.static.GetCardGameLRI(Level.GRI.PRIArray[Index]);
 
-        if (CardLRI == None || CardLRI.VoteIndex <= 0)
+        if (CardLRI == None)
         {
             continue;
         }

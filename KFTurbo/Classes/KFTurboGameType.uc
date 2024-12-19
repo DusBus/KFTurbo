@@ -421,8 +421,80 @@ state MatchInProgress
 	function DoWaveEnd()
 	{
 		Super.DoWaveEnd();
+
+        InvasionGameReplicationInfo(GameReplicationInfo).WaveNumber = WaveNum;
 		class'TurboWaveEventHandler'.static.BroadcastWaveEnded(Self, WaveNum - 1);
 	}
+}
+
+//TODO: Figure out how to get us back into normal game flow from a loss.
+function ClearEndGame()
+{
+    local KFGameReplicationInfo KFGRI;
+    local Controller C;
+    local TurboPlayerController TurboPlayerController;
+    local KFPlayerReplicationInfo KFPRI;
+
+    return;
+
+    KFGRI = KFGameReplicationInfo(GameReplicationInfo);
+
+    if (KFGRI == None || KFGRI.EndGameType == 0 || KFGRI.EndGameType == 2)
+    {
+        return;
+    }
+
+    KFGRI.EndGameType = 0;
+    bWaveInProgress = false;
+    KFGRI.bWaveInProgress = false;
+
+	WaveCountDown = 60;
+	if (KFGameReplicationInfo(Level.GRI) != None)
+	{
+		KFGameReplicationInfo(Level.GRI).TimeToNextWave = WaveCountDown;
+	}
+
+    for (C = Level.ControllerList; C != None; C = C.NextController)
+    {
+        TurboPlayerController = TurboPlayerController(C);
+        if (TurboPlayerController == None)
+        {
+            continue;
+        }
+
+        TurboPlayerController.Reset();
+        TurboPlayerController.ClientReset();
+
+        KFPRI = KFPlayerReplicationInfo(TurboPlayerController.PlayerReplicationInfo);
+
+        if (KFPRI == None)
+        {
+            continue;
+        }
+
+        KFPRI.bOutOfLives = false;
+        KFPRI.NumLives = 0;
+
+        TurboPlayerController.bChangedVeterancyThisWave = false;
+        TurboPlayerController.SendSelectedVeterancyToServer();
+
+        if (KFPRI.bOnlySpectator)
+        {
+            continue;
+        }
+
+        TurboPlayerController.GotoState('PlayerWaiting');
+        TurboPlayerController.SetViewTarget(TurboPlayerController);
+        TurboPlayerController.ClientSetBehindView(false);
+        TurboPlayerController.bBehindView = False;
+        TurboPlayerController.ClientSetViewTarget(TurboPlayerController.Pawn);
+        
+        TurboPlayerController.bSpawnedThisWave = false;
+
+        TurboPlayerController.ServerReStartPlayer();
+    }
+
+    GotoState('MatchInProgress');
 }
 
 //Check if enough people have voted to end the trader and end it.
@@ -431,6 +503,7 @@ function AttemptTraderEnd(TurboPlayerController VoteInstigator)
     local int Index, NumVoters, NumVotes;
     local TurboPlayerReplicationInfo TPRI;
     local float VotePercent;
+    local bool bAdminVoted;
     
     if (bWaveInProgress || WaveCountDown <= 10)
 	{
@@ -444,6 +517,7 @@ function AttemptTraderEnd(TurboPlayerController VoteInstigator)
 
     NumVoters = 0;
     NumVotes = 0;
+    bAdminVoted = false;
 
 	for (Index = Level.GRI.PRIArray.Length - 1; Index >= 0; Index--)
 	{
@@ -459,6 +533,11 @@ function AttemptTraderEnd(TurboPlayerController VoteInstigator)
         if (TPRI.bVotedForTraderEnd)
         {
             NumVotes++;
+
+            if (TPRI.bAdmin)
+            {
+                bAdminVoted = true;
+            }
         }
     }
 
@@ -469,18 +548,18 @@ function AttemptTraderEnd(TurboPlayerController VoteInstigator)
 
     VotePercent = float(NumVotes) / float(NumVoters);
 
-    if (VotePercent < 0.51f)
+    if (bAdminVoted || VotePercent >= 0.51f)
     {
-        //This means someone instigated a vote.
-        if (NumVotes == 1)
-        {
-            BroadcastLocalizedMessage(class'TurboEndTraderVoteMessage', 1, VoteInstigator.PlayerReplicationInfo); //EEndTraderVoteMessage.VoteStarted
-        }
+        WaveCountDown = Min(WaveCountDown, 10);
+        TurboGameReplicationInfo(GameReplicationInfo).TimeToNextWave = WaveCountDown;
         return;
     }
-
-	WaveCountDown = Min(WaveCountDown, 10);
-    TurboGameReplicationInfo(GameReplicationInfo).TimeToNextWave = WaveCountDown;
+    
+    //This means someone instigated a vote.
+    if (NumVotes == 1)
+    {
+        BroadcastLocalizedMessage(class'TurboEndTraderVoteMessage', 1, VoteInstigator.PlayerReplicationInfo); //EEndTraderVoteMessage.VoteStarted
+    }
 }
 
 function ClearTraderEndVotes()

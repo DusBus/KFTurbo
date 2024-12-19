@@ -53,10 +53,10 @@ function OnShotgunFire(KFShotgunFire ShotgunFire) { if (NextGameModifierLink != 
 //Make NetUpdateTime want to update now.
 simulated function ForceNetUpdate()
 {
-    NetUpdateTime = Level.TimeSeconds - ((1.f / NetUpdateFrequency) + 1.f);
+    NetUpdateTime = Max(Level.TimeSeconds - ((1.f / NetUpdateFrequency) + 1.f), 0.1f);
 }
 
 defaultproperties
 {
-    NetUpdateFrequency=0.01f
+    NetUpdateFrequency=0.1f
 }

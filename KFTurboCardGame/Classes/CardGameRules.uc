@@ -97,6 +97,7 @@ var array<NegateDamageEntry> NegateDamageList;
 var bool bMassDetonationEnabled;
 struct MassDetonationEntry
 {
+    var float ExplodeTime; //When to trigger.
     var vector Location;
     var int MaxHealth;
     var PlayerController Controller; //Instigator of the entry.
@@ -609,7 +610,7 @@ function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<Dam
         }
     }
 
-    if (bMassDetonationEnabled && FRand() < 0.1f && KFMonster(KilledPawn) != None && PlayerController(Killer) != None)
+    if (bMassDetonationEnabled && FRand() < 0.25f && KFMonster(KilledPawn) != None && PlayerController(Killer) != None)
     {
         if (class<KFWeaponDamageType>(DamageType) != None && class<KFWeaponDamageType>(DamageType).default.bIsExplosive)
         {
@@ -672,22 +673,42 @@ function AddMassDetonationEntry(KFMonster KilledMonster, PlayerController Killer
 {
     MassDetonationList.Length = MassDetonationList.Length + 1;
 
-    MassDetonationList[MassDetonationList.Length - 1].Location = KilledMonster.Location;
-    MassDetonationList[MassDetonationList.Length - 1].MaxHealth = KilledMonster.HealthMax;
-    MassDetonationList[MassDetonationList.Length - 1].Controller = Killer;
+    MassDetonationList.Insert(0, 1);
+    MassDetonationList[0].ExplodeTime = Level.TimeSeconds + 0.25f;
+    MassDetonationList[0].Location = KilledMonster.Location;
+    MassDetonationList[0].MaxHealth = KilledMonster.HealthMax;
+    MassDetonationList[0].Controller = Killer;
 }
 
 function ProcessMassDetonationList()
 {
-    local array<MassDetonationEntry> CachedDetonationList;
     local int Index;
+    local bool bPerformedDetonation;
 
-    CachedDetonationList = MassDetonationList;
-    MassDetonationList.Length = 0;
+    bPerformedDetonation = false;
 
-    for (Index = 0; Index < CachedDetonationList.Length; Index++)
+    for (Index = MassDetonationList.Length - 1; Index >= 0; Index--)
     {
-        PerformMassDetonation(CachedDetonationList[Index]);
+        if (MassDetonationList[Index].ExplodeTime > Level.TimeSeconds)
+        {
+            break;
+        }
+
+        PerformMassDetonation(MassDetonationList[Index]);
+        MassDetonationList.Remove(Index, 1);
+        bPerformedDetonation = true;
+    }
+
+    if (!bPerformedDetonation)
+    {
+        return;
+    }
+
+    Index--;
+    while (Index >= 0)
+    {
+        MassDetonationList[Index].ExplodeTime += 0.1f;
+        Index--;
     }
 }
 
@@ -706,6 +727,19 @@ final function PerformMassDetonation(MassDetonationEntry Detonation)
 
     DamageRadius = class'W_Frag_Proj'.default.DamageRadius;
 
+    if (Detonation.MaxHealth < 600)
+    {
+        Spawn(class'MassDetonationExplosion_Small', Self,, Detonation.Location);
+    }
+    else if (Detonation.MaxHealth < 1000)
+    {
+        Spawn(class'MassDetonationExplosion_Medium', Self,, Detonation.Location);
+    }
+    else
+    {
+        Spawn(class'MassDetonationExplosion', Self,, Detonation.Location);
+    }
+
     foreach CollidingActors(class'Pawn', HitPawn, DamageRadius, Detonation.Location)
     {
 		Distance = class'WeaponHelper'.static.GetDistanceToClosestPointOnActor(Detonation.Location, HitPawn);
@@ -721,10 +755,9 @@ final function PerformMassDetonation(MassDetonationEntry Detonation)
         }
 
 		Direction = Normal(HitPawn.Location - Detonation.Location);
-		HitMomentum = DamageScale * class'W_Frag_Proj'.default.MomentumTransfer * Direction * 0.25f;
+		HitMomentum = DamageScale * class'W_Frag_Proj'.default.MomentumTransfer * Direction * 0.125f;
         
-		HitPawn.TakeDamage(DamageScale * float(Detonation.MaxHealth) * 0.5f, Detonation.Controller.Pawn, Detonation.Location, HitMomentum, class'MassDetonation_DT');
-        Spawn(class'MassDetonationExplosion', Self,, Detonation.Location);
+		HitPawn.TakeDamage(DamageScale * float(Detonation.MaxHealth) * 0.25f, Detonation.Controller.Pawn, Detonation.Location, HitMomentum, class'MassDetonation_DT');
     }
 }
 

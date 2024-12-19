@@ -18,7 +18,7 @@ replication
 	reliable if( Role == ROLE_Authority )
 		ClientCloseBuyMenu;
 	reliable if( Role < ROLE_Authority )
-		ServerDebugSkipWave, EndTrader, ServerMarkActor, ServerNotifyShoppingState, ServerNotifyLoginMenuState;
+		ServerDebugSkipWave, ServerDebugRestartWave, ServerDebugSetWave, ServerDebugResetTrader, EndTrader, ServerMarkActor, ServerNotifyShoppingState, ServerNotifyLoginMenuState;
 }
 
 simulated function PostBeginPlay()
@@ -431,21 +431,146 @@ exec function GetWeapon(class<Weapon> NewWeaponClass )
 
 exec function ServerDebugSkipWave()
 {
-	if (PlayerReplicationInfo == None || !PlayerReplicationInfo.bAdmin)
+	local KFTurboGameType TurboGameType;
+
+	if (Role != ROLE_Authority)
 	{
 		return;
 	}
 
-	if (KFGameType(Level.Game) == None || !KFGameType(Level.Game).bWaveInProgress)
+	if (PlayerReplicationInfo == None || (Level.NetMode != NM_Standalone && !PlayerReplicationInfo.bAdmin))
+	{
+		return;
+	}
+
+	TurboGameType = KFTurboGameType(Level.Game);
+
+	if (TurboGameType == None || !TurboGameType.bWaveInProgress)
 	{
 		return;
 	}
 
 	class'KFTurboGameType'.static.StaticDisableStatsAndAchievements(Self);
 
-	KFGameType(Level.Game).TotalMaxMonsters = 0;
-	KFGameType(Level.Game).NextSpawnSquad.Length = 0;
-	KFGameType(Level.Game).KillZeds();
+	TurboGameType.TotalMaxMonsters = 0;
+	TurboGameType.NextSpawnSquad.Length = 0;
+	TurboGameType.KillZeds();
+	
+	//TurboGameType.ClearEndGame();
+
+	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', 0, PlayerReplicationInfo); //EAdminCommand.AC_SkipWave
+}
+
+exec function ServerDebugRestartWave()
+{
+	local KFTurboGameType TurboGameType;
+
+	if (Role != ROLE_Authority)
+	{
+		return;
+	}
+
+	if (PlayerReplicationInfo == None || (Level.NetMode != NM_Standalone && !PlayerReplicationInfo.bAdmin))
+	{
+		return;
+	}
+
+	TurboGameType = KFTurboGameType(Level.Game);
+
+	if (TurboGameType == None || !TurboGameType.bWaveInProgress)
+	{
+		return;
+	}
+
+	class'KFTurboGameType'.static.StaticDisableStatsAndAchievements(Self);
+
+	TurboGameType.WaveNum = TurboGameType.WaveNum - 1;
+
+	TurboGameType.TotalMaxMonsters = 0;
+	TurboGameType.NextSpawnSquad.Length = 0;
+	TurboGameType.KillZeds();
+	
+	//TurboGameType.ClearEndGame();
+	
+	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', 1, PlayerReplicationInfo); //EAdminCommand.AC_RestartWave
+}
+
+exec function ServerDebugSetWave(int NewWaveNum)
+{
+	local KFTurboGameType TurboGameType;
+
+	if (Role != ROLE_Authority)
+	{
+		return;
+	}
+
+	if (PlayerReplicationInfo == None || (Level.NetMode != NM_Standalone && !PlayerReplicationInfo.bAdmin))
+	{
+		return;
+	}
+
+	TurboGameType = KFTurboGameType(Level.Game);
+
+	if (TurboGameType == None)
+	{
+		return;
+	}
+
+	NewWaveNum = Max(NewWaveNum - 1, 0);
+
+	class'KFTurboGameType'.static.StaticDisableStatsAndAchievements(Self);
+	
+	if (TurboGameType.bWaveInProgress)
+	{
+		TurboGameType.WaveNum = NewWaveNum - 1;
+        InvasionGameReplicationInfo(GameReplicationInfo).WaveNumber = NewWaveNum;
+
+		TurboGameType.TotalMaxMonsters = 0;
+		TurboGameType.NextSpawnSquad.Length = 0;
+		TurboGameType.KillZeds();
+	}
+	else
+	{
+		TurboGameType.WaveNum = NewWaveNum;
+        InvasionGameReplicationInfo(GameReplicationInfo).WaveNumber = NewWaveNum;
+	}
+
+	//TurboGameType.ClearEndGame();
+	
+	//Encode the wave number into the switch value.
+	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (2 | ((NewWaveNum + 1) << 8)), PlayerReplicationInfo); //EAdminCommand.AC_SetWave
+}
+
+exec function ServerDebugResetTrader()
+{
+	local KFTurboGameType TurboGameType;
+
+	if (Role != ROLE_Authority)
+	{
+		return;
+	}
+
+	if (PlayerReplicationInfo == None || (Level.NetMode != NM_Standalone && !PlayerReplicationInfo.bAdmin))
+	{
+		return;
+	}
+
+	TurboGameType = KFTurboGameType(Level.Game);
+
+	if (TurboGameType == None || TurboGameType.bWaveInProgress)
+	{
+		return;
+	}
+
+	class'KFTurboGameType'.static.StaticDisableStatsAndAchievements(Self);
+	
+	TurboGameType.WaveCountDown = 60;
+	if (KFGameReplicationInfo(Level.GRI) != None)
+	{
+		KFGameReplicationInfo(Level.GRI).TimeToNextWave = TurboGameType.WaveCountDown;
+	}
+	
+	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', 3, PlayerReplicationInfo); //EAdminCommand.AC_ResetTrader
 }
 
 exec function EndTrader()

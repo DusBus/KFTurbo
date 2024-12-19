@@ -80,12 +80,19 @@ function SetVoteIndex(int Index)
     }
 
     VoteIndex = Index;
-    NetUpdateTime = Level.TimeSeconds - 11.f;
+    ForceNetUpdate();
 }
 
 function ResetVote()
 {
     VoteIndex = 0;
+    ForceNetUpdate();
+}
+
+//Make NetUpdateTime want to update now.
+simulated function ForceNetUpdate()
+{
+    NetUpdateTime = Max(Level.TimeSeconds - ((1.f / NetUpdateFrequency) + 1.f), 0.1f);
 }
 
 defaultproperties

@@ -144,6 +144,11 @@ Begin:
 		if (KFGT.WaveCountDown > 45)
 		{
 			KFGT.WaveCountDown = 20;
+
+			if (KFGameReplicationInfo(Level.GRI) != None)
+			{
+				KFGameReplicationInfo(Level.GRI).TimeToNextWave = KFGT.WaveCountDown;
+			}
 		}
 		Sleep(0.1f);
 	}

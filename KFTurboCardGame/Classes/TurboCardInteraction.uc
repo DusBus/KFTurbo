@@ -10,6 +10,20 @@ static final function CardGamePlayerReplicationInfo FindCGPRI(PlayerController P
 	return class'CardGamePlayerReplicationInfo'.static.GetCardGameLRI(PlayerController.PlayerReplicationInfo);
 }
 
+static final function bool SendVoteKeyPressEvent(PlayerController PlayerController, Interactions.EInputKey Key)
+{
+	local CardGamePlayerReplicationInfo CGPRI;
+
+	CGPRI = FindCGPRI(PlayerController);
+
+	if (CGPRI == None)
+	{
+		return false;
+	}
+
+	return CGPRI.ProcessVoteKeyPressEvent(Key);
+}
+
 simulated function bool KeyEvent( out EInputKey Key, out EInputAction Action, FLOAT Delta )
 {
 	if (Action == IST_Press)
@@ -26,7 +40,7 @@ simulated function bool KeyEvent( out EInputKey Key, out EInputAction Action, FL
 		}
 		else if (bShiftIsPressed)
 		{
-			return FindCGPRI(ViewportOwner.Actor).ProcessVoteKeyPressEvent(Key);
+			return SendVoteKeyPressEvent(ViewportOwner.Actor, Key);
 		}
 	}
 	else if (Action == IST_Release)

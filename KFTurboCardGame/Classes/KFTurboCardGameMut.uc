@@ -107,26 +107,74 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 function AddCardGamePlayerReplicationInfo(KFPlayerReplicationInfo PlayerReplicationInfo)
 {
 	local CardGamePlayerReplicationInfo CardGamePRI;
+	local LinkedReplicationInfo LastLRI;
+
+	LastLRI = PlayerReplicationInfo.CustomReplicationInfo;
+	while (LastLRI != None && LastLRI.NextReplicationInfo != None)
+	{
+		LastLRI = LastLRI.NextReplicationInfo;
+	}
+
 	CardGamePRI = Spawn(class'CardGamePlayerReplicationInfo', PlayerReplicationInfo.Owner);
-	CardGamePRI.NextReplicationInfo = PlayerReplicationInfo.CustomReplicationInfo;
 	CardGamePRI.OwningReplicationInfo = PlayerReplicationInfo;
 	CardGamePRI.TurboCardReplicationInfo = TurboCardReplicationInfo;
-	PlayerReplicationInfo.CustomReplicationInfo = CardGamePRI;
+
+	if (LastLRI != None)
+	{
+		LastLRI.NextReplicationInfo = CardGamePRI;
+	}
+	else
+	{
+		PlayerReplicationInfo.CustomReplicationInfo = CardGamePRI;
+	}
+
+	CardGamePRI.ForceNetUpdate();
 }
 
 function AddTurboCardGameModifier(TurboGameReplicationInfo TGRI)
 {
+	local TurboGameModifierReplicationLink LastGRL;
+	local TurboClientModifierReplicationLink LastCRL;
+
+	LastGRL = TGRI.CustomTurboModifier;
+	while (LastGRL.NextGameModifierLink != None)
+	{
+		LastGRL = LastGRL.NextGameModifierLink;
+	}
+
 	TurboCardGameModifier = Spawn(class'TurboCardGameModifierRepLink', TGRI);
 	TurboCardGameModifier.OwnerGRI = TGRI;
-	TurboCardGameModifier.NextGameModifierLink = TGRI.CustomTurboModifier;
-	TGRI.CustomTurboModifier = TurboCardGameModifier;
+
+	if (LastGRL != None)
+	{
+		LastGRL.NextGameModifierLink = TurboCardGameModifier;
+	}
+	else
+	{
+		TGRI.CustomTurboModifier = TurboCardGameModifier;
+	}
+	
+	LastCRL = TGRI.CustomTurboClientModifier;
+	while (LastCRL.NextClientModifierLink != None)
+	{
+		LastCRL = LastCRL.NextClientModifierLink;
+	}
 
 	TurboCardClientModifier = Spawn(class'TurboCardClientModifierRepLink', TGRI);
 	TurboCardClientModifier.OwnerGRI = TGRI;
-	TurboCardClientModifier.NextClientModifierLink = TGRI.CustomTurboClientModifier;
-	TGRI.CustomTurboClientModifier = TurboCardClientModifier;
+	
+	if (LastCRL != None)
+	{
+		LastCRL.NextClientModifierLink = TurboCardClientModifier;
+	}
+	else
+	{
+		TGRI.CustomTurboClientModifier = TurboCardClientModifier;
+	}
 
 	TGRI.ForceNetUpdate();
+	TurboCardGameModifier.ForceNetUpdate();
+	TurboCardClientModifier.ForceNetUpdate();
 }
 
 function ModifyPlayer(Pawn Other)

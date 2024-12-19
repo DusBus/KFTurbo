@@ -60,6 +60,16 @@ static function bool IsPerkAmmunition(class<Ammunition> AmmoType)
 	return false;
 }
 
+static function int AddCarryMaxWeight(KFPlayerReplicationInfo KFPRI)
+{
+	if (IsHighDifficulty(KFPRI))
+	{
+		return Super.AddCarryMaxWeight(KFPRI) + 2;
+	}
+
+	return Super.AddCarryMaxWeight(KFPRI);
+}
+
 static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType, out float Multiplier)
 {
 	Super.ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
@@ -220,7 +230,7 @@ static function string GetCustomLevelInfo(byte Level)
 defaultproperties
 {
 	HighDifficultyExtraAmmoMultiplier=1.5f
-	HighDifficultyExtraGrenadeAmmoMultiplier=1.1f
+	HighDifficultyExtraGrenadeAmmoMultiplier=1.2f
 
 	OnHUDIcon=Texture'KillingFloorHUD.Perks.Perk_Medic'
 	OnHUDGoldIcon=Texture'KFTurbo.Perks.Medic_D'
