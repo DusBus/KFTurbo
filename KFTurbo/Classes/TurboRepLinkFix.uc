@@ -2,15 +2,19 @@
 class TurboRepLinkFix extends Info;
 
 var int VerifyCount;
+var bool bHasValidatedCPRL;
+var bool bHasValidatedTRL;
 
 simulated function BeginPlay()
 {
+	bHasValidatedCPRL = false;
+	bHasValidatedTRL = false;
+
     SetTimer(4.f, true);
 }
 
 simulated function Timer()
 {
-	local ClientPerkRepLink CPRL;
 	local PlayerController PlayerController;
  
 	PlayerController = PlayerController(Owner);
@@ -19,36 +23,88 @@ simulated function Timer()
     {
 		return;
     }
+
+	//Wait until CPRL gives us the all clear.
+	if (!bHasValidatedCPRL && !ValidateClientPerkRepLink(PlayerController))
+	{
+		return;
+	}
+
+	if (!bHasValidatedCPRL)
+	{
+		bHasValidatedCPRL = true;
+		VerifyCount = 0;
+	}
     
+	//Test TRL until it gives us the all clear.
+	if (!bHasValidatedTRL && !ValidateTurboRepLink(PlayerController))
+	{
+		return;
+	}
+
+	bHasValidatedTRL = true;
+	
+	SetTimer(0.f, false);
+	Destroy();
+}
+
+simulated function bool ValidateClientPerkRepLink(PlayerController PlayerController)
+{
+	local ClientPerkRepLink CPRL;
+
 	CPRL = class'ClientPerkRepLink'.Static.FindStats(PlayerController);
 
 	if (CPRL != None)
 	{
-        if (VerifyCount > 30)
+        if (VerifyCount > 60)
         {
-			SetTimer(0, false);
-            Destroy();
-            return;
+            return true;
         }
 
         VerifyCount++;
-		return;
+		return false;
 	}
 
 	VerifyCount = 0;
 	
     foreach DynamicActors(Class'ClientPerkRepLink', CPRL)
 	{
-		if (CPRL.Owner == None)
-        {
-			CPRL.SetOwner(PlayerController);
-        }
-
+		CPRL.SetOwner(PlayerController);
 		CPRL.RepLinkBroken();
 	}
+
+	return false;
+}
+
+simulated function bool ValidateTurboRepLink(PlayerController PlayerController)
+{
+	local TurboRepLink TRL;
+
+	TRL = class'TurboRepLink'.Static.FindTurboRepLink(PlayerController);
+
+	if (TRL != None)
+	{
+        if (VerifyCount > 60)
+        {
+            return true;
+        }
+
+        VerifyCount++;
+		return false;
+	}
+
+	VerifyCount = 0;
+	
+    foreach DynamicActors(Class'TurboRepLink', TRL)
+	{
+		TRL.SetOwner(PlayerController);
+		TRL.RepLinkBroken();
+	}
+
+	return false;
 }
  
 defaultproperties
 {
-	NetUpdateFrequency=1
+
 }

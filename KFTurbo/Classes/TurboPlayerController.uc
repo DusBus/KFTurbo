@@ -63,7 +63,7 @@ simulated final function bool IsLocalPlayerController()
 
 function ClientPerkRepLink GetClientPerkRepLink()
 {
-	if (ClientPerkRepLink == none)
+	if (ClientPerkRepLink == None)
 	{
 		ClientPerkRepLink = Class'ClientPerkRepLink'.Static.FindStats(Self);
 	}
@@ -73,9 +73,9 @@ function ClientPerkRepLink GetClientPerkRepLink()
 
 function TurboRepLink GetTurboRepLink()
 {
-	if (TurboRepLink == none)
+	if (TurboRepLink == None)
 	{
-		TurboRepLink = class'TurboRepLink'.static.FindTurboRepLink(PlayerReplicationInfo);
+		TurboRepLink = class'TurboRepLink'.static.FindTurboRepLink(Self);
 	}
 
 	return TurboRepLink;

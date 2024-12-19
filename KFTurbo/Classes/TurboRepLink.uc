@@ -42,7 +42,8 @@ var String PlayerID;
 var array<String> PlayerGroups;
 
 var int FailureCount;
-var bool bNeedsDestroy;
+var bool bAwaitingDestroy;
+var bool bReceivedSetupComplete; //Set to true on client receiving Client_Reliable_SetupComplete().
 var bool bHasPerformedSetup;
 var bool bHasPerformedVariantStatusUpdate;
 
@@ -81,16 +82,11 @@ simulated function PreBeginPlay()
     }
 }
 
-function PostBeginPlay()
+simulated function PostBeginPlay()
 {
     Super.PostBeginPlay();
-    Disable('Tick');
-}
 
-function CleanUpRepLink()
-{
-    bNeedsDestroy = true;
-    Enable('Tick');
+    Disable('Tick');
 }
 
 function IncrementFailureCounter()
@@ -101,23 +97,97 @@ function IncrementFailureCounter()
         log("WARNING FAILURE LIMIT REACHED " $ FailureCount $ " TIMES ON " $ string(Self) $ "WAITING FOR CPRL.", 'KFTurbo');
         if (FailureCount > 60)
         {
-            CleanUpRepLink();
+            bAwaitingDestroy = true;
+            Enable('Tick');
         }
+    }
+}
+
+//Pretty much identical to Server Perks' RepLinkBroken setup.
+simulated function RepLinkBroken()
+{
+    if (bAwaitingDestroy)
+    {
+        log("AWAITING DESTROY...");
+        return;
+    }
+    
+    log("CLIENT DETECTED TURBOREPLINK WAS BROKEN.");
+    Enable('Tick');
+    Tick(0.f);
+}
+
+simulated function Tick( float DeltaTime )
+{
+	local PlayerController PC;
+	local LinkedReplicationInfo L;
+
+    if (bAwaitingDestroy)
+    {
+        log("Was waiting destroy!");
+        Destroy();
+        return;
+    }
+
+	if (Level.NetMode == NM_DedicatedServer)
+	{
+		Disable('Tick');
+		return;
+	}
+
+	PC = Level.GetLocalPlayerController();
+	
+    if (Level.NetMode != NM_Client && PC != Owner)
+	{
+		Disable('Tick');
+		return;
+	}
+
+	if (PC.PlayerReplicationInfo == None)
+    {
+        return;
+    }
+    
+	Disable('Tick');
+
+	if (PC.PlayerReplicationInfo.CustomReplicationInfo != None)
+	{
+        // Make sure not already added.
+		for (L = PC.PlayerReplicationInfo.CustomReplicationInfo; L != None; L = L.NextReplicationInfo)
+        {
+			if (L == Self)
+            {
+				return;
+            }
+        }
+
+        // Add to the end of the chain.
+		NextReplicationInfo = None;
+		for(L = PC.PlayerReplicationInfo.CustomReplicationInfo; L != None; L = L.NextReplicationInfo )
+        {
+			if (L.NextReplicationInfo == None)
+			{
+				L.NextReplicationInfo = Self;
+
+                if (bReceivedSetupComplete)
+                {
+                    OnSetupComplete();
+                }
+				return;
+			}
+        }
+	}
+
+	PC.PlayerReplicationInfo.CustomReplicationInfo = Self;
+
+    if (bReceivedSetupComplete)
+    {
+        OnSetupComplete();
     }
 }
 
 state RepSetup
 {
-    function Tick(float DeltaTime)
-    {
-        Global.Tick(DeltaTime);
-
-        if (bNeedsDestroy)
-        {
-            Destroy();
-        }
-    }
-
 Begin:
     if (Level.NetMode == NM_Client)
     {
@@ -182,7 +252,7 @@ simulated function bool IsClientPerkRepLinkReady()
 {
     local ClientPerkRepLink CPRL;
 
-    if (bNeedsDestroy)
+    if (bAwaitingDestroy)
     {
         return false;
     }
@@ -399,9 +469,11 @@ simulated function DebugVariantInfo(bool bFilterStatus)
 
 simulated function Client_Reliable_SetupComplete()
 {
+    bReceivedSetupComplete = true;
     OnSetupComplete();
 }
 
+//Can be called multiple times if RepLinkBroken() is called.
 simulated function OnSetupComplete()
 {
     UpdateVariantStatus();
@@ -428,17 +500,32 @@ simulated function GetVariantsForWeapon(class<KFWeaponPickup> Pickup, out array<
     }
 }
 
-static function TurboRepLink FindTurboRepLink(PlayerReplicationInfo PRI)
+static function TurboRepLink FindTurboRepLink(PlayerController PlayerController)
 {
     local LinkedReplicationInfo LRI;
-    local TurboRepLink KFPLRI;
+    local TurboRepLink TRL;
 
-    if (PRI == None)
+    if (PlayerController == None)
     {
         return None;
     }
 
-    for (LRI = PRI.CustomReplicationInfo; LRI != None; LRI = LRI.NextReplicationInfo)
+	if (PlayerController.PlayerReplicationInfo == None)
+	{
+		foreach PlayerController.DynamicActors(Class'TurboRepLink', TRL)
+        {
+			if (TRL.Owner == PlayerController || (TRL.Owner == None && TRL.OwningController == PlayerController))
+			{
+                TRL.SetOwner(PlayerController);
+				TRL.RepLinkBroken();
+				return TRL;
+			}
+        }
+
+		return None;
+	}
+
+    for (LRI = PlayerController.PlayerReplicationInfo.CustomReplicationInfo; LRI != None; LRI = LRI.NextReplicationInfo)
     {
         if (TurboRepLink(LRI) != None)
         {
@@ -446,11 +533,13 @@ static function TurboRepLink FindTurboRepLink(PlayerReplicationInfo PRI)
         }
     }
 
-    foreach PRI.DynamicActors(class'TurboRepLink', KFPLRI)
+    foreach PlayerController.DynamicActors(class'TurboRepLink', TRL)
     {
-        if (KFPLRI.OwningReplicationInfo == PRI)
+        if (TRL.Owner == PlayerController || (TRL.Owner == None && TRL.OwningController == PlayerController))
         {
-            return KFPLRI;
+            TRL.SetOwner(PlayerController);
+            TRL.RepLinkBroken();
+            return TRL;
         }
     }
 
@@ -575,7 +664,10 @@ defaultproperties
 {
     bOnlyRelevantToOwner=True
     bAlwaysRelevant=False
+    NetUpdateFrequency=0.1f
 
+    bReceivedSetupComplete=false;
     bHasPerformedSetup=false
+    bAwaitingDestroy=false
     bHasPerformedVariantStatusUpdate=false
 }

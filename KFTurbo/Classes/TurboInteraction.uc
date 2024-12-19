@@ -6,10 +6,9 @@ class TurboInteraction extends Engine.Interaction
 	dependson(TurboRepLink)
 	config(KFTurbo);
 
-var globalconfig bool bTraderBindingInitialized;
-var globalconfig bool bMarkActorBindingInitialized;
 var globalconfig TurboPlayerMarkReplicationInfo.EMarkColor MarkColor;
 
+var bool bHasInitializedInteraction;
 var bool bHasInitializedPerkTierPreference;
 var globalconfig array<TurboRepLink.VeterancyTierPreference> PerkTierPreferenceList;
 
@@ -37,6 +36,12 @@ simulated function bool KeyEvent( out EInputKey Key, out EInputAction Action, FL
 
 simulated function InitializeTurboInteraction()
 {
+	if (bHasInitializedInteraction)
+	{
+		return;
+	}
+
+	bHasInitializedInteraction = true;
 	InitializeVeterancyTierPreferences();
 	UpdateMerchant();
 }
@@ -200,6 +205,11 @@ simulated function bool InitializeVeterancyTierPreferences()
 	local int Index;
 	local TurboRepLink TurboRepLink;
 
+	if (bHasInitializedPerkTierPreference)
+	{
+		return true;
+	}
+
 	TurboRepLink = TurboPlayerController(ViewportOwner.Actor).GetTurboRepLink();
 
 	if (TurboRepLink == None)
@@ -309,6 +319,7 @@ static final function bool IsShiftTradeEnabled(TurboPlayerController PlayerContr
 
 defaultproperties
 {
+	bHasInitializedInteraction=false
 	bHasInitializedPerkTierPreference=false
 	PerkTierPreferenceList(0)=(PerkClass=class'V_FieldMedic',TierPreference=7)
 	PerkTierPreferenceList(1)=(PerkClass=class'V_SupportSpec',TierPreference=7)
