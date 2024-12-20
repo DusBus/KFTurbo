@@ -14,7 +14,7 @@ static function string GetString(optional int Switch, optional PlayerReplication
     switch(ETurboPlusMessage(Switch))
     {
         case TraderHint:
-            return default.HowToTradeHint;
+            return FormatString(default.HowToTradeHint);
     }
 
     return "";
@@ -37,10 +37,9 @@ static function bool IgnoreLocalMessage(TurboPlayerController PlayerController, 
 
 defaultproperties
 {
-    HowToTradeHint="During trader time, press SHIFT to open the trader menu anywhere. The console command TRADE can also be used."
+    HowToTradeHint="During %ktrader time%d, %kpress SHIFT%d to open the %ktrader menu%d anywhere. The %kconsole command TRADE%d can also be used."
 
-    Lifetime=10
+    Lifetime=15
     bIsSpecial=false
     bIsConsoleMessage=true
-    DrawColor=(B=255,G=255,R=255,A=255)
 }

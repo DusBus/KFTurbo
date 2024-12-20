@@ -76,6 +76,7 @@ var bool bCanEarnMedicGame;
 
 var bool bIsPlayingCardGame;
 var bool bCanEarnCardGameWin;
+var bool bCanEarnCurseOfRaWin; //Set by KFTurboCardGameMut when Curse Of Ra is selected.
 
 var bool bIsPlayingRandomizer;
 var bool bCanEarnRandomizerWin;
@@ -93,6 +94,20 @@ var array<Pawn> PushedScrakeList;
 
 var bool bPatriarchHarpoonCountNeedsReset;
 
+function PostBeginPlay()
+{
+    Super.PostBeginPlay();
+
+    if (IsPlayingCardGame())
+    {
+        bIsPlayingCardGame = true;
+    }
+    else if (IsPlayingRandomizer())
+    {
+        bIsPlayingRandomizer = true;
+    }
+}
+
 function MatchStarting()
 {
     if (!class'KFTurboGameType'.static.StaticAreStatsAndAchievementsEnabled(self))
@@ -100,16 +115,38 @@ function MatchStarting()
         return;
     }
 
-    if (class'KFTurboCardGameMut'.static.FindMutator(Level.Game) != None)
+    bCanEarnMedicGame = class'V_FieldMedic'.static.IsFieldMedic(KFPlayerReplicationInfo(OwnerController.PlayerReplicationInfo));
+}
+
+//Removes dependency on KFTurboCardGame and KFTurboRandomizer.
+function bool IsPlayingCardGame()
+{
+    return HasMutatorFromGroup("KF-CardGame");
+}
+
+function bool IsPlayingRandomizer()
+{
+    return HasMutatorFromGroup("KF-Randomizer");
+}
+
+function bool HasMutatorFromGroup(string GroupName)
+{
+    local Mutator Mutator;
+
+	if (Level.Game == None)
+	{
+		return false;
+	}
+
+    for (Mutator = Level.Game.BaseMutator; Mutator != None; Mutator = Mutator.NextMutator)
     {
-        bIsPlayingCardGame = true;
-    }
-    else if (class'KFTurboRandomizerMut'.static.FindMutator(Level.Game) != None)
-    {
-        bIsPlayingRandomizer = true;
+        if (Mutator.GroupName == GroupName)
+        {
+            return true;
+        }
     }
 
-    bCanEarnMedicGame = class'V_FieldMedic'.static.IsFieldMedic(KFPlayerReplicationInfo(OwnerController.PlayerReplicationInfo));
+    return false;
 }
 
 event MatchEnd(string mapname, float difficulty, int length, byte result, int waveNum)
@@ -170,7 +207,8 @@ event MatchEnd(string mapname, float difficulty, int length, byte result, int wa
 
 function CheckCurseOfRaGame()
 {
-    local KFTurboCardGameMut CardGameMutator;
+    local CardGameMutBase CardGameMutator;
+    local Mutator Mutator;
     local int CurseOfRaCardIndex;
 
     if (IsAchievementComplete(WIN_CARDGAME_CURSE))
@@ -178,16 +216,29 @@ function CheckCurseOfRaGame()
         return;
     }
 
-    CardGameMutator = class'KFTurboCardGameMut'.static.FindMutator(Level.Game);
+	if (Level.Game == None)
+	{
+		return;
+	}
 
-    if (CardGameMutator == None || CardGameMutator.TurboCardReplicationInfo == None)
+    for (Mutator = Level.Game.BaseMutator; Mutator != None; Mutator = Mutator.NextMutator )
+    {
+        CardGameMutator = CardGameMutBase(Mutator);
+
+        if (CardGameMutator != None)
+        {
+            break;
+        }
+    }
+
+    if (CardGameMutator == None)
     {
         return;
     }
 
-    //Must be one of the first 8 cards.
-    CurseOfRaCardIndex = CardGameMutator.TurboCardReplicationInfo.GetCurseOfRaCardIndex();
-    if (CurseOfRaCardIndex < 0 || CurseOfRaCardIndex > 7)
+    //Must be one of the first 10 cards.
+    CurseOfRaCardIndex = CardGameMutator.HasCard("CURSEOFRA");
+    if (CurseOfRaCardIndex < 0 || CurseOfRaCardIndex > 9)
     {
         return;
     }
@@ -863,7 +914,7 @@ defaultproperties
     Achievements(26)=(title="Pair",Description="Win two games of KFTurbo Card Game.",image=Texture'KFTurbo.Achievement.TwoOfAKind_D')
     Achievements(27)=(title="Three Of A Kind",Description="Win three games of KFTurbo Card Game.",image=Texture'KFTurbo.Achievement.ThreeOfAKind_D')
     Achievements(28)=(title="Four Of A Kind",Description="Win four games of KFTurbo Card Game.",image=Texture'KFTurbo.Achievement.FourOfAKind_D')
-    Achievements(29)=(title="The Cursed Card",Description="Win a game of KFTurbo Card Game with the Curse of Ra being one of the first 8 cards selected.",image=Texture'KFTurbo.Achievement.CurseOfRa_D')
+    Achievements(29)=(title="The Cursed Card",Description="Win a game of KFTurbo Card Game with the Curse of Ra being one of the first 10 active cards.",image=Texture'KFTurbo.Achievement.CurseOfRa_D')
 
     Achievements(30)=(title="Mixed Up",Description="Win a game of KFTurbo Randomizer.",image=Texture'KFTurbo.Achievement.Randomizer1_D')
     Achievements(31)=(title="Well Shuffled",Description="Win two games of KFTurbo Randomizer.",image=Texture'KFTurbo.Achievement.Randomizer2_D')

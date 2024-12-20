@@ -662,7 +662,7 @@ defaultproperties
 	 ScrakeAndFleshpoundWaveNum = 5
 
      bAddToServerPackages=True
-     GroupName="KF-Randomizer"
+     GroupName="KF-Randomizer" //Used by TurboGameplayAchievementPack to determine if a randomizer game is being played.
      FriendlyName="Killing Floor Turbo Randomizer"
      Description="Killing Floor Turbo's randomizer mutator. Uses large lists of predefined loadouts with specific roles (good vs Fleshpound/Scrake) incorporated into selection."
 }

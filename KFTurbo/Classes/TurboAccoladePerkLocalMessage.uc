@@ -23,7 +23,7 @@ static function string GetString(optional int Switch, optional PlayerReplication
     Result = default.OtherPlayerEarnedPerkLevelString;
     Result = Repl(Result, "%player", PerkColorCode $ RelatedPRI_1.PlayerName $ TextColorCode);
     Result = Repl(Result, "%level", PerkColorCode $ Switch $ TextColorCode);
-    Result = Repl(Result, "%perk", PerkColorCode $ class<TurboVeterancyTypes>(OptionalObject).default.VeterancyName $ TextColorCode);
+    Result = Repl(Result, "%perk", PerkColorCode $ PlayerPerk.default.VeterancyName $ TextColorCode);
     return Result;
 }
 

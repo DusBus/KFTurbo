@@ -1,7 +1,7 @@
 //Killing Floor Turbo KFTurboCardGameMut
 //Distributed under the terms of the GPL-2.0 License.
 //For more information see https://github.com/KFPilot/KFTurbo.
-class KFTurboCardGameMut extends Mutator
+class KFTurboCardGameMut extends CardGameMutBase
 		config(KFTurboCardGame);
 
 #exec obj load file="..\Textures\TurboCardGame.utx" package=KFTurboCardGame
@@ -187,6 +187,17 @@ function ModifyPlayer(Pawn Other)
 	}
 }
 
+//There isn't a card ID system so we'll just implement cards we card about in particular.
+function int HasCard(string CardID)
+{
+	if (CardID == "CURSEOFRA")
+	{
+		return TurboCardReplicationInfo.GetCurseOfRaCardIndex();
+	}
+
+	return Super.HasCard(CardID);
+}
+
 simulated function String GetHumanReadableName()
 {
 	return FriendlyName;
@@ -195,7 +206,7 @@ simulated function String GetHumanReadableName()
 defaultproperties
 {
 	bAddToServerPackages=True
-	GroupName="KF-CardGame"
+	GroupName="KF-CardGame" //Used by TurboGameplayAchievementPack to determine if a card game is being played.
 	FriendlyName="Killing Floor Turbo Card Game"
 	Description="Killing Floor Turbo's card game mutator. Before each wave, users are asked to vote between a selection of gameplay modifiers (cards)."
 }

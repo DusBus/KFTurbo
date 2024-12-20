@@ -8,12 +8,12 @@ var localized string VersionChangeString;
 
 static function string GetString(optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject)
 {
-    return default.VersionChangeString;
+    return FormatString(default.VersionChangeString);
 }
 
 defaultproperties
 {
-    VersionChangeString="A new version of Killing Floor Turbo is available! The latest build can be found at github.com/KFPilot/KFTurbo/releases."
+    VersionChangeString="A %knew version%d of %kKilling Floor Turbo%d is available! The %klatest build%d can be found at %kgithub.com/KFPilot/KFTurbo/releases%d."
 
     Lifetime=20
     bIsSpecial=false
