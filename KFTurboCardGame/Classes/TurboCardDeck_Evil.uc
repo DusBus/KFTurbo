@@ -499,7 +499,8 @@ defaultproperties
     DeckCardObjectList(29)=TurboCard'MixedSignals'
     
     Begin Object Name=HighThroughput Class=TurboCard_Evil
-        CardName(0)="High Throughput"
+        CardName(0)="High"
+        CardName(1)="Throughput"
         CardDescriptionList(0)="Increases maximum"
         CardDescriptionList(1)="alive zeds at"
         CardDescriptionList(2)="once by 40%."
