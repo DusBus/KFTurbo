@@ -427,6 +427,21 @@ state MatchInProgress
 	}
 }
 
+function bool CheckEndGame(PlayerReplicationInfo Winner, string Reason)
+{
+    local bool bGameIsOver, bResult;
+    bGameIsOver = KFGameReplicationInfo(GameReplicationInfo).EndGameType != 0;
+
+    bResult = Super.CheckEndGame(Winner, Reason);
+
+    if (!bGameIsOver && KFGameReplicationInfo(GameReplicationInfo).EndGameType != 0)
+    {
+		class'TurboWaveEventHandler'.static.BroadcastGameEnded(Self, KFGameReplicationInfo(GameReplicationInfo).EndGameType);
+    }
+
+    return bResult;
+}
+
 //TODO: Figure out how to get us back into normal game flow from a loss.
 function ClearEndGame()
 {
