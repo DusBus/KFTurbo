@@ -225,14 +225,7 @@ simulated final function DrawPlayerEntry(Canvas Canvas, TurboPlayerReplicationIn
 
 	Canvas.DrawTileStretched(ScoreboardBackplate, (SizeX * FClamp(float(TurboPRI.PlayerHealth) / float(TurboPRI.HealthMax), 0.f, 1.f)) - 2.f, SizeY * 0.04f);
 
-	if (bIsLocalPlayer)
-	{
-		Canvas.DrawColor.A = 220;
-	}
-	else
-	{
-		Canvas.DrawColor.A = ScoreboardBackplateColor.A;
-	}
+	Canvas.DrawColor.A = 255;
 
 	//Draw Perk
 	TempX += SizeX * PerkIconOffsetX;
@@ -272,7 +265,7 @@ simulated final function DrawPlayerEntry(Canvas Canvas, TurboPlayerReplicationIn
 	Canvas.DrawColor = ScoreboardTextColor;
 	DrawText = Eval(Len(TurboPRI.PlayerName) > 15, Left(TurboPRI.PlayerName, 15), TurboPRI.PlayerName);
 	Canvas.TextSize(DrawText, TextSizeX, TextSizeY);
-	TempX = (CenterX - (SizeX * 0.5f)) + (SizeX * UsernameOffsetX);
+	TempX = TempX + (SizeY * PerkIconSizeY) + (SizeY * 0.1f);
 	TempY = CenterY;
 	Canvas.SetPos(TempX, CenterY - (TextSizeY * 0.5f));
 	Canvas.DrawText(DrawText);
@@ -407,27 +400,27 @@ defaultproperties
 
 	HealthOffsetX=0.275f
 	HealthSizeY=0.75f
-	HealthIconColor=(R=16,G=16,B=16,A=200)
+	HealthIconColor=(R=40,G=40,B=40,A=230)
 	HealthIcon=Texture'KFTurbo.Scoreboard.ScoreboardHealth_D'
 
 	HealedHealthOffsetX=0.625f
 	HealedHealthSizeY=0.75f
-	HealedHealthIconColor=(R=16,G=16,B=16,A=200)
+	HealedHealthIconColor=(R=40,G=40,B=40,A=230)
 	HealedHealthIcon=Texture'KFTurbo.Scoreboard.ScoreboardHealed_D'
 
 	KillsOffsetX=0.45f
 	KillSizeY=0.75f
-	KillIconColor=(R=16,G=16,B=16,A=200)
+	KillIconColor=(R=40,G=40,B=40,A=230)
 	KillIcon=Texture'KFTurbo.Scoreboard.ScoreboardKill_D'
 
 	CashOffsetX=0.8f
 	CashSizeY=0.75f
-	CashIconColor=(R=16,G=16,B=16,A=200)
+	CashIconColor=(R=40,G=40,B=40,A=230)
 	CashIcon=Texture'KFTurbo.Scoreboard.ScoreboardCash_D'
 
 	PingOffsetX = 0.975f
 	PingSizeY = 0.75f
-	PingIconColor=(R=16,G=16,B=16,A=200)
+	PingIconColor=(R=40,G=40,B=40,A=230)
 	PingIcon=Texture'KFTurbo.Scoreboard.ScoreboardPing_D'
 
 	
