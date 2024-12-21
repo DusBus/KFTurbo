@@ -320,4 +320,7 @@ defaultproperties
 	PickupClass=Class'KFTurbo.W_NailGun_Pickup'
 	AttachmentClass=Class'KFTurbo.W_NailGun_Attachment'
 	SkinRefs(0)="KF_Weapons8_Trip_T.Weapons.Vlad_9000_cmb"
+
+	ReloadRate=2.000000
+	ReloadAnimRate=1.400000
 }
