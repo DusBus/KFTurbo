@@ -11,6 +11,7 @@ struct SelectableCardEntry
 };
 var array<SelectableCardEntry> CardRenderActorList;
 var bool bUseLargeCards;
+var bool bDrawDarkenedCards;
 var int BaseFontSize;
 
 var int CurrentCardCount;
@@ -98,21 +99,52 @@ simulated function bool CanUseLargeCards()
 	return false;
 }
 
+simulated function bool ShouldDrawDarkenedCards()
+{
+	if (!bool(KFPHUD.PlayerOwner.ConsoleCommand("ISFULLSCREEN")))
+	{
+		return false;
+	}
+
+	if (float(KFPHUD.PlayerOwner.ConsoleCommand("get ini:Engine.Engine.ViewportManager Brightness")) > 0.65f
+		|| float(KFPHUD.PlayerOwner.ConsoleCommand("get ini:Engine.Engine.ViewportManager Gamma")) > 1.3f)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 simulated function OnScreenSizeChange(Canvas C, Vector2D CurrentClipSize, Vector2D PreviousClipSize)
 {
 	Super.OnScreenSizeChange(C, CurrentClipSize, PreviousClipSize);
 
 	bUseLargeCards = false;
-	BaseFontSize = 4;
 
-	if (CurrentClipSize.Y >= 1440.f)
+	if (CurrentClipSize.Y > 1600)
 	{
-		if (CanUseLargeCards())
-		{
-			bUseLargeCards = true;
-		}
-		
 		BaseFontSize = 3;
+	}
+	else if (CurrentClipSize.Y > 1400)
+	{
+		BaseFontSize = 3;
+	}
+	else if (CurrentClipSize.Y > 1200)
+	{
+		BaseFontSize = 4;
+	}
+	else if (CurrentClipSize.Y > 1000)
+	{
+		BaseFontSize = 4;
+	}
+	else
+	{
+		BaseFontSize = 5;
+	}
+
+	if (CurrentClipSize.Y >= 1440.f && CanUseLargeCards())
+	{
+		bUseLargeCards = true;
 	}
 }
 
@@ -154,7 +186,9 @@ simulated function Tick(float DeltaTime)
 		return;
 	}
 
-	if (TCRI.bCurrentlyVoting)
+	bDrawDarkenedCards = ShouldDrawDarkenedCards();
+
+	if (TCRI.bCurrentlyVoting && CurrentCardCount > 0)
 	{
 		VotedCardIndex = GetVoteIndex();
 
@@ -307,7 +341,7 @@ simulated function Render(Canvas C)
 	C.DrawColor = class'HudBase'.default.WhiteColor;
 	C.Style = ERenderStyle.STY_Alpha;
 
-	if (TCRI.bCurrentlyVoting)
+	if (TCRI.bCurrentlyVoting && CurrentCardCount > 0)
 	{
 		DrawSelectableCardList(C);
 	}
@@ -354,6 +388,8 @@ simulated function DrawVoter(Canvas C, PlayerReplicationInfo PRI, float X, float
 
 	X += XOffset * VoteIndex;
 	C.TextSize(PlayerName, TextSizeX, TextSizeY);
+	Y -= TextSizeY;
+
 	if (VoteList.Length > VoteIndex)
 	{
 		Y -= float(VoteList[VoteIndex]) * TextSizeY;
@@ -392,8 +428,14 @@ simulated function DrawSelectableCardList(Canvas C)
 	local float TempX, TempY, VotedCardX, CardSelectionScale;
 	local float TextSizeX, TextSizeY;
 	local array<int> VoteList;
+	local string ColorString, StrippedString;
 	
 	C.SetDrawColor(255, 255, 255, 255);
+
+	if (bDrawDarkenedCards)
+	{
+		C.SetDrawColor(180, 180, 180, 255);
+	}
 
 	C.Font = class'KFTurboFontHelper'.static.LoadBoldFontStatic(BaseFontSize);
 
@@ -435,22 +477,25 @@ simulated function DrawSelectableCardList(Canvas C)
 		C.DrawTileScaled(CardRenderActorList[VotedCardIndex].CardActor.CardShader, CardScale * CardSelectionScale, CardScale * CardSelectionScale);
 	}
 
-	C.FontScaleX = Lerp(VoteMenuScale, 0.75f, 1.f);
+	C.FontScaleX = Lerp(VoteMenuScale, 0.6f, 1.f);
 	C.FontScaleY = C.FontScaleX;
 
 	TempX = ((C.ClipX / 2.f) - (CenterIndex * CardOffset)) + (CardOffset * 0.5f);
-	TempY -= CardSize * 0.15f;
+	TempY += CardSize * 0.01f;
 	for (Index = Level.GRI.PRIArray.Length - 1; Index >= 0; Index--)
 	{
 		DrawVoter(C, Level.GRI.PRIArray[Index], TempX, TempY, CardOffset, VoteList);
 	}
 
+	ColorString = class'TurboLocalMessage'.static.FormatString(HowToVoteString);
+	StrippedString = class'GUIComponent'.static.StripColorCodes(ColorString);
+
 	C.FontScaleX = 1.f;
 	C.FontScaleY = 1.f;
-	TempY += CardSize * 2.f;
+	TempY += CardSize * 1.9f;
 	TempX = (C.ClipX / 2.f);
 
-	C.TextSize(HowToVoteString, TextSizeX, TextSizeY);
+	C.TextSize(StrippedString, TextSizeX, TextSizeY);
 	TempX -= TextSizeX * 0.5f;
 
 	TempX += 1.f + (Sin(Level.TimeSeconds * PI * 0.8f) * 6.3f);
@@ -458,25 +503,29 @@ simulated function DrawSelectableCardList(Canvas C)
 
 	C.SetDrawColor(0, 0, 0, 120);
 	C.SetPos(TempX + 2.f, TempY + 2.f);
-	C.DrawText(HowToVoteString);
+	C.DrawText(StrippedString);
 
 	C.SetDrawColor(255, 255, 255, 255);
 	C.SetPos(TempX, TempY);
-	C.DrawText(HowToVoteString);
+	C.DrawText(ColorString);
 
 	C.Font = class'KFTurboFontHelper'.static.LoadBoldFontStatic(BaseFontSize + 2);
 	TempX += TextSizeX * 0.5f;
 	TempY += TextSizeY;
-	C.TextSize(HowCardsWorkString, TextSizeX, TextSizeY);
+
+	ColorString = class'TurboLocalMessage'.static.FormatString(HowCardsWorkString);
+	StrippedString = class'GUIComponent'.static.StripColorCodes(ColorString);
+
+	C.TextSize(StrippedString, TextSizeX, TextSizeY);
 	TempX -= TextSizeX * 0.5f;
 
 	C.SetDrawColor(0, 0, 0, 120);
 	C.SetPos(TempX + 2.f, TempY + 2.f);
-	C.DrawText(HowCardsWorkString);
+	C.DrawText(StrippedString);
 
 	C.SetDrawColor(255, 255, 255, 255);
 	C.SetPos(TempX, TempY);
-	C.DrawText(HowCardsWorkString);
+	C.DrawText(ColorString);
 }
 
 simulated function DrawActiveCardList(Canvas C)
@@ -495,6 +544,11 @@ simulated function DrawActiveCardList(Canvas C)
 	}
 
 	C.SetDrawColor(255, 255, 255, 255);
+
+	if (bDrawDarkenedCards)
+	{
+		C.SetDrawColor(180, 180, 180, 255);
+	}
 
 	CenterIndex = float(ActiveCardRenderActorList.Length) / 2.f;
 
@@ -832,8 +886,8 @@ defaultproperties
 	CardIndexToDisplay=-1
 	VoteMenuScale=1.f
 
-	HowToVoteString="Press shift and a number to vote for a card!"
-	HowCardsWorkString="Choose wisely! The selected card will last the whole game."
+	HowToVoteString="Press %kshift%d and a %knumber%d to vote for a card!"
+	HowCardsWorkString="Choose wisely! The selected card will %klast the whole game%d."
 	HowToScrollCardsString(0)="Scroll up and"
 	HowToScrollCardsString(1)="down to show"
 	HowToScrollCardsString(2)="other cards!"
