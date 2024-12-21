@@ -67,6 +67,13 @@ function PostBeginPlay()
     WaveNextSquadSpawnTime = SPAWN_TIME;
 }
 
+event InitGame( string Options, out string Error )
+{
+    SetFinalWaveOverride(7);
+
+    Super.InitGame(Options, Error);
+}
+
 // State to handle match progress
 State MatchInProgress
 {
@@ -274,15 +281,15 @@ defaultproperties
 	End Object
     TurboMonsterCollection=TurboPlusMonsterCollectionWaveImpl'TurboPlusMonsterCollectionWaveImpl0'
 
-    LongWaves(0)=(WaveMask=63,WaveMaxMonsters=35,WaveDifficulty=2.000000)
-    LongWaves(1)=(WaveMask=4032,WaveMaxMonsters=35,WaveDifficulty=2.000000)
-    LongWaves(2)=(WaveMask=4032,WaveMaxMonsters=40,WaveDifficulty=2.000000)
-    LongWaves(3)=(WaveMask=4032,WaveMaxMonsters=40,WaveDifficulty=2.000000)
-    LongWaves(4)=(WaveMask=4032,WaveMaxMonsters=45,WaveDifficulty=2.000000)
-    LongWaves(5)=(WaveMask=4032,WaveMaxMonsters=45,WaveDifficulty=2.000000)
-    LongWaves(6)=(WaveMask=4032,WaveMaxMonsters=50,WaveDifficulty=2.000000)
-    LongWaves(7)=(WaveMask=258048,WaveMaxMonsters=50,WaveDifficulty=2.000000)
-    LongWaves(8)=(WaveMask=258042,WaveMaxMonsters=55,WaveDifficulty=2.000000)
+    LongWaves(0)=(WaveMask=4032,WaveMaxMonsters=40,WaveDifficulty=2.000000)
+    LongWaves(1)=(WaveMask=4032,WaveMaxMonsters=45,WaveDifficulty=2.000000)
+    LongWaves(2)=(WaveMask=4032,WaveMaxMonsters=45,WaveDifficulty=2.000000)
+    LongWaves(3)=(WaveMask=4032,WaveMaxMonsters=50,WaveDifficulty=2.000000)
+    LongWaves(4)=(WaveMask=258048,WaveMaxMonsters=50,WaveDifficulty=2.000000)
+    LongWaves(5)=(WaveMask=258042,WaveMaxMonsters=55,WaveDifficulty=2.000000)
+    LongWaves(6)=(WaveMask=16515072,WaveMaxMonsters=60,WaveDifficulty=2.000000)
+    LongWaves(7)=(WaveMask=16515072,WaveMaxMonsters=60,WaveDifficulty=2.000000)
+    LongWaves(8)=(WaveMask=16515072,WaveMaxMonsters=60,WaveDifficulty=2.000000)
     LongWaves(9)=(WaveMask=16515072,WaveMaxMonsters=60,WaveDifficulty=2.000000)
 
     MonsterCollection=Class'KFTurbo.MC_DEF'
@@ -298,6 +305,6 @@ defaultproperties
     SpecialEventMonsterCollections(3)=Class'KFTurbo.MC_Turbo'
 
     GameName = "Killing Floor Turbo+ Game Type"
-    Description = "Turbo+ mode of the vanilla Killing Floor Game Type."
+    Description = "Turbo+ mode of the Killing Floor Game Type."
     ScreenShotName = "KFTurbo.Generic.KFTurbo_FB"
 }

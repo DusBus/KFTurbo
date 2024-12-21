@@ -82,6 +82,11 @@ final function Initialize(TurboMonsterCollection TurboCollection)
      }
 }
 
+function int GetMaxMonsters(int PlayerCount)
+{
+     return MaxMonsters;
+}
+
 defaultproperties
 {
      MaxMonsters=32

@@ -31,8 +31,6 @@ Delegate LockPerkSelection(bool bLock);
 
 event InitGame( string Options, out string Error )
 {
-    //KFGameLength = GL_Long; //TODO: Maybe enforce this? Kinda annoying to test in singleplayer atm.
-    
     Super.InitGame(Options, Error);
 }
  

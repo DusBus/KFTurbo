@@ -1,11 +1,37 @@
 class TurboPlusWaveEarly extends TurboMonsterWave;
 
+static final function float GetPlayerCountMaxMonstersModifier(int PlayerCount)
+{
+	switch (PlayerCount)
+	{
+		case 1:
+			return 0.75f;
+		case 2:
+			return 0.8f;
+		case 3:
+			return 0.85f;
+		case 4:
+			return 0.9f;
+		case 5:
+			return 0.95f;
+		case 6:
+			return 1.f;
+	}
+
+	return 1.f;
+}
+
+function int GetMaxMonsters(int PlayerCount)
+{
+	return Round(float(MaxMonsters) * GetPlayerCountMaxMonstersModifier(PlayerCount));
+}
+
 defaultproperties
 {
 	MaxMonsters=45
-	TotalMonsters=25
-	WaveDifficulty=2.f
-	RegularSequenceSize=9
+	TotalMonsters=40
+	WaveDifficulty=2.35f
+	RegularSequenceSize=13
 	MinMixInSquadCount=2
 	MaxMixInSquadCount=2
 	BeatSize=2
@@ -49,19 +75,19 @@ defaultproperties
 	RegularSquad(5)=TurboMonsterSquad'EarlySquad5'
 
 	Begin Object Class=TurboMonsterSquad Name=EarlySquad6
-		Squad(0)=(Monster=Bloat,Count=2)
+		Squad(0)=(Monster=Bloat,Count=1)
 		Squad(1)=(Monster=Clot,Count=2)
 	End Object
 	RegularSquad(6)=TurboMonsterSquad'EarlySquad6'
 
 	Begin Object Class=TurboMonsterSquad Name=EarlySquad7
-		Squad(0)=(Monster=Husk,Count=2)
-		Squad(1)=(Monster=Crawler,Count=2)
+		Squad(0)=(Monster=Husk,Count=1)
+		Squad(1)=(Monster=Stalker,Count=2)
 	End Object
 	RegularSquad(7)=TurboMonsterSquad'EarlySquad7'
 
 	Begin Object Class=TurboMonsterSquad Name=EarlySquad8
-		Squad(0)=(Monster=Siren,Count=2)
+		Squad(0)=(Monster=Siren,Count=1)
 		Squad(1)=(Monster=Clot,Count=2)
 	End Object
 	RegularSquad(8)=TurboMonsterSquad'EarlySquad8'

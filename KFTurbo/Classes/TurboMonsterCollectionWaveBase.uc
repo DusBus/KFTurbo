@@ -281,7 +281,7 @@ function int GetWaveTotalMonsters(int WaveNumber, float GameDifficulty, int Play
 
 function int GetWaveMaxMonsters(int WaveNumber, float GameDifficulty, int PlayerCount)
 {
-     return WaveList[Clamp(WaveNumber, 0, 9)].MaxMonsters;
+     return WaveList[Clamp(WaveNumber, 0, 9)].GetMaxMonsters(PlayerCount);
 }
 
 function float GetWaveDifficulty(int WaveNumber)

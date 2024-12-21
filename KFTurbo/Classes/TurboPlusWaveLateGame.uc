@@ -2,14 +2,14 @@ class TurboPlusWaveLateGame extends TurboPlusWaveMidGame;
 
 defaultproperties
 {
-	MaxMonsters=50
-	TotalMonsters=45
-	WaveDifficulty=2.75f
-	RegularSequenceSize=8
+	MaxMonsters=49
+	TotalMonsters=48
+	WaveDifficulty=2.6f
+	RegularSequenceSize=11
 	MinMixInSquadCount=3
 	MaxMixInSquadCount=3
 	BeatSize=2
-	NextSquadSpawnTime=1.25f
+	NextSquadSpawnTime=1.15f
 
     //REGULARS
 	Begin Object Class=TurboMonsterSquad Name=LateGameSquad0
@@ -19,7 +19,7 @@ defaultproperties
 	RegularSquad(12)=TurboMonsterSquad'LateGameSquad0'
 
 	Begin Object Class=TurboMonsterSquad Name=LateGameSquad1
-		Squad(0)=(Monster=Husk,Count=1)
+		Squad(0)=(Monster=Husk,Count=2)
 		Squad(1)=(Monster=Gorefast,Count=1)
 	End Object
 	RegularSquad(13)=TurboMonsterSquad'LateGameSquad1'
@@ -32,9 +32,15 @@ defaultproperties
 
     //MIXINS
 	Begin Object Class=TurboMonsterSquad Name=LateGameMixInSquad0
-		Squad(0)=(Monster=Scrake,Count=2)
+		Squad(0)=(Monster=Scrake,Count=1)
+		Squad(1)=(Monster=Siren,Count=1)
 	End Object
 	MixInSquad(7)=TurboMonsterSquad'LateGameMixInSquad0'
+
+	Begin Object Class=TurboMonsterSquad Name=LateGameMixInSquad1
+		Squad(0)=(Monster=Scrake,Count=2)
+	End Object
+	MixInSquad(8)=TurboMonsterSquad'LateGameMixInSquad1'
 
 	//BEATS
 	Begin Object Class=TurboMonsterSquad Name=LateGameBeatSquad0
