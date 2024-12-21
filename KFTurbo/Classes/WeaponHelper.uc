@@ -737,16 +737,9 @@ static final function SeekerSixProjTakeDamage(SeekerSixRocketProjectile Projecti
 
 static final function HuskGunProjTakeDamage(HuskGunProjectile Projectile, int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
 {
-	if(class<SirenScreamDamage>(DamageType) != None)
+	if(!Projectile.bDud)
 	{
-		Projectile.Disintegrate(HitLocation, vect(0,0,1));
-	}
-	else
-	{
-		if(!Projectile.bDud)
-		{
-			Projectile.Explode(HitLocation, vect(0,0,0));
-		}
+		Projectile.Explode(HitLocation, vect(0,0,0));
 	}
 }
 
