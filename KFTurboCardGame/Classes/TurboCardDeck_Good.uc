@@ -158,7 +158,7 @@ function ActivateUnfamiliarTerritory(TurboCardReplicationInfo CGRI)
 
 function ActivateMoreSlomo(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyWeaponZedTimeExtensions(1);
+    CGRI.ModifyWeaponZedTimeExtensions(4);
 }
 
 function ActivateExtraGrenade(TurboCardReplicationInfo CGRI)
@@ -178,6 +178,7 @@ defaultproperties
         CardDescriptionList(0)="All players receive"
         CardDescriptionList(1)="10% extra cash"
         CardDescriptionList(2)="from kills."
+        CardID="GOOD_REWARDINF"
         OnActivateCard=ActivateBonusCashKill
     End Object
     DeckCardObjectList(0)=TurboCard'BonusCashKill'
@@ -187,6 +188,7 @@ defaultproperties
         CardDescriptionList(0)="Increases"
         CardDescriptionList(1)="firerate of all"
         CardDescriptionList(2)="weapons by 5%."
+        CardID="GOOD_TRIGGERFING"
         OnActivateCard=ActivateFirerateIncrease
     End Object
     DeckCardObjectList(1)=TurboCard'FirerateIncrease'
@@ -195,6 +197,7 @@ defaultproperties
         CardName(0)="Higher Explosives"
         CardDescriptionList(0)="Explosives deal"
         CardDescriptionList(1)="5% more damage."
+        CardID="GOOD_HIGHEXPLOSIVES"
         OnActivateCard=ActivateExplosiveDamage
     End Object
     DeckCardObjectList(2)=TurboCard'ExplosiveDamage'
@@ -203,6 +206,7 @@ defaultproperties
         CardName(0)="Wider Explosives"
         CardDescriptionList(0)="Explosives have"
         CardDescriptionList(1)="10% larger range."
+        CardID="GOOD_WIDEEXPLOSIVES"
         OnActivateCard=ActivateExplosiveRange
     End Object
     DeckCardObjectList(3)=TurboCard'ExplosiveRange'
@@ -212,6 +216,7 @@ defaultproperties
         CardDescriptionList(0)="All players"
         CardDescriptionList(1)="receive free"
         CardDescriptionList(2)="armor each wave."
+        CardID="GOOD_FREEARMOR"
         OnActivateCard=ActivateFreeArmor
     End Object
     DeckCardObjectList(4)=TurboCard'FreeArmor'
@@ -222,6 +227,7 @@ defaultproperties
         CardDescriptionList(0)="Increase max"
         CardDescriptionList(1)="ammo for all"
         CardDescriptionList(2)="weapons by 10%."
+        CardID="GOOD_DEEPERBULLET"
         OnActivateCard=ActivateMaxAmmo
     End Object
     DeckCardObjectList(5)=TurboCard'MaxAmmo'
@@ -232,6 +238,7 @@ defaultproperties
         CardDescriptionList(0)="Increases reload"
         CardDescriptionList(1)="speed of all"
         CardDescriptionList(2)="weapons by 5%."
+        CardID="GOOD_BASICSTRETCHES"
         OnActivateCard=ActivateReloadSpeed
     End Object
     DeckCardObjectList(6)=TurboCard'ReloadSpeed'
@@ -242,6 +249,7 @@ defaultproperties
         CardDescriptionList(0)="Deal 10% more"
         CardDescriptionList(1)="damage during"
         CardDescriptionList(2)="zed time."
+        CardID="GOOD_SLOMOEXPERT"
         OnActivateCard=ActivateSlomoDamageBonus
     End Object
     DeckCardObjectList(7)=TurboCard'SlomoDamageBonus'
@@ -251,6 +259,7 @@ defaultproperties
         CardDescriptionList(0)="Reflect 10% of"
         CardDescriptionList(1)="received damage"
         CardDescriptionList(2)="back onto zeds."
+        CardID="GOOD_THORNS"
         OnActivateCard=ActivateThorns
     End Object
     DeckCardObjectList(8)=TurboCard'Thorns'
@@ -260,6 +269,7 @@ defaultproperties
         CardDescriptionList(0)="All ammo and"
         CardDescriptionList(1)="weapons receive"
         CardDescriptionList(2)="a 10% discount."
+        CardID="GOOD_SLIGHTDISC"
         OnActivateCard=ActivateTraderDiscount
     End Object
     DeckCardObjectList(9)=TurboCard'TraderDiscount'
@@ -270,6 +280,7 @@ defaultproperties
         CardDescriptionList(0)="Grenades receive"
         CardDescriptionList(1)="a 30% discount"
         CardDescriptionList(2)="at the trader."
+        CardID="GOOD_GRENCLEARANCE"
         OnActivateCard=ActivateTraderGrenadeDiscount
     End Object
     DeckCardObjectList(10)=TurboCard'TraderGrenadeDiscount'
@@ -279,6 +290,7 @@ defaultproperties
         CardDescriptionList(0)="Increases headshot"
         CardDescriptionList(1)="damage on non-elite"
         CardDescriptionList(2)="zeds by 10%."
+        CardID="GOOD_TRASHHEADS"
         OnActivateCard=ActivateTrashHeadshotDamage
     End Object
     DeckCardObjectList(11)=TurboCard'TrashHeadshotDamage'
@@ -289,6 +301,7 @@ defaultproperties
         CardDescriptionList(0)="Ammo pickups"
         CardDescriptionList(1)="respawn 200%"
         CardDescriptionList(2)="faster."
+        CardID="GOOD_FASTAMMORESP"
         OnActivateCard=ActivateFastAmmoRespawn
     End Object
     DeckCardObjectList(12)=TurboCard'FastAmmoRespawn'
@@ -298,6 +311,7 @@ defaultproperties
         CardName(1)="Magazine"
         CardDescriptionList(0)="Increases weapon"
         CardDescriptionList(1)="magazine size by 5%."
+        CardID="GOOD_STUFFEDMAG"
         OnActivateCard=ActivateMagazineAmmoIncrease
     End Object
     DeckCardObjectList(13)=TurboCard'MagazineAmmoIncrease'
@@ -308,6 +322,7 @@ defaultproperties
         CardDescriptionList(0)="Decreases weapon"
         CardDescriptionList(1)="spread and"
         CardDescriptionList(2)="recoil by 10%."
+        CardID="GOOD_STUFFEDMAG"
         OnActivateCard=ActivateSpreadAndRecoilDecrease
     End Object
     DeckCardObjectList(14)=TurboCard'SpreadAndRecoilDecrease'
@@ -317,6 +332,7 @@ defaultproperties
         CardDescriptionList(0)="Decreases melee"
         CardDescriptionList(1)="damage taken from"
         CardDescriptionList(2)="monsters by 5%."
+        CardID="GOOD_THICKSKIN"
         OnActivateCard=ActivateMonsterDamageDecrease
     End Object
     DeckCardObjectList(15)=TurboCard'MonsterDamageDecrease'
@@ -325,6 +341,7 @@ defaultproperties
         CardName(0)="Cardio Enjoyer"
         CardDescriptionList(0)="Increases player"
         CardDescriptionList(1)="move speed by 5%."
+        CardID="GOOD_CARDIOENJOY"
         OnActivateCard=ActivateMoveSpeedIncrease
     End Object
     DeckCardObjectList(16)=TurboCard'MoveSpeedIncrease'
@@ -333,6 +350,7 @@ defaultproperties
         CardName(0)="Relaxed Pace"
         CardDescriptionList(0)="Decreases wave"
         CardDescriptionList(1)="spawn rate by 5%."
+        CardID="GOOD_SLOWERWAVE"
         OnActivateCard=ActivateSlowerWave
     End Object
     DeckCardObjectList(17)=TurboCard'SlowerWave'
@@ -341,6 +359,7 @@ defaultproperties
         CardName(0)="Skimmed Waves"
         CardDescriptionList(0)="Decreases wave"
         CardDescriptionList(1)="size by 5%."
+        CardID="GOOD_SHORTERWAVE"
         OnActivateCard=ActivateShorterWave
     End Object
     DeckCardObjectList(18)=TurboCard'ShorterWave'
@@ -351,6 +370,7 @@ defaultproperties
         CardDescriptionList(1)="health players"
         CardDescriptionList(2)="deal 10% more"
         CardDescriptionList(3)="damage."
+        CardID="GOOD_DAUNTLESS"
         OnActivateCard=ActivateDauntless
     End Object
     DeckCardObjectList(19)=TurboCard'Dauntless'
@@ -361,6 +381,7 @@ defaultproperties
         CardDescriptionList(0)="Decreases damage"
         CardDescriptionList(1)="taken by ranged"
         CardDescriptionList(2)="zed attacks by 10%."
+        CardID="GOOD_DAUNTLESS"
         OnActivateCard=ActivateRangedResistance
     End Object
     DeckCardObjectList(20)=TurboCard'RangedResistance'
@@ -370,6 +391,7 @@ defaultproperties
         CardDescriptionList(0)="Increases armor"
         CardDescriptionList(1)="damage reduction"
         CardDescriptionList(2)="by 10%."
+        CardID="GOOD_TIER4PLATES"
         OnActivateCard=ActivateBetterArmor
     End Object
     DeckCardObjectList(21)=TurboCard'BetterArmor'
@@ -379,6 +401,7 @@ defaultproperties
         CardName(1)="Are Okay"
         CardDescriptionList(0)="Players no longer"
         CardDescriptionList(1)="take fall damage."
+        CardID="GOOD_MYLEGSAREOK"
         OnActivateCard=ActivateMyLegsAreOkay
     End Object
     DeckCardObjectList(22)=TurboCard'MyLegsAreOkay'
@@ -387,6 +410,7 @@ defaultproperties
         CardName(0)="Healthy"
         CardDescriptionList(0)="Increases player"
         CardDescriptionList(1)="health by 5%."
+        CardID="GOOD_HEALTHY"
         OnActivateCard=ActivateHealthy
     End Object
     DeckCardObjectList(23)=TurboCard'Healthy'
@@ -395,6 +419,7 @@ defaultproperties
         CardName(0)="Better Medicine"
         CardDescriptionList(0)="Increases heal"
         CardDescriptionList(1)="potency by 5%."
+        CardID="GOOD_BETTERMEDICINE"
         OnActivateCard=ActivateBetterMedicine
     End Object
     DeckCardObjectList(24)=TurboCard'BetterMedicine'
@@ -404,6 +429,7 @@ defaultproperties
         CardName(1)="Territory"
         CardDescriptionList(0)="Increases on-perk"
         CardDescriptionList(1)="damage by 5%."
+        CardID="GOOD_FAMILIARTER"
         OnActivateCard=ActivateFamiliarTerritory
     End Object
     DeckCardObjectList(25)=TurboCard'FamiliarTerritory'
@@ -413,6 +439,7 @@ defaultproperties
         CardName(1)="Territory"
         CardDescriptionList(0)="Increases off-perk"
         CardDescriptionList(1)="damage by 5%."
+        CardID="GOOD_UNFAMILIARTER"
         OnActivateCard=ActivateUnfamiliarTerritory
     End Object
     DeckCardObjectList(26)=TurboCard'UnfamiliarTerritory'
@@ -421,7 +448,8 @@ defaultproperties
         CardName(0)="Extended Cut"
         CardDescriptionList(0)="Increases player"
         CardDescriptionList(1)="max zed time"
-        CardDescriptionList(2)="extensions by 1."
+        CardDescriptionList(2)="extensions by 4."
+        CardID="GOOD_EXTENDEDCUT"
         OnActivateCard=ActivateMoreSlomo
     End Object
     DeckCardObjectList(27)=TurboCard'MoreSlomo'
@@ -431,6 +459,7 @@ defaultproperties
         CardName(1)="The First Stone"
         CardDescriptionList(0)="Increases grenade"
         CardDescriptionList(1)="max ammo by 20%."
+        CardID="GOOD_CASTFIRSTSTONE"
         OnActivateCard=ActivateExtraGrenade
     End Object
     DeckCardObjectList(28)=TurboCard'ExtraGrenade'
@@ -442,6 +471,7 @@ defaultproperties
         CardDescriptionList(1)="gun and syringe"
         CardDescriptionList(2)="recharge rate"
         CardDescriptionList(3)="by 5%."
+        CardID="GOOD_FASTERMED"
         OnActivateCard=ActivateFasterMedical
     End Object
     DeckCardObjectList(29)=TurboCard'FasterMedical'

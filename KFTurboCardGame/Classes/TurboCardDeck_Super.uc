@@ -143,6 +143,7 @@ defaultproperties
         CardDescriptionList(2)="weapon firerate"
         CardDescriptionList(3)="by 200%."
         OnActivateCard=ActivateBerserker
+        CardID="SUPER_FISTOFNORTH"
     End Object
     DeckCardObjectList(0)=TurboCard'Berserker'
     
@@ -158,6 +159,7 @@ defaultproperties
         CardDescriptionList(5)="20% and max"
         CardDescriptionList(6)="ammo by 20%."
         OnActivateCard=ActivateCommando
+        CardID="SUPER_CMDOFIRINGEXT"
     End Object
     DeckCardObjectList(1)=TurboCard'Commando'
     
@@ -168,6 +170,7 @@ defaultproperties
         CardDescriptionList(2)="damage by 50%"
         CardDescriptionList(3)="and firerate by 150%."
         OnActivateCard=ActivateFirebug
+        CardID="SUPER_FIREHAZARD"
     End Object
     DeckCardObjectList(2)=TurboCard'Firebug'
     
@@ -181,6 +184,7 @@ defaultproperties
         CardDescriptionList(5)="100%, and heal"
         CardDescriptionList(6)="potency by 50%."
         OnActivateCard=ActivateUberMedic
+        CardID="SUPER_UBERMEDIC"
     End Object
     DeckCardObjectList(3)=TurboCard'UberMedic'
     
@@ -191,6 +195,7 @@ defaultproperties
         CardDescriptionList(1)="dealt to"
         CardDescriptionList(2)="Fleshpounds by 50%."
         OnActivateCard=ActivateFleshpoundDamage
+        CardID="SUPER_WEAKFP"
     End Object
     DeckCardObjectList(4)=TurboCard'FleshpoundDamage'
     
@@ -201,6 +206,7 @@ defaultproperties
         CardDescriptionList(1)="dealt to"
         CardDescriptionList(2)="Scrakes by 50%."
         OnActivateCard=ActivateScrakeDamage
+        CardID="SUPER_WEAKSC"
     End Object
     DeckCardObjectList(5)=TurboCard'ScrakeDamage'
     
@@ -212,6 +218,7 @@ defaultproperties
         CardDescriptionList(3)="power of all"
         CardDescriptionList(4)="grenades by 100%."
         OnActivateCard=ActivateSuperGrenades
+        CardID="SUPER_SUPERNADES"
     End Object
     DeckCardObjectList(6)=TurboCard'SuperGrenades'
     
@@ -221,6 +228,7 @@ defaultproperties
         CardDescriptionList(1)="health for all"
         CardDescriptionList(2)="players by 100%."
         OnActivateCard=ActivateMaxHealth
+        CardID="SUPER_OVERHEAL"
     End Object
     DeckCardObjectList(7)=TurboCard'MaxHealth'
     
@@ -230,6 +238,7 @@ defaultproperties
         CardDescriptionList(1)="movement speed for"
         CardDescriptionList(2)="all players by 30%."
         OnActivateCard=ActivateMovementSpeed
+        CardID="SUPER_ADRENALINE"
     End Object
     DeckCardObjectList(8)=TurboCard'MovementSpeed'
     
@@ -240,6 +249,7 @@ defaultproperties
         CardDescriptionList(1)="weapon reload"
         CardDescriptionList(2)="speed by 50%."
         OnActivateCard=ActivateReloadSpeed
+        CardID="SUPER_STRATRELOAD"
     End Object
     DeckCardObjectList(9)=TurboCard'ReloadSpeed'
     
@@ -248,6 +258,7 @@ defaultproperties
         CardDescriptionList(0)="Completely nullify"
         CardDescriptionList(1)="scream damage."
         OnActivateCard=ActivateSirenScreemNullify
+        CardID="SUPER_EARPLUGS"
     End Object
     DeckCardObjectList(10)=TurboCard'SirenScreemNullify'
     
@@ -256,6 +267,7 @@ defaultproperties
         CardDescriptionList(0)="All players can"
         CardDescriptionList(1)="cheat death once."
         OnActivateCard=ActivateCheatDeath
+        CardID="SUPER_CHEATDEATH"
     End Object
     DeckCardObjectList(11)=TurboCard'CheatDeath'
 
@@ -265,6 +277,7 @@ defaultproperties
         CardDescriptionList(1)="nullified for"
         CardDescriptionList(2)="all players."
         OnActivateCard=ActivateUnshakeable
+        CardID="SUPER_UNSHAKEABLE"
     End Object
     DeckCardObjectList(12)=TurboCard'Unshakeable'
 
@@ -273,6 +286,7 @@ defaultproperties
         CardDescriptionList(0)="Increases the"
         CardDescriptionList(1)="size of zeds"
         CardDescriptionList(2)="heads by 100%."
+        CardID="SUPER_BIGHEADMODE"
         OnActivateCard=ActivateBigHeadMode
     End Object
     DeckCardObjectList(13)=TurboCard'BigHeadMode'
@@ -284,6 +298,7 @@ defaultproperties
         CardDescriptionList(1)="penetration"
         CardDescriptionList(2)="is doubled."
         OnActivateCard=ActivateHypersonicAmmo
+        CardID="SUPER_HYPERSONICAMMO"
     End Object
     DeckCardObjectList(14)=TurboCard'HypersonicAmmo'
 
@@ -294,6 +309,7 @@ defaultproperties
         CardDescriptionList(2)="by 3 for all."
         CardDescriptionList(3)="players."
         OnActivateCard=ActivateStrongArm
+        CardID="SUPER_STRONGARM"
     End Object
     DeckCardObjectList(15)=TurboCard'StrongArm'
 
@@ -303,6 +319,7 @@ defaultproperties
         CardDescriptionList(1)="and recoil for all"
         CardDescriptionList(2)="players by 80%."
         OnActivateCard=ActivateDiazepam
+        CardID="SUPER_DIAZEPAM"
     End Object
     DeckCardObjectList(16)=TurboCard'Diazepam'
 
@@ -315,6 +332,7 @@ defaultproperties
         CardDescriptionList(4)="speed during zed"
         CardDescriptionList(5)="time by 100%."
         OnActivateCard=ActivateMaximumPayne
+        CardID="SUPER_MAXIMUMPAYNE"
     End Object
     DeckCardObjectList(17)=TurboCard'MaximumPayne'
 
@@ -324,6 +342,7 @@ defaultproperties
         CardDescriptionList(1)="pellet count"
         CardDescriptionList(2)="by 66%."
         OnActivateCard=ActivatePackedShells
+        CardID="SUPER_PACKEDSHELLS"
     End Object
     DeckCardObjectList(18)=TurboCard'PackedShells'
 
@@ -334,6 +353,7 @@ defaultproperties
         CardDescriptionList(2)="receives damage"
         CardDescriptionList(3)="each wave."
         OnActivateCard=ActivateSubstitute
+        CardID="SUPER_SUBSTITUTE"
     End Object
     DeckCardObjectList(19)=TurboCard'NegateDamage'
 
@@ -343,6 +363,7 @@ defaultproperties
         CardDescriptionList(0)="Increases max"
         CardDescriptionList(1)="ammo by 35%."
         OnActivateCard=ActivateDeepestAmmoPockets
+        CardID="SUPER_DEEPESTAMMOPOCKET"
     End Object
     DeckCardObjectList(20)=TurboCard'DeepestAmmoPockets'
 
@@ -352,6 +373,7 @@ defaultproperties
         CardDescriptionList(0)="Increases weapon"
         CardDescriptionList(1)="swap speed by 66%."
         OnActivateCard=ActivateFastHands
+        CardID="SUPER_FASTHANDS"
     End Object
     DeckCardObjectList(21)=TurboCard'FastHands'
 
@@ -365,6 +387,7 @@ defaultproperties
         CardDescriptionList(4)="the killed zed's"
         CardDescriptionList(5)="max health."
         OnActivateCard=ActivateMassDetonation
+        CardID="SUPER_MASSDETONATION"
     End Object
     DeckCardObjectList(22)=TurboCard'MassDetonation'
 
@@ -377,6 +400,7 @@ defaultproperties
         CardDescriptionList(3)="weaker versions"
         CardDescriptionList(4)="of themselves."
         OnActivateCard=ActivateDeEvolution
+        CardID="SUPER_DEEVOLUTION"
     End Object
     DeckCardObjectList(22)=TurboCard'DeEvolution'
 */

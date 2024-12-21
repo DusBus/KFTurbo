@@ -125,7 +125,7 @@ function ActivateDealWithDevil(TurboCardReplicationInfo CGRI)
 function ActivateDistractedDriving(TurboCardReplicationInfo CGRI)
 {
     CGRI.ModifyStalkerMeleeDamage(2.f);
-    CGRI.ModifyStalkerDistraction(1.5f);
+    CGRI.ModifyStalkerDistraction(1.75f);
 }
 
 function ActivateHighSpeedLowDrag(TurboCardReplicationInfo CGRI)
@@ -176,17 +176,17 @@ function ActivateMoreToPlay(TurboCardReplicationInfo CGRI)
 
 function ActivateCollateralDamage(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyExplosiveDamage(1.15f);
+    CGRI.ModifyExplosiveDamage(1.1f);
 
-    CGRI.ModifyFriendlyFireScale(1.08f);
+    CGRI.ModifyFriendlyFireScale(1.05f);
 }
 
 function ActivateHealingAndHurting(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyNonMedicHealPotency(1.15f);
-    CGRI.ModifyMedicHealPotency(1.15f);
+    CGRI.ModifyNonMedicHealPotency(1.1f);
+    CGRI.ModifyMedicHealPotency(1.1f);
 
-    CGRI.ModifyFriendlyFireScale(1.08f);
+    CGRI.ModifyFriendlyFireScale(1.05f);
 }
 
 defaultproperties
@@ -200,6 +200,7 @@ defaultproperties
         CardDescriptionList(3)="trader time is"
         CardDescriptionList(4)="reduced by 20%."
         OnActivateCard=ActivateExtraMoneyTraderTime
+        CardID="PROCON_SHORTTERMREW"
     End Object
     DeckCardObjectList(0)=TurboCard'ExtraMoneyTraderTime'
 
@@ -212,6 +213,7 @@ defaultproperties
         CardDescriptionList(3)="reduces magazine"
         CardDescriptionList(4)="size by 30%."
         OnActivateCard=ActivateFasterReloadSmallerMag
+        CardID="PROCON_SAWEDOFFMAG"
     End Object
     DeckCardObjectList(1)=TurboCard'FasterReloadSmallerMag'
 
@@ -223,6 +225,7 @@ defaultproperties
         CardDescriptionList(2)="but increases wave"
         CardDescriptionList(3)="size by 25%."
         OnActivateCard=ActivateHandSizeWaveSize
+        CardID="PROCON_MOCARDSMOPROB"
     End Object
     DeckCardObjectList(2)=TurboCard'HandSizeWaveSize'
 
@@ -234,6 +237,7 @@ defaultproperties
         CardDescriptionList(2)="but Scrakes take"
         CardDescriptionList(3)="25% more damage."
         OnActivateCard=ActivateScrakeDamUpFleshpoundDamDown
+        CardID="PROCON_FPPLUSSCMINUS"
     End Object
     DeckCardObjectList(3)=TurboCard'ScrakeDamUpFleshpoundDamDown'
 
@@ -244,6 +248,7 @@ defaultproperties
         CardDescriptionList(2)="increases wave"
         CardDescriptionList(3)="speed by 200%."
         OnActivateCard=ActivateBriskPace
+        CardID="PROCON_BRISKPACE"
     End Object
     DeckCardObjectList(4)=TurboCard'BriskPace'
 
@@ -255,6 +260,7 @@ defaultproperties
         CardDescriptionList(3)="off-perk damage"
         CardDescriptionList(4)="by 30%."
         OnActivateCard=ActivateSpecialization
+        CardID="PROCON_SPECIALIZATION"
     End Object
     DeckCardObjectList(5)=TurboCard'Specialization'
 
@@ -266,6 +272,7 @@ defaultproperties
         CardDescriptionList(2)="reduces explosive"
         CardDescriptionList(3)="range by 30%."
         OnActivateCard=ActivatePrecisionExplosives
+        CardID="PROCON_PRECEXPLOSIVES"
     End Object
     DeckCardObjectList(6)=TurboCard'PrecisionExplosives'
 
@@ -277,6 +284,7 @@ defaultproperties
         CardDescriptionList(2)="reduces reload"
         CardDescriptionList(3)="speed by 20%."
         OnActivateCard=ActivateVeryDeepAmmoPockets
+        CardID="PROCON_AWKWARDDEEPAMMO"
     End Object
     DeckCardObjectList(7)=TurboCard'VeryDeepAmmoPockets'
 
@@ -287,6 +295,7 @@ defaultproperties
         CardDescriptionList(1)="by players and"
         CardDescriptionList(2)="zeds by 20%."
         OnActivateCard=ActivateEscalation
+        CardID="PROCON_CONFEXCALATION"
     End Object
     DeckCardObjectList(8)=TurboCard'Escalation'
 
@@ -298,6 +307,7 @@ defaultproperties
         CardDescriptionList(2)="kills by 15% and"
         CardDescriptionList(3)="wave size by 25%."
         OnActivateCard=ActivateSurplus
+        CardID="PROCON_COMPSURPLUS"
     End Object
     DeckCardObjectList(9)=TurboCard'Surplus'
 
@@ -309,6 +319,7 @@ defaultproperties
         CardDescriptionList(2)="and friendly"
         CardDescriptionList(3)="fire damage by 10%."
         OnActivateCard=ActivateDoubleEdgeSword
+        CardID="PROCON_DOUBLEEDGESWORD"
     End Object
     DeckCardObjectList(10)=TurboCard'DoubleEdgeSword'
 
@@ -320,6 +331,7 @@ defaultproperties
         CardDescriptionList(2)="10% but reduces"
         CardDescriptionList(3)="max ammo by 20%."
         OnActivateCard=ActivateHeavyAmmunition
+        CardID="PROCON_HEAVYAMMO"
     End Object
     DeckCardObjectList(11)=TurboCard'HeavyAmmunition'
 
@@ -330,6 +342,7 @@ defaultproperties
         CardDescriptionList(1)="by 10% but reduces"
         CardDescriptionList(2)="reload speed by 20%."
         OnActivateCard=ActivateMagazineOverclock
+        CardID="PROCON_MAGOVERCLOCK"
     End Object
     DeckCardObjectList(12)=TurboCard'MagazineOverclock'
 
@@ -340,6 +353,7 @@ defaultproperties
         CardDescriptionList(1)="by 30% but reduces"
         CardDescriptionList(2)="firerate by 10%."
         OnActivateCard=ActivatePrecisionFire
+        CardID="PROCON_PRECSHOOTING"
     End Object
     DeckCardObjectList(13)=TurboCard'PrecisionFire'
 
@@ -351,6 +365,7 @@ defaultproperties
         CardDescriptionList(3)="taken from"
         CardDescriptionList(4)="zeds by 10%."
         OnActivateCard=ActivateThinSkinned
+        CardID="PROCON_THINSKINNED"
     End Object
     DeckCardObjectList(14)=TurboCard'ThinSkinned'
 
@@ -364,6 +379,7 @@ defaultproperties
         CardDescriptionList(4)="increases trader"
         CardDescriptionList(5)="prices by 15%."
         OnActivateCard=ActivatePremiumWeapons
+        CardID="PROCON_PREMIUMWEAPONS"
     End Object
     DeckCardObjectList(15)=TurboCard'PremiumWeapons'
 
@@ -374,6 +390,7 @@ defaultproperties
         CardDescriptionList(2)="10% and player"
         CardDescriptionList(3)="move speed by 10%."
         OnActivateCard=ActivateTurtleShell
+        CardID="PROCON_TURTLESHELL"
     End Object
     DeckCardObjectList(16)=TurboCard'TurtleShell'
 
@@ -385,6 +402,7 @@ defaultproperties
         CardDescriptionList(2)="and trader"
         CardDescriptionList(3)="prices by 50%."
         OnActivateCard=ActivatePaidInBlood
+        CardID="PROCON_PAIDINBLOOD"
     End Object
     DeckCardObjectList(17)=TurboCard'PaidInBlood'
     
@@ -398,6 +416,7 @@ defaultproperties
         CardDescriptionList(4)="a random Evil"
         CardDescriptionList(5)="card as well."
         OnActivateCard=ActivateDealWithDevil
+        CardID="PROCON_DEATHWITHDEVIL"
     End Object
     DeckCardObjectList(18)=TurboCard'DealWithDevil'
     
@@ -409,6 +428,7 @@ defaultproperties
         CardDescriptionList(2)="and deal 100%"
         CardDescriptionList(3)="more damage."
         OnActivateCard=ActivateDistractedDriving
+        CardID="PROCON_DISTDRIVING"
     End Object
     DeckCardObjectList(19)=TurboCard'DistractedDriving'
     
@@ -421,6 +441,7 @@ defaultproperties
         CardDescriptionList(3)="player movement"
         CardDescriptionList(4)="speed by 10%."
         OnActivateCard=ActivateHighSpeedLowDrag
+        CardID="PROCON_HIGHSPEEDLOWDRAG"
     End Object
     DeckCardObjectList(20)=TurboCard'HighSpeedLowDrag'
     
@@ -435,6 +456,7 @@ defaultproperties
         CardDescriptionList(5)="for non Field"
         CardDescriptionList(6)="Medics by 50%."
         OnActivateCard=ActivateUnlicensedPractitioner
+        CardID="PROCON_UNLICPRACTITIONER"
     End Object
     DeckCardObjectList(21)=TurboCard'UnlicensedPractitioner'
     
@@ -447,6 +469,7 @@ defaultproperties
         CardDescriptionList(3)="instantly when"
         CardDescriptionList(4)="taking damage."
         OnActivateCard=ActivateRussianRoulette
+        CardID="PROCON_RUSSIANROULLETTE"
     End Object
     DeckCardObjectList(22)=TurboCard'RussianRoulette'
     
@@ -459,6 +482,7 @@ defaultproperties
         CardDescriptionList(3)="heal charge"
         CardDescriptionList(4)="rate by 35%."
         OnActivateCard=ActivateConcentratedHeal
+        CardID="PROCON_CONCENTRATEHEALING"
     End Object
     DeckCardObjectList(23)=TurboCard'ConcentratedHeal'
     
@@ -470,6 +494,7 @@ defaultproperties
         CardDescriptionList(2)="reduces grenade"
         CardDescriptionList(3)="max ammo by 30%."
         OnActivateCard=ActivateDroppingBallast
+        CardID="PROCON_DROPBALLAST"
     End Object
     DeckCardObjectList(24)=TurboCard'DroppingBallast'
     
@@ -482,6 +507,7 @@ defaultproperties
         CardDescriptionList(3)="shotgun recoil and"
         CardDescriptionList(4)="kickback by 20%."
         OnActivateCard=ActivateShotgunsMoreKick
+        CardID="PROCON_MOREKICK"
     End Object
     DeckCardObjectList(25)=TurboCard'ShotgunsMoreKick'
     
@@ -494,16 +520,18 @@ defaultproperties
         CardDescriptionList(3)="10% but wave size is"
         CardDescriptionList(4)="increased by 25%."
         OnActivateCard=ActivateMoreToPlay
+        CardID="PROCON_MOREGAMETOPLAY"
     End Object
     DeckCardObjectList(26)=TurboCard'MoreToPlay'
     
     Begin Object Name=CollateralDamage Class=TurboCard_ProCon
         CardName(0)="Collateral Damage"
         CardDescriptionList(0)="Increases explosive"
-        CardDescriptionList(1)="damage by 15% but"
+        CardDescriptionList(1)="damage by 10% but"
         CardDescriptionList(2)="increases friendly"
-        CardDescriptionList(3)="fire damage by 8%."
+        CardDescriptionList(3)="fire damage by 5%."
         OnActivateCard=ActivateCollateralDamage
+        CardID="PROCON_COLLATDAMAGE"
     End Object
     DeckCardObjectList(27)=TurboCard'CollateralDamage'
     
@@ -511,10 +539,11 @@ defaultproperties
         CardName(0)="More Healing"
         CardName(1)="More Hurting"
         CardDescriptionList(0)="Increases heal"
-        CardDescriptionList(1)="potency by 15% but"
+        CardDescriptionList(1)="potency by 10% but"
         CardDescriptionList(2)="increases friendly"
-        CardDescriptionList(3)="fire damage by 8%."
+        CardDescriptionList(3)="fire damage by 5%."
         OnActivateCard=ActivateHealingAndHurting
+        CardID="PROCON_HEALINGANDHURTING"
     End Object
     DeckCardObjectList(28)=TurboCard'MoreHealingAndHurting'
 }

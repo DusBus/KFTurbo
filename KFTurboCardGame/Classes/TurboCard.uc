@@ -11,6 +11,7 @@ var int CardIndex;
 
 var localized array<string> CardName;
 var localized array<string> CardDescriptionList;
+var string CardID; //String that uniquely identifies this card. Format should be: <deck id> <compressed name>
 var Texture CardIcon;
 var bool bCanEverRepeat;
 

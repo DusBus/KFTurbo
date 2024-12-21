@@ -31,7 +31,7 @@ function ActivateRecession(TurboCardReplicationInfo CGRI)
 
 function ActivateFriendlyFire(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyFriendlyFireScale(1.15f);
+    CGRI.ModifyFriendlyFireScale(1.1f);
 }
 
 function ActivateSuperSiren(TurboCardReplicationInfo CGRI)
@@ -179,6 +179,7 @@ defaultproperties
         CardName(0)="Hyperbloats"
         CardDescriptionList(0)="Increases Bloat"
         CardDescriptionList(1)="speed by 300%."
+        CardID="EVIL_HYPBLOAT"
         OnActivateCard=ActivateHyperbloats
     End Object
     DeckCardObjectList(0)=TurboCard'Hyperbloats'
@@ -188,6 +189,7 @@ defaultproperties
         CardName(1)="Scrakes"
         CardDescriptionList(0)="All Scrakes"
         CardDescriptionList(1)="spawn raged."
+        CardID="EVIL_BELLIGSC"
         OnActivateCard=ActivateBelligerentScrakes
     End Object
     DeckCardObjectList(1)=TurboCard'BelligerentScrakes'
@@ -198,6 +200,7 @@ defaultproperties
         CardDescriptionList(0)="Fleshpounds rage"
         CardDescriptionList(1)="when receiving"
         CardDescriptionList(2)="any damage."
+        CardID="EVIL_HAIRTRIGFP"
         OnActivateCard=ActivateHairtriggerFleshpounds
     End Object
     DeckCardObjectList(2)=TurboCard'HairtriggerFleshpounds'
@@ -208,6 +211,7 @@ defaultproperties
         CardDescriptionList(0)="Husk Fireball"
         CardDescriptionList(1)="refire time"
         CardDescriptionList(2)="reduced by 90%."
+        CardID="EVIL_OVERCLOCKHUSK"
         OnActivateCard=ActivateOverclockedHusks
     End Object
     DeckCardObjectList(3)=TurboCard'OverclockedHusks'
@@ -218,6 +222,7 @@ defaultproperties
         CardDescriptionList(0)="All prices in"
         CardDescriptionList(1)="trader cost"
         CardDescriptionList(2)="150% more."
+        CardID="EVIL_COMPLETEREC"
         OnActivateCard=ActivateRecession
     End Object
     DeckCardObjectList(4)=TurboCard'Recession'
@@ -226,7 +231,8 @@ defaultproperties
         CardName(0)="Friendly"
         CardName(1)="Fire"
         CardDescriptionList(0)="Increases damage"
-        CardDescriptionList(1)="to allies by 15%."
+        CardDescriptionList(1)="to allies by 10%."
+        CardID="EVIL_FRIENDLYFIRE"
         OnActivateCard=ActivateFriendlyFire
     End Object
     DeckCardObjectList(5)=TurboCard'FriendlyFire'
@@ -237,6 +243,7 @@ defaultproperties
         CardDescriptionList(1)="scream damage by"
         CardDescriptionList(2)="200% and scream"
         CardDescriptionList(3)="range by 100%."
+        CardID="EVIL_FRIENDLYFIRE"
         OnActivateCard=ActivateSuperSiren
     End Object
     DeckCardObjectList(6)=TurboCard'SuperSiren'
@@ -246,6 +253,7 @@ defaultproperties
         CardDescriptionList(0)="All players are"
         CardDescriptionList(1)="locked to their"
         CardDescriptionList(2)="current perk."
+        CardID="EVIL_NOPERKSWITCH"
         OnActivateCard=ActivateDisablePerkSwitching
     End Object
     DeckCardObjectList(7)=TurboCard'DisablePerkSwitching'
@@ -257,15 +265,17 @@ defaultproperties
         CardDescriptionList(1)="a player holds,"
         CardDescriptionList(2)="the slower"
         CardDescriptionList(3)="they become."
+        CardID="EVIL_GREEDBEGETSLOW"
         OnActivateCard=ActivateCashSlowsPlayers
     End Object
     DeckCardObjectList(8)=TurboCard'CashSlowsPlayers'
     
     Begin Object Name=SlipperyFloor Class=TurboCard_Evil
         CardName(0)="Slip'n'Slide"
-        CardDescriptionList(0)="Players are"
-        CardDescriptionList(1)="now very"
-        CardDescriptionList(2)="slippery."
+        CardDescriptionList(0)="Players and"
+        CardDescriptionList(1)="zeds are now"
+        CardDescriptionList(2)="very slippery."
+        CardID="EVIL_SLIPPERY"
         OnActivateCard=ActivateSlipperyFloor
     End Object
     DeckCardObjectList(9)=TurboCard'SlipperyFloor'
@@ -278,6 +288,7 @@ defaultproperties
         CardDescriptionList(3)="unless they"
         CardDescriptionList(4)="hold a melee"
         CardDescriptionList(5)="weapon."
+        CardID="EVIL_FREEZETAG"
         OnActivateCard=ActivateFreezeTag
     End Object
     DeckCardObjectList(10)=TurboCard'FreezeTag'
@@ -287,6 +298,7 @@ defaultproperties
         CardDescriptionList(0)="If any player"
         CardDescriptionList(1)="dies, the"
         CardDescriptionList(2)="squad dies."
+        CardID="EVIL_SUDDENDEATH"
         OnActivateCard=ActivateSuddenDeath
     End Object
     DeckCardObjectList(11)=TurboCard'SuddenDeath'
@@ -300,6 +312,7 @@ defaultproperties
         CardDescriptionList(3)="2 health every"
         CardDescriptionList(4)="second for"
         CardDescriptionList(5)="5 seconds."
+        CardID="EVIL_BLEEDING"
         OnActivateCard=ActivateBleedingPlayers
     End Object
     DeckCardObjectList(12)=TurboCard'BleedingPlayers'
@@ -311,6 +324,7 @@ defaultproperties
         CardDescriptionList(1)="100% more damage"
         CardDescriptionList(2)="and knockback is"
         CardDescriptionList(3)="increased by 900%."
+        CardID="EVIL_LETHALSPEC"
         OnActivateCard=ActivateLightWeightPlayers
     End Object
     DeckCardObjectList(13)=TurboCard'LightWeightPlayers'
@@ -322,6 +336,7 @@ defaultproperties
         CardDescriptionList(1)="less than 75%"
         CardDescriptionList(2)="max health move"
         CardDescriptionList(3)="at 75% speed."
+        CardID="EVIL_POORLYOILED"
         OnActivateCard=ActivatePoorlyOiledMachine
     End Object
     DeckCardObjectList(14)=TurboCard'PoorlyOiledMachine'
@@ -332,6 +347,7 @@ defaultproperties
         CardDescriptionList(1)="carry weight"
         CardDescriptionList(2)="by 2 for all"
         CardDescriptionList(3)="players."
+        CardID="EVIL_NOODLEARMS"
         OnActivateCard=ActivateNoodleArms
     End Object
     DeckCardObjectList(15)=TurboCard'NoodleArms'
@@ -342,6 +358,7 @@ defaultproperties
         CardDescriptionList(1)="to occur in"
         CardDescriptionList(2)="sight of"
         CardDescriptionList(3)="players."
+        CardID="EVIL_PLAINSIGHT"
         OnActivateCard=ActivateInPlainSight
     End Object
     DeckCardObjectList(16)=TurboCard'InPlainSight'
@@ -351,6 +368,7 @@ defaultproperties
         CardDescriptionList(0)="Reduces reload"
         CardDescriptionList(1)="speed for all"
         CardDescriptionList(2)="players by 25%."
+        CardID="EVIL_HANDCRAMPS"
         OnActivateCard=ActivateHandCramps
     End Object
     DeckCardObjectList(17)=TurboCard'HandCramps'
@@ -359,6 +377,7 @@ defaultproperties
         CardName(0)="Doorless"
         CardDescriptionList(0)="Removes all"
         CardDescriptionList(1)="doors."
+        CardID="EVIL_DOORLESS"
         OnActivateCard=ActivateDoorless
     End Object
     DeckCardObjectList(18)=TurboCard'Doorless'
@@ -367,6 +386,7 @@ defaultproperties
         CardName(0)="Smaller Blind"
         CardDescriptionList(0)="Reduces card"
         CardDescriptionList(1)="selection by 1."
+        CardID="EVIL_SMALLBLIND"
         OnActivateCard=ActivateSmallerBlind
     End Object
     DeckCardObjectList(19)=TurboCard'SmallerBlind'
@@ -380,6 +400,7 @@ defaultproperties
         CardDescriptionList(3)="size. All players"
         CardDescriptionList(4)="die when time"
         CardDescriptionList(5)="runs outs."
+        CardID="EVIL_BORROWEDTIME"
         OnActivateCard=ActivateBorrowedTime
     End Object
     DeckCardObjectList(20)=TurboCard'BorrowedTime'
@@ -390,6 +411,7 @@ defaultproperties
         CardDescriptionList(1)="of thier dosh"
         CardDescriptionList(2)="at the end of"
         CardDescriptionList(3)="trader time."
+        CardID="EVIL_BANKRUN"
         OnActivateCard=ActivateBankRun
     End Object
     DeckCardObjectList(21)=TurboCard'BankRun'
@@ -400,12 +422,14 @@ defaultproperties
         CardDescriptionList(0)="Players take"
         CardDescriptionList(1)="damage when"
         CardDescriptionList(2)="standing still."
+        CardID="EVIL_NOREST"
         OnActivateCard=ActivateNoRestForTheWicked
     End Object
     DeckCardObjectList(22)=TurboCard'NoRestForTheWicked'
     
     Begin Object Name=CurseOfRa Class=TurboCard_Evil_Ra
         OnActivateCard=ActivateCurseOfRa
+        CardID="EVIL_CURSEOFRA"
     End Object
     DeckCardObjectList(23)=TurboCard'CurseOfRa'
     
@@ -413,6 +437,7 @@ defaultproperties
         CardName(0)="Garbage Day"
         CardDescriptionList(0)="Trash zeds have"
         CardDescriptionList(1)="50% more health."
+        CardID="EVIL_GARBAGEDAY"
         OnActivateCard=ActivateGarbageDay
     End Object
     DeckCardObjectList(24)=TurboCard'GarbageDay'
@@ -422,6 +447,7 @@ defaultproperties
         CardDescriptionList(0)="Syringes are"
         CardDescriptionList(1)="removed from"
         CardDescriptionList(2)="all players."
+        CardID="EVIL_NOJUNKIES"
         OnActivateCard=ActivateNoJunkies
     End Object
     DeckCardObjectList(25)=TurboCard'NoJunkies'
@@ -434,6 +460,7 @@ defaultproperties
         CardDescriptionList(2)="chosen and takes"
         CardDescriptionList(3)="200% more damage"
         CardDescriptionList(4)="for a wave."
+        CardID="EVIL_MARKEDDEATH"
         OnActivateCard=ActivateMarkedForDeath
     End Object
     DeckCardObjectList(26)=TurboCard'MarkedForDeath'
@@ -443,6 +470,7 @@ defaultproperties
         CardName(1)="Explosives"
         CardDescriptionList(0)="Reduces explosive"
         CardDescriptionList(1)="range by 66%."
+        CardID="EVIL_RESTEXPLOSIVES"
         OnActivateCard=ActivateRestrictedExplosives
     End Object
     DeckCardObjectList(27)=TurboCard'RestrictedExplosives'
@@ -454,6 +482,7 @@ defaultproperties
         CardDescriptionList(1)="5% chance to be"
         CardDescriptionList(2)="replaced with"
         CardDescriptionList(3)="a Scrake instead."
+        CardID="EVIL_OOPSALLSC"
         OnActivateCard=ActivateOopsAllScrakes
     End Object
     DeckCardObjectList(28)=TurboCard'OopsAllScrakes'
@@ -464,6 +493,7 @@ defaultproperties
         CardDescriptionList(1)="location randomly"
         CardDescriptionList(2)="changes throughout"
         CardDescriptionList(3)="the wave."
+        CardID="EVIL_MIXEDSIGNALS"
         OnActivateCard=ActivateMixedSignals
     End Object
     DeckCardObjectList(29)=TurboCard'MixedSignals'
@@ -473,6 +503,7 @@ defaultproperties
         CardDescriptionList(0)="Increases maximum"
         CardDescriptionList(1)="alive zeds at"
         CardDescriptionList(2)="once by 40%."
+        CardID="EVIL_HITHROUGHPUT"
         OnActivateCard=ActivateHighThroughput
     End Object
     DeckCardObjectList(30)=TurboCard'HighThroughput'
