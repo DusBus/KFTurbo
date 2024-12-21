@@ -10,6 +10,7 @@ defaultproperties
      maxVerticalRecoilAngle=1250
      maxHorizontalRecoilAngle=250
      DamageType=Class'KFTurbo.W_Dual44_DT'
+     AmmoClass=Class'W_Magnum44_Ammo'
      DamageMin=100
      DamageMax=120
      FireRate=0.075000
