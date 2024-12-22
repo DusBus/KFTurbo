@@ -18,18 +18,6 @@ defaultproperties
 	End Object
 	RegularSquad(11)=TurboMonsterSquad'MidGameSquad0'
 
-	Begin Object Class=TurboMonsterSquad Name=MidGameSquad1
-          Squad(0)=(Monster=Husk,Count=1)
-          Squad(1)=(Monster=Crawler,Count=2)
-	End Object
-	RegularSquad(12)=TurboMonsterSquad'MidGameSquad1'
-
-	Begin Object Class=TurboMonsterSquad Name=MidGameSquad2
-          Squad(0)=(Monster=Siren,Count=1)
-          Squad(1)=(Monster=Stalker,Count=2)
-	End Object
-	RegularSquad(13)=TurboMonsterSquad'MidGameSquad2'
-
      //MIXINS
 	Begin Object Class=TurboMonsterSquad Name=MidGameMixInSquad0
           Squad(0)=(Monster=Scrake,Count=2)

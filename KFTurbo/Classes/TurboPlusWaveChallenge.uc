@@ -16,18 +16,18 @@ defaultproperties
 		Squad(0)=(Monster=Siren,Count=1)
 		Squad(1)=(Monster=Gorefast,Count=1)
 	End Object
-	RegularSquad(17)=TurboMonsterSquad'ChallengeSquad0'
+	RegularSquad(14)=TurboMonsterSquad'ChallengeSquad0'
 
 	Begin Object Class=TurboMonsterSquad Name=ChallengeSquad1
 		Squad(0)=(Monster=Husk,Count=1)
 		Squad(1)=(Monster=Gorefast,Count=1)
 	End Object
-	RegularSquad(18)=TurboMonsterSquad'ChallengeSquad1'
+	RegularSquad(15)=TurboMonsterSquad'ChallengeSquad1'
 
 	Begin Object Class=TurboMonsterSquad Name=ChallengeSquad2
 		Squad(0)=(Monster=Bloat,Count=1)
 	End Object
-	RegularSquad(19)=TurboMonsterSquad'ChallengeSquad2'
+	RegularSquad(16)=TurboMonsterSquad'ChallengeSquad2'
 
     //MIXINS
 	Begin Object Class=TurboMonsterSquad Name=ChallengeMixInSquad0

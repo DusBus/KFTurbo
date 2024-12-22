@@ -17,7 +17,7 @@ defaultproperties
           TotalMonsters=65
 	     WaveDifficulty=2.40f
 	     RegularSequenceSize=20
-	     NextSquadSpawnTime=0.2f
+	     NextSquadSpawnTime=0.19f
 	End Object
 	WaveList(1)=TurboMonsterWave'Wave2'
 
@@ -27,7 +27,7 @@ defaultproperties
           TotalMonsters=70
           WaveDifficulty=2.45f
 	     RegularSequenceSize=20
-	     NextSquadSpawnTime=0.15f
+	     NextSquadSpawnTime=0.18f
 	End Object
 	WaveList(2)=TurboMonsterWave'Wave3'
 
@@ -36,7 +36,7 @@ defaultproperties
           TotalMonsters=70
           WaveDifficulty=2.55f
 	     RegularSequenceSize=19
-	     NextSquadSpawnTime=0.15f
+	     NextSquadSpawnTime=0.17f
 	End Object
 	WaveList(3)=TurboMonsterWave'Wave4'
 
@@ -46,7 +46,7 @@ defaultproperties
           TotalMonsters=75
 	     WaveDifficulty=2.6f
 	     RegularSequenceSize=19
-	     NextSquadSpawnTime=0.1f
+	     NextSquadSpawnTime=0.16f
      End Object
 	WaveList(4)=TurboMonsterWave'Wave5'
      
@@ -55,7 +55,7 @@ defaultproperties
           TotalMonsters=75
 	     WaveDifficulty=2.65f
 	     RegularSequenceSize=19
-	     NextSquadSpawnTime=0.1f
+	     NextSquadSpawnTime=0.15f
 	End Object
 	WaveList(5)=TurboMonsterWave'Wave6'
 
@@ -64,7 +64,7 @@ defaultproperties
           TotalMonsters=80
 	     RegularSequenceSize=18
 	     WaveDifficulty=2.75f
-	     NextSquadSpawnTime=0.1f
+	     NextSquadSpawnTime=0.15f
           BeatSize=3
 	End Object
 	WaveList(6)=TurboMonsterWave'Wave7'
