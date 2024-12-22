@@ -740,7 +740,9 @@ simulated function TickTraderFadeIn(float DeltaTime)
 
 simulated function DrawTraderWave(Canvas C, Vector2D Center)
 {
-	local String TraderTime;
+	local string TraderTime;
+	local int MinutesRemaining;
+	local bool bLessThanMinuteRemains;
 	local float SecondTime, MillisecondTime;
 	local float TextSizeX, TextSizeY, TextScale;
 
@@ -752,22 +754,20 @@ simulated function DrawTraderWave(Canvas C, Vector2D Center)
 	C.SetDrawColor(255, 255, 255);
 	C.DrawColor.A = byte(TraderFadeRatio * 255.f);
 
-	if (WaveTimeSecondsRemaining >= 60.f)
+	MinutesRemaining = int(WaveTimeRemaining) / 60;
+	bLessThanMinuteRemains = MinutesRemaining <= 0;
+
+	if (!bLessThanMinuteRemains || WaveTimeRemaining > 10.f)
 	{
-		TraderTime = "01:" $ FillStringWithZeroes(string(Max(WaveTimeSecondsRemaining - 60, 0)), 2);
-	}
-	else if ( WaveTimeSecondsRemaining > 10.f)
-	{
-		TraderTime = "00:" $ FillStringWithZeroes(string(Max(WaveTimeSecondsRemaining,0)), 2);
+		SecondTime = Max(int(WaveTimeRemaining) - (MinutesRemaining * 60), 0);
+		TraderTime = FillStringWithZeroes(MinutesRemaining, 2) $ ":" $ FillStringWithZeroes(int(SecondTime), 2);
 	}
 	else
 	{
 		SecondTime = Max(int(WaveTimeRemaining), 0);
 		MillisecondTime = WaveTimeRemaining - SecondTime;
 		MillisecondTime = MillisecondTime * 100.f;
-
-		TraderTime = "0"$int(SecondTime)$":";
-		TraderTime = TraderTime $ FillStringWithZeroes(string(Max(int(MillisecondTime), 0)), 2);
+		TraderTime = FillStringWithZeroes(int(SecondTime), 2) $ ":" $ FillStringWithZeroes(string(Max(int(MillisecondTime), 0)), 2);
 	}
 	
 	C.FontScaleX = 1.f;
