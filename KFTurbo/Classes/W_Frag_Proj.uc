@@ -165,7 +165,7 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 			continue;
 		}
 		
-		HitPawn.TakeDamage(DamageScale * SharpnelDamageAdjustment, Instigator, Location, HitMomentum, DamageType);
+		HitPawn.TakeDamage(DamageScale * SharpnelDamageAdjustment, Instigator, Location, vect(0,0,0), DamageType);
 		
 		if (HitPawn != none && HitPawn.Health <= 0 )
 		{
