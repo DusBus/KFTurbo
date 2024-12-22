@@ -1,5 +1,7 @@
 class W_Frag_Proj extends KFMod.Nade;
 
+var float SharpnelDamageAdjustment;
+
 function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
 {
     class'WeaponHelper'.static.GrenadeTakeDamage(self, Damage, InstigatedBy, Hitlocation, Momentum, DamageType, HitIndex);
@@ -61,24 +63,21 @@ simulated function float GetDamageMultiplier(Pawn HitPawn)
 
 simulated function HurtRadius( float DamageAmount, float DamageRadius, class<DamageType> DamageType, float Momentum, vector HitLocation )
 {
-	local actor HitActor;
+	local Actor HitActor;
+	local Pawn HitPawn;
 	local float DamageScale, Distance;
 	local vector Direction, HitMomentum;
 
-	local Pawn P;
-
-	local array<Pawn> CheckedPawns;
-	local int i;
-	local bool bAlreadyChecked;
+	local bool bHasInstigator;
 
 	local int NumKilled;
-
 
 	if ( bHurtEntry )
 	{
 		return;
 	}
 
+	bHasInstigator = Instigator != None && Instigator.Health > 0;
 	bHurtEntry = true;
 
 	foreach CollidingActors (class 'Actor', HitActor, DamageRadius, HitLocation)
@@ -88,7 +87,7 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 			continue;
 		}
 
-		if((Instigator == None || Instigator.Health <= 0) && KFPawn(HitActor) != None)
+		if (!bHasInstigator && KFPawn(HitActor) != None)
 		{
 			continue;
 		}
@@ -97,54 +96,32 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 		Distance = class'WeaponHelper'.static.GetDistanceToClosestPointOnActor(Location, HitActor);
 		DamageScale = 1.f - FMax(0.f, Distance / DamageRadius);
 
-		if ( Instigator == None || Instigator.Controller == None )
+		if (Instigator == None || Instigator.Controller == None)
 		{
 			HitActor.SetDelayedDamageInstigatorController( InstigatorController );
 		}
 
-		P = Pawn(HitActor);
+		HitPawn = Pawn(HitActor);
+
+		if (HitPawn != None)
+		{
+			if (HitPawn.Health <= 0)
+			{
+				continue;
+			}
+
+			DamageScale *= GetDamageMultiplier(HitPawn);
+		}
 
 		if (DamageScale <= 0.f)
 		{
 			continue;
 		}
 
-		if( P != none )
-		{
-			if (P.Health <= 0)
-			{
-				continue;
-			}
-
-			bAlreadyChecked = false;
-			for (i = 0; i < CheckedPawns.Length; i++)
-			{
-				if (CheckedPawns[i] == P)
-				{
-					bAlreadyChecked = true;
-					break;
-				}
-			}
-
-			if (bAlreadyChecked)
-			{
-				continue;
-			}
-
-			CheckedPawns[CheckedPawns.Length] = P;
-
-			DamageScale *= GetDamageMultiplier(P);
-
-			if (DamageScale <= 0.f)
-			{
-				continue;
-			}
-		}
-
 		HitMomentum = DamageScale * Momentum * Direction;
 		HitActor.TakeDamage(DamageScale * DamageAmount, Instigator, Location, HitMomentum, DamageType);
 		
-		if( P != none && P.Health <= 0 )
+		if (HitPawn != none && HitPawn.Health <= 0)
 		{
 			NumKilled++;
 		}
@@ -152,6 +129,47 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 		if (Vehicle(HitActor) != None && Vehicle(HitActor).Health > 0)
 		{
 			Vehicle(HitActor).DriverRadiusDamage(DamageAmount, DamageRadius, InstigatorController, DamageType, Momentum, HitLocation);
+		}
+	}
+	
+	foreach CollidingActors (class'Pawn', HitPawn, DamageRadius * 0.5f, HitLocation)
+	{
+		if (HitPawn.Role < ROLE_Authority)
+		{
+			continue;
+		}
+
+		if (!bHasInstigator && KFPawn(HitPawn) != None)
+		{
+			continue;
+		}
+
+		Direction = Normal(HitPawn.Location - HitLocation);
+		Distance = class'WeaponHelper'.static.GetDistanceToClosestPointOnActor(Location, HitPawn);
+		DamageScale = 1.f - FMax(0.f, Distance / DamageRadius);
+
+		if (Instigator == None || Instigator.Controller == None)
+		{
+			HitPawn.SetDelayedDamageInstigatorController( InstigatorController );
+		}
+
+		if (HitPawn.Health <= 0)
+		{
+			continue;
+		}
+
+		DamageScale *= GetDamageMultiplier(HitPawn);
+
+		if (DamageScale <= 0.f)
+		{
+			continue;
+		}
+		
+		HitPawn.TakeDamage(DamageScale * SharpnelDamageAdjustment, Instigator, Location, HitMomentum, DamageType);
+		
+		if (HitPawn != none && HitPawn.Health <= 0 )
+		{
+			NumKilled++;
 		}
 	}
 
@@ -179,4 +197,6 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 defaultproperties
 {
 	ShrapnelClass=class'W_Frag_Proj_Shrapnel'
+	Damage=300.000000
+	SharpnelDamageAdjustment=125.000000
 }
