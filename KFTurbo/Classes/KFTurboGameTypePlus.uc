@@ -11,7 +11,7 @@ var float WaveNextSquadSpawnTime;
 
 // Constants for initial game setup
 const INITIAL_CASH = 42069;
-const SPAWN_TIME = 0.01f;
+const MIN_SPAWN_TIME = 0.01f;
 const WAVE_COUNTDOWN = 60;
 const STD_MAX_ZOMBIES = 48;
 const FAKED_P_HEALTH = 0; // Currently not being used but maybe in the future? Force to 6p?
@@ -28,7 +28,7 @@ function PreBeginPlay()
     {
         if (ZV != None)
         {
-            ZV.CanRespawnTime = FMin(ZV.CanRespawnTime, SPAWN_TIME);
+            ZV.CanRespawnTime = FMin(ZV.CanRespawnTime, MIN_SPAWN_TIME);
         }
     }
 
@@ -59,12 +59,12 @@ function PostBeginPlay()
     }
 
     // Set wave spawn period
-    KFLR.WaveSpawnPeriod = SPAWN_TIME;
+    KFLR.WaveSpawnPeriod = MIN_SPAWN_TIME;
 
     StartingCash = INITIAL_CASH;
     MinRespawnCash = INITIAL_CASH;
     StandardMaxZombiesOnce = STD_MAX_ZOMBIES;
-    WaveNextSquadSpawnTime = SPAWN_TIME;
+    WaveNextSquadSpawnTime = MIN_SPAWN_TIME;
 }
 
 event InitGame( string Options, out string Error )
@@ -91,6 +91,12 @@ State MatchInProgress
     
     function float CalcNextSquadSpawnTime()
     {
+        WaveNextSquadSpawnTime = TurboMonsterCollection.GetNextSquadSpawnTime(WaveNum, NumPlayers + NumBots);
+        if (WaveNextSquadSpawnTime < MIN_SPAWN_TIME)
+        {
+            WaveNextSquadSpawnTime = MIN_SPAWN_TIME;
+        }
+
         return WaveNextSquadSpawnTime / WaveSpawnRateModifier;
     }
 
@@ -175,10 +181,10 @@ function SetupWave()
     MaxMonsters = TurboMonsterCollection.GetWaveMaxMonsters(WaveNum, GameDifficulty, NumPlayers + NumBots);
     TotalMaxMonsters = TurboMonsterCollection.GetWaveTotalMonsters(WaveNum, GameDifficulty, NumPlayers + NumBots);
 
-    WaveNextSquadSpawnTime = TurboMonsterCollection.GetNextSquadSpawnTime(WaveNum);
-    if (WaveNextSquadSpawnTime < SPAWN_TIME)
+    WaveNextSquadSpawnTime = TurboMonsterCollection.GetNextSquadSpawnTime(WaveNum, NumPlayers + NumBots);
+    if (WaveNextSquadSpawnTime < MIN_SPAWN_TIME)
     {
-        WaveNextSquadSpawnTime = SPAWN_TIME;
+        WaveNextSquadSpawnTime = MIN_SPAWN_TIME;
     }
 
     KFGameReplicationInfo(Level.Game.GameReplicationInfo).MaxMonsters = TotalMaxMonsters;
@@ -218,6 +224,9 @@ function BuildNextSquad()
     {
         return;
     }
+
+    //Update this each time a squad is set so that it scales as players die.
+    MaxMonsters = TurboMonsterCollection.GetWaveMaxMonsters(WaveNum, GameDifficulty, NumPlayers + NumBots);
 
     NextSpawnSquad = Squad.MonsterList;
     CurrentSquad = Squad;

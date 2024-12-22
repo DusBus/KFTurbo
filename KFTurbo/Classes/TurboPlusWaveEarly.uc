@@ -5,15 +5,15 @@ static final function float GetPlayerCountMaxMonstersModifier(int PlayerCount)
 	switch (PlayerCount)
 	{
 		case 1:
-			return 0.75f;
+			return 0.4f;
 		case 2:
-			return 0.8f;
+			return 0.55f;
 		case 3:
-			return 0.85f;
+			return 0.7f;
 		case 4:
-			return 0.9f;
+			return 0.8f;
 		case 5:
-			return 0.95f;
+			return 0.9f;
 		case 6:
 			return 1.f;
 	}
@@ -26,16 +26,42 @@ function int GetMaxMonsters(int PlayerCount)
 	return Round(float(MaxMonsters) * GetPlayerCountMaxMonstersModifier(PlayerCount));
 }
 
+static final function float GetPlayerNextSquadSpawnTimeModifier(int PlayerCount)
+{
+	switch (PlayerCount)
+	{
+		case 1:
+			return 16.f;
+		case 2:
+			return 8.f;
+		case 3:
+			return 4.f;
+		case 4:
+			return 2.f;
+		case 5:
+			return 1.5f;
+		case 6:
+			return 1.f;
+	}
+
+	return 1.f;
+}
+
+function float GetNextSquadSpawnTime(int PlayerCount)
+{
+	return NextSquadSpawnTime * GetPlayerNextSquadSpawnTimeModifier(PlayerCount);
+}
+
 defaultproperties
 {
 	MaxMonsters=45
 	TotalMonsters=40
 	WaveDifficulty=2.35f
-	RegularSequenceSize=13
-	MinMixInSquadCount=2
-	MaxMixInSquadCount=2
+	RegularSequenceSize=20
+	MinMixInSquadCount=4
+	MaxMixInSquadCount=4
 	BeatSize=2
-	NextSquadSpawnTime=1.5f
+	NextSquadSpawnTime=0.f
 
 	//REGULARS
 	Begin Object Class=TurboMonsterSquad Name=EarlySquad0
@@ -91,6 +117,18 @@ defaultproperties
 		Squad(1)=(Monster=Clot,Count=2)
 	End Object
 	RegularSquad(8)=TurboMonsterSquad'EarlySquad8'
+
+	Begin Object Class=TurboMonsterSquad Name=EarlySquad9
+		Squad(0)=(Monster=Gorefast,Count=2)
+		Squad(1)=(Monster=Stalker,Count=2)
+	End Object
+	RegularSquad(9)=TurboMonsterSquad'EarlySquad9'
+
+	Begin Object Class=TurboMonsterSquad Name=EarlySquad10
+		Squad(0)=(Monster=Gorefast,Count=2)
+		Squad(1)=(Monster=Clot,Count=2)
+	End Object
+	RegularSquad(10)=TurboMonsterSquad'EarlySquad10'
 
 	//MIXINS
 	Begin Object Class=TurboMonsterSquad Name=EarlyMixInSquad0

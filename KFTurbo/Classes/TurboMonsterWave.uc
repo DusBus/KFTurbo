@@ -87,6 +87,11 @@ function int GetMaxMonsters(int PlayerCount)
      return MaxMonsters;
 }
 
+function float GetNextSquadSpawnTime(int PlayerCount)
+{
+     return NextSquadSpawnTime;
+}
+
 defaultproperties
 {
      MaxMonsters=32

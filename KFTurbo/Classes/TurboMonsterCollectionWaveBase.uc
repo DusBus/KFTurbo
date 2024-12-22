@@ -167,7 +167,8 @@ function PrepareSequence()
      local int SequenceSize;
      local int MixInCount;
      local int BeatSize;
-     local int RandomIndex;
+     local float MixInIndex;
+     local float MixInFrequency;
 
      //If we're still consuming a sequence, do not make a new one.
      if (CurrentSequence.Length != 0 || CurrentBeat.Length != 0)
@@ -178,7 +179,7 @@ function PrepareSequence()
      DebugLog ("Building Sequence");
 
      SequenceSize = CurrentWave.RegularSequenceSize;
-     MixInCount = CurrentWave.MinMixInSquadCount + Rand(1 + CurrentWave.MaxMixInSquadCount - CurrentWave.MinMixInSquadCount);
+     MixInCount = CurrentWave.MinMixInSquadCount + Rand(1 + (CurrentWave.MaxMixInSquadCount - CurrentWave.MinMixInSquadCount));
      BeatSize = CurrentWave.BeatSize;
 
      //Setup the sequence with sequence squads.
@@ -188,15 +189,23 @@ function PrepareSequence()
           DebugLog ("- Added"@CurrentSequence[CurrentSequence.Length - 1]);
           SequenceSize--;
      }
-     
-     //Shuffle in some Mix Ins
-     while(MixInCount > 0 && MixInSquadList.Length != 0)
+
+     //Insert some Mix Ins
+     if (MixInCount > 0 && MixInSquadList.Length != 0)
      {
-          RandomIndex = Rand(CurrentSequence.Length);
-          CurrentSequence.Insert(RandomIndex, 1);
-          CurrentSequence[RandomIndex] = GetMixInSquad();
-          DebugLog ("- Added"@CurrentSequence[RandomIndex]);
-          MixInCount--;
+          //Figure out how to space them out.
+          MixInFrequency = float(CurrentSequence.Length) / float(MixInCount);
+          MixInIndex = CurrentSequence.Length - 1;
+
+          while(MixInCount > 0)
+          {
+               CurrentSequence.Insert(int(MixInIndex), 1);
+               CurrentSequence[int(MixInIndex)] = GetMixInSquad();
+               DebugLog ("- Added"@CurrentSequence[int(MixInIndex)]);
+               MixInCount--;
+
+               MixInIndex -= MixinFrequency;
+          }
      }
      
      //Setup the beat for this sequence.
@@ -274,7 +283,7 @@ function ApplyFinalSquad(int FinalSquadNumber, int PlayerCount, out array< class
      }
 }
 
-function int GetWaveTotalMonsters(int WaveNumber, float GameDifficulty, int PlayerCount )
+function int GetWaveTotalMonsters(int WaveNumber, float GameDifficulty, int PlayerCount)
 {
      return float(WaveList[Clamp(WaveNumber, 0, 9)].TotalMonsters) * GetDifficultyModifier(GameDifficulty) * GetPlayerCountModifier(PlayerCount);
 }
@@ -289,9 +298,9 @@ function float GetWaveDifficulty(int WaveNumber)
      return WaveList[Clamp(WaveNumber, 0, 9)].WaveDifficulty;
 }
 
-function float GetNextSquadSpawnTime(int WaveNumber)
+function float GetNextSquadSpawnTime(int WaveNumber, int PlayerCount)
 {
-     return WaveList[Clamp(WaveNumber, 0, 9)].NextSquadSpawnTime;
+     return WaveList[Clamp(WaveNumber, 0, 9)].GetNextSquadSpawnTime(PlayerCount);
 }
 
 defaultproperties

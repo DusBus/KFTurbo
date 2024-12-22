@@ -84,7 +84,7 @@ function float GetWaveDifficulty(int WaveNumber)
 }
 
 //Gets the spawn rate for a given wave.
-function float GetNextSquadSpawnTime(int WaveNumber)
+function float GetNextSquadSpawnTime(int WaveNumber, int PlayerCount)
 {
      return 1.f;
 }
