@@ -7,6 +7,9 @@ var protected bool bIsHighDifficulty;
 var protected bool bStatsAndAchievementsEnabled;
 var protected bool bIsTestGameType;
 
+//Used to block ending of a game. Helps with testing.
+var protected bool bPreventGameOver;
+
 //Allows a gametype modification to total waves without impacting spawns (eg the game wants to work like a Long game, but with a different number of waves).
 var protected int FinalWaveOverride;
 var protected bool bHasAttemptedToApplyFinalWaveOverride;
@@ -351,6 +354,8 @@ function SetupWave()
 //Function needs to be declared outside of state scope if it wants to be called outside of the state's scope...
 function SelectShop() {}
 
+function ClearEndGame(){}
+
 state MatchInProgress
 {
     function BeginState()
@@ -415,6 +420,33 @@ state MatchInProgress
 		Super.StartWaveBoss();
 		class'TurboWaveEventHandler'.static.BroadcastWaveStarted(Self, WaveNum);
 	}
+
+    function ClearEndGame()
+    {
+        local bool bPlayerAlive;
+        local Controller C;
+
+        if (!IsPreventGameOverEnabled())
+        {
+            return;
+        }
+
+        bPlayerAlive = false;
+
+        for ( C=Level.ControllerList; C!=None; C=C.NextController )
+        {
+            if ( (C.PlayerReplicationInfo != None) && C.bIsPlayer && !C.PlayerReplicationInfo.bOutOfLives && !C.PlayerReplicationInfo.bOnlySpectator )
+            {
+                bPlayerAlive = true;
+                break;
+            }
+        }
+
+        if (!bPlayerAlive)
+        {
+            DoWaveEnd();
+        }
+    }
 	
 	function DoWaveEnd()
 	{
@@ -425,9 +457,25 @@ state MatchInProgress
 	}
 }
 
+function bool IsPreventGameOverEnabled()
+{
+    return bPreventGameOver;
+}
+
+function PreventGameOver()
+{
+    bPreventGameOver = true;
+}
+
 function bool CheckEndGame(PlayerReplicationInfo Winner, string Reason)
 {
     local bool bGameIsOver, bResult;
+
+    if (WaveNum <= FinalWave && bPreventGameOver)
+    {
+        return false;
+    }
+
     bGameIsOver = KFGameReplicationInfo(GameReplicationInfo).EndGameType != 0;
 
     bResult = Super.CheckEndGame(Winner, Reason);
@@ -438,76 +486,6 @@ function bool CheckEndGame(PlayerReplicationInfo Winner, string Reason)
     }
 
     return bResult;
-}
-
-//TODO: Figure out how to get us back into normal game flow from a loss.
-function ClearEndGame()
-{
-    local KFGameReplicationInfo KFGRI;
-    local Controller C;
-    local TurboPlayerController TurboPlayerController;
-    local KFPlayerReplicationInfo KFPRI;
-
-    return;
-
-    KFGRI = KFGameReplicationInfo(GameReplicationInfo);
-
-    if (KFGRI == None || KFGRI.EndGameType == 0 || KFGRI.EndGameType == 2)
-    {
-        return;
-    }
-
-    KFGRI.EndGameType = 0;
-    bWaveInProgress = false;
-    KFGRI.bWaveInProgress = false;
-
-	WaveCountDown = 60;
-	if (KFGameReplicationInfo(Level.GRI) != None)
-	{
-		KFGameReplicationInfo(Level.GRI).TimeToNextWave = WaveCountDown;
-	}
-
-    for (C = Level.ControllerList; C != None; C = C.NextController)
-    {
-        TurboPlayerController = TurboPlayerController(C);
-        if (TurboPlayerController == None)
-        {
-            continue;
-        }
-
-        TurboPlayerController.Reset();
-        TurboPlayerController.ClientReset();
-
-        KFPRI = KFPlayerReplicationInfo(TurboPlayerController.PlayerReplicationInfo);
-
-        if (KFPRI == None)
-        {
-            continue;
-        }
-
-        KFPRI.bOutOfLives = false;
-        KFPRI.NumLives = 0;
-
-        TurboPlayerController.bChangedVeterancyThisWave = false;
-        TurboPlayerController.SendSelectedVeterancyToServer();
-
-        if (KFPRI.bOnlySpectator)
-        {
-            continue;
-        }
-
-        TurboPlayerController.GotoState('PlayerWaiting');
-        TurboPlayerController.SetViewTarget(TurboPlayerController);
-        TurboPlayerController.ClientSetBehindView(false);
-        TurboPlayerController.bBehindView = False;
-        TurboPlayerController.ClientSetViewTarget(TurboPlayerController.Pawn);
-        
-        TurboPlayerController.bSpawnedThisWave = false;
-
-        TurboPlayerController.ServerReStartPlayer();
-    }
-
-    GotoState('MatchInProgress');
 }
 
 //Check if enough people have voted to end the trader and end it.

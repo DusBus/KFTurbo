@@ -18,7 +18,9 @@ replication
 	reliable if( Role == ROLE_Authority )
 		ClientCloseBuyMenu;
 	reliable if( Role < ROLE_Authority )
-		ServerDebugSkipWave, ServerDebugRestartWave, ServerDebugSetWave, ServerDebugResetTrader, EndTrader, ServerMarkActor, ServerNotifyShoppingState, ServerNotifyLoginMenuState;
+		EndTrader, ServerMarkActor, ServerNotifyShoppingState, ServerNotifyLoginMenuState;
+	reliable if( Role < ROLE_Authority )
+		ServerDebugSkipWave, ServerDebugRestartWave, ServerDebugSetWave, ServerDebugPreventGameOver, AdminSetTraderTime, AdminSetMaxPlayers;
 }
 
 simulated function PostBeginPlay()
@@ -490,7 +492,7 @@ exec function ServerDebugRestartWave()
 	TurboGameType.NextSpawnSquad.Length = 0;
 	TurboGameType.KillZeds();
 	
-	//TurboGameType.ClearEndGame();
+	TurboGameType.ClearEndGame();
 	
 	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', 1, PlayerReplicationInfo); //EAdminCommand.AC_RestartWave
 }
@@ -535,13 +537,41 @@ exec function ServerDebugSetWave(int NewWaveNum)
         InvasionGameReplicationInfo(GameReplicationInfo).WaveNumber = NewWaveNum;
 	}
 
-	//TurboGameType.ClearEndGame();
+	TurboGameType.ClearEndGame();
 	
 	//Encode the wave number into the switch value.
 	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (2 | ((NewWaveNum + 1) << 8)), PlayerReplicationInfo); //EAdminCommand.AC_SetWave
 }
 
-exec function ServerDebugResetTrader()
+exec function ServerDebugPreventGameOver()
+{
+	local KFTurboGameType TurboGameType;
+
+	if (Role != ROLE_Authority)
+	{
+		return;
+	}
+
+	if (PlayerReplicationInfo == None || (Level.NetMode != NM_Standalone && !PlayerReplicationInfo.bAdmin))
+	{
+		return;
+	}
+
+	TurboGameType = KFTurboGameType(Level.Game);
+
+	if (TurboGameType == None || TurboGameType.IsPreventGameOverEnabled())
+	{
+		return;
+	}
+
+	class'KFTurboGameType'.static.StaticDisableStatsAndAchievements(Self);
+
+	KFTurboGameType(Level.Game).PreventGameOver();
+	
+	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', 5, PlayerReplicationInfo); //EAdminCommand.AC_PreventGameOver
+}
+
+exec function AdminSetTraderTime(int Time)
 {
 	local KFTurboGameType TurboGameType;
 
@@ -562,15 +592,46 @@ exec function ServerDebugResetTrader()
 		return;
 	}
 
-	class'KFTurboGameType'.static.StaticDisableStatsAndAchievements(Self);
-	
-	TurboGameType.WaveCountDown = 60;
+	Time = Max(10, Time);
+	Time = Min(99999, Time);
+
+	TurboGameType.WaveCountDown = Time;
 	if (KFGameReplicationInfo(Level.GRI) != None)
 	{
 		KFGameReplicationInfo(Level.GRI).TimeToNextWave = TurboGameType.WaveCountDown;
 	}
 	
-	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', 3, PlayerReplicationInfo); //EAdminCommand.AC_ResetTrader
+	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (3 | ((Time) << 8)), PlayerReplicationInfo); //EAdminCommand.AC_SetTraderTime
+}
+
+exec function AdminSetMaxPlayers(int PlayerCount)
+{
+	local KFTurboGameType TurboGameType;
+
+	if (Role != ROLE_Authority)
+	{
+		return;
+	}
+
+	if (PlayerReplicationInfo == None || (Level.NetMode != NM_Standalone && !PlayerReplicationInfo.bAdmin))
+	{
+		return;
+	}
+
+	PlayerCount = Max(1, PlayerCount);
+	PlayerCount = Min(6, PlayerCount);
+
+	TurboGameType = KFTurboGameType(Level.Game);
+
+	if (TurboGameType == None || TurboGameType.bWaveInProgress)
+	{
+		return;
+	}
+
+ 	TurboGameType.MaxPlayers = PlayerCount;
+    TurboGameType.default.MaxPlayers = PlayerCount;
+	
+	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (4 | ((PlayerCount) << 8)), PlayerReplicationInfo); //EAdminCommand.AC_SetMaxPlayers
 }
 
 exec function EndTrader()
