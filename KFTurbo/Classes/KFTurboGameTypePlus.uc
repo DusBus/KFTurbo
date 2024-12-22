@@ -11,7 +11,7 @@ var float WaveNextSquadSpawnTime;
 
 // Constants for initial game setup
 const INITIAL_CASH = 42069;
-const SPAWN_TIME = 1.0;
+const SPAWN_TIME = 0.01f;
 const WAVE_COUNTDOWN = 60;
 const STD_MAX_ZOMBIES = 48;
 const FAKED_P_HEALTH = 0; // Currently not being used but maybe in the future? Force to 6p?
