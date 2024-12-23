@@ -668,7 +668,7 @@ static final function bool SingleWeaponSpawnCopy(KFWeaponPickup SingleWeaponPick
 	return false;
 }
 
-static final function OnShotgunProjectileHit(ShotgunBullet Projectile, Actor HitActor, float PreviousDamage)
+static final function OnShotgunPenetratingProjectileHit(ShotgunBullet Projectile, Actor HitActor, float PreviousDamage)
 {
 	if (Projectile == None || Projectile.Role != ROLE_Authority)
 	{
@@ -707,8 +707,12 @@ static final function OnWeaponFire(WeaponFire FireMode)
 	}   
 }
 
-static final function OnShotgunFire(KFShotgunFire FireMode)
+static final function OnShotgunFire(KFShotgunFire FireMode, int FireEffectCount, out array<W_BaseShotgunBullet.HitRegisterEntry> HitRegistryList)
 {
+	HitRegistryList.Length = HitRegistryList.Length + 1;
+	HitRegistryList[HitRegistryList.Length - 1].HitRegisterCount = FireEffectCount;
+	HitRegistryList[HitRegistryList.Length - 1].Expiration = FireMode.Level.TimeSeconds + 4.f;
+
 	if (FireMode != None && FireMode.Level != None)
 	{
 		TurboGameReplicationInfo(FireMode.Level.GRI).OnShotgunFire(FireMode);
@@ -750,6 +754,51 @@ static final function OnWeaponReload(KFWeapon Weapon)
 	{
 		class'TurboPlayerEventHandler'.static.BroadcastPlayerReload(Weapon.Instigator.Controller, Weapon);
 	}
+}
+
+static final function Projectile SpawnProjectile(BaseProjectileFire ProjectileFire, Vector Start, Rotator Dir)
+{
+    local Projectile Projectile;
+
+    if (ProjectileFire.GetDesiredProjectileClass() != None)
+	{
+		Projectile = ProjectileFire.Weapon.Spawn(ProjectileFire.GetDesiredProjectileClass(), ProjectileFire.Weapon,, Start, Dir);
+	}
+    
+    if (Projectile == None)
+    {
+        Projectile = ProjectileFire.ForceSpawnProjectile(Start,Dir);
+    }
+
+    if (Projectile == None)
+    {
+        return None;
+    }
+
+    ProjectileFire.PostSpawnProjectile(Projectile);
+
+    return Projectile;
+}
+
+static final function Projectile ForceSpawnProjectile(BaseProjectileFire ProjectileFire, Vector Start, Rotator Dir)
+{
+    local Vector HitLocation, HitNormal;
+    local Actor Other;
+    local Projectile Projectile;
+
+    Other = ProjectileFire.Weapon.Trace(HitLocation, HitNormal, Start, ProjectileFire.Instigator.Location + ProjectileFire.Instigator.EyePosition(), false,vect(0,0,1));
+
+    if (Other != None)
+    {
+        Start = HitLocation;
+    }
+
+    if (ProjectileFire.GetDesiredProjectileClass() != None)
+	{
+		Projectile = ProjectileFire.Weapon.Spawn(ProjectileFire.GetDesiredProjectileClass(), ProjectileFire.Weapon,, Start, Dir);
+	}
+    
+    return Projectile;
 }
 
 static final function GrenadeTakeDamage(Nade Projectile, int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)

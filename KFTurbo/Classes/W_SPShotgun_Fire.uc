@@ -1,9 +1,13 @@
 class W_SPShotgun_Fire extends SPShotgunFire;
 
+var int FireEffectCount;
+var array<W_BaseShotgunBullet.HitRegisterEntry> HitRegistryList;
+
 function DoFireEffect()
 {
-     class'WeaponHelper'.static.OnShotgunFire(self);
-     Super.DoFireEffect();
+	class'WeaponHelper'.static.OnShotgunFire(Self, FireEffectCount, HitRegistryList);
+	Super.DoFireEffect();
+	FireEffectCount++;
 }
 
 function Projectile SpawnProjectile(Vector Start, Rotator Dir)
@@ -12,7 +16,7 @@ function Projectile SpawnProjectile(Vector Start, Rotator Dir)
 
 	if (GetDesiredProjectileClass() != None)
 	{
-		Proj = Weapon.Spawn(GetDesiredProjectileClass(), , , Start, Dir);
+		Proj = Weapon.Spawn(GetDesiredProjectileClass(), Weapon,, Start, Dir);
 	}
 
 	if (Proj == None)

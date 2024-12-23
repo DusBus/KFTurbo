@@ -1,9 +1,25 @@
 class W_BoomStick_Fire extends BoomStickFire;
 
+final function W_BoomStick_Fire_Alt GetRegistryFireMode()
+{
+    return W_BoomStick_Fire_Alt(Weapon.GetFireMode(0));
+}
+
 function DoFireEffect()
 {
-     class'WeaponHelper'.static.OnShotgunFire(self);
-     Super.DoFireEffect();
+    class'WeaponHelper'.static.OnShotgunFire(Self, GetRegistryFireMode().FireEffectCount, GetRegistryFireMode().HitRegistryList);
+    Super.DoFireEffect();
+    GetRegistryFireMode().FireEffectCount++;
+}
+
+function Projectile SpawnProjectile(Vector Start, Rotator Dir)
+{
+    return class'WeaponHelper'.static.SpawnProjectile(Self, Start, Dir);
+}
+
+function Projectile ForceSpawnProjectile(Vector Start, Rotator Dir)
+{
+    return class'WeaponHelper'.static.ForceSpawnProjectile(Self, Start, Dir);
 }
 
 defaultproperties

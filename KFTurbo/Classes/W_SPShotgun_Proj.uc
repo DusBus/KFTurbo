@@ -1,13 +1,29 @@
 class W_SPShotgun_Proj extends W_BaseShotgunBullet;
 
-event PreBeginPlay()
+function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    local W_SPShotgun_Fire WeaponFire;
+    WeaponFire = W_SPShotgun_Fire(GetWeaponFire());
+
+    if (WeaponFire != None)
+    {
+        FireModeHitRegisterCount = WeaponFire.FireEffectCount;
+    }
+
+    Super.PreBeginPlay();
 }
 
-simulated function ProcessTouch(Actor Other, vector HitLocation)
+function NotifyProjectileRegisterHit(bool bIsHeadshot, int DamageDealt)
 {
-	Super.ProcessTouch(Other, HitLocation);
+    local W_SPShotgun_Fire WeaponFire;
+    WeaponFire = W_SPShotgun_Fire(GetWeaponFire());
+
+    if (WeaponFire == None)
+    {
+        return;
+    }
+
+    RegisterHit(WeaponFire.HitRegistryList, bIsHeadshot, DamageDealt);
 }
 
 defaultproperties

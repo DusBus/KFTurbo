@@ -80,7 +80,7 @@ simulated function ProcessTouch (Actor Other, vector HitLocation)
           //If damage was applied and we're doing less than our default, assume it's a penetrated hit.
           if (Monster(Other) != None && Damage < default.Damage)
           {
-               class'WeaponHelper'.static.OnShotgunProjectileHit(Self, Other, Damage);
+               class'WeaponHelper'.static.OnShotgunPenetratingProjectileHit(Self, Other, Damage);
           }
      }
 
