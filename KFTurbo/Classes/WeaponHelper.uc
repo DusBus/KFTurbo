@@ -663,11 +663,48 @@ static final function OnShotgunProjectileHit(ShotgunBullet Projectile, Actor Hit
 	class'V_SupportSpec'.static.RewardPenetrationShotgunDamage(PlayerController(Projectile.Instigator.Controller), Projectile.Damage);
 }
 
+static final function OnWeaponFire(WeaponFire FireMode)
+{
+	if (FireMode != None && FireMode.Level != None)
+	{
+		TurboGameReplicationInfo(FireMode.Level.GRI).OnWeaponFire(FireMode);
+	}
+	
+	if (FireMode.Instigator != None)
+	{
+		class'TurboPlayerEventHandler'.static.BroadcastPlayerFire(FireMode.Instigator.Controller, FireMode);
+	}   
+}
+
 static final function OnShotgunFire(KFShotgunFire FireMode)
 {
-	if (FireMode != None && FireMode.Level != None && TurboGameReplicationInfo(FireMode.Level.GRI) != None)
+	if (FireMode != None && FireMode.Level != None)
 	{
 		TurboGameReplicationInfo(FireMode.Level.GRI).OnShotgunFire(FireMode);
+	}
+
+	OnWeaponFire(FireMode);
+}
+
+// Melee weapons are considered a separate "fire" from guns and do not call OnWeaponFire.
+static final function OnMeleeFire(KFMeleeFire FireMode)
+{
+	if (FireMode != None && FireMode.Level != None)
+	{
+		TurboGameReplicationInfo(FireMode.Level.GRI).OnMeleeFire(FireMode);
+	}
+	
+	if (FireMode.Instigator != None)
+	{
+		class'TurboPlayerEventHandler'.static.BroadcastPlayerMeleeFire(FireMode.Instigator.Controller, FireMode);
+	}
+}
+
+static final function OnWeaponReload(KFWeapon Weapon)
+{
+	if (Weapon.Instigator != None)
+	{
+		class'TurboPlayerEventHandler'.static.BroadcastPlayerReload(Weapon.Instigator.Controller, Weapon);
 	}
 }
 

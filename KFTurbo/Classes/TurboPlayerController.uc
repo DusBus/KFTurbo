@@ -13,6 +13,8 @@ var float ClientNextMarkTime, NextMarkTime;
 var bool bInLoginMenu, bHasClosedLoginMenu;
 var float LoginMenuTime;
 
+var array< class<TurboPlayerEventHandler> > TurboPlayerEventHandlerList;
+
 replication
 {
 	reliable if( Role == ROLE_Authority )

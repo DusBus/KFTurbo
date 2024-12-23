@@ -9,7 +9,7 @@ var TurboClientModifierReplicationLink CustomTurboClientModifier;
 
 replication
 {
-    reliable if(bNetInitial && Role == ROLE_Authority)
+    reliable if(Role == ROLE_Authority)
         CustomTurboModifier, CustomTurboClientModifier;
 }
 
@@ -41,12 +41,36 @@ simulated function float GetPlayerMaxHealthMultiplier(Pawn Pawn) { if (CustomTur
 
 simulated function float GetHealRechargeMultiplier(KFPlayerReplicationInfo KFPRI) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetHealRechargeMultiplier(KFPRI); } return 1.f; }
 
+//Functions from here onward are not simulated - no need to replicate the outcome.
 function GetPlayerCarryWeightModifier(KFPlayerReplicationInfo KFPRI, out int OutCarryWeightModifier) { if (CustomTurboModifier != None) { CustomTurboModifier.GetPlayerCarryWeightModifier(KFPRI, OutCarryWeightModifier); } }
 function GetPlayerZedExtensionModifier(KFPlayerReplicationInfo KFPRI, out int OutZedExtensions) { if (CustomTurboModifier != None) { CustomTurboModifier.GetPlayerZedExtensionModifier(KFPRI, OutZedExtensions); } }
 function float GetHeadshotDamageMultiplier(KFPlayerReplicationInfo KFPRI, KFPawn Pawn, class<DamageType> DamageType) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetHeadshotDamageMultiplier(KFPRI, Pawn, DamageType); } return 1.f; }
 function float GetHealPotencyMultiplier(KFPlayerReplicationInfo KFPRI) { if (CustomTurboModifier != None) { return CustomTurboModifier.GetHealPotencyMultiplier(KFPRI); } return 1.f; }
 function GetBodyArmorDamageModifier(KFPlayerReplicationInfo KFPRI, out float Multiplier) { if (CustomTurboModifier != None) { CustomTurboModifier.GetBodyArmorDamageModifier(KFPRI, Multiplier); } }
-function OnShotgunFire(KFShotgunFire ShotgunFire) { if (CustomTurboModifier != None) { CustomTurboModifier.OnShotgunFire(ShotgunFire); } }
+
+function OnWeaponFire(WeaponFire WeaponFire)
+{
+    if (CustomTurboModifier != None)
+    {
+        CustomTurboModifier.OnWeaponFire(WeaponFire);
+    }
+}
+
+function OnShotgunFire(KFShotgunFire ShotgunFire)
+{
+    if (CustomTurboModifier != None)
+    {
+        CustomTurboModifier.OnShotgunFire(ShotgunFire);
+    }
+}
+
+function OnMeleeFire(KFMeleeFire MeleeFire)
+{
+    if (CustomTurboModifier != None)
+    {
+        CustomTurboModifier.OnMeleeFire(MeleeFire);
+    }
+}
 
 //Helpers TurboGameModifierReplicationLinks can call to propagate updates for multiplier changes.
 function NotifyPlayerMovementSpeedChanged()

@@ -48,7 +48,9 @@ function GetPlayerZedExtensionModifier(KFPlayerReplicationInfo KFPRI, out int Ou
 function float GetHeadshotDamageMultiplier(KFPlayerReplicationInfo KFPRI, KFPawn Pawn, class<DamageType> DamageType) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetHeadshotDamageMultiplier(KFPRI, Pawn, DamageType); } return 1.f; }
 function float GetHealPotencyMultiplier(KFPlayerReplicationInfo KFPRI) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetHealPotencyMultiplier(KFPRI); } return 1.f; }
 function GetBodyArmorDamageModifier(KFPlayerReplicationInfo KFPRI, out float Multiplier) { if (NextGameModifierLink != None) { NextGameModifierLink.GetBodyArmorDamageModifier(KFPRI, Multiplier); } }
+function OnWeaponFire(WeaponFire WeaponFire) { if (NextGameModifierLink != None) { NextGameModifierLink.OnWeaponFire(WeaponFire); } }
 function OnShotgunFire(KFShotgunFire ShotgunFire) { if (NextGameModifierLink != None) { NextGameModifierLink.OnShotgunFire(ShotgunFire); } }
+function OnMeleeFire(KFMeleeFire MeleeFire) { if (NextGameModifierLink != None) { NextGameModifierLink.OnMeleeFire(MeleeFire); } }
 
 //Make NetUpdateTime want to update now.
 simulated function ForceNetUpdate()

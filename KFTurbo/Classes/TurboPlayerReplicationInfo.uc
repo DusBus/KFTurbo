@@ -8,6 +8,9 @@ var int HealthMax;
 var int HealthHealed;
 var bool bVotedForTraderEnd;
 
+var array<TurboPlayerStatCollectorBase> StatCollectorList;
+var array<TurboPlayerStatCollectorBase> StatReplicatorList;
+
 replication
 {
 	reliable if ( bNetDirty && (Role == Role_Authority) )
@@ -64,6 +67,42 @@ function RequestTraderEnd()
 function ClearTraderEndVote()
 {
     bVotedForTraderEnd = false;
+}
+
+simulated function RegisterStatCollector(TurboPlayerStatCollectorBase Collector)
+{
+    StatCollectorList.Length = StatCollectorList.Length + 1;
+    StatCollectorList[StatCollectorList.Length - 1] = Collector;
+}
+
+simulated function UnregisterStatCollector(TurboPlayerStatCollectorBase Collector)
+{
+    local int Index;
+    for (Index = StatCollectorList.Length - 1; Index >= 0; Index--)
+    {
+        if (StatCollectorList[Index] == Collector || StatCollectorList[Index] == None)
+        {
+            StatCollectorList.Remove(Index, 1);
+        }
+    }
+}
+
+simulated function RegisterStatReplicator(TurboPlayerStatCollectorBase Replicator)
+{
+    StatReplicatorList.Length = StatCollectorList.Length + 1;
+    StatReplicatorList[StatCollectorList.Length - 1] = Replicator;
+}
+
+simulated function UnregisterStatReplicator(TurboPlayerStatCollectorBase Replicator)
+{
+    local int Index;
+    for (Index = StatReplicatorList.Length - 1; Index >= 0; Index--)
+    {
+        if (StatReplicatorList[Index] == Replicator || StatReplicatorList[Index] == None)
+        {
+            StatReplicatorList.Remove(Index, 1);
+        }
+    }
 }
 
 defaultproperties
