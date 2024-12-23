@@ -23,6 +23,7 @@ var TurboCard AuthSelectableCardList[MAX_SELECTABLE_CARDS]; //Needed to call act
 var CardReference SelectableCardList[MAX_SELECTABLE_CARDS];
 //List of active cards. Game can have a maximum of 30 active cards.
 const MAX_ACTIVE_CARDS = 30;
+var TurboCard AuthActiveCardList[MAX_ACTIVE_CARDS];
 var CardReference ActiveCardList[MAX_ACTIVE_CARDS];
 //Counter that is incremented whenever some action is done to the two above replicated arrays.
 var byte SelectionUpdateCounter;
@@ -298,14 +299,78 @@ function Initialize(KFTurboCardGameMut Mutator)
     EvilGameDeck.InitializeDeck();
 }
 
-//Append to end of active card list this newly selected card.
-function SelectCard(TurboCard SelectedCard)
+final function array<TurboCard> GetActiveCardList()
+{
+    local int Index;
+    local array<TurboCard> CardList;
+
+    CardList.Length = ArrayCount(AuthActiveCardList);
+
+    for (Index = 0; Index < ArrayCount(AuthActiveCardList); Index++)
+    {
+        if (AuthActiveCardList[Index] != None)
+        {
+            continue;
+        }
+
+        CardList[Index] = AuthActiveCardList[Index];
+        break;
+    }
+
+    CardList.Length = Index;
+    return CardList;
+}
+
+final function array<TurboCard> GetSelectableCardList()
+{
+    local int Index;
+    local array<TurboCard> CardList;
+
+    CardList.Length = ArrayCount(AuthSelectableCardList);
+
+    for (Index = 0; Index < ArrayCount(AuthSelectableCardList); Index++)
+    {
+        if (AuthSelectableCardList[Index] != None)
+        {
+            continue;
+        }
+
+        CardList[Index] = AuthSelectableCardList[Index];
+        break;
+    }
+
+    CardList.Length = Index;
+    return CardList;
+}
+
+//Sends vote result to stats.
+function SendVoteResult(TurboCard SelectedCard)
+{
+    local TurboCardStatsTcpLink StatsTcpLink;
+
+    StatsTcpLink = class'TurboCardStatsTcpLink'.static.FindStats(Level.Game);
+
+    if (StatsTcpLink == None)
+    {
+        return;
+    }
+
+    StatsTcpLink.OnVoteComplete(GetActiveCardList(), GetSelectableCardList(), SelectedCard);
+}
+
+//Append to end of active card list this newly selected card. DO NOT PASS CARDREFERENCE-RESOLVED CARDS HERE.
+function SelectCard(TurboCard SelectedCard, optional bool bFromVote)
 {
     local int Index;
     
     if (SelectedCard == None)
     {
         return;
+    }
+
+    if (bFromVote)
+    {
+        SendVoteResult(SelectedCard);
     }
     
     for (Index = 0; Index < ArrayCount(ActiveCardList); Index++)
@@ -316,13 +381,14 @@ function SelectCard(TurboCard SelectedCard)
         }
 
         ActiveCardList[Index] = GetCardReference(SelectedCard);
+        AuthActiveCardList[Index] = SelectedCard;
         break;
     }
 
     SelectionUpdateCounter++;
     ClearSelection();
 
-    log("Executing OnActivateCard delegate for"@SelectedCard.CardName[0]);
+    log("Executing OnActivateCard delegate for"@SelectedCard.CardID);
     SelectedCard.OnActivateCard(Self);
     
     CheckForActiveCardUpdates();
@@ -342,7 +408,7 @@ function SelectRandomCard()
     }
 
     Index = Rand(Index);
-    SelectCard(AuthSelectableCardList[Index]);
+    SelectCard(AuthSelectableCardList[Index], true);
 }
 
 //Populates the SelectableCardList with pickable cards.
@@ -554,11 +620,11 @@ function OnSelectionTimeEnd()
 
         if (TiedVotingList.Length == 1)
         {
-            SelectCard(AuthSelectableCardList[TiedVotingList[0]]);
+            SelectCard(AuthSelectableCardList[TiedVotingList[0]], true);
         }
         else if (TiedVotingList.Length > 1)
         {
-            SelectCard(AuthSelectableCardList[TiedVotingList[Rand(TiedVotingList.Length)]]);
+            SelectCard(AuthSelectableCardList[TiedVotingList[Rand(TiedVotingList.Length)]], true);
         }
         else 
         {

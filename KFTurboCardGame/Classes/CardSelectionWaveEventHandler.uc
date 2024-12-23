@@ -12,6 +12,27 @@ static function OnGameStarted(KFTurboGameType GameType, int StartedWave)
     OnWaveEnded(GameType, StartedWave - 1);
 }
 
+static function OnGameEnded(KFTurboGameType GameType, int Result)
+{
+    local TurboCardStatsTcpLink StatsTcpLink;
+    local KFTurboCardGameMut CardGameMut;
+    CardGameMut = class'KFTurboCardGameMut'.static.FindMutator(GameType);
+
+    if (CardGameMut == None || CardGameMut.TurboCardReplicationInfo == None)
+    {
+        return;
+    }
+
+    StatsTcpLink = class'TurboCardStatsTcpLink'.static.FindStats(GameType);
+
+    if (StatsTcpLink == None)
+    {
+        return;
+    }
+
+    StatsTcpLink.OnGameEnd(GameType.WaveNum, Result == 1, CardGameMut.TurboCardReplicationInfo.GetActiveCardList());
+}
+
 static function OnWaveStarted(KFTurboGameType GameType, int StartedWave)
 {
     local KFTurboCardGameMut CardGameMut;

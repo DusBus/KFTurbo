@@ -10,6 +10,7 @@ var TurboCardReplicationInfo TurboCardReplicationInfo;
 var TurboCardGameModifierRepLink TurboCardGameModifier;
 var TurboCardClientModifierRepLink TurboCardClientModifier;
 var CardGameRules CardGameRules;
+var TurboCardStatsTcpLink TurboCardStats;
 
 var globalconfig string TurboGoodDeckClassOverrideString;
 var globalconfig string TurboSuperDeckClassOverrideString;
@@ -27,6 +28,8 @@ function PostBeginPlay()
 	Super.PostBeginPlay();
 
 	AttemptModifyGameLength();
+
+	SetupStatTcpLink();
 }
 
 //Make game 14 waves long, with first few waves being very small.
@@ -39,6 +42,24 @@ function AttemptModifyGameLength()
 
 	class'TurboWaveEventHandler'.static.RegisterWaveHandler(Self, class'CardGameWaveEventHandler');
 	KFTurboGameType(Level.Game).SetFinalWaveOverride(14);
+}
+
+function SetupStatTcpLink()
+{
+	local class<TurboCardStatsTcpLink> TcpLinkClass;
+	if (!class'TurboCardStatsTcpLink'.static.ShouldBroadcastAnalytics())
+	{
+		return;
+	}
+
+	TcpLinkClass = class'TurboCardStatsTcpLink'.static.GetCardStatsTcpLinkClass();
+
+	if (TcpLinkClass == None)
+	{
+		return;
+	}
+
+	TurboCardStats = Spawn(TcpLinkClass, Self);
 }
 
 static final function KFTurboCardGameMut FindMutator(GameInfo GameInfo)
