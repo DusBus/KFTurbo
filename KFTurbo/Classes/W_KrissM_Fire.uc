@@ -6,6 +6,11 @@ function DoFireEffect()
     Super.DoFireEffect();
 }
 
+function DoTrace(Vector Start, Rotator Direction)
+{
+	class'WeaponHelper'.static.PenetratingWeaponTrace(Start, Direction, KFWeapon(Weapon), self, 0, 0.0);
+}
+
 defaultproperties
 {
      DamageMin=42

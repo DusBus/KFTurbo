@@ -56,35 +56,41 @@ static final function float GetDistanceBetweenActors(Actor A, Actor B)
 
 static final function PenetratingWeaponTrace(Vector TraceStart, Rotator Direction, KFWeapon Weapon, KFFire Fire, int PenetrationMax, float PenetrationMultiplier)
 {
-	local Actor HitActor, HitActorExtCollision;
+	local Actor HitActor;
 	local array<Actor> IgnoreActors;
 	local Vector TraceEnd, MomentumVector;
 	local Vector HitLocation;
+	local KFPlayerReplicationInfo KFPRI;
 	local int HitCount;
 	local float WeaponPenetrationMultiplier;
 
 	HitCount = 0;
 	WeaponPenetrationMultiplier = 1.f;
+	PenetrationMax++;
 
-	if (Weapon.Instigator != None && KFPlayerReplicationInfo(Weapon.Instigator.PlayerReplicationInfo) != None && class<TurboVeterancyTypes>(KFPlayerReplicationInfo(Weapon.Instigator.PlayerReplicationInfo).ClientVeteranSkill) != None)
+	KFPRI = KFPlayerReplicationInfo(Weapon.Instigator.PlayerReplicationInfo);
+
+	if (Weapon.Instigator != None && KFPRI != None && class<TurboVeterancyTypes>(KFPRI.ClientVeteranSkill) != None)
 	{
-		WeaponPenetrationMultiplier = class<TurboVeterancyTypes>(KFPlayerReplicationInfo(Weapon.Instigator.PlayerReplicationInfo).ClientVeteranSkill).static.GetWeaponPenetrationMultiplier(KFPlayerReplicationInfo(Weapon.Instigator.PlayerReplicationInfo), Fire);
+		WeaponPenetrationMultiplier = class<TurboVeterancyTypes>(KFPRI.ClientVeteranSkill).static.GetWeaponPenetrationMultiplier(KFPRI, Fire);
+		PenetrationMax = Round(float(PenetrationMax) * WeaponPenetrationMultiplier);
+		
+		if (PenetrationMax > 1 && PenetrationMultiplier <= 0.f)
+		{
+			PenetrationMultiplier = 0.75f; //If the weapon didn't provide a weapon penetration modifier (probably because it originally didn't penetrate), give it a nice 25% damage loss.
+		}
 
 		if (PenetrationMultiplier < 1.f && WeaponPenetrationMultiplier > 1.f)
 		{
 			PenetrationMultiplier = PenetrationMultiplier ** (1.f / WeaponPenetrationMultiplier);
 		}
-		
-		PenetrationMax = Round(float(PenetrationMax) * WeaponPenetrationMultiplier);
-	} 
+	}
 
-	PenetrationMax++;
 	GetTraceInfo(Weapon, Fire, TraceStart, Direction, TraceEnd, MomentumVector);
 
-	while(HitCount < PenetrationMax)
+	while (HitCount < PenetrationMax)
 	{
 		HitActor = None;
-		HitActorExtCollision = None;
 
 		switch(WeaponTrace(TraceStart, TraceEnd, MomentumVector, Weapon, Fire, HitActor, HitLocation, (PenetrationMultiplier ** float(HitCount))))
 		{
@@ -93,6 +99,8 @@ static final function PenetratingWeaponTrace(Vector TraceStart, Rotator Directio
 			EnableCollision(IgnoreActors);
 			return;
 		case TR_Hit:
+			HitCount++;
+			break;
 		case TR_None:
 			HitCount++;
 			break;
@@ -113,11 +121,10 @@ static final function PenetratingWeaponTrace(Vector TraceStart, Rotator Directio
 		//Needs to handle both player and monster extended collision.
 		if (xPawn(HitActor.Base) != None)
 		{
-			HitActorExtCollision = HitActor;
+			HitActor.SetCollision(false);
+			IgnoreActors.Length = IgnoreActors.Length + 1;
+			IgnoreActors[IgnoreActors.Length - 1] = HitActor;
 			HitActor = HitActor.Base;
-			
-			HitActorExtCollision.SetCollision(false);
-			IgnoreActors[IgnoreActors.Length] = HitActorExtCollision;
 		}
 		
 		HitActor.SetCollision(false);

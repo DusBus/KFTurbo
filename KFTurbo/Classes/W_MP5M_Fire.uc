@@ -6,6 +6,11 @@ function DoFireEffect()
      Super.DoFireEffect();
 }
 
+function DoTrace(Vector Start, Rotator Direction)
+{
+	class'WeaponHelper'.static.PenetratingWeaponTrace(Start, Direction, KFWeapon(Weapon), self, 0, 0.0);
+}
+
 defaultproperties
 {
      AmmoClass=Class'KFTurbo.W_MP5M_Ammo'
