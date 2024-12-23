@@ -294,7 +294,7 @@ defaultproperties
     Begin Object Name=HypersonicAmmo Class=TurboCard_Super
         CardName(0)="Hypersonic"
         CardName(1)="Ammunition"
-        CardDescriptionList(0)="Weapon bullet"
+        CardDescriptionList(0)="All weapon bullet"
         CardDescriptionList(1)="penetration"
         CardDescriptionList(2)="is doubled."
         OnActivateCard=ActivateHypersonicAmmo
