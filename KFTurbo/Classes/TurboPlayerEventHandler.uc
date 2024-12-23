@@ -3,9 +3,14 @@
 class TurboPlayerEventHandler extends Object;
 
 static function OnPlayerFire(TurboPlayerController Player, WeaponFire FireMode);
+static function OnPlayerFireHit(TurboPlayerController Player, WeaponFire FireMode, bool bHeadshot, int Damage);
+
 static function OnPlayerMeleeFire(TurboPlayerController Player, KFMeleeFire FireMode);
+
 static function OnPlayerMedicDartFire(TurboPlayerController Player, WeaponFire FireMode);
+
 static function OnPlayerReload(TurboPlayerController Player, KFWeapon Weapon);
+
 static function OnPlayerDealDamage(TurboPlayerController Player, Pawn Target, int Damage);
 
 //Event registration.
@@ -53,6 +58,24 @@ static final function BroadcastPlayerFire(Controller Player, WeaponFire FireMode
     for (Index = TurboPlayerController.TurboPlayerEventHandlerList.Length - 1; Index >= 0; Index--)
     {
         TurboPlayerController.TurboPlayerEventHandlerList[Index].static.OnPlayerFire(TurboPlayerController, FireMode);
+    }
+}
+
+static final function BroadcastPlayerFireHit(Controller Player, WeaponFire FireMode, bool bHeadshot, int Damage)
+{
+    local TurboPlayerController TurboPlayerController;
+    local int Index;
+
+    TurboPlayerController = TurboPlayerController(Player);
+
+    if (TurboPlayerController == None)
+    {
+        return;
+    }
+
+    for (Index = TurboPlayerController.TurboPlayerEventHandlerList.Length - 1; Index >= 0; Index--)
+    {
+        TurboPlayerController.TurboPlayerEventHandlerList[Index].static.OnPlayerFireHit(TurboPlayerController, FireMode, bHeadshot, Damage);
     }
 }
 

@@ -6,6 +6,11 @@ function DoFireEffect()
     Super.DoFireEffect();
 }
 
+simulated function Timer()
+{
+    class'MeleeHelper'.static.PerformMeleeSwing(KFWeapon(Weapon), Self);
+}
+
 defaultproperties
 {
 

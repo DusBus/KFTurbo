@@ -144,8 +144,11 @@ static final function PenetratingWeaponTrace(Vector TraceStart, Rotator Directio
 static final function ETraceResult WeaponTrace(Vector TraceStart, Vector TraceEnd, Vector MomentumVector, KFWeapon Weapon, KFFire Fire, out Actor HitActor, out Vector HitLocation, float DamageMultiplier)
 {
 	local KFPawn HitPawn;
+	local KFMonster HitMonster;
 	local Vector HitNormal;
 	local array<int> HitPoints;
+	local bool bHeadshot;
+	local int Damage;
 
 	HitActor = Fire.Instigator.HitPointTrace(HitLocation, HitNormal, TraceEnd, HitPoints, TraceStart,, 1);
 
@@ -176,7 +179,28 @@ static final function ETraceResult WeaponTrace(Vector TraceStart, Vector TraceEn
 	}
     else
     {
+		if (Weapon.Instigator != None)
+		{
+			HitMonster = KFMonster(HitActor);
+			bHeadshot = HitMonster != None && HitMonster.Health > 0 && !HitMonster.bDecapitated && HitMonster.IsHeadshot(HitLocation, Normal(MomentumVector), 1.f);
+		}
+		
+		if (HitMonster != None)
+		{
+			Damage = HitMonster.Health;
+		}
+
 		HitActor.TakeDamage(int(Fire.DamageMax * DamageMultiplier), Fire.Instigator, HitLocation, MomentumVector, Fire.DamageType);
+
+		if (Weapon.Instigator != None && HitMonster != None)
+		{
+			Damage -= HitMonster.Health;
+
+			if (Damage > 0)
+			{
+				class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Weapon.Instigator.Controller, Fire, bHeadShot, Damage);
+			}
+		}
 	}
 
 	return TR_Hit;

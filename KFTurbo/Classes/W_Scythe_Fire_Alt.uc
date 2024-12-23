@@ -1,5 +1,16 @@
 class W_Scythe_Fire_Alt extends ScytheFireB;
 
+function DoFireEffect()
+{
+     class'WeaponHelper'.static.OnMeleeFire(self);
+     Super.DoFireEffect();
+}
+
+simulated function Timer()
+{
+    class'MeleeHelper'.static.PerformMeleeSwing(KFWeapon(Weapon), Self);
+}
+
 defaultproperties
 {
      MeleeDamage=270

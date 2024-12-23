@@ -6,6 +6,9 @@ var bool bAwaitingHitTimer;
 var float HitInterval;
 var float NextHitTimerPop;
 
+var int HitRegisterCount;
+var int LastHitRegisterCount;
+
 function DoFireEffect()
 {
     class'WeaponHelper'.static.OnMeleeFire(self);
@@ -18,18 +21,26 @@ simulated event ModeDoFire()
 
     CurrentHitCount = 0;
     HitInterval = default.HitInterval / GetFireSpeed();
+    HitRegisterCount++;
 }
 
 simulated function Timer()
 {
     MeleeDamage = float(MeleeDamage) * (1.f / float(TotalHitCount));
-    Super.Timer();
+
+    if (class'MeleeHelper'.static.PerformMeleeSwing(KFWeapon(Weapon), Self, HitRegisterCount != LastHitRegisterCount))
+    {
+        LastHitRegisterCount = HitRegisterCount;
+    }
+
+    Weapon.PlayOwnedSound(FireEndSound, SLOT_Interact, TransientSoundVolume,, TransientSoundRadius,, false);
+    
     MeleeDamage = default.MeleeDamage;
 
     CurrentHitCount++;
     if (CurrentHitCount >= TotalHitCount || (Weapon.Instigator.PendingWeapon != None && Weapon.Instigator.PendingWeapon != Weapon))
     {
-        Weapon.PlayOwnedSound(FireEndSound,SLOT_Interact,TransientSoundVolume,,TransientSoundRadius,,false);
+        Weapon.PlayOwnedSound(FireEndSound, SLOT_Interact, TransientSoundVolume,, TransientSoundRadius,, false);
         return;
     }
 
