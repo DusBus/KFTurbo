@@ -112,7 +112,7 @@ function ActivateTurtleShell(TurboCardReplicationInfo CGRI)
 
 function ActivatePaidInBlood(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyPlayerMaxHealth(0.85f);
+    CGRI.ModifyPlayerMaxHealth(0.9f);
     CGRI.ModifyTraderPriceMultiplier(0.5f);
 }
 
@@ -398,7 +398,7 @@ defaultproperties
         CardName(0)="Price Paid"
         CardName(1)="In Blood"
         CardDescriptionList(0)="Reduces player"
-        CardDescriptionList(1)="health by 15%"
+        CardDescriptionList(1)="health by 10%"
         CardDescriptionList(2)="and trader"
         CardDescriptionList(3)="prices by 50%."
         OnActivateCard=ActivatePaidInBlood
