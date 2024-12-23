@@ -1,5 +1,11 @@
 class W_M7A3M_Fire extends M7A3MFire;
 
+function DoFireEffect()
+{
+     class'WeaponHelper'.static.OnWeaponFire(self);
+     Super.DoFireEffect();
+}
+
 defaultproperties
 {
      maxVerticalRecoilAngle=750

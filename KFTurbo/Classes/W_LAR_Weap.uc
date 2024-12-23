@@ -17,6 +17,7 @@ simulated function BringUp(optional Weapon PrevWeapon)
 
 defaultproperties
 {
+     FireModeClass(0)=Class'KFTurbo.W_LAR_Fire'
      PickupClass=Class'KFTurbo.W_LAR_Pickup'
 
 	HudImage=None

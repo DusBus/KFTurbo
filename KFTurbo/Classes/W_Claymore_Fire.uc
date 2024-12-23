@@ -1,5 +1,11 @@
 class W_Claymore_Fire extends ClaymoreSwordFire;
 
+function DoFireEffect()
+{
+    class'WeaponHelper'.static.OnMeleeFire(self);
+    Super.DoFireEffect();
+}
+
 defaultproperties
 {
      MeleeDamage=216

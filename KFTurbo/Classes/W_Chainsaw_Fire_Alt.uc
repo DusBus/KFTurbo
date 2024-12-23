@@ -6,6 +6,12 @@ var bool bAwaitingHitTimer;
 var float HitInterval;
 var float NextHitTimerPop;
 
+function DoFireEffect()
+{
+    class'WeaponHelper'.static.OnMeleeFire(self);
+    Super.DoFireEffect();
+}
+
 simulated event ModeDoFire()
 {
     Super.ModeDoFire();

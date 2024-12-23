@@ -1,5 +1,11 @@
 class W_Deagle_Fire extends DeagleFire;
 
+function DoFireEffect()
+{
+    class'WeaponHelper'.static.OnWeaponFire(self);
+    Super.DoFireEffect();
+}
+
 function DoTrace(Vector Start, Rotator Direction)
 {
 	class'WeaponHelper'.static.PenetratingWeaponTrace(Start, Direction, KFWeapon(Weapon), self, 1, 0.8);

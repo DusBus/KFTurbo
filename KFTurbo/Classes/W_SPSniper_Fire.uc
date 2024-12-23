@@ -1,5 +1,11 @@
 class W_SPSniper_Fire extends SPSniperFire;
 
+function DoFireEffect()
+{
+     class'WeaponHelper'.static.OnWeaponFire(self);
+     Super.DoFireEffect();
+}
+
 defaultproperties
 {
      maxVerticalRecoilAngle=700

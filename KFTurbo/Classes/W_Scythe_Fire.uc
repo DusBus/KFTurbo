@@ -1,5 +1,11 @@
 class W_Scythe_Fire extends ScytheFire;
 
+function DoFireEffect()
+{
+     class'WeaponHelper'.static.OnMeleeFire(self);
+     Super.DoFireEffect();
+}
+
 defaultproperties
 {
      MeleeDamage=240

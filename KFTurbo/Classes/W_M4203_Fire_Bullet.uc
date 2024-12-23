@@ -1,5 +1,11 @@
 class W_M4203_Fire_Bullet extends KFFire;
 
+function DoFireEffect()
+{
+     class'WeaponHelper'.static.OnWeaponFire(self);
+     Super.DoFireEffect();
+}
+
 defaultproperties
 {
      FireAimedAnim="Fire_Iron"

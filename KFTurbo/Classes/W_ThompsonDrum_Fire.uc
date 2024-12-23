@@ -1,5 +1,11 @@
 class W_ThompsonDrum_Fire extends ThompsonDrumFire;
 
+function DoFireEffect()
+{
+     class'WeaponHelper'.static.OnWeaponFire(self);
+     Super.DoFireEffect();
+}
+
 defaultproperties
 {
      DamageMin=31

@@ -2,6 +2,12 @@ class W_Huskgun_Fire extends HuskGunFire;
 
 var float MaxDamageMultiplier;
 
+function DoFireEffect()
+{
+    class'WeaponHelper'.static.OnWeaponFire(self);
+    Super.DoFireEffect();
+}
+
 simulated function float GetScaledMaxChargeTime()
 {
     local float ScaledMaxChargeTime;

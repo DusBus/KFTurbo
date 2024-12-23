@@ -72,6 +72,14 @@ function OnMeleeFire(KFMeleeFire MeleeFire)
     }
 }
 
+function OnMedicDartFire(WeaponFire WeaponFire)
+{
+    if (CustomTurboModifier != None)
+    {
+        CustomTurboModifier.OnMedicDartFire(WeaponFire);
+    }
+}
+
 //Helpers TurboGameModifierReplicationLinks can call to propagate updates for multiplier changes.
 function NotifyPlayerMovementSpeedChanged()
 {

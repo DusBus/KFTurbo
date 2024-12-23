@@ -1,4 +1,4 @@
-class W_M32_Fire extends KFMod.M32Fire;
+class W_LAR_Fire extends WinchesterFire;
 
 function DoFireEffect()
 {
@@ -6,9 +6,7 @@ function DoFireEffect()
     Super.DoFireEffect();
 }
 
-
 defaultproperties
 {
-    AmmoClass=Class'W_M32_Ammo'
-    ProjectileClass=Class'W_M32_Proj'
+
 }

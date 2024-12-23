@@ -51,6 +51,7 @@ function GetBodyArmorDamageModifier(KFPlayerReplicationInfo KFPRI, out float Mul
 function OnWeaponFire(WeaponFire WeaponFire) { if (NextGameModifierLink != None) { NextGameModifierLink.OnWeaponFire(WeaponFire); } }
 function OnShotgunFire(KFShotgunFire ShotgunFire) { if (NextGameModifierLink != None) { NextGameModifierLink.OnShotgunFire(ShotgunFire); } }
 function OnMeleeFire(KFMeleeFire MeleeFire) { if (NextGameModifierLink != None) { NextGameModifierLink.OnMeleeFire(MeleeFire); } }
+function OnMedicDartFire(WeaponFire MeleeFire) { if (NextGameModifierLink != None) { NextGameModifierLink.OnMedicDartFire(MeleeFire); } }
 
 //Make NetUpdateTime want to update now.
 simulated function ForceNetUpdate()

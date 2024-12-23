@@ -1,5 +1,11 @@
 class W_ThompsonSMG_Fire extends KFFire;
 
+function DoFireEffect()
+{
+     class'WeaponHelper'.static.OnWeaponFire(self);
+     Super.DoFireEffect();
+}
+
 defaultproperties
 {
      FireAimedAnim="Fire_Iron"

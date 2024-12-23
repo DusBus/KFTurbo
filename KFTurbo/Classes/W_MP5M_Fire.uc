@@ -1,5 +1,11 @@
 class W_MP5M_Fire extends KFFire;
 
+function DoFireEffect()
+{
+     class'WeaponHelper'.static.OnWeaponFire(self);
+     Super.DoFireEffect();
+}
+
 defaultproperties
 {
      AmmoClass=Class'KFTurbo.W_MP5M_Ammo'

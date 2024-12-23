@@ -1,5 +1,11 @@
 class W_Magnum44_Fire extends Magnum44Fire;
 
+function DoFireEffect()
+{
+     class'WeaponHelper'.static.OnWeaponFire(self);
+     Super.DoFireEffect();
+}
+
 function DoTrace(Vector Start, Rotator Direction)
 {
 	class'WeaponHelper'.static.PenetratingWeaponTrace(Start, Direction, KFWeapon(Weapon), self, 2, 0.9);

@@ -1,5 +1,11 @@
 class W_SealSqueal_Fire extends SealSquealFire;
 
+function DoFireEffect()
+{
+     class'WeaponHelper'.static.OnWeaponFire(self);
+     Super.DoFireEffect();
+}
+
 defaultproperties
 {
      FireAnimRate=1.300000

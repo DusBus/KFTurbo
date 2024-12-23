@@ -1,5 +1,11 @@
 class W_LAW_Fire extends LAWFire;
 
+function DoFireEffect()
+{
+    class'WeaponHelper'.static.OnWeaponFire(self);
+    Super.DoFireEffect();
+}
+
 function bool AllowFire()
 {
     return ( Weapon.AmmoAmount(ThisModeNum) >= AmmoPerFire);

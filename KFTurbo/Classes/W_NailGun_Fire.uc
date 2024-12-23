@@ -1,5 +1,11 @@
 class W_NailGun_Fire extends NailGunFire;
 
+function DoFireEffect()
+{
+     class'WeaponHelper'.static.OnWeaponFire(self);
+     Super.DoFireEffect();
+}
+
 function Projectile SpawnProjectile(Vector Start, Rotator Dir)
 {
 	local Projectile Proj;

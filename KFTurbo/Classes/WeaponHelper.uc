@@ -75,7 +75,7 @@ static final function PenetratingWeaponTrace(Vector TraceStart, Rotator Directio
 			PenetrationMultiplier = PenetrationMultiplier ** (1.f / WeaponPenetrationMultiplier);
 		}
 		
-		PenetrationMax = float(PenetrationMax) * WeaponPenetrationMultiplier;
+		PenetrationMax = Round(float(PenetrationMax) * WeaponPenetrationMultiplier);
 	} 
 
 	PenetrationMax++;
@@ -698,6 +698,19 @@ static final function OnMeleeFire(KFMeleeFire FireMode)
 	{
 		class'TurboPlayerEventHandler'.static.BroadcastPlayerMeleeFire(FireMode.Instigator.Controller, FireMode);
 	}
+}
+
+static final function OnMedicDartFire(WeaponFire FireMode)
+{
+	if (FireMode != None && FireMode.Level != None)
+	{
+		TurboGameReplicationInfo(FireMode.Level.GRI).OnMedicDartFire(FireMode);
+	}
+	
+	if (FireMode.Instigator != None)
+	{
+		class'TurboPlayerEventHandler'.static.BroadcastPlayerMedicDartFire(FireMode.Instigator.Controller, FireMode);
+	}   
 }
 
 static final function OnWeaponReload(KFWeapon Weapon)
