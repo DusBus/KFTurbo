@@ -1,5 +1,11 @@
 class W_SPSniper_Weap extends SPSniperRifle;
 
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
+
 defaultproperties
 {
      MagCapacity=7

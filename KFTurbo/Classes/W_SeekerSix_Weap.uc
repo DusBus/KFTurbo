@@ -1,5 +1,11 @@
 class W_SeekerSix_Weap extends SeekerSixRocketLauncher;
 
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
+
 function Projectile SpawnProjectile(Vector Start, Rotator Dir)
 {
     local W_SeekerSix_Proj Rocket;

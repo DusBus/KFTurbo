@@ -1,13 +1,10 @@
-//=============================================================================
-// ThompsonDrumSMG
-//=============================================================================
-// A ThompsonDrum Sub Machine Gun
-//=============================================================================
-// Killing Floor Source
-// Copyright (C) 2012 Tripwire Interactive LLC
-// - IJC Weapon Development and John "Ramm-Jaeger" Gibson
-//=============================================================================
 class W_ThompsonDrum_Weap extends ThompsonDrumSMG;
+
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
 
 defaultproperties
 {

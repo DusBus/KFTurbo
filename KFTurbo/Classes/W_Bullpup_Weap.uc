@@ -1,5 +1,11 @@
 class W_Bullpup_Weap extends Bullpup;
 
+simulated function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+     if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
+
 simulated function BringUp(optional Weapon PrevWeapon)
 {
      class'WeaponHelper'.static.WeaponCheckForHint(Self, 13);

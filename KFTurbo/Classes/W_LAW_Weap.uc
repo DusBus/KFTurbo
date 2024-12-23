@@ -1,5 +1,11 @@
 class W_LAW_Weap extends LAW;
 
+simulated event StopFire(int Mode)
+{
+    if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+    Super.StopFire(Mode);
+}
+
 simulated function BringUp(optional Weapon PrevWeapon)
 {
     class'WeaponHelper'.static.WeaponCheckForHint(Self, 19);

@@ -41,6 +41,12 @@ simulated function Destroyed()
 	super.Destroyed();
 }
 
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
+
 simulated function WeaponTick(float dt)
 {
 	local Vector StartTrace, EndTrace, X, Y, Z;

@@ -1,5 +1,11 @@
 class W_M99_Weap extends M99SniperRifle;
 
+simulated event StopFire(int Mode)
+{
+    if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+    Super.StopFire(Mode);
+}
+
 defaultproperties
 {
      Weight=12.000000

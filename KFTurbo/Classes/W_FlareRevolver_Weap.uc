@@ -1,5 +1,10 @@
 class W_FlareRevolver_Weap extends FlareRevolver;
 
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
 
 simulated function bool PutDown()
 {

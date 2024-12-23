@@ -2,18 +2,22 @@ class W_Benelli_Weap extends BenelliShotgun;
 
 var float CachedMagAmmoRemaining;
 
+var int AddReloadCount;
+
 simulated function AddReloadedAmmo()
 {
 	Super.AddReloadedAmmo();
 
 	ConditionallyRollBackReload();
+
+    if (Role == ROLE_Authority && ++AddReloadCount >= MagCapacity) { class'WeaponHelper'.static.OnWeaponReload(Self); AddReloadCount = 0; }
 }
 
 simulated function WeaponTick(float dt)
 {
 	Super.WeaponTick(dt);
 
-	if (Role < ROLE_Authority && CachedMagAmmoRemaining != MagAmmoRemaining)
+	if (Level.NetMode != NM_DedicatedServer && CachedMagAmmoRemaining != MagAmmoRemaining)
 	{
 		ConditionallyRollBackReload();
 		CachedMagAmmoRemaining = MagAmmoRemaining;
@@ -44,8 +48,10 @@ simulated function ConditionallyRollBackReload()
 
 defaultproperties
 {
-     MagCapacity=8
-     FireModeClass(0)=Class'KFTurbo.W_Benelli_Fire'
-     PickupClass=Class'KFTurbo.W_Benelli_Pickup'
-     AttachmentClass=Class'KFTurbo.W_Benelli_Attachment'
+	MagCapacity=8
+	FireModeClass(0)=Class'KFTurbo.W_Benelli_Fire'
+	PickupClass=Class'KFTurbo.W_Benelli_Pickup'
+	AttachmentClass=Class'KFTurbo.W_Benelli_Attachment'
+	
+	AddReloadCount=0
 }

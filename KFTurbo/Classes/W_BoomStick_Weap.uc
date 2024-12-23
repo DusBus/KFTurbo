@@ -1,5 +1,11 @@
 class W_BoomStick_Weap extends BoomStick;
 
+simulated function SetPendingReload()
+{
+    Super.SetPendingReload();
+    if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
+
 simulated function BringUp(optional Weapon PrevWeapon)
 {
      class'WeaponHelper'.static.WeaponCheckForHint(Self, 17);

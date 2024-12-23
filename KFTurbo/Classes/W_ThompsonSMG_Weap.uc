@@ -1,5 +1,11 @@
 class W_ThompsonSMG_Weap extends ThompsonSMG;
 
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
+
 defaultproperties
 {
      ReloadRate=3.000000

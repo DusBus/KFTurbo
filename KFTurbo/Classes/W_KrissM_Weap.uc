@@ -2,6 +2,12 @@ class W_KrissM_Weap extends KrissMMedicGun;
 
 var float HealAmmoAmount;
 
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
+
 simulated function float ChargeBar()
 {
 	return class'WeaponHelper'.static.GetMedicGunChargeBar(self);

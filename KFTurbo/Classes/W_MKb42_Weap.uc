@@ -1,5 +1,11 @@
 class W_MKb42_Weap extends MKb42AssaultRifle;
 
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
+
 defaultproperties
 {
      ReloadRate=2.70000

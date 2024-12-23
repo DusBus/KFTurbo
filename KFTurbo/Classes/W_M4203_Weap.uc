@@ -34,6 +34,12 @@ simulated function bool AllowReload()
 	return Super(M4AssaultRifle).AllowReload();
 }
 
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
+
 exec function ReloadMeNow()
 {
 	if (!AllowReload())
@@ -44,7 +50,7 @@ exec function ReloadMeNow()
 		}
 		return;
 	}
-
+	
 	Super.ReloadMeNow();
 }
 

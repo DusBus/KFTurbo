@@ -1,5 +1,13 @@
 class W_LAR_Weap extends Winchester;
 
+var int AddReloadCount;
+
+function AddReloadedAmmo()
+{
+    Super.AddReloadedAmmo();
+    if (Role == ROLE_Authority && ++AddReloadCount >= MagCapacity) { class'WeaponHelper'.static.OnWeaponReload(Self); AddReloadCount = 0; }
+}
+
 simulated function BringUp(optional Weapon PrevWeapon)
 {
      class'WeaponHelper'.static.WeaponCheckForHint(Self, 15);
@@ -23,4 +31,6 @@ defaultproperties
 
      Mesh=None
      MeshRef="KF_Weapons_Trip.Winchester_Trip"
+
+     AddReloadCount=0
 }

@@ -1,5 +1,11 @@
 class W_AK47_Weap extends AK47AssaultRifle;
 
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+     if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
+
 defaultproperties
 {
      Weight=5.000000

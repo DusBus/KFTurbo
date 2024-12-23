@@ -1,5 +1,11 @@
 class W_SealSqueal_Weap extends SealSquealHarpoonBomber;
 
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
+
 defaultproperties
 {
      ReloadRate=2.666666

@@ -2,6 +2,12 @@ class W_MP7M_Weap extends MP7MMedicGun;
 
 var float HealAmmoAmount;
 
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
+
 simulated function float ChargeBar()
 {
 	return class'WeaponHelper'.static.GetMedicGunChargeBar(self);

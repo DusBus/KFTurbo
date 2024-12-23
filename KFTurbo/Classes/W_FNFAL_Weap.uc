@@ -1,5 +1,11 @@
 class W_FNFAL_Weap extends FNFAL_ACOG_AssaultRifle;
 
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
+
 simulated function DoToggle()
 {
 

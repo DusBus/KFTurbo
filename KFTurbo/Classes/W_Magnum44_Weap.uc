@@ -1,5 +1,11 @@
 class W_Magnum44_Weap extends Magnum44Pistol;
 
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
+
 function bool HandlePickupQuery( pickup Item )
 {
 	if (class'WeaponHelper'.static.SingleWeaponHandlePickupQuery(Self, Item))

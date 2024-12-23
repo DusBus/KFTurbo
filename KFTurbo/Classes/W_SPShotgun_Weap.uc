@@ -1,5 +1,11 @@
 class W_SPShotgun_Weap extends SPAutoShotgun;
 
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
+
 defaultproperties
 {
      MagCapacity=20

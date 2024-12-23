@@ -1,5 +1,10 @@
 class W_MAC10_Weap extends MAC10MP;
 
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
 
 defaultproperties
 {

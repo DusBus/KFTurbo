@@ -1,5 +1,11 @@
 class W_DualMK23_Weap extends DualMK23Pistol;
 
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
+
 function bool HandlePickupQuery( pickup Item )
 {
 	if (class'WeaponHelper'.static.DualWeaponHandlePickupQuery(Self, Item))

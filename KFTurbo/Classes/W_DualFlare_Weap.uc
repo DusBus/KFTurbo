@@ -1,5 +1,11 @@
 class W_DualFlare_Weap extends DualFlareRevolver;
 
+function AddReloadedAmmo()
+{
+	Super.AddReloadedAmmo();
+	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
+}
+
 function bool HandlePickupQuery( pickup Item )
 {
 	if (Item.InventoryType == Class'W_FlareRevolver_Weap')
