@@ -621,7 +621,7 @@ exec function AdminSetMaxPlayers(int PlayerCount)
 	}
 
 	PlayerCount = Max(1, PlayerCount);
-	PlayerCount = Min(6, PlayerCount);
+	PlayerCount = Min(12, PlayerCount);
 
 	TurboGameType = KFTurboGameType(Level.Game);
 
