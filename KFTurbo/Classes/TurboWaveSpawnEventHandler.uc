@@ -1,3 +1,5 @@
+//Killing Floor Turbo TurboWaveSpawnEventHandler
+//For more information see https://github.com/KFPilot/KFTurbo.
 class TurboWaveSpawnEventHandler extends Object;
 
 //Note that wave 0 is wave 1 for the UI.
