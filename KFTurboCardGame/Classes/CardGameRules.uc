@@ -598,6 +598,7 @@ function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<Dam
 {
     if (Killed == None)
     {
+        Super.Killed(Killer, Killed, KilledPawn, DamageType);
         return;
     }
 
@@ -617,6 +618,8 @@ function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<Dam
             AddMassDetonationEntry(KFMonster(KilledPawn), PlayerController(Killer));
         }
     }
+    
+    Super.Killed(Killer, Killed, KilledPawn, DamageType);
 }
 
 function bool ShouldTriggerSuddenDeath(Controller Killed, class<DamageType> DamageType)
