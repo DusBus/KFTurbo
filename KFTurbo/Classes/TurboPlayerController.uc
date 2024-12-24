@@ -665,6 +665,8 @@ simulated function ClientWeaponSpawned(class<Weapon> WeaponClass, Inventory Inv)
 	}
 
 	bNeedsWeaponLoad = KFWeaponClass.default.Mesh == None || (KFWeaponClass.default.MeshRef != "" && string(KFWeaponClass.default.Mesh) != KFWeaponClass.default.MeshRef);
+	//Need to also check if skins didn't load or are different. Happens when variant weapons are loaded after non-variants are.
+	bNeedsWeaponLoad = bNeedsWeaponLoad || KFWeaponClass.default.Skins.Length == 0 || KFWeaponClass.default.Skins[0] == None || string(KFWeaponClass.default.Skins[0]) != KFWeaponClass.default.SkinRefs[0];
 	
 	if (bNeedsWeaponLoad)
 	{
