@@ -12,7 +12,7 @@ function Projectile SpawnProjectile(Vector Start, Rotator Dir)
 
 	if (GetDesiredProjectileClass() != None)
 	{
-		Proj = Weapon.Spawn(GetDesiredProjectileClass(), , , Start, Dir);
+		Proj = Weapon.Spawn(GetDesiredProjectileClass(), Weapon,, Start, Dir);
 	}
 
 	if (Proj == None)

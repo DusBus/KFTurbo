@@ -1,6 +1,7 @@
 class W_SeekerSix_Proj extends SeekerSixRocketProjectile;
 
 var Actor LastTouchedOverride;
+var bool bAlreadyDidHitRegister;
 
 function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> damageType, optional int HitIndex)
 {
@@ -10,6 +11,7 @@ function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector M
 simulated function ProcessTouch(Actor Other, Vector HitLocation)
 {
 	local int Index;
+	local W_SeekerSix_Proj SeekerSixProjectile;
 
 	if ( Other == none || Other == Instigator || Other.Base == Instigator )
 	{
@@ -35,9 +37,15 @@ simulated function ProcessTouch(Actor Other, Vector HitLocation)
 
 		for(Index = 0; Index < 6; Index++)
 		{
-			if (W_SeekerSix_Proj(Flock[Index]) != None)
+			SeekerSixProjectile = W_SeekerSix_Proj(Flock[Index]);
+			if (SeekerSixProjectile != None)
 			{
-				W_SeekerSix_Proj(Flock[Index]).LastTouchedOverride = Other;
+				SeekerSixProjectile.LastTouchedOverride = Other;
+
+				if (SeekerSixProjectile != Self)
+				{
+					SeekerSixProjectile.bAlreadyDidHitRegister = true;
+				}
 			}
 		}
 	}
@@ -48,9 +56,10 @@ simulated function ProcessTouch(Actor Other, Vector HitLocation)
 	LastTouchedOverride = None;
 	for(Index = 0; Index < 6; Index++)
 	{
-		if (W_SeekerSix_Proj(Flock[Index]) != None)
+		SeekerSixProjectile = W_SeekerSix_Proj(Flock[Index]);
+		if (SeekerSixProjectile != None)
 		{
-			W_SeekerSix_Proj(Flock[Index]).LastTouchedOverride = None;
+			SeekerSixProjectile.LastTouchedOverride = None;
 		}
 	}
 }
@@ -68,6 +77,10 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 	local bool bAlreadyChecked;
 
 	local KFMonster Monster;
+	local bool bHitMonster;
+	local bool bIsHeadshot;
+	local int DamageDealt;
+
 	local int Index, NumKilled;
 
 	if ( bHurtEntry )
@@ -85,6 +98,11 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 	if (ExtendedZCollision(LastTouchedOverride) != None)
 	{
 		LastTouchedOverride = LastTouchedOverride.Base;
+	}
+
+	if (KFMonster(LastTouchedOverride) != None)
+	{
+		bHitMonster = true;
 	}
 
 	foreach CollidingActors (class'Actor', Target, DamageRadius, HitLocation)
@@ -203,7 +221,44 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 			Target.TakeDamage(DamageAmount, Instigator, Location, Direction * UsedMomentum, DamageType);
 		}
 
-		Target.TakeDamage(ImpactDamage, Instigator, Location, vect(0,0,0), ImpactDamageType);
+		Monster = KFMonster(Target);
+
+		if (Monster != None && !bAlreadyDidHitRegister)
+		{
+			bIsHeadshot = Monster.IsHeadshot(Location, Normal(Velocity), 1.f);
+			DamageDealt = Monster.Health;
+		}
+
+		Target.TakeDamage(ImpactDamage, Instigator, Location, Normal(Velocity), ImpactDamageType);
+
+		if (bHitMonster && !bAlreadyDidHitRegister && Weapon(Owner) != None && Owner.Instigator != None)
+		{
+			if (Monster != None)
+			{
+				DamageDealt -= Monster.Health;
+			}
+			
+			//No flock index means primary, flock means alt.
+			if (FlockIndex == 0)
+			{
+				class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), bIsHeadshot, DamageDealt);
+			}
+			else
+			{
+				class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(1), bIsHeadshot, DamageDealt);
+			}
+		}
+	}
+	else if (bHitMonster) //Fallback in case monster gets destroyed during AOE damage.
+	{
+		if (FlockIndex == 0)
+		{
+			class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), bIsHeadshot, DamageDealt);
+		}
+		else
+		{
+			class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(1), bIsHeadshot, DamageDealt);
+		}
 	}
 
 	if( Role == ROLE_Authority )

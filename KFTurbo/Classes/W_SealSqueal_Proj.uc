@@ -5,6 +5,38 @@ function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector M
 	class'WeaponHelper'.static.SealSquealProjTakeDamage(self, Damage, InstigatedBy, Hitlocation, Momentum, DamageType, HitIndex);
 }
 
+simulated function Explode(vector HitLocation, vector HitNormal)
+{
+	local KFMonster AttachedMonster;
+	local bool bHitMonster;
+	local int DamageDealt;
+
+	if (bHasExploded)
+	{
+		return;
+	}
+
+	AttachedMonster = KFMonster(Base);
+	
+	if (AttachedMonster != None)
+	{
+		bHitMonster = true;
+		DamageDealt = AttachedMonster.Health;
+	}
+
+	Super.Explode(HitLocation, HitNormal);
+
+	if (bHitMonster && Weapon(Owner) != None && Owner.Instigator != None)
+	{
+		if (AttachedMonster != None)
+		{
+			DamageDealt -= AttachedMonster.Health;
+		}
+		
+		class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), bAttachedToHead, DamageDealt);
+	}
+}
+
 // Stick this explosive to the wall or zed it hit
 simulated function Stick(actor HitActor, vector HitLocation)
 {
