@@ -13,9 +13,7 @@ function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector M
 
 simulated function ProcessTouch(Actor Other, Vector HitLocation)
 {
-    local KFMonster Monster;
-    local bool bHitMonster;
-    local int DamageDealt;
+	local TurboPlayerEventHandler.MonsterHitData HitData;
 
     if (bHasExploded)
     {
@@ -42,31 +40,13 @@ simulated function ProcessTouch(Actor Other, Vector HitLocation)
         OrigLoc = Instigator.Location;
     }
 
-    if (KFMonster(Other.Base) != None)
-    {
-        Monster = KFMonster(Other.Base);
-    }
-    else
-    {
-        Monster = KFMonster(Other);
-    }
-
-    if (Monster != None)
-    {
-        DamageDealt = Monster.Health;
-        bHitMonster = true;
-    }
+    class'TurboPlayerEventHandler'.static.CollectMonsterHitData(Other, HitLocation, Normal(Velocity), HitData);
     
 	Explode(HitLocation,Normal(HitLocation-Other.Location));
     
-    if (bHitMonster && Weapon(Owner) != None && Owner.Instigator != None)
+    if (HitData.DamageDealt > 0 && Weapon(Owner) != None && Owner.Instigator != None)
     {
-        if (Monster != None)
-        {
-            DamageDealt -= Monster.Health;
-        }
-
-        class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), false, DamageDealt);
+        class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), HitData);
     }
 }
 

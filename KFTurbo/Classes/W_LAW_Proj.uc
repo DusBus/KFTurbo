@@ -7,9 +7,7 @@ function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector M
 
 simulated function ProcessTouch(Actor Other, Vector HitLocation)
 {
-	local KFMonster HitMonster;
-	local bool bIsHeadshot;
-	local int DamageDealt;
+	local TurboPlayerEventHandler.MonsterHitData HitData;
 
 	if (Other == None || Other == Instigator || Other.Base == Instigator || KFBulletWhipAttachment(Other) != None)
 	{
@@ -33,28 +31,13 @@ simulated function ProcessTouch(Actor Other, Vector HitLocation)
 			AmbientSound=none;
 			PlaySound(Sound'ProjectileSounds.PTRD_deflect04',,2.0);
 
-			HitMonster = KFMonster(Other);
-			if (HitMonster == None)
-			{
-				HitMonster = KFMonster(Other.Base);
-			}
-
-			if (HitMonster != None)
-			{
-				bIsHeadshot = HitMonster.IsHeadShot(HitLocation, Normal(Velocity), 1.f);
-				DamageDealt = HitMonster.Health;
-			}
+			class'TurboPlayerEventHandler'.static.CollectMonsterHitData(Other, HitLocation, Normal(Velocity), HitData);
 
 			Other.TakeDamage(ImpactDamage, Instigator, HitLocation, Normal(Velocity), ImpactDamageType);
 
-			if (DamageDealt > 0 && Weapon(Owner) != None && Owner.Instigator != None)
+			if (HitData.DamageDealt > 0 && Weapon(Owner) != None && Owner.Instigator != None)
 			{
-				if (HitMonster != None)
-				{
-					DamageDealt -= HitMonster.Health;
-				}
-
-				class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), bIsHeadShot, Damage);	
+				class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), HitData);	
 			}
 		}
 
@@ -67,28 +50,13 @@ simulated function ProcessTouch(Actor Other, Vector HitLocation)
 
 	if (!bDud)
 	{
-		HitMonster = KFMonster(Other);
-		if (HitMonster == None)
-		{
-			HitMonster = KFMonster(Other.Base);
-		}
-
-		if (HitMonster != None)
-		{
-			bIsHeadshot = HitMonster.IsHeadShot(HitLocation, Normal(Velocity), 1.f);
-			DamageDealt = HitMonster.Health;
-		}
+		class'TurboPlayerEventHandler'.static.CollectMonsterHitData(Other, HitLocation, Normal(Velocity), HitData);
 
 		Explode(HitLocation,Normal(HitLocation-Other.Location));
 
-		if (DamageDealt > 0 && Weapon(Owner) != None && Owner.Instigator != None)
+		if (HitData.DamageDealt > 0 && Weapon(Owner) != None && Owner.Instigator != None)
 		{
-			if (HitMonster != None)
-			{
-				DamageDealt -= HitMonster.Health;
-			}
-
-			class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), bIsHeadShot, Damage);	
+			class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), HitData);	
 		}
 	}
 }

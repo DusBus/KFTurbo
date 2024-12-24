@@ -7,33 +7,25 @@ function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector M
 
 simulated function Explode(vector HitLocation, vector HitNormal)
 {
-	local KFMonster AttachedMonster;
-	local bool bHitMonster;
-	local int DamageDealt;
+	local TurboPlayerEventHandler.MonsterHitData HitData;
 
 	if (bHasExploded)
 	{
 		return;
 	}
 
-	AttachedMonster = KFMonster(Base);
-	
-	if (AttachedMonster != None)
+	class'TurboPlayerEventHandler'.static.CollectMonsterHitData(Base, HitLocation, Normal(Velocity), HitData);
+
+	if (HitData.DamageDealt > 0)
 	{
-		bHitMonster = true;
-		DamageDealt = AttachedMonster.Health;
+		HitData.bIsHeadshot = bAttachedToHead;
 	}
 
 	Super.Explode(HitLocation, HitNormal);
 
-	if (bHitMonster && Weapon(Owner) != None && Owner.Instigator != None)
+	if (HitData.DamageDealt > 0 && Weapon(Owner) != None && Owner.Instigator != None)
 	{
-		if (AttachedMonster != None)
-		{
-			DamageDealt -= AttachedMonster.Health;
-		}
-		
-		class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), bAttachedToHead, DamageDealt);
+		class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), HitData);
 	}
 }
 

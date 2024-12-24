@@ -20,9 +20,7 @@ function DoFireEffect()
 	local rotator PointRot;
 	local bool bBackStabbed;
 	local KFMonster Monster;
-
-	local bool bIsHeadshot;
-	local int DamageDealt;
+	local TurboPlayerEventHandler.MonsterHitData HitData;
 
 	KFMeleeGun = KFMeleeGun(Weapon);
 
@@ -92,15 +90,14 @@ function DoFireEffect()
 	if (Monster != None)
 	{
 		Monster.bBackstabbed = bBackStabbed;
-		bIsHeadShot = Monster.Health > 0 && !Monster.bDecapitated && Monster.IsHeadShot(HitLocation, vector(PointRot), 1.25f);
-		DamageDealt = Monster.Health;
+
+		class'TurboPlayerEventHandler'.static.CollectMonsterHitData(Monster, HitLocation, vector(PointRot), HitData, 1.25f);
 
 		HitActor.TakeDamage(Damage, Instigator, HitLocation, vector(PointRot), hitDamageClass);
 
-		DamageDealt -= Monster.Health;
-		if (DamageDealt > 0 && HitRegisterCount != LastHitRegisterCount)
+		if (HitData.DamageDealt > 0 && HitRegisterCount != LastHitRegisterCount && Weapon.Instigator != None)
 		{
-			class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Weapon.Instigator.Controller, Self, bIsHeadShot, DamageDealt);
+			class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Weapon.Instigator.Controller, Self, HitData);
 			LastHitRegisterCount = HitRegisterCount;
 		}
 

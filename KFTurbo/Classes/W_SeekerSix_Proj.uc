@@ -1,4 +1,5 @@
-class W_SeekerSix_Proj extends SeekerSixRocketProjectile;
+class W_SeekerSix_Proj extends SeekerSixRocketProjectile
+    dependson(TurboPlayerEventHandler);
 
 var Actor LastTouchedOverride;
 var bool bAlreadyDidHitRegister;
@@ -75,11 +76,9 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 	local Pawn Pawn;
 	local array<Pawn> CheckedPawns;
 	local bool bAlreadyChecked;
-
-	local KFMonster Monster;
-	local bool bHitMonster;
-	local bool bIsHeadshot;
-	local int DamageDealt;
+	
+	local TurboPlayerEventHandler.MonsterHitData HitData;
+	local bool bWasAltFire;
 
 	local int Index, NumKilled;
 
@@ -100,9 +99,9 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 		LastTouchedOverride = LastTouchedOverride.Base;
 	}
 
-	if (KFMonster(LastTouchedOverride) != None)
+	if (!bAlreadyDidHitRegister && KFMonster(LastTouchedOverride) != None)
 	{
-		bHitMonster = true;
+		class'TurboPlayerEventHandler'.static.CollectMonsterHitData(LastTouchedOverride, HitLocation, Normal(Velocity), HitData);
 	}
 
 	foreach CollidingActors (class'Actor', Target, DamageRadius, HitLocation)
@@ -137,7 +136,7 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 
 		Pawn = Pawn(Target);
 
-		if( Pawn == none )
+		if( Pawn == None )
 		{
 			UsedMomentum *= DamageScale;
 			Target.TakeDamage(DamageScale * DamageAmount, Instigator, Location, Direction * UsedMomentum, DamageType);
@@ -164,14 +163,13 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 		if( bAlreadyChecked )
 		{
 			continue;
-		}		
-
-		Monster = KFMonster(Target);
-		if( Monster != none )
-		{
-			DamageScale *= Monster.GetExposureTo(HitLocation);
 		}
-		else if( KFPawn(Target) != none )
+
+		if (KFMonster(Target) != None)
+		{
+			DamageScale *= KFMonster(Target).GetExposureTo(HitLocation);
+		}
+		else if (KFPawn(Target) != None)
 		{
 			DamageScale *= KFPawn(Target).GetExposureTo(HitLocation);
 		}
@@ -190,11 +188,13 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 			Vehicle(Target).DriverRadiusDamage(DamageAmount, DamageRadius, InstigatorController, DamageType, UsedMomentum, HitLocation);
 		}
 
-		if( Role == ROLE_Authority && Monster != none && Monster.Health <= 0 )
+		if( Role == ROLE_Authority && KFMonster(Target) != None && Pawn.Health <= 0 )
 		{
 			NumKilled++;
 		}
 	}
+
+	bWasAltFire = FlockIndex == 0;
 
 	//Do impact damage.
 	if (LastTouchedOverride != None)
@@ -221,43 +221,18 @@ simulated function HurtRadius( float DamageAmount, float DamageRadius, class<Dam
 			Target.TakeDamage(DamageAmount, Instigator, Location, Direction * UsedMomentum, DamageType);
 		}
 
-		Monster = KFMonster(Target);
-
-		if (Monster != None && !bAlreadyDidHitRegister)
-		{
-			bIsHeadshot = Monster.IsHeadshot(Location, Normal(Velocity), 1.f);
-			DamageDealt = Monster.Health;
-		}
-
 		Target.TakeDamage(ImpactDamage, Instigator, Location, Normal(Velocity), ImpactDamageType);
-
-		if (bHitMonster && !bAlreadyDidHitRegister && Weapon(Owner) != None && Owner.Instigator != None)
-		{
-			if (Monster != None)
-			{
-				DamageDealt -= Monster.Health;
-			}
-			
-			//No flock index means primary, flock means alt.
-			if (FlockIndex == 0)
-			{
-				class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), bIsHeadshot, DamageDealt);
-			}
-			else
-			{
-				class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(1), bIsHeadshot, DamageDealt);
-			}
-		}
 	}
-	else if (bHitMonster) //Fallback in case monster gets destroyed during AOE damage.
+
+	if (!bAlreadyDidHitRegister && HitData.DamageDealt > 0 && Weapon(Owner) != None && Owner.Instigator != None)
 	{
-		if (FlockIndex == 0)
+		if (!bWasAltFire)
 		{
-			class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), bIsHeadshot, DamageDealt);
+			class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), HitData);
 		}
 		else
 		{
-			class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(1), bIsHeadshot, DamageDealt);
+			class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(1), HitData);
 		}
 	}
 

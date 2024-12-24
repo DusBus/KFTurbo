@@ -174,11 +174,10 @@ static final function PenetratingWeaponTrace(Vector TraceStart, Rotator Directio
 static final function ETraceResult WeaponTrace(Vector TraceStart, Vector TraceEnd, Vector MomentumVector, KFWeapon Weapon, KFFire Fire, out Actor HitActor, out Vector HitLocation, float DamageMultiplier, out byte NumberMonstersHit)
 {
 	local KFPawn HitPawn;
-	local KFMonster HitMonster;
 	local Vector HitNormal;
 	local array<int> HitPoints;
-	local bool bHeadshot;
-	local int Damage;
+	
+	local TurboPlayerEventHandler.MonsterHitData HitData;
 
 	HitActor = Fire.Instigator.HitPointTrace(HitLocation, HitNormal, TraceEnd, HitPoints, TraceStart,, 1);
 
@@ -214,29 +213,18 @@ static final function ETraceResult WeaponTrace(Vector TraceStart, Vector TraceEn
 	}
     else
     {
-		HitMonster = KFMonster(HitActor);
+    	class'TurboPlayerEventHandler'.static.CollectMonsterHitData(HitActor, HitLocation, Normal(MomentumVector), HitData);
 
-		if (HitMonster != None)
+		if (HitData.Monster != None)
 		{
 			NumberMonstersHit++;
-
-			if (Weapon.Instigator != None && NumberMonstersHit <= 1)
-			{
-				bHeadshot = HitMonster != None && HitMonster.Health > 0 && !HitMonster.bDecapitated && HitMonster.IsHeadshot(HitLocation, Normal(MomentumVector), 1.f);
-				Damage = HitMonster.Health;
-			}
 		}
 
 		HitActor.TakeDamage(int(Fire.DamageMax * DamageMultiplier), Fire.Instigator, HitLocation, MomentumVector, Fire.DamageType);
 
-		if (HitMonster != None && Weapon.Instigator != None && NumberMonstersHit <= 1)
+		if (HitData.DamageDealt > 0)
 		{
-			Damage -= HitMonster.Health;
-
-			if (Damage > 0)
-			{
-				class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Weapon.Instigator.Controller, Fire, bHeadShot, Damage);
-			}
+			class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Weapon.Instigator.Controller, Fire, HitData);
 		}
 	}
 
@@ -944,8 +932,8 @@ static final function CrossbowProjectileProcessTouch(Projectile Projectile, floa
 	local array<int>	HitPoints;
     local KFPawn HitPawn;
 	local bool	bHitWhipAttachment;
-	local int DamageDealt;
-	local bool bIsHeadshot;
+	
+	local TurboPlayerEventHandler.MonsterHitData HitData;
 
 	if (Other == None || Other == Projectile.Instigator || Other.Base == Projectile.Instigator || !Other.bBlockHitPointTraces || Other == IgnoreImpactPawn || (IgnoreImpactPawn != None && Other.Base == IgnoreImpactPawn))
 	{
@@ -1006,10 +994,9 @@ static final function CrossbowProjectileProcessTouch(Projectile Projectile, floa
 	if (Projectile.Physics == PHYS_Projectile && Pawn(Other) != None && Vehicle(Other) == None)
 	{
 		IgnoreImpactPawn = Pawn(Other);
-		DamageDealt = IgnoreImpactPawn.Health;
-		bIsHeadshot = IgnoreImpactPawn.IsHeadShot(HitLocation, X, 1.0);
+    	class'TurboPlayerEventHandler'.static.CollectMonsterHitData(Other, HitLocation, X, HitData);
 
-		if (bIsHeadshot)
+		if (HitData.bIsHeadshot)
 		{
 			Other.TakeDamage(Projectile.Damage * HeadshotDamageMulti, Projectile.Instigator, HitLocation, Projectile.MomentumTransfer * X, HeadshotDamageType);
 		}
@@ -1021,8 +1008,7 @@ static final function CrossbowProjectileProcessTouch(Projectile Projectile, floa
 		if (bHasRegisteredHit == 0 && Weapon(Projectile.Owner) != None && Projectile.Owner.Instigator != None)
 		{
 			bHasRegisteredHit = 1;
-			DamageDealt -= IgnoreImpactPawn.Health;
-			class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Projectile.Owner.Instigator.Controller, Weapon(Projectile.Owner).GetFireMode(0), bIsHeadshot, DamageDealt);
+			class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Projectile.Owner.Instigator.Controller, Weapon(Projectile.Owner).GetFireMode(0), HitData);
 		}
 
 		Projectile.Damage /= 1.25;

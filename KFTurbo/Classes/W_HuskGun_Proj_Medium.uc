@@ -1,4 +1,5 @@
-class W_HuskGun_Proj_Medium extends KFMod.HuskGunProjectile;
+class W_HuskGun_Proj_Medium extends KFMod.HuskGunProjectile
+    dependson(TurboPlayerEventHandler);
 
 function TakeDamage( int Damage, Pawn InstigatedBy, vector Hitlocation, vector Momentum, class<DamageType> damageType, optional int HitIndex)
 {
@@ -13,9 +14,7 @@ simulated function ProcessTouch(Actor Other, vector HitLocation)
 	local array<int> HitPoints;
     local KFPawn HitPawn;
 
-    local KFMonster HitMonster;
-    local int DamageDealt;
-    local bool bIsHeadshot;
+	local TurboPlayerEventHandler.MonsterHitData HitData;
 
 	if (Other == none || Other == Instigator || Other.Base == Instigator || KFBulletWhipAttachment(Other) != None)
     {
@@ -67,17 +66,7 @@ simulated function ProcessTouch(Actor Other, vector HitLocation)
     }
     else
     {
-        HitMonster = KFMonster(Other);
-        if (HitMonster == None)
-        {
-            HitMonster = KFMonster(Other.Base);
-        }
-
-        if (HitMonster != None && Owner != None && Owner.Instigator != None)
-        {
-            bIsHeadshot = HitMonster.IsHeadShot(HitLocation, X, 1.f);
-            DamageDealt = HitMonster.Health;
-        }
+        class'TurboPlayerEventHandler'.static.CollectMonsterHitData(Other, HitLocation, Normal(Velocity), HitData);
 
         if (Pawn(Other) != None && Pawn(Other).IsHeadShot(HitLocation, X, 1.0))
         {
@@ -88,14 +77,9 @@ simulated function ProcessTouch(Actor Other, vector HitLocation)
             Other.TakeDamage(ImpactDamage, Instigator, HitLocation, MomentumTransfer * Normal(Velocity), ImpactDamageType);
         }
 
-        if (DamageDealt > 0 && Weapon(Owner) != None && Owner.Instigator != None)
+        if (HitData.DamageDealt > 0 && Weapon(Owner) != None && Owner.Instigator != None)
         {
-            if (HitMonster != None)
-            {
-                DamageDealt -= HitMonster.Health;
-            }
-
-            class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), bIsHeadshot, DamageDealt);
+            class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), HitData);
         }
     }
 

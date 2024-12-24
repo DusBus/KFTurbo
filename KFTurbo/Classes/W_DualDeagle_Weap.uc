@@ -46,4 +46,10 @@ defaultproperties
 	SelectedHudImage=None
 	HudImageRef="KillingFloorHUD.WeaponSelect.dual_handcannon_unselected"
 	SelectedHudImageRef="KillingFloorHUD.WeaponSelect.dual_handcannon"
+
+	Mesh=None
+	MeshRef="KF_Weapons_Trip.Dual50_Trip"
+	
+	Skins(0)=None
+	SkinRefs(0)="KF_Weapons_Trip_T.Pistols.deagle_cmb"
 }

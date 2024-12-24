@@ -13,7 +13,7 @@ function PreBeginPlay()
     Super.PreBeginPlay();
 }
 
-function NotifyProjectileRegisterHit(bool bIsHeadshot, int DamageDealt)
+function NotifyProjectileRegisterHit(TurboPlayerEventHandler.MonsterHitData HitData)
 {
     local W_BoomStick_Fire_Alt WeaponFire;
     WeaponFire = W_BoomStick_Fire_Alt(GetWeaponFire());
@@ -23,7 +23,7 @@ function NotifyProjectileRegisterHit(bool bIsHeadshot, int DamageDealt)
         return;
     }
 
-    RegisterHit(WeaponFire.HitRegistryList, bIsHeadshot, DamageDealt);
+    RegisterHit(WeaponFire.HitRegistryList, HitData);
 }
 
 defaultproperties

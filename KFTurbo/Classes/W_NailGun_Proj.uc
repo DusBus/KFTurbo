@@ -9,16 +9,16 @@ event PreBeginPlay()
 	class'WeaponHelper'.static.NotifyPostProjectileSpawned(self);
 }
 
-simulated function ProcessTouch (Actor Other, vector HitLocation)
+simulated function ProcessTouch(Actor Other, vector HitLocation)
 {
      local vector X;
      local Vector TempHitLocation, HitNormal;
      local array<int>	HitPoints;
      local KFPawn HitPawn;
      local bool bWasDecapitated;
-     local KFMonster KFM;
-     local bool bIsHeadshot;
-     local int DamageDealt;
+     
+     local KFMonster Monster;
+	local TurboPlayerEventHandler.MonsterHitData HitData;
 
 	if (Other == None || Other == Instigator || Other.Base == Instigator || !Other.bBlockHitPointTraces)
      {
@@ -58,20 +58,19 @@ simulated function ProcessTouch (Actor Other, vector HitLocation)
                return;
           }
 
-          KFM = KFMonster(Other);
+          Monster = KFMonster(Other);
 
-          if (KFM != None)
+          if (Monster != None)
           {
-               bWasDecapitated = KFM.bDecapitated;
-               bIsHeadshot = KFM.IsHeadShot(HitLocation, Normal(Velocity), 1.f);
-               DamageDealt = KFM.Health;
+               bWasDecapitated = Monster.bDecapitated;
+			class'TurboPlayerEventHandler'.static.CollectMonsterHitData(Other, HitLocation, Normal(Velocity), HitData);
           }
 
           Other.TakeDamage(Damage, Instigator, HitLocation, MomentumTransfer * Normal(Velocity), MyDamageType);
 
-          if (Role == ROLE_Authority && Bounces > 0 && MonsterHeadAttached == None && KFM != None && !bWasDecapitated && KFM.Health < 0 && KFM.IsHeadShot(HitLocation, X, 1.0))
+          if (Role == ROLE_Authority && Bounces > 0 && MonsterHeadAttached == None && Monster != None && !bWasDecapitated && Monster.Health < 0 && Monster.IsHeadShot(HitLocation, X, 1.0))
           {
-               MonsterHeadAttached = KFM;
+               MonsterHeadAttached = Monster;
 
                if (Level.NetMode == NM_ListenServer || Level.NetMode == NM_StandAlone)
                {
@@ -81,17 +80,16 @@ simulated function ProcessTouch (Actor Other, vector HitLocation)
                Bounces = 0;
           }
 
-          if (KFM != None)
+          if (HitData.DamageDealt > 0)
           {
-               //If damage was applied and we're doing less than our default, assume it's a penetrated hit.
                if (Damage < default.Damage)
                {
                     class'WeaponHelper'.static.OnShotgunPenetratingProjectileHit(Self, Other, Damage);
                }
-               else if (Weapon(Owner) != None && Owner.Instigator != None)
+
+               if (Weapon(Owner) != None && Owner.Instigator != None)
                {
-                    DamageDealt -= KFM.Health;
-		          class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), bIsHeadshot, DamageDealt);
+                    class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Owner.Instigator.Controller, Weapon(Owner).GetFireMode(0), HitData);
                }
           }
      }

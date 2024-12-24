@@ -37,7 +37,7 @@ final function BaseProjectileFire GetWeaponFire()
     return None;
 }
 
-final function RegisterHit(out array<HitRegisterEntry> HitRegisterList, bool bIsHeadshot, int DamageDealt)
+final function RegisterHit(out array<HitRegisterEntry> HitRegisterList, TurboPlayerEventHandler.MonsterHitData HitData)
 {
     local int Index;
 
@@ -46,7 +46,7 @@ final function RegisterHit(out array<HitRegisterEntry> HitRegisterList, bool bIs
         if (HitRegisterList[Index].HitRegisterCount == FireModeHitRegisterCount)
         {
             HitRegisterList.Remove(Index, 1);
-            class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(GetWeaponController(), GetWeaponFire(), bIsHeadshot, DamageDealt);
+            class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(GetWeaponController(), GetWeaponFire(), HitData);
             continue;
         }
 
@@ -59,7 +59,7 @@ final function RegisterHit(out array<HitRegisterEntry> HitRegisterList, bool bIs
 }
 
 //Implemented by specific shotgun projectiles to resolve firemode.
-function NotifyProjectileRegisterHit(bool bIsHeadshot, int DamageDealt) {}
+function NotifyProjectileRegisterHit(TurboPlayerEventHandler.MonsterHitData HitData) {}
 
 simulated function ProcessTouch(Actor Other, vector HitLocation)
 {
@@ -68,9 +68,7 @@ simulated function ProcessTouch(Actor Other, vector HitLocation)
 	local array<int> HitPoints;
     local KFPawn HitPawn;
 
-    local KFMonster Monster;
-    local bool bIsHeadshot;
-    local int DamageDealt;
+	local TurboPlayerEventHandler.MonsterHitData HitData;
 
 	if (Other == None || Other == Instigator || Other.Base == Instigator || !Other.bBlockHitPointTraces)
     {
@@ -100,34 +98,16 @@ simulated function ProcessTouch(Actor Other, vector HitLocation)
 	}
     else
     {
-        Monster = KFMonster(Other);
-        if (Monster == None)
-        {
-            Monster = KFMonster(Other.Base);
-        }
-
-        if (Monster != None)
-        {
-            bIsHeadshot = Monster.IsHeadShot(HitLocation, Normal(Velocity), 1.f);
-            DamageDealt = Monster.Health;
-        }
+        class'TurboPlayerEventHandler'.static.CollectMonsterHitData(Other, HitLocation, Normal(Velocity), HitData);
 
         //Just pass it through. It's likely a pawn or an extended z collision.
         Other.TakeDamage(Damage, Instigator, HitLocation, MomentumTransfer * Normal(Velocity), MyDamageType);
 
-        //If damage was applied and we're doing less than our default, assume it's a penetrated hit.
-        if (Monster != None)
+        NotifyProjectileRegisterHit(HitData);
+              
+        if (HitData.DamageDealt > 0 && Damage < default.Damage)
         {
-            DamageDealt -= Monster.Health;
-
-            if (Damage >= default.Damage && DamageDealt > 0)
-            {
-                NotifyProjectileRegisterHit(bIsHeadshot, DamageDealt);
-            }
-            else
-            {
-                class'WeaponHelper'.static.OnShotgunPenetratingProjectileHit(Self, Other, Damage);
-            }
+            class'WeaponHelper'.static.OnShotgunPenetratingProjectileHit(Self, Other, Damage);
         }
     }
 

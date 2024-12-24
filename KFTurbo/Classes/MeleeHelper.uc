@@ -14,9 +14,7 @@ static final function bool PerformMeleeSwing(KFWeapon Weapon, KFMeleeFire MeleeF
 	local vector dir, lookdir;
 	local float DiffAngle, VictimDist;
 
-	local KFMonster Monster;
-	local bool bIsHeadshot;
-	local int Damage;
+	local TurboPlayerEventHandler.MonsterHitData HitData;
 
 	local bool bBroadcastedHit;
 
@@ -69,19 +67,16 @@ static final function bool PerformMeleeSwing(KFWeapon Weapon, KFMeleeFire MeleeF
 			MyDamage *= 2.f;
 		}
 
-		Monster = KFMonster(HitActor);
-		if (Monster != None)
+		class'TurboPlayerEventHandler'.static.CollectMonsterHitData(HitActor, HitLocation, vector(PointRot), HitData, 1.25f);
+
+		if (HitData.Monster != None)
 		{
-			Monster.bBackstabbed = bBackStabbed;
-			bIsHeadShot = Monster.Health > 0 && !Monster.bDecapitated && Monster.IsHeadShot(HitLocation, vector(PointRot), 1.25f);
-			Damage = Monster.Health;
+			HitData.Monster.bBackstabbed = bBackStabbed;
+			HitData.Monster.TakeDamage(MyDamage, MeleeFire.Instigator, HitLocation, vector(PointRot), MeleeFire.hitDamageClass);
 
-			Monster.TakeDamage(MyDamage, MeleeFire.Instigator, HitLocation, vector(PointRot), MeleeFire.hitDamageClass);
-
-			Damage -= Monster.Health;
-			if (!bSkipHitBroadcast && Damage > 0)
+			if (!bSkipHitBroadcast && HitData.DamageDealt > 0)
 			{
-				class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Weapon.Instigator.Controller, MeleeFire, bIsHeadShot, Damage);
+				class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Weapon.Instigator.Controller, MeleeFire, HitData);
 				bBroadcastedHit = true;
 			}
 
@@ -90,9 +85,9 @@ static final function bool PerformMeleeSwing(KFWeapon Weapon, KFMeleeFire MeleeF
 				Weapon.PlaySound(MeleeFire.MeleeHitSounds[Rand(MeleeFire.MeleeHitSounds.length)],SLOT_None,MeleeFire.MeleeHitVolume,,,,false);
 			}
 
-			if (VSize(MeleeFire.Instigator.Velocity) > 300 && Monster.Mass <= MeleeFire.Instigator.Mass)
+			if (VSize(MeleeFire.Instigator.Velocity) > 300 && HitData.Monster.Mass <= MeleeFire.Instigator.Mass)
 			{
-				Monster.FlipOver();
+				HitData.Monster.FlipOver();
 			}
 		}
 		else
