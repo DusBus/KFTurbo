@@ -28,7 +28,7 @@ simulated function Timer()
 {
     MeleeDamage = float(MeleeDamage) * (1.f / float(TotalHitCount));
 
-    if (class'MeleeHelper'.static.PerformMeleeSwing(KFWeapon(Weapon), Self, HitRegisterCount != LastHitRegisterCount))
+    if (class'MeleeHelper'.static.PerformMeleeSwing(KFWeapon(Weapon), Self, HitRegisterCount == LastHitRegisterCount))
     {
         LastHitRegisterCount = HitRegisterCount;
     }
