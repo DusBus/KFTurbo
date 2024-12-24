@@ -17,7 +17,10 @@ enum ETurboVoiceCommand{
     GoUpstairs,
     HeadDownstairs,
     GetInside,
-    GoOutside
+    GoOutside,
+
+    //Insult
+    InsultPlayers
 };
 
 static function int GetGenerateMarkerDataFromVoiceCommand(Name Type, int Index)
@@ -59,6 +62,13 @@ static function int GetGenerateMarkerDataFromVoiceCommand(Name Type, int Index)
                     return ETurboVoiceCommand.GoOutside;
 			}
 			break;
+		case 'INSULT':
+			switch(Index)
+			{
+				case 2:
+                    return ETurboVoiceCommand.InsultPlayers;
+			}
+			break;
 	}
 
     return -1;
@@ -80,6 +90,8 @@ static function float GetMarkerDuration(Actor MarkedActor, class<Actor> MarkActo
         case GetInside:
         case GoOutside:
             return 10.f;
+        case InsultPlayers:
+            return 10.f;
     }
 }
 
@@ -92,6 +104,17 @@ static function bool ShouldReceiveLocationUpdate(Actor MarkedActor, class<Actor>
     }
 
     return true;
+}
+
+static function bool WantsToMarkLookTarget(int MarkerData)
+{
+    switch(ETurboVoiceCommand(MarkerData))
+    {
+        case InsultPlayers:
+            return true;
+    }
+
+    return false;
 }
 
 static function String GenerateMarkerDisplayString(Actor MarkedActor, class<Actor> MarkActorClass, Object DataObject, class<Object> DataClass, int MarkerData)

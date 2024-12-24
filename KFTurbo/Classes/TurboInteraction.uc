@@ -140,6 +140,10 @@ exec simulated function MarkActor(optional TurboPlayerMarkReplicationInfo.EMarkC
 simulated function CheckForVoiceCommandMark(Name Type, int Index)
 {
 	local int VoiceCommandMarkData;
+	local Vector HitLocation, HitNormal;
+	local Vector StartMarkTrace, X, Y, Z;
+	local Vector EndMarkTrace;
+	local Actor TargetActor;
 
 	if (Type == 'ALERT' && Index == 0)
 	{
@@ -155,7 +159,27 @@ simulated function CheckForVoiceCommandMark(Name Type, int Index)
 	}
 
 	//Mark the pawn with this data.
-	TurboPlayerController(ViewportOwner.Actor).AttemptMarkActor(ViewportOwner.Actor.Pawn.Location, ViewportOwner.Actor.Pawn.Location, ViewportOwner.Actor.Pawn, class'TurboMarkerType_VoiceCommand', VoiceCommandMarkData, MarkColor);
+	if (!class'TurboMarkerType_VoiceCommand'.static.WantsToMarkLookTarget(VoiceCommandMarkData))
+	{
+		TurboPlayerController(ViewportOwner.Actor).AttemptMarkActor(ViewportOwner.Actor.Pawn.Location, ViewportOwner.Actor.Pawn.Location, ViewportOwner.Actor.Pawn, class'TurboMarkerType_VoiceCommand', VoiceCommandMarkData, MarkColor);
+		return;
+	}
+
+	if (ViewportOwner.Actor == None || ViewportOwner.Actor.Pawn == None)
+	{
+		return;
+	}
+
+	StartMarkTrace = ViewportOwner.Actor.Pawn.Location + ViewportOwner.Actor.Pawn.EyePosition();
+	ViewportOwner.Actor.Pawn.Weapon.GetViewAxes(X, Y, Z);
+	
+	EndMarkTrace = StartMarkTrace + (X * 500.f);
+	TargetActor = ViewportOwner.Actor.Pawn.Trace(HitLocation, HitNormal, EndMarkTrace, StartMarkTrace, true, vect(10, 10, 10));
+
+	if (TurboHumanPawn(TargetActor) != None)
+	{
+		TurboPlayerController(ViewportOwner.Actor).AttemptMarkActor(StartMarkTrace, HitLocation, TargetActor, class'TurboMarkerType_VoiceCommand', VoiceCommandMarkData, MarkColor);
+	}
 }
 
 simulated function SetVeterancyTierPreference(class<TurboVeterancyTypes> PerkClass, int TierPreference)
