@@ -8,6 +8,16 @@ function DoFireEffect()
     Super.DoFireEffect();
 }
 
+function Projectile SpawnProjectile(Vector Start, Rotator Dir)
+{
+    return class'WeaponHelper'.static.SpawnProjectile(Self, Start, Dir);
+}
+
+function Projectile ForceSpawnProjectile(Vector Start, Rotator Dir)
+{
+    return class'WeaponHelper'.static.ForceSpawnProjectile(Self, Start, Dir);
+}
+
 simulated function float GetScaledMaxChargeTime()
 {
     local float ScaledMaxChargeTime;
