@@ -142,12 +142,12 @@ final function KFTurboRandomizerLoadout GetRandomPatriarchFunnyLoadout()
 
 defaultproperties
 {
-    SingleWeaponClass=class'KFMod.Single'
-    DualiesWeaponClass=class'KFMod.Dualies'
+    SingleWeaponClass=class'KFTurbo.W_9MM_Weap'
+    DualiesWeaponClass=class'KFTurbo.W_Dual9MM_Weap'
     FragWeaponClass=class'KFTurbo.W_Frag_Weap'
-    SyringeWeaponClass=class'KFMod.Syringe'
+    SyringeWeaponClass=class'KFTurbo.W_Syringe_Weap'
     WelderWeaponClass=class'KFMod.Welder'
-    KnifeWeaponClass=class'KFMod.Knife'
+    KnifeWeaponClass=class'KFTurbo.W_Knife_Weap'
 
     Begin Object Class=LoadoutCollection_Fleshpound Name=FleshpoundLoadoutCollection
     End Object
