@@ -49,6 +49,9 @@ var Texture SquareContainer;
 var Color ActiveWaveIconColor;
 var Texture ActiveWaveIcon;
 
+var bool bIsTestGameMode;
+var bool bIsGameOver;
+
 //Kill Feed
 struct KillFeedEntry
 {
@@ -72,6 +75,7 @@ simulated function Initialize(TurboHUDKillingFloor OwnerHUD)
 	Super.Initialize(OwnerHUD);
 
 	TGRI = TurboGameReplicationInfo(Level.GRI);
+	bIsTestGameMode = class'KFTurboGameType'.static.StaticIsTestGameType(Self);
 
 	ActiveBackplateSize = BackplateSize;
 }
@@ -86,8 +90,11 @@ simulated function Tick(float DeltaTime)
 		{
 			return;
 		}
+
+		bIsTestGameMode = class'KFTurboGameType'.static.StaticIsTestGameType(Self);
 	}
 
+	TickGameState(DeltaTime);
 	TickKillFeed(DeltaTime);
 
 	if (TGRI.bWaveInProgress && !IsInState('ActiveWave'))
@@ -98,6 +105,11 @@ simulated function Tick(float DeltaTime)
 	{
 		GotoState('WaitingWave');
 	}	
+}
+
+simulated function TickGameState(float DeltaTime)
+{
+	bIsGameOver = TGRI != None && TGRI.EndGameType != 0;
 }
 
 simulated function Render(Canvas C)
@@ -111,9 +123,14 @@ simulated function Render(Canvas C)
 		return;
 	}
 	
-	DrawGameBackplate(C, BackplateACenter, BackplateBCenter);
-	DrawCurrentWave(C, BackplateACenter);
-	DrawWaveData(C, BackplateBCenter);
+	if (!bIsTestGameMode  && !bIsGameOver)
+	{
+		DrawGameBackplate(C, BackplateACenter, BackplateBCenter);
+		DrawCurrentWave(C, BackplateACenter);
+		DrawWaveData(C, BackplateBCenter);
+	}
+	
+	DrawKillFeed(C);
 	
 	C.Reset();
 	C.DrawColor = class'HudBase'.default.WhiteColor;
@@ -205,10 +222,7 @@ simulated function DrawCurrentWave(Canvas C, Vector2D Center)
 }
 
 
-simulated function DrawWaveData(Canvas C, Vector2D Center)
-{
-	DrawKillFeed(C);
-}
+simulated function DrawWaveData(Canvas C, Vector2D Center) {}
 
 simulated function ReceivedKillMessage(class<KillsMessage> KillsMessageClass, class<Monster> MonsterClass, PlayerReplicationInfo Killer)
 {
@@ -296,7 +310,11 @@ state ActiveWave
 			{
 				return;
 			}
+
+			bIsTestGameMode = class'KFTurboGameType'.static.StaticIsTestGameType(Self);
 		}
+
+		TickGameState(DeltaTime);
 
 		TickActiveWave(DeltaTime);
 		TickKillFeed(DeltaTime);
@@ -309,13 +327,11 @@ state ActiveWave
 		{
 			TickActiveFadeIn(DeltaTime);
 		}
-
 	}
 
 	simulated function DrawWaveData(Canvas C, Vector2D Center)
 	{
 		DrawActiveWave(C, Center);
-		DrawKillFeed(C);
 	}
 }
 
@@ -617,7 +633,11 @@ state WaitingWave
 			{
 				return;
 			}
+
+			bIsTestGameMode = class'KFTurboGameType'.static.StaticIsTestGameType(Self);
 		}
+
+		TickGameState(DeltaTime);
 
 		TickTraderWave(DeltaTime);
 		TickKillFeed(DeltaTime);
@@ -636,7 +656,6 @@ state WaitingWave
 	{
 		DrawTraderWave(C, Center);
 		DrawTraderEndVote(C);
-		DrawKillFeed(C);
 	}
 }
 
