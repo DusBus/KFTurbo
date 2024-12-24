@@ -787,6 +787,8 @@ defaultproperties
 	bDebugServerBuyWeapon=false
 	HealthHealingTo=0
 
+	RequiredEquipment(0)="KFTurbo.W_Knife_Weap"
+	RequiredEquipment(1)="KFTurbo.W_9MM_Weap"
 	RequiredEquipment(2)="KFTurbo.W_Frag_Weap"
     RequiredEquipment(3)="KFTurbo.W_Syringe_Weap"
 }
