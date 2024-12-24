@@ -54,17 +54,35 @@ static final function float GetDistanceBetweenActors(Actor A, Actor B)
 	return VSize(Distance);
 }
 
+static final function Actor GetExtendedCollisionFor(xPawn Pawn)
+{
+	if (KFPawn(Pawn) != None)
+	{
+		return KFPawn(Pawn).AuxCollisionCylinder;
+	}
+	
+	if (KFMonster(Pawn) != None)
+	{
+		return KFMonster(Pawn).MyExtCollision;
+	}
+
+	return None;
+}
+
 static final function PenetratingWeaponTrace(Vector TraceStart, Rotator Direction, KFWeapon Weapon, KFFire Fire, int PenetrationMax, float PenetrationMultiplier)
 {
 	local Actor HitActor;
+	local Actor HitActorExtendedCollision;
 	local array<Actor> IgnoreActors;
 	local Vector TraceEnd, MomentumVector;
 	local Vector HitLocation;
 	local KFPlayerReplicationInfo KFPRI;
 	local int HitCount;
 	local float WeaponPenetrationMultiplier;
+	local byte NumberMonstersHit;
 
 	HitCount = 0;
+	NumberMonstersHit = 0;
 	WeaponPenetrationMultiplier = 1.f;
 	PenetrationMax++;
 
@@ -92,7 +110,7 @@ static final function PenetratingWeaponTrace(Vector TraceStart, Rotator Directio
 	{
 		HitActor = None;
 
-		switch(WeaponTrace(TraceStart, TraceEnd, MomentumVector, Weapon, Fire, HitActor, HitLocation, (PenetrationMultiplier ** float(HitCount))))
+		switch(WeaponTrace(TraceStart, TraceEnd, MomentumVector, Weapon, Fire, HitActor, HitLocation, (PenetrationMultiplier ** float(HitCount)), NumberMonstersHit))
 		{
 		case TR_Block:
 			HitCount = PenetrationMax + 1;
@@ -126,6 +144,18 @@ static final function PenetratingWeaponTrace(Vector TraceStart, Rotator Directio
 			IgnoreActors[IgnoreActors.Length - 1] = HitActor;
 			HitActor = HitActor.Base;
 		}
+		//Need to go find the extended collision if we hit the pawn.
+		else if (xPawn(HitActor) != None)
+		{
+			HitActorExtendedCollision = GetExtendedCollisionFor(xPawn(HitActor));
+
+			if (HitActorExtendedCollision != None)
+			{
+				HitActorExtendedCollision.SetCollision(false);
+				IgnoreActors.Length = IgnoreActors.Length + 1;
+				IgnoreActors[IgnoreActors.Length - 1] = HitActorExtendedCollision;
+			}
+		}
 		
 		HitActor.SetCollision(false);
 		IgnoreActors[IgnoreActors.Length] = HitActor;
@@ -141,7 +171,7 @@ static final function PenetratingWeaponTrace(Vector TraceStart, Rotator Directio
 	EnableCollision(IgnoreActors);
 }
 
-static final function ETraceResult WeaponTrace(Vector TraceStart, Vector TraceEnd, Vector MomentumVector, KFWeapon Weapon, KFFire Fire, out Actor HitActor, out Vector HitLocation, float DamageMultiplier)
+static final function ETraceResult WeaponTrace(Vector TraceStart, Vector TraceEnd, Vector MomentumVector, KFWeapon Weapon, KFFire Fire, out Actor HitActor, out Vector HitLocation, float DamageMultiplier, out byte NumberMonstersHit)
 {
 	local KFPawn HitPawn;
 	local KFMonster HitMonster;
@@ -168,9 +198,14 @@ static final function ETraceResult WeaponTrace(Vector TraceStart, Vector TraceEn
 		return TR_Block;
 	}
 
+	if (xPawn(HitActor.Base) != None)
+	{
+		HitActor = HitActor.Base;
+	}
+
 	HitPawn = KFPawn(HitActor);
 
-	if ( HitPawn != none )
+	if (HitPawn != None)
 	{
 		if(!HitPawn.bDeleteMe)
 		{
@@ -179,20 +214,22 @@ static final function ETraceResult WeaponTrace(Vector TraceStart, Vector TraceEn
 	}
     else
     {
-		if (Weapon.Instigator != None)
-		{
-			HitMonster = KFMonster(HitActor);
-			bHeadshot = HitMonster != None && HitMonster.Health > 0 && !HitMonster.bDecapitated && HitMonster.IsHeadshot(HitLocation, Normal(MomentumVector), 1.f);
-		}
-		
+		HitMonster = KFMonster(HitActor);
+
 		if (HitMonster != None)
 		{
-			Damage = HitMonster.Health;
+			NumberMonstersHit++;
+
+			if (Weapon.Instigator != None && NumberMonstersHit <= 1)
+			{
+				bHeadshot = HitMonster != None && HitMonster.Health > 0 && !HitMonster.bDecapitated && HitMonster.IsHeadshot(HitLocation, Normal(MomentumVector), 1.f);
+				Damage = HitMonster.Health;
+			}
 		}
 
 		HitActor.TakeDamage(int(Fire.DamageMax * DamageMultiplier), Fire.Instigator, HitLocation, MomentumVector, Fire.DamageType);
 
-		if (Weapon.Instigator != None && HitMonster != None)
+		if (HitMonster != None && Weapon.Instigator != None && NumberMonstersHit <= 1)
 		{
 			Damage -= HitMonster.Health;
 
@@ -898,6 +935,123 @@ static final function SPGrenadeProjTakeDamage(SPGrenadeProjectile Projectile, in
     {
         Projectile.Explode(HitLocation, vect(0,0,0));
     }
+}
+
+static final function CrossbowProjectileProcessTouch(Projectile Projectile, float HeadshotDamageMulti, class<DamageType> HeadshotDamageType, Actor Other, vector HitLocation, Sound HitArmor, Sound HitFlesh, out Pawn IgnoreImpactPawn, out byte bHasRegisteredHit)
+{
+	local vector X,End,HL,HN;
+	local Vector TempHitLocation, HitNormal;
+	local array<int>	HitPoints;
+    local KFPawn HitPawn;
+	local bool	bHitWhipAttachment;
+	local int DamageDealt;
+	local bool bIsHeadshot;
+
+	if (Other == None || Other == Projectile.Instigator || Other.Base == Projectile.Instigator || !Other.bBlockHitPointTraces || Other == IgnoreImpactPawn || (IgnoreImpactPawn != None && Other.Base == IgnoreImpactPawn))
+	{
+		return;
+	}
+
+	X =  Vector(Projectile.Rotation);
+
+ 	if (ROBulletWhipAttachment(Other) != None)
+	{
+    	bHitWhipAttachment=true;
+		
+        if (Other.Base.bDeleteMe)
+		{
+			return;
+		}
+
+		Other = Projectile.Instigator.HitPointTrace(TempHitLocation, HitNormal, HitLocation + (65535 * X), HitPoints, HitLocation,, 1);
+
+		if (Other == None || HitPoints.Length == 0)
+		{
+			return;
+		}
+
+		HitPawn = KFPawn(Other);
+
+		if (Projectile.Role == ROLE_Authority && HitPawn != None)
+		{
+			if (!HitPawn.bDeleteMe)
+			{
+				HitPawn.ProcessLocationalDamage(Projectile.Damage, Projectile.Instigator, TempHitLocation, Projectile.MomentumTransfer * X, Projectile.MyDamageType, HitPoints);
+			}
+
+			Projectile.Damage /= 1.25;
+			Projectile.Velocity *= 0.85;
+
+			IgnoreImpactPawn = HitPawn;
+
+			if (Projectile.Level.NetMode != NM_Client)
+			{
+				PlayHitNoise(Projectile, Pawn(Other) != None && Pawn(Other).ShieldStrength > 0, HitArmor, HitFlesh);
+			}
+		}
+
+		return;
+	}
+
+	if (Projectile.Level.NetMode != NM_Client)
+	{
+		PlayHitNoise(Projectile, Pawn(Other) != None && Pawn(Other).ShieldStrength > 0, HitArmor, HitFlesh);
+	}
+
+	if (ExtendedZCollision(Other) != None)
+	{
+		Other = Other.Base;
+	}
+
+	if (Projectile.Physics == PHYS_Projectile && Pawn(Other) != None && Vehicle(Other) == None)
+	{
+		IgnoreImpactPawn = Pawn(Other);
+		DamageDealt = IgnoreImpactPawn.Health;
+		bIsHeadshot = IgnoreImpactPawn.IsHeadShot(HitLocation, X, 1.0);
+
+		if (bIsHeadshot)
+		{
+			Other.TakeDamage(Projectile.Damage * HeadshotDamageMulti, Projectile.Instigator, HitLocation, Projectile.MomentumTransfer * X, HeadshotDamageType);
+		}
+		else
+		{
+			Other.TakeDamage(Projectile.Damage, Projectile.Instigator, HitLocation, Projectile.MomentumTransfer * X, Projectile.MyDamageType);
+		}
+
+		if (bHasRegisteredHit == 0 && Weapon(Projectile.Owner) != None && Projectile.Owner.Instigator != None)
+		{
+			bHasRegisteredHit = 1;
+			DamageDealt -= IgnoreImpactPawn.Health;
+			class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Projectile.Owner.Instigator.Controller, Weapon(Projectile.Owner).GetFireMode(0), bIsHeadshot, DamageDealt);
+		}
+
+		Projectile.Damage /= 1.25;
+		Projectile.Velocity *= 0.85;
+
+		return;
+	}
+
+	if (Projectile.Level.NetMode != NM_DedicatedServer && SkeletalMesh(Other.Mesh) != None && Other.DrawType == DT_Mesh && Pawn(Other) != None)
+	{
+		End = Other.Location + X * 600.f;
+
+		if (Other.Trace(HL, HN, End, Other.Location, False) != None)
+		{
+			Projectile.Spawn(Class'BodyAttacher', Other,, HitLocation).AttachEndPoint = HL - HN;
+		}
+	}
+}
+
+static function PlayHitNoise(Projectile Projectile, bool bArmored, Sound HitArmor, Sound HitFlesh)
+{
+	if (bArmored)
+	{
+		Projectile.PlaySound(HitArmor);   // implies hit a target with shield/armor
+	}
+	else
+	{
+		Projectile.PlaySound(HitFlesh);
+	}
 }
 
 defaultproperties
