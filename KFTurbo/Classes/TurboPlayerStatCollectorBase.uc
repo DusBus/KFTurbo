@@ -17,10 +17,21 @@ static final function TurboPlayerStatCollectorBase FindStats(TurboPlayerReplicat
 {
 	local int Index;
 
+	if (TPRI == None)
+	{
+		return None;
+	}
+
 	if (default.bIsCollector)
 	{
 		for (Index = TPRI.StatCollectorList.Length - 1; Index >= 0; Index--)
 		{
+			if (TPRI.StatCollectorList[Index] == None)
+			{
+				TPRI.StatCollectorList.Remove(Index, 1);
+				continue;
+			}
+
 			if (TPRI.StatCollectorList[Index].Class == default.Class)
 			{
 				return TPRI.StatCollectorList[Index];
@@ -31,6 +42,12 @@ static final function TurboPlayerStatCollectorBase FindStats(TurboPlayerReplicat
 	{
 		for (Index = TPRI.StatReplicatorList.Length - 1; Index >= 0; Index--)
 		{
+			if (TPRI.StatReplicatorList[Index] == None)
+			{
+				TPRI.StatReplicatorList.Remove(Index, 1);
+				continue;
+			}
+
 			if (TPRI.StatReplicatorList[Index].Class == default.Class)
 			{
 				return TPRI.StatReplicatorList[Index];
