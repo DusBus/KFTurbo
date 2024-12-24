@@ -175,8 +175,7 @@ static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup
 
 	case class'W_Claymore_Pickup' :
 	case class'W_Scythe_Pickup' :
-	case class'MachetePickup' :
-	case class'DwarfAxePickup' :
+	case class'W_Machete_Pickup' :
 		Multiplier *= LerpStat(KFPRI, 0.9f, 0.3f);
 		break;
 	}
