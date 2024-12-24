@@ -31,7 +31,7 @@ static final function float GetPlayerNextSquadSpawnTimeModifier(int PlayerCount)
 	switch (PlayerCount)
 	{
 		case 1:
-			return 16.f;
+			return 15.f;
 		case 2:
 			return 12.f;
 		case 3:
