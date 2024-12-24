@@ -1,8 +1,31 @@
 //Killing Floor Turbo TurboStatsGameRules
-//Responsible for broadcasting events related to kills/damage. Needs to be at the front of the GameRules list so it can make sure all rules have gone first.
+//Responsible for managing stat collectors/replications and broadcasting events related to kills/damage.
+//Needs to be at the front of the GameRules list so it can make sure all rules have gone first.
 //Distributed under the terms of the GPL-2.0 License.
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboStatsGameRules extends TurboGameRules;
+
+//Used during spin up state.
+var bool bGeneratingStatCollectors;
+var array<TurboHumanPawn> PawnList;
+var int PawnListIndex;
+
+//Used during spin down state.
+var bool bReplicatingStatCollectors;
+var array<TurboPlayerController> ControllerList;
+var int ControllerListIndex;
+
+var KFTurboGameType TurboGameType;
+
+//Turns on collector/replicator system. False for now until tested.
+var bool bEnableStatCollector;
+
+function PostBeginPlay()
+{
+    Super.PostBeginPlay();
+
+    TurboGameType = KFTurboGameType(Level.Game);
+}
 
 function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn InstigatedBy, vector HitLocation, out vector Momentum, class<DamageType> DamageType)
 {
@@ -26,7 +49,103 @@ function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<Dam
     }
 }
 
+//Does initial kick-off.
+function Tick(float DeltaTime)
+{
+    if (!bEnableStatCollector)
+    {
+        Disable('Tick');
+        return;
+    }
+    
+    if (!TurboGameType.bWaveInProgress)
+    {
+        return;
+    }
+
+    GotoState('WaveStart');
+}
+
+state WaveStart
+{
+    function Tick(float DeltaTime)
+    {
+        if (bGeneratingStatCollectors)
+        {
+            return;
+        }
+
+        if (TurboGameType.bWaveInProgress)
+        {
+            return;
+        }
+
+        GotoState('WaveEnd');
+    }
+
+Begin:
+    bGeneratingStatCollectors = true;
+    PawnList = class'TurboGameplayHelper'.static.GetPlayerPawnList(Level);
+    for (PawnListIndex = 0; PawnListIndex < PawnList.Length; PawnListIndex++)
+    {
+        Sleep(0.1f);
+        CreateStatCollector(PawnList[PawnListIndex]);
+    }
+    bGeneratingStatCollectors = false;
+}
+
+state WaveEnd
+{
+    function Tick(float DeltaTime)
+    {
+        if (bReplicatingStatCollectors)
+        {
+            return;
+        }
+
+        if (!TurboGameType.bWaveInProgress)
+        {
+            return;
+        }
+
+        GotoState('WaveStart');
+    }
+
+Begin:
+    bReplicatingStatCollectors = true;
+    ControllerList = class'TurboGameplayHelper'.static.GetPlayerControllerList(Level);
+    for (ControllerListIndex = 0; ControllerListIndex < ControllerList.Length; ControllerListIndex++)
+    {
+        Sleep(0.1f);
+        ReplicateStatCollector(ControllerList[ControllerListIndex]);
+    }
+    bReplicatingStatCollectors = false;
+}
+
+function CreateStatCollector(TurboHumanPawn Pawn)
+{
+    if (Pawn == None || Pawn.Health < 0 || Pawn.PlayerReplicationInfo == None)
+    {
+        return;
+    }
+
+    Spawn(class'TurboWavePlayerStatCollector', Pawn.PlayerReplicationInfo);
+}
+
+function ReplicateStatCollector(TurboPlayerController Controller)
+{
+    local TurboPlayerStatCollectorBase StatsCollector;
+    StatsCollector = class'TurboWavePlayerStatCollector'.static.FindStats(TurboPlayerReplicationInfo(Controller.PlayerReplicationInfo));
+
+    if (StatsCollector == None)
+    {
+        return;
+    }
+
+    StatsCollector.ReplicateStats();
+}
+
 defaultproperties
 {
-
+    bEnableStatCollector=false
 }

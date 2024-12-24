@@ -3,14 +3,26 @@
 class TurboWavePlayerStatCollector extends TurboPlayerStatCollectorBase;
 
 var int Kills;
-var int ShotsFired, ShotsHit, ShotsHeadshot;
-var int HealingDone, HealingReceived;
 var int DamageDone;
+
+var int ShotsFired, ShotsHit, ShotsHeadshot;
+var int MeleeSwings;
+
+var int Reloads;
+
+var int HealingDone, HealingReceived;
+
+var KFTurboGameType GameType;
 
 replication
 {
 	reliable if (Role == ROLE_Authority)
-		Kills;
+		Kills,
+		DamageDone,
+		ShotsFired, ShotsHit, ShotsHeadshot,
+		MeleeSwings,
+		Reloads,
+		HealingDone, HealingReceived;
 }
 
 //API to convert a stat collector into a stat replicator.
@@ -29,6 +41,73 @@ function PushStats(TurboPlayerStatCollectorBase Source)
 	HealingReceived = WaveStatsSource.HealingReceived;
 	
 	DamageDone = WaveStatsSource.DamageDone;
+}
+
+function PostBeginPlay()
+{
+	Super.PostBeginPlay();
+
+	GameType = KFTurboGameType(Level.Game);
+}
+
+final function bool ShouldCollectStats()
+{
+	return true; //GameType.bWaveInProgress;
+}
+
+function IncrementKills(class<KFMonster> MonsterClass)
+{
+	Kills++;
+}
+
+function IncrementDamageDone(int Damage, class<KFMonster> MonsterClass)
+{
+	DamageDone += Damage;
+}
+
+function IncrementShotsFired()
+{
+	if (!ShouldCollectStats())
+	{
+		return;
+	}
+
+	ShotsFired++;
+}
+
+function IncrementShotsHit(bool bIsHeadshot)
+{
+	if (!ShouldCollectStats())
+	{
+		return;
+	}
+
+	ShotsHit++;
+
+	if (bIsHeadshot)
+	{
+		ShotsHeadshot++;
+	}
+}
+
+function IncrementMeleeSwings()
+{
+	if (!ShouldCollectStats())
+	{
+		return;
+	}
+
+	MeleeSwings++;
+}
+
+function IncrementReloads()
+{
+	if (!ShouldCollectStats())
+	{
+		return;
+	}
+
+	Reloads++;
 }
 
 defaultproperties

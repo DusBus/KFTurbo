@@ -23,7 +23,7 @@ static function OnPlayerDamagedMonster(TurboPlayerController Player, KFMonster T
 static function OnPlayerKilledMonster(TurboPlayerController Player, KFMonster Target);
 
 //Event registration.
-static final function RegisterWaveHandler(Controller Target, class<TurboPlayerEventHandler> PlayerEventHandlerClass)
+static final function RegisterPlayerEventHandler(Controller Target, class<TurboPlayerEventHandler> PlayerEventHandlerClass)
 {
     local TurboPlayerController TurboPlayerController;
     local int Index;

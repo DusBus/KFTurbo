@@ -40,6 +40,11 @@ simulated function PostBeginPlay()
 		//Spin up CPRL fixer
 		Spawn(class'TurboRepLinkFix', Self);
 	}
+
+	if (Role == ROLE_Authority)
+	{
+		class'TurboPlayerEventHandler'.static.RegisterPlayerEventHandler(Self, class'TurboPlayerStatsEventHandler');
+	}
 }
 
 simulated function InitInputSystem()
