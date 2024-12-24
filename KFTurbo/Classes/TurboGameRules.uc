@@ -9,7 +9,7 @@ function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<Dam
     local GameRules GameRules;
     local TurboGameRules TurboGameRules;
 
-    GameRules = Self;
+    GameRules = NextGameRules;
 
     //Find next TurboGameRules.
     while (GameRules != None)
