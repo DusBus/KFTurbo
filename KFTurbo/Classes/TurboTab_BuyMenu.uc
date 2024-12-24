@@ -1,5 +1,57 @@
 class TurboTab_BuyMenu extends SRKFTab_BuyMenu;
 
+function ShowPanel(bool bShow)
+{
+    local int Index, PistolIndex;
+	local class<KFWeapon> BuyableWeaponClass;
+
+    Super(UT2K4TabPanel).ShowPanel(bShow);
+
+    bClosed = false;
+	PistolIndex = InvSelect.List.MyBuyables.Length;
+
+    for (Index = 0; Index < InvSelect.List.MyBuyables.Length; Index++)
+    {
+		if (InvSelect.List.MyBuyables[Index] == None)
+		{
+			continue;
+		}
+
+		BuyableWeaponClass = InvSelect.List.MyBuyables[Index].ItemWeaponClass;
+
+        if (class<Single>(BuyableWeaponClass) != None || class<Dualies>(BuyableWeaponClass) != None)
+        {
+			PistolIndex = Index;
+			break;
+        }
+    }
+
+	if (PistolIndex < InvSelect.List.MyBuyables.Length)
+	{
+		TheBuyable = InvSelect.List.MyBuyables[PistolIndex];
+		InvSelect.List.Index = PistolIndex;
+	}
+
+    if ( KFPlayerController(PlayerOwner()) != none )
+    {
+        KFPlayerController(PlayerOwner()).bDoTraderUpdate = true;
+    }
+
+    LastBuyable = TheBuyable;
+
+    InvSelect.SetPosition(InvBG.WinLeft + 7.0 / float(Controller.ResX),
+                          InvBG.WinTop + 55.0 / float(Controller.ResY),
+                          InvBG.WinWidth - 15.0 / float(Controller.ResX),
+                          InvBG.WinHeight - 45.0 / float(Controller.ResY),
+                          true);
+
+    SaleSelect.SetPosition(SaleBG.WinLeft + 7.0 / float(Controller.ResX),
+                           SaleBG.WinTop + 55.0 / float(Controller.ResY),
+                           SaleBG.WinWidth - 15.0 / float(Controller.ResX),
+                           SaleBG.WinHeight - 63.0 / float(Controller.ResY),
+                           true);
+}
+
 function bool InvDblClick(GUIComponent Sender)
 {
 	local GUIBuyable DoubleClickedBuyable;
