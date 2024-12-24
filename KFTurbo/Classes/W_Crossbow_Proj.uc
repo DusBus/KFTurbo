@@ -1,26 +1,6 @@
-class W_M99_Proj extends M99Bullet;
+class W_Crossbow_Proj extends CrossbowArrow;
 
-var bool bRefreshedLifeSpan;
 var bool bHasRegisteredHit;
-
-simulated function HitWall( vector HitNormal, actor Wall)
-{
-	Super.HitWall(HitNormal, Wall);
-
-	if(KFDoorMover(Wall) != None)
-	{
-		//We have transformed into a grenade.
-		KFDoorMover(Wall).TakeDamage(100.f, Instigator, Location, MomentumTransfer * Vector(Rotation), class'DamTypeFrag');
-		return;
-	}
-
-	//4 fun.
-	if(!bRefreshedLifeSpan && KFTraderDoor(Wall) != None)
-	{
-		LifeSpan = 2.f;
-		bRefreshedLifeSpan = true;
-	}
-}
 
 simulated function ProcessTouch(Actor Other, vector HitLocation)
 {
@@ -125,10 +105,11 @@ simulated function ProcessTouch(Actor Other, vector HitLocation)
 			Spawn(Class'BodyAttacher', Other,, HitLocation).AttachEndPoint = HL - HN;
 		}
 	}
+
+	Stick(Other, HitLocation);
 }
 
 defaultproperties
 {
-     HeadShotDamageMult=2.250000
-     Damage=490.000000
+
 }
