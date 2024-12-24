@@ -20,4 +20,13 @@ defaultproperties
      Weight=7.000000
      FireModeClass(0)=Class'KFTurbo.W_Shotgun_Fire'
      PickupClass=Class'KFTurbo.W_Shotgun_Pickup'
+
+     HudImageRef="KillingFloorHUD.WeaponSelect.combat_shotgun_unselected"
+     SelectedHudImageRef="KillingFloorHUD.WeaponSelect.combat_shotgun"
+
+     Skins(0)=None
+     SkinRefs(0)="KF_Weapons_Trip_T.Shotguns.shotgun_cmb"
+
+     Mesh=None
+     MeshRef="KF_Weapons_Trip.Shotgun_Trip"
 }
