@@ -57,6 +57,7 @@ simulated function PostBeginPlay()
 	class'TurboHealEventHandler'.static.RegisterHealHandler(Self, class'TurboHealEventHandlerImpl');
 
 	SetupBroadcaster();
+	SetupTurboStatsGameRules();
 
 	if (TeamGame(Level.Game) != None)
 	{
@@ -86,6 +87,18 @@ function SetupBroadcaster()
 	{
 		Level.Game.BroadcastHandler = TurboBroadcastHandler;
 	}
+}
+
+//Wants to be at the front of the list.
+function SetupTurboStatsGameRules()
+{
+	local TurboStatsGameRules TSGR;
+	local GameRules GameRules;
+	TSGR = Spawn(class'TurboStatsGameRules', Self);
+
+	GameRules = Level.Game.GameRulesModifiers;
+	Level.Game.GameRulesModifiers = TSGR;
+	TSGR.NextGameRules = GameRules;
 }
 
 static function string GetHUDReplacementClass(string HUDClassString)

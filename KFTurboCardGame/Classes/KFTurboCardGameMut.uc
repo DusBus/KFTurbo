@@ -97,11 +97,26 @@ function TurboCardReplicationInfo CreateTurboCardReplicationInfo()
 
 function CardGameRules CreateCardGameRules()
 {
+	local GameRules GameRules;
 	local CardGameRules CGR;
 	CGR = Spawn(class'CardGameRules', Self);
 	CGR.MutatorOwner = Self;
-    CGR.NextGameRules = Level.Game.GameRulesModifiers;
-    Level.Game.GameRulesModifiers = CGR;
+
+	if (Level.Game.GameRulesModifiers == None)
+	{
+    	Level.Game.GameRulesModifiers = CGR;
+		return CGR;
+	}
+
+	GameRules = Level.Game.GameRulesModifiers;
+	
+	while(GameRules.NextGameRules != None)
+	{
+		GameRules = GameRules.NextGameRules;
+	}
+    
+	GameRules.NextGameRules = CGR;
+	
 	return CGR;	
 }
 

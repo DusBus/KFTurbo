@@ -19,7 +19,8 @@ static function OnPlayerMedicDartFire(TurboPlayerController Player, WeaponFire F
 
 static function OnPlayerReload(TurboPlayerController Player, KFWeapon Weapon);
 
-static function OnPlayerDealDamage(TurboPlayerController Player, Pawn Target, int Damage);
+static function OnPlayerDamagedMonster(TurboPlayerController Player, KFMonster Target, int Damage);
+static function OnPlayerKilledMonster(TurboPlayerController Player, KFMonster Target);
 
 //Event registration.
 static final function RegisterWaveHandler(Controller Target, class<TurboPlayerEventHandler> PlayerEventHandlerClass)
@@ -181,7 +182,7 @@ static final function BroadcastPlayerReload(Controller Player, KFWeapon Weapon)
     }
 }
 
-static final function BroadcastPlayerDealDamage(Controller Player, Pawn Target, int Damage)
+static final function BroadcastPlayerDamagedMonster(Controller Player, KFMonster Target, int Damage)
 {
     local TurboPlayerController TurboPlayerController;
     local int Index;
@@ -195,6 +196,24 @@ static final function BroadcastPlayerDealDamage(Controller Player, Pawn Target, 
 
     for (Index = TurboPlayerController.TurboPlayerEventHandlerList.Length - 1; Index >= 0; Index--)
     {
-        TurboPlayerController.TurboPlayerEventHandlerList[Index].static.OnPlayerDealDamage(TurboPlayerController, Target, Damage);
+        TurboPlayerController.TurboPlayerEventHandlerList[Index].static.OnPlayerDamagedMonster(TurboPlayerController, Target, Damage);
+    }
+}
+
+static final function BroadcastPlayerKilledMonster(Controller Player, KFMonster Target)
+{
+    local TurboPlayerController TurboPlayerController;
+    local int Index;
+
+    TurboPlayerController = TurboPlayerController(Player);
+
+    if (TurboPlayerController == None || TurboPlayerController.Role != ROLE_Authority)
+    {
+        return;
+    }
+
+    for (Index = TurboPlayerController.TurboPlayerEventHandlerList.Length - 1; Index >= 0; Index--)
+    {
+        TurboPlayerController.TurboPlayerEventHandlerList[Index].static.OnPlayerKilledMonster(TurboPlayerController, Target);
     }
 }
