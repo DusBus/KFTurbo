@@ -62,7 +62,6 @@ static final function BroadcastPlayerFire(Controller Player, WeaponFire FireMode
     {
         return;
     }
-    TurboPlayerController.ClientMessage("WeaponFire:"@FireMode.Weapon);
 
     for (Index = TurboPlayerController.TurboPlayerEventHandlerList.Length - 1; Index >= 0; Index--)
     {
@@ -116,8 +115,6 @@ static final function BroadcastPlayerFireHit(Controller Player, WeaponFire FireM
     }
 
     FinalizeMonsterHitData(HitData);
-
-    TurboPlayerController.ClientMessage("WeaponHit:"@FireMode.Weapon);
 
     for (Index = TurboPlayerController.TurboPlayerEventHandlerList.Length - 1; Index >= 0; Index--)
     {
