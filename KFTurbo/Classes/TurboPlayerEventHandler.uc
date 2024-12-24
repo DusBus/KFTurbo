@@ -58,7 +58,7 @@ static final function BroadcastPlayerFire(Controller Player, WeaponFire FireMode
 
     TurboPlayerController = TurboPlayerController(Player);
 
-    if (TurboPlayerController == None)
+    if (TurboPlayerController == None || TurboPlayerController.Role != ROLE_Authority)
     {
         return;
     }
@@ -129,7 +129,7 @@ static final function BroadcastPlayerMeleeFire(Controller Player, KFMeleeFire Fi
 
     TurboPlayerController = TurboPlayerController(Player);
 
-    if (TurboPlayerController == None)
+    if (TurboPlayerController == None || TurboPlayerController.Role != ROLE_Authority)
     {
         return;
     }
@@ -137,6 +137,11 @@ static final function BroadcastPlayerMeleeFire(Controller Player, KFMeleeFire Fi
     for (Index = TurboPlayerController.TurboPlayerEventHandlerList.Length - 1; Index >= 0; Index--)
     {
         TurboPlayerController.TurboPlayerEventHandlerList[Index].static.OnPlayerMeleeFire(TurboPlayerController, FireMode);
+    }
+    
+    for (Index = TurboPlayerController.TurboPlayerEventHandlerList.Length - 1; Index >= 0; Index--)
+    {
+        TurboPlayerController.TurboPlayerEventHandlerList[Index].static.OnPlayerFire(TurboPlayerController, FireMode);
     }
 }
 
@@ -147,7 +152,7 @@ static final function BroadcastPlayerMedicDartFire(Controller Player, WeaponFire
 
     TurboPlayerController = TurboPlayerController(Player);
 
-    if (TurboPlayerController == None)
+    if (TurboPlayerController == None || TurboPlayerController.Role != ROLE_Authority)
     {
         return;
     }
@@ -165,7 +170,7 @@ static final function BroadcastPlayerReload(Controller Player, KFWeapon Weapon)
 
     TurboPlayerController = TurboPlayerController(Player);
 
-    if (TurboPlayerController == None)
+    if (TurboPlayerController == None || TurboPlayerController.Role != ROLE_Authority)
     {
         return;
     }
@@ -183,7 +188,7 @@ static final function BroadcastPlayerDealDamage(Controller Player, Pawn Target, 
 
     TurboPlayerController = TurboPlayerController(Player);
 
-    if (TurboPlayerController == None)
+    if (TurboPlayerController == None || TurboPlayerController.Role != ROLE_Authority)
     {
         return;
     }
