@@ -32,23 +32,25 @@ function AddPanels() {
 
 defaultproperties
 {
-     Panels(1)=(ClassName="KFTurboTestMut.KFTTTabMain",Caption="Commands",Hint="Main mutator interface")
-     Panels(2)=(ClassName="KFTurboTestMut.KFTTTabDamage",Caption="Damage",Hint="Damage dealt to zeds")
-     Panels(3)=(ClassName="KFTurboTestMut.KFTTTabDisplay",Caption="Display",Hint="Customize appearance of damage messages and head hitboxes")
-     Panels(4)=(ClassName="KFTurboTestMut.KFTTTabWeapon",Caption="Weapon",Hint="Your current weapon stats adjusted for your current perk bonuses")
-     Panels(5)=(ClassName="KFGui.KFTab_MidGameVoiceChat",Caption="Communication",Hint="Manage communication with other players")
-     Panels(6)=(ClassName="KFTurboTestMut.KFTTTabHelp",Caption="Help",Hint="List of all available commands")
-     Begin Object Class=GUITabControl Name=LoginMenuTC
-         bDockPanels=True
-         BackgroundStyleName="TabBackground"
-         WinTop=0.026336
-         WinLeft=0.012500
-         WinWidth=0.974999
-         WinHeight=0.050000
-         bScaleToParent=True
-         bAcceptsInput=True
-         OnActivate=LoginMenuTC.InternalOnActivate
-     End Object
-     c_Main=GUITabControl'KFTurboTestMut.KFTTLoginMenu.LoginMenuTC'
+	Panels(1)=(ClassName="KFTurboTestMut.KFTTTabMain",Caption="Commands",Hint="Main mutator interface")
+	Panels(2)=(ClassName="KFTurboTestMut.KFTTTabDamage",Caption="Damage",Hint="Damage dealt to zeds")
+	Panels(3)=(ClassName="KFTurboTestMut.KFTTTabDisplay",Caption="Display",Hint="Customize appearance of damage messages and head hitboxes")
+	Panels(4)=(ClassName="KFTurboTestMut.KFTTTabWeapon",Caption="Weapon",Hint="Your current weapon stats adjusted for your current perk bonuses")
+	Panels(5)=(ClassName="KFGui.KFTab_MidGameVoiceChat",Caption="Communication",Hint="Manage communication with other players")
+	Panels(6)=(ClassName="KFTurboTestMut.KFTTTabHelp",Caption="Help",Hint="List of all available commands")
+	Panels(7)=(ClassName="KFTurbo.TurboTab_EmoteList",Caption="Emotes",Hint="List of emotes.")
+	Panels(8)=(ClassName="KFTurbo.TurboTab_TurboSettings",Caption="Turbo",Hint="KFTurbo settings.")
+	Begin Object Class=GUITabControl Name=LoginMenuTC
+		bDockPanels=True
+		BackgroundStyleName="TabBackground"
+		WinTop=0.026336
+		WinLeft=0.012500
+		WinWidth=0.974999
+		WinHeight=0.050000
+		bScaleToParent=True
+		bAcceptsInput=True
+		OnActivate=LoginMenuTC.InternalOnActivate
+	End Object
+	c_Main=GUITabControl'KFTurboTestMut.KFTTLoginMenu.LoginMenuTC'
 
 }
