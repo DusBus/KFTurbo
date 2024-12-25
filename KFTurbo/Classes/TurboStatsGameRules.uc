@@ -52,7 +52,7 @@ function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<Dam
 //Does initial kick-off.
 function Tick(float DeltaTime)
 {
-    if (!bEnableStatCollector)
+    if (!bEnableStatCollector || class'KFTurboGameType'.static.StaticIsTestGameType(Self))
     {
         Disable('Tick');
         return;
@@ -124,7 +124,7 @@ Begin:
 
 function CreateStatCollector(TurboHumanPawn Pawn)
 {
-    if (Pawn == None || Pawn.Health < 0 || Pawn.PlayerReplicationInfo == None)
+    if (Pawn == None || Pawn.Health < 0 || Pawn.PlayerReplicationInfo == None || Pawn.PlayerReplicationInfo.bOnlySpectator || Pawn.PlayerReplicationInfo.bBot)
     {
         return;
     }
