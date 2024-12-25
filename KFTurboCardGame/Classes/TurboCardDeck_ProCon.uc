@@ -67,8 +67,8 @@ function ActivateSurplus(TurboCardReplicationInfo CGRI)
 
 function ActivateDoubleEdgeSword(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyPlayerDamage(1.1f);
-    CGRI.ModifyFriendlyFireScale(1.1f);
+    CGRI.ModifyPlayerDamage(1.05f);
+    CGRI.ModifyFriendlyFireScale(1.05f);
 }
 
 function ActivateHeavyAmmunition(TurboCardReplicationInfo CGRI)
@@ -315,9 +315,9 @@ defaultproperties
         CardName(0)="Double Edged"
         CardName(1)="Sword"
         CardDescriptionList(0)="Increases player"
-        CardDescriptionList(1)="damage by 10%"
+        CardDescriptionList(1)="damage by 5%"
         CardDescriptionList(2)="and friendly"
-        CardDescriptionList(3)="fire damage by 10%."
+        CardDescriptionList(3)="fire damage by 5%."
         OnActivateCard=ActivateDoubleEdgeSword
         CardID="PROCON_DOUBLEEDGESWORD"
     End Object
