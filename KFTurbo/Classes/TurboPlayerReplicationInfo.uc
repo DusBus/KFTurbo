@@ -11,6 +11,9 @@ var bool bVotedForTraderEnd;
 var array<TurboPlayerStatCollectorBase> StatCollectorList;
 var array<TurboPlayerStatCollectorBase> StatReplicatorList;
 
+delegate OnReceiveStatCollector(TurboPlayerReplicationInfo PlayerReplicationInfo, TurboPlayerStatCollectorBase Collector);
+delegate OnReceiveStatReplicator(TurboPlayerReplicationInfo PlayerReplicationInfo, TurboPlayerStatCollectorBase Replicator);
+
 replication
 {
 	reliable if ( bNetDirty && (Role == Role_Authority) )
@@ -73,6 +76,7 @@ simulated function RegisterStatCollector(TurboPlayerStatCollectorBase Collector)
 {
     StatCollectorList.Length = StatCollectorList.Length + 1;
     StatCollectorList[StatCollectorList.Length - 1] = Collector;
+    OnReceiveStatCollector(Self, Collector);
 }
 
 simulated function UnregisterStatCollector(TurboPlayerStatCollectorBase Collector)
@@ -91,6 +95,7 @@ simulated function RegisterStatReplicator(TurboPlayerStatCollectorBase Replicato
 {
     StatReplicatorList.Length = StatCollectorList.Length + 1;
     StatReplicatorList[StatCollectorList.Length - 1] = Replicator;
+    OnReceiveStatReplicator(Self, Replicator);
 }
 
 simulated function UnregisterStatReplicator(TurboPlayerStatCollectorBase Replicator)
