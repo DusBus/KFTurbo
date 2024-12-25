@@ -705,7 +705,6 @@ simulated function ClientWeaponSpawned(class<Weapon> WeaponClass, Inventory Inv)
 simulated function SetPipebombUsesSpecialGroup(bool bNewPipebombUsesSpecialGroup)
 {
 	local W_Pipebomb_Weap Pipebomb;
-	local bool bWasEquipped;
 
 	if (bNewPipebombUsesSpecialGroup == bPipebombUsesSpecialGroup)
 	{
