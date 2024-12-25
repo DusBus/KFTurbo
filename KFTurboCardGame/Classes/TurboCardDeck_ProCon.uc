@@ -10,8 +10,8 @@ function ActivateExtraMoneyTraderTime(TurboCardReplicationInfo CGRI)
 
 function ActivateFasterReloadSmallerMag(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyWeaponReloadRate(1.3f);
-    CGRI.ModifyWeaponMagazineAmmo(0.75f);
+    CGRI.ModifyWeaponReloadRate(1.15f);
+    CGRI.ModifyWeaponMagazineAmmo(0.8f);
 }
 
 function ActivateHandSizeWaveSize(TurboCardReplicationInfo CGRI)
@@ -23,8 +23,8 @@ function ActivateHandSizeWaveSize(TurboCardReplicationInfo CGRI)
 
 function ActivateScrakeDamUpFleshpoundDamDown(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyPlayerFleshpoundDamage(0.7f);
-    CGRI.ModifyPlayerScrakeDamage(1.25f);
+    CGRI.ModifyPlayerFleshpoundDamage(0.85f);
+    CGRI.ModifyPlayerScrakeDamage(1.1f);
 }
 
 function ActivateBriskPace(TurboCardReplicationInfo CGRI)
@@ -36,31 +36,31 @@ function ActivateBriskPace(TurboCardReplicationInfo CGRI)
 
 function ActivateSpecialization(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyOnPerkDamage(1.15f);
-    CGRI.ModifyOffPerkDamage(0.7f);
+    CGRI.ModifyOnPerkDamage(1.5f);
+    CGRI.ModifyOffPerkDamage(0.85f);
 }
 
 function ActivatePrecisionExplosives(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyExplosiveDamage(1.15f);
-    CGRI.ModifyExplosiveRadius(0.7f);
+    CGRI.ModifyExplosiveDamage(1.05f);
+    CGRI.ModifyExplosiveRadius(0.75f);
 }
 
 function ActivateVeryDeepAmmoPockets(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyWeaponMaxAmmo(1.2f);
-    CGRI.ModifyWeaponReloadRate(0.8f);
+    CGRI.ModifyWeaponMaxAmmo(1.1f);
+    CGRI.ModifyWeaponReloadRate(0.85f);
 }
 
 function ActivateEscalation(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyPlayerDamage(1.2f);
-    CGRI.ModifyZombieDamage(0.8f);
+    CGRI.ModifyPlayerDamage(1.05f);
+    CGRI.ModifyZombieDamage(0.85f);
 }
 
 function ActivateSurplus(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyWaveSpeed(1.15f);
+    CGRI.ModifyCashBonus(1.25f);
     class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'SurplusWaveSizeModifier');
     class'SurplusWaveSizeModifier'.static.OnWaveStarted(KFTurboGameType(CGRI.Level.Game), KFTurboGameType(CGRI.Level.Game).WaveNum);
 }
@@ -73,14 +73,14 @@ function ActivateDoubleEdgeSword(TurboCardReplicationInfo CGRI)
 
 function ActivateHeavyAmmunition(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyWeaponMaxAmmo(0.8f);
-    CGRI.ModifyPlayerRangedDamage(1.1f);
+    CGRI.ModifyPlayerRangedDamage(1.05f);
+    CGRI.ModifyWeaponMaxAmmo(0.9f);
 }
 
 function ActivateMagazineOverclock(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyWeaponFireRate(1.1f);
-    CGRI.ModifyWeaponReloadRate(0.8f);
+    CGRI.ModifyWeaponFireRate(1.15f);
+    CGRI.ModifyWeaponReloadRate(0.9f);
 }
 
 function ActivatePrecisionFire(TurboCardReplicationInfo CGRI)
@@ -101,12 +101,12 @@ function ActivatePremiumWeapons(TurboCardReplicationInfo CGRI)
     CGRI.ModifyWeaponReloadRate(1.05f);
     CGRI.ModifyWeaponSpreadAndRecoil(0.95f);
 
-    CGRI.ModifyTraderPriceMultiplier(1.1f);
+    CGRI.ModifyTraderPriceMultiplier(1.15f);
 }
 
 function ActivateTurtleShell(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyPlayerSpeed(0.9f);
+    CGRI.ModifyPlayerSpeed(0.95f);
     CGRI.ModifyZombieDamage(0.9f);
 }
 
@@ -131,13 +131,13 @@ function ActivateDistractedDriving(TurboCardReplicationInfo CGRI)
 function ActivateHighSpeedLowDrag(TurboCardReplicationInfo CGRI)
 {
     CGRI.ModifyPlayerMaxCarryWeight(-1);
-    CGRI.ModifyPlayerSpeed(1.1f);
+    CGRI.ModifyPlayerSpeed(1.15f);
 }
 
 function ActivateUnlicensedPractitioner(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyMedicHealPotency(1.25f);
-    CGRI.ModifyNonMedicHealPotency(0.5f);
+    CGRI.ModifyMedicHealPotency(1.1f);
+    CGRI.ModifyNonMedicHealPotency(0.75f);
 }
 
 function ActivateRussianRoulette(TurboCardReplicationInfo CGRI)
@@ -147,28 +147,28 @@ function ActivateRussianRoulette(TurboCardReplicationInfo CGRI)
 
 function ActivateConcentratedHeal(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyMedicHealPotency(1.2f);
-    CGRI.ModifyNonMedicHealPotency(1.2f);
-    CGRI.ModifyHealRecharge(0.65f);
+    CGRI.ModifyMedicHealPotency(1.15f);
+    CGRI.ModifyNonMedicHealPotency(1.15f);
+    CGRI.ModifyHealRecharge(0.85f);
 }
 
 function ActivateDroppingBallast(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyGrenadeMaxAmmo(0.7f);
-    CGRI.ModifyWeaponMaxAmmo(1.15f);
+    CGRI.ModifyGrenadeMaxAmmo(0.8f);
+    CGRI.ModifyWeaponMaxAmmo(1.1f);
 }
 
 function ActivateShotgunsMoreKick(TurboCardReplicationInfo CGRI)
 {
     CGRI.ModifyShotgunPelletCount(1.2f);
-    CGRI.ModifyShotgunRecoil(1.2f);
-    CGRI.ModifyShotgunKickBack(1.2f);
+    CGRI.ModifyShotgunRecoil(1.25f);
+    CGRI.ModifyShotgunKickBack(1.25f);
 }
 
 function ActivateMoreToPlay(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyWeaponMaxAmmo(1.2f);
-    CGRI.ModifyPlayerDamage(1.1f);
+    CGRI.ModifyWeaponMaxAmmo(1.15f);
+    CGRI.ModifyPlayerDamage(1.05f);
 
     class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'MoreToPlayWaveSizeModifier');
     class'MoreToPlayWaveSizeModifier'.static.OnWaveStarted(KFTurboGameType(CGRI.Level.Game), KFTurboGameType(CGRI.Level.Game).WaveNum);
@@ -183,8 +183,8 @@ function ActivateCollateralDamage(TurboCardReplicationInfo CGRI)
 
 function ActivateHealingAndHurting(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyNonMedicHealPotency(1.1f);
-    CGRI.ModifyMedicHealPotency(1.1f);
+    CGRI.ModifyNonMedicHealPotency(1.2f);
+    CGRI.ModifyMedicHealPotency(1.2f);
 
     CGRI.ModifyFriendlyFireScale(1.05f);
 }
@@ -198,7 +198,7 @@ defaultproperties
         CardDescriptionList(1)="500 extra dosh"
         CardDescriptionList(2)="each wave but"
         CardDescriptionList(3)="trader time is"
-        CardDescriptionList(4)="reduced by 20%."
+        CardDescriptionList(4)="reduced by 15%."
         OnActivateCard=ActivateExtraMoneyTraderTime
         CardID="PROCON_SHORTTERMREW"
     End Object
@@ -209,9 +209,9 @@ defaultproperties
         CardName(1)="Magazines"
         CardDescriptionList(0)="Increases reload"
         CardDescriptionList(1)="speed of all"
-        CardDescriptionList(2)="weapons by 20% and"
+        CardDescriptionList(2)="weapons by 15% and"
         CardDescriptionList(3)="reduces magazine"
-        CardDescriptionList(4)="size by 30%."
+        CardDescriptionList(4)="size by 20%."
         OnActivateCard=ActivateFasterReloadSmallerMag
         CardID="PROCON_SAWEDOFFMAG"
     End Object
@@ -233,9 +233,9 @@ defaultproperties
         CardName(0)="Fleshpound++"
         CardName(1)="Scrake--"
         CardDescriptionList(0)="Fleshpounds take"
-        CardDescriptionList(1)="30% less damage"
+        CardDescriptionList(1)="15% less damage"
         CardDescriptionList(2)="but Scrakes take"
-        CardDescriptionList(3)="25% more damage."
+        CardDescriptionList(3)="10% more damage."
         OnActivateCard=ActivateScrakeDamUpFleshpoundDamDown
         CardID="PROCON_FPPLUSSCMINUS"
     End Object
@@ -256,9 +256,9 @@ defaultproperties
         CardName(0)="Specialization"
         CardDescriptionList(0)="Increases on-perk"
         CardDescriptionList(1)="weapon damage by"
-        CardDescriptionList(2)="15% but reduces"
+        CardDescriptionList(2)="5% but reduces"
         CardDescriptionList(3)="off-perk damage"
-        CardDescriptionList(4)="by 30%."
+        CardDescriptionList(4)="by 15%."
         OnActivateCard=ActivateSpecialization
         CardID="PROCON_SPECIALIZATION"
     End Object
@@ -268,9 +268,9 @@ defaultproperties
         CardName(0)="Precision"
         CardName(1)="Explosives"
         CardDescriptionList(0)="Increases explosive"
-        CardDescriptionList(1)="damage by 15% but"
+        CardDescriptionList(1)="damage by 10% but"
         CardDescriptionList(2)="reduces explosive"
-        CardDescriptionList(3)="range by 30%."
+        CardDescriptionList(3)="range by 25%."
         OnActivateCard=ActivatePrecisionExplosives
         CardID="PROCON_PRECEXPLOSIVES"
     End Object
@@ -280,9 +280,9 @@ defaultproperties
         CardName(0)="Awkwardly Deep"
         CardName(1)="Ammo Pockets"
         CardDescriptionList(0)="Increases max"
-        CardDescriptionList(1)="ammo by 20% but"
+        CardDescriptionList(1)="ammo by 10% but"
         CardDescriptionList(2)="reduces reload"
-        CardDescriptionList(3)="speed by 20%."
+        CardDescriptionList(3)="speed by 15%."
         OnActivateCard=ActivateVeryDeepAmmoPockets
         CardID="PROCON_AWKWARDDEEPAMMO"
     End Object
@@ -292,8 +292,9 @@ defaultproperties
         CardName(0)="Conflict"
         CardName(1)="Escalation"
         CardDescriptionList(0)="Increases damage"
-        CardDescriptionList(1)="by players and"
-        CardDescriptionList(2)="zeds by 20%."
+        CardDescriptionList(1)="by players by 5%"
+        CardDescriptionList(2)="and damage by"
+        CardDescriptionList(3)="zeds by 15%."
         OnActivateCard=ActivateEscalation
         CardID="PROCON_CONFEXCALATION"
     End Object
@@ -304,7 +305,7 @@ defaultproperties
         CardName(1)="Surplus"
         CardDescriptionList(0)="Increases dosh"
         CardDescriptionList(1)="received from"
-        CardDescriptionList(2)="kills by 15% and"
+        CardDescriptionList(2)="kills by 25% and"
         CardDescriptionList(3)="wave size by 25%."
         OnActivateCard=ActivateSurplus
         CardID="PROCON_COMPSURPLUS"
@@ -328,8 +329,8 @@ defaultproperties
         CardName(1)="Ammunition"
         CardDescriptionList(0)="Increases player"
         CardDescriptionList(1)="ranged damage by"
-        CardDescriptionList(2)="10% but reduces"
-        CardDescriptionList(3)="max ammo by 20%."
+        CardDescriptionList(2)="5% but reduces"
+        CardDescriptionList(3)="max ammo by 10%."
         OnActivateCard=ActivateHeavyAmmunition
         CardID="PROCON_HEAVYAMMO"
     End Object
@@ -339,8 +340,8 @@ defaultproperties
         CardName(0)="Magazine"
         CardName(1)="Overclock"
         CardDescriptionList(0)="Increases firerate"
-        CardDescriptionList(1)="by 10% but reduces"
-        CardDescriptionList(2)="reload speed by 20%."
+        CardDescriptionList(1)="by 15% but reduces"
+        CardDescriptionList(2)="reload speed by 10%."
         OnActivateCard=ActivateMagazineOverclock
         CardID="PROCON_MAGOVERCLOCK"
     End Object
@@ -388,7 +389,7 @@ defaultproperties
         CardDescriptionList(0)="Reduces damage"
         CardDescriptionList(1)="to players by"
         CardDescriptionList(2)="10% and player"
-        CardDescriptionList(3)="move speed by 10%."
+        CardDescriptionList(3)="move speed by 5%."
         OnActivateCard=ActivateTurtleShell
         CardID="PROCON_TURTLESHELL"
     End Object
@@ -439,7 +440,7 @@ defaultproperties
         CardDescriptionList(1)="carry capacity"
         CardDescriptionList(2)="by 1. Increases"
         CardDescriptionList(3)="player movement"
-        CardDescriptionList(4)="speed by 10%."
+        CardDescriptionList(4)="speed by 15%."
         OnActivateCard=ActivateHighSpeedLowDrag
         CardID="PROCON_HIGHSPEEDLOWDRAG"
     End Object
@@ -451,10 +452,10 @@ defaultproperties
         CardDescriptionList(0)="Increases heal"
         CardDescriptionList(1)="potency for"
         CardDescriptionList(2)="Field Medics by"
-        CardDescriptionList(3)="25% but reduces"
+        CardDescriptionList(3)="10% but reduces"
         CardDescriptionList(4)="heal potency"
         CardDescriptionList(5)="for non Field"
-        CardDescriptionList(6)="Medics by 50%."
+        CardDescriptionList(6)="Medics by 25%."
         OnActivateCard=ActivateUnlicensedPractitioner
         CardID="PROCON_UNLICPRACTITIONER"
     End Object
@@ -477,10 +478,10 @@ defaultproperties
         CardName(0)="Concentrated"
         CardName(1)="Healing"
         CardDescriptionList(0)="Increases heal"
-        CardDescriptionList(1)="potency by 20%"
+        CardDescriptionList(1)="potency by 15%"
         CardDescriptionList(2)="but reduces"
         CardDescriptionList(3)="heal charge"
-        CardDescriptionList(4)="rate by 35%."
+        CardDescriptionList(4)="rate by 15%."
         OnActivateCard=ActivateConcentratedHeal
         CardID="PROCON_CONCENTRATEHEALING"
     End Object
@@ -490,9 +491,9 @@ defaultproperties
         CardName(0)="Dropping"
         CardName(1)="Ballast"
         CardDescriptionList(0)="Increases max"
-        CardDescriptionList(1)="ammo by 15% but"
+        CardDescriptionList(1)="ammo by 10% but"
         CardDescriptionList(2)="reduces grenade"
-        CardDescriptionList(3)="max ammo by 30%."
+        CardDescriptionList(3)="max ammo by 20%."
         OnActivateCard=ActivateDroppingBallast
         CardID="PROCON_DROPBALLAST"
     End Object
@@ -505,7 +506,7 @@ defaultproperties
         CardDescriptionList(1)="pellet count by"
         CardDescriptionList(2)="20% but increases"
         CardDescriptionList(3)="shotgun recoil and"
-        CardDescriptionList(4)="kickback by 20%."
+        CardDescriptionList(4)="kickback by 25%."
         OnActivateCard=ActivateShotgunsMoreKick
         CardID="PROCON_MOREKICK"
     End Object
@@ -516,9 +517,9 @@ defaultproperties
         CardName(1)="To Play"
         CardDescriptionList(0)="Increases max"
         CardDescriptionList(1)="weapon ammo by"
-        CardDescriptionList(2)="20% and damage by"
-        CardDescriptionList(3)="10% but wave size is"
-        CardDescriptionList(4)="increased by 25%."
+        CardDescriptionList(2)="15% and damage by"
+        CardDescriptionList(3)="5% but wave size is"
+        CardDescriptionList(4)="increased by 20%."
         OnActivateCard=ActivateMoreToPlay
         CardID="PROCON_MOREGAMETOPLAY"
     End Object
@@ -539,7 +540,7 @@ defaultproperties
         CardName(0)="More Healing"
         CardName(1)="More Hurting"
         CardDescriptionList(0)="Increases heal"
-        CardDescriptionList(1)="potency by 10% but"
+        CardDescriptionList(1)="potency by 20% but"
         CardDescriptionList(2)="increases friendly"
         CardDescriptionList(3)="fire damage by 5%."
         OnActivateCard=ActivateHealingAndHurting

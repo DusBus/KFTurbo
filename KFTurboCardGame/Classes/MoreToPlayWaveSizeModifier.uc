@@ -5,5 +5,5 @@ class MoreToPlayWaveSizeModifier extends TurboCardWaveSizeModifier;
 
 defaultproperties
 {
-    WaveSizeModifier=1.25f
+    WaveSizeModifier=1.20f
 }
