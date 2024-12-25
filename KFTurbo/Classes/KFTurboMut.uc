@@ -165,8 +165,8 @@ function ApplyHealthModification(Pawn Pawn)
 	
 	HealthMultiplier = TurboGameReplicationInfo(Level.GRI).GetPlayerMaxHealthMultiplier(Pawn);
 
-	Pawn.HealthMax *= HealthMultiplier;
-	Pawn.Health *= HealthMultiplier;
+	Pawn.HealthMax = Round(Pawn.HealthMax * HealthMultiplier);
+	Pawn.Health = Round(Pawn.Health * HealthMultiplier);
 	
 	Pawn.HealthMax = FMax(Pawn.HealthMax, 1.f);
 	Pawn.Health = FMax(Pawn.Health, 1.f);
