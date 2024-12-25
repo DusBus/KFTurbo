@@ -19,10 +19,11 @@ var string MerchantAnimRef;
 var MeshAnimation MerchantAnim;
 var string MerchantMaterialRef;
 var Material MerchantMaterial;
-
 var Material DefaultTraderMaterial;
 
 var globalconfig bool bShiftOpensTrader;
+
+var globalconfig bool bPipebombUsesSpecialGroup;
 
 simulated function bool KeyEvent( out EInputKey Key, out EInputAction Action, FLOAT Delta )
 {
@@ -44,6 +45,7 @@ simulated function InitializeTurboInteraction()
 	bHasInitializedInteraction = true;
 	InitializeVeterancyTierPreferences();
 	UpdateMerchant();
+	InitializePipebombUsesSpecialGroup();
 }
 
 exec simulated function Trade()
@@ -53,7 +55,7 @@ exec simulated function Trade()
 		return;
 	}
 
-	if (!class'KFTurboGameType'.static.StaticIsHighDifficulty(ViewportOwner.Actor))
+	if (!class'KFTurboGameType'.static.StaticIsHighDifficulty(ViewportOwner.Actor) && !class'KFTurboGameType'.static.StaticIsTestGameType(ViewportOwner.Actor))
 	{
 		return;
 	}
@@ -340,6 +342,32 @@ static final function bool IsShiftTradeEnabled(TurboPlayerController PlayerContr
 	return false;
 }
 
+simulated function SetPipebombUsesSpecialGroup(bool bNewPipebombUsesSpecialGroup)
+{
+	if (bNewPipebombUsesSpecialGroup == bPipebombUsesSpecialGroup)
+	{
+		return;
+	}
+
+	bPipebombUsesSpecialGroup = bNewPipebombUsesSpecialGroup;
+	TurboPlayerController(ViewportOwner.Actor).SetPipebombUsesSpecialGroup(bPipebombUsesSpecialGroup);
+	SaveConfig();
+}
+
+static final function bool ShouldPipebombUseSpecialGroup(TurboPlayerController PlayerController)
+{
+	if (PlayerController != None && PlayerController.TurboInteraction != None)
+	{
+		return PlayerController.TurboInteraction.bPipebombUsesSpecialGroup;
+	}
+
+	return false;
+}
+
+simulated function InitializePipebombUsesSpecialGroup()
+{
+	TurboPlayerController(ViewportOwner.Actor).SetPipebombUsesSpecialGroup(bPipebombUsesSpecialGroup);
+}
 
 defaultproperties
 {
@@ -357,8 +385,9 @@ defaultproperties
 	MerchantMeshRef="KFTurbo.Merchant_Trip"
 	MerchantAnimRef="KFTurbo.Merchant_anim"
 	MerchantMaterialRef="KFTurboExtra.Merchant.Merchant_D"
+	DefaultTraderMaterial=Texture'KF_Soldier_Trip_T.Uniforms.shopkeeper_diff'
 
 	bShiftOpensTrader=true
 
-	DefaultTraderMaterial=Texture'KF_Soldier_Trip_T.Uniforms.shopkeeper_diff'
+	bPipebombUsesSpecialGroup=false
 }

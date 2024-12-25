@@ -4,6 +4,7 @@ var automated GUISectionBackground LeftSection, RightSection;
 var automated GUIButton DesiredRankButton;
 var automated moCheckbox MerchantReplacementCheckBox;
 var automated moCheckbox ShiftToTradeCheckBox;
+var automated moCheckbox PipebombGroupCheckBox;
 var Color PerkLabelTextColor;
 var localized string TierOptionList[8];
 
@@ -121,6 +122,8 @@ function InitializePage()
     MerchantReplacementCheckBox.Checked(class'TurboInteraction'.static.UseMerchantReplacement(PlayerController));
     RightSection.ManageComponent(ShiftToTradeCheckBox);
     ShiftToTradeCheckBox.Checked(class'TurboInteraction'.static.IsShiftTradeEnabled(PlayerController));
+    RightSection.ManageComponent(PipebombGroupCheckBox);
+    PipebombGroupCheckBox.Checked(class'TurboInteraction'.static.ShouldPipebombUseSpecialGroup(PlayerController));
 }
 
 function UpdatePage()
@@ -183,6 +186,20 @@ function OnShiftToTradeChanged(GUIComponent Sender)
     TurboInteraction.SetShiftTradeEnabled(ShiftToTradeCheckBox.IsChecked());
 }
 
+function OnPipebombGroupChange(GUIComponent Sender)
+{
+	local TurboInteraction TurboInteraction;
+
+    TurboInteraction = TurboPlayerController(PlayerOwner()).TurboInteraction;
+
+    if (TurboInteraction == None || TurboInteraction.bPipebombUsesSpecialGroup == PipebombGroupCheckBox.IsChecked())
+    {
+        return;
+    }
+
+    TurboInteraction.SetPipebombUsesSpecialGroup(PipebombGroupCheckBox.IsChecked());
+}
+
 defaultproperties
 {
     bHasInitialized = false
@@ -243,10 +260,19 @@ defaultproperties
 
     Begin Object Class=moCheckBox Name=ShiftTradeMenu
         Caption="Press Shift To Trade"
-        OnCreateComponent=MerchantReplacement.InternalOnCreateComponent
-        Hint="Open trader menu in KFTurbo+ by pressing Shift key."
+        OnCreateComponent=ShiftTradeMenu.InternalOnCreateComponent
+        Hint="Open trader menu in KFTurbo+ and Test Mode by pressing Shift key."
         TabOrder=52
         OnChange=TurboTab_TurboSettings.OnShiftToTradeChanged
     End Object
     ShiftToTradeCheckBox=moCheckBox'ShiftTradeMenu'
+
+    Begin Object Class=moCheckBox Name=PipebombGroupChange
+        Caption="Move Pipebomb Special Group"
+        OnCreateComponent=PipebombGroupChange.InternalOnCreateComponent
+        Hint="Moves the Pipebomb to inventory group 5."
+        TabOrder=53
+        OnChange=TurboTab_TurboSettings.OnPipebombGroupChange
+    End Object
+    PipebombGroupCheckBox=moCheckBox'PipebombGroupChange'
 }

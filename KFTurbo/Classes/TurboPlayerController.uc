@@ -15,10 +15,14 @@ var float LoginMenuTime;
 
 var array< class<TurboPlayerEventHandler> > TurboPlayerEventHandlerList;
 
+var bool bPipebombUsesSpecialGroup;
+
 replication
 {
 	reliable if( Role == ROLE_Authority )
 		ClientCloseBuyMenu;
+	reliable if( Role < ROLE_Authority )
+		ClientSetPipebombUsesSpecialGroup;
 	reliable if( Role < ROLE_Authority )
 		EndTrader, ServerMarkActor, ServerNotifyShoppingState, ServerNotifyLoginMenuState;
 	reliable if( Role < ROLE_Authority )
@@ -696,6 +700,78 @@ simulated function ClientWeaponSpawned(class<Weapon> WeaponClass, Inventory Inv)
 
 	PreloadFireModeAssets(KFWeaponClass.default.FireModeClass[0]);
 	PreloadFireModeAssets(KFWeaponClass.default.FireModeClass[1]);
+}
+
+simulated function SetPipebombUsesSpecialGroup(bool bNewPipebombUsesSpecialGroup)
+{
+	local W_Pipebomb_Weap Pipebomb;
+	local bool bWasEquipped;
+
+	if (bNewPipebombUsesSpecialGroup == bPipebombUsesSpecialGroup)
+	{
+		return;
+	}
+
+	bPipebombUsesSpecialGroup = bNewPipebombUsesSpecialGroup;
+
+	if (Role != ROLE_Authority)
+	{
+		ClientSetPipebombUsesSpecialGroup(bNewPipebombUsesSpecialGroup);
+	}
+
+	if (Pawn == None)
+	{
+		return;
+	}
+
+	Pipebomb = W_Pipebomb_Weap(Pawn.FindInventoryType(class'W_Pipebomb_Weap'));
+
+	if (Pipebomb == None)
+	{
+		return;
+	}
+
+	Pipebomb.UpdateInventoryGroup(bPipebombUsesSpecialGroup);
+
+	//Only auth should reshuffle.
+	if (Role == ROLE_Authority)
+	{
+		Pawn.DeleteInventory(Pipebomb);
+		Pawn.AddInventory(Pipebomb);
+	}
+}
+
+function ClientSetPipebombUsesSpecialGroup(bool bNewPipebombUsesSpecialGroup)
+{
+	local W_Pipebomb_Weap Pipebomb;
+
+	if (Role != ROLE_Authority || bNewPipebombUsesSpecialGroup == bPipebombUsesSpecialGroup)
+	{
+		return;
+	}
+
+	bPipebombUsesSpecialGroup = bNewPipebombUsesSpecialGroup;
+
+	if (Pawn == None)
+	{
+		return;
+	}
+
+	Pipebomb = W_Pipebomb_Weap(Pawn.FindInventoryType(class'W_Pipebomb_Weap'));
+
+	if (Pipebomb == None)
+	{
+		return;
+	}
+
+	Pipebomb.UpdateInventoryGroup(bPipebombUsesSpecialGroup);
+	Pawn.DeleteInventory(Pipebomb);
+	Pawn.AddInventory(Pipebomb);
+}
+
+function bool ShouldPipebombUseSpecialGroup()
+{
+	return bPipebombUsesSpecialGroup;
 }
 
 defaultproperties
