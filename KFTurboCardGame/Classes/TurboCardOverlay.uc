@@ -87,7 +87,7 @@ simulated function InitializeCardGameHUD(TurboCardReplicationInfo CGRI)
 
 simulated function bool CanUseLargeCards()
 {
-	switch(KFPHUD.PlayerOwner.ConsoleCommand("get ini:Engine.Engine.ViewportManager TextureDetailWorld"))
+	switch(TurboHUD.PlayerOwner.ConsoleCommand("get ini:Engine.Engine.ViewportManager TextureDetailWorld"))
 	{
 		case "Higher":
 		case "High":
@@ -101,13 +101,13 @@ simulated function bool CanUseLargeCards()
 
 simulated function bool ShouldDrawDarkenedCards()
 {
-	if (!bool(KFPHUD.PlayerOwner.ConsoleCommand("ISFULLSCREEN")))
+	if (!bool(TurboHUD.PlayerOwner.ConsoleCommand("ISFULLSCREEN")))
 	{
 		return false;
 	}
 
-	if (float(KFPHUD.PlayerOwner.ConsoleCommand("get ini:Engine.Engine.ViewportManager Brightness")) > 0.65f
-		|| float(KFPHUD.PlayerOwner.ConsoleCommand("get ini:Engine.Engine.ViewportManager Gamma")) > 1.3f)
+	if (float(TurboHUD.PlayerOwner.ConsoleCommand("get ini:Engine.Engine.ViewportManager Brightness")) > 0.65f
+		|| float(TurboHUD.PlayerOwner.ConsoleCommand("get ini:Engine.Engine.ViewportManager Gamma")) > 1.3f)
 	{
 		return true;
 	}
@@ -866,17 +866,17 @@ simulated function CheckSoundWarning(int TimeRemaining)
 	{
 		bHasPlayedThirtySecondsWarning = true;
 		bHasPlayedMinuteWarning = true;
-		KFPHUD.PlayerOwner.ClientPlaySound(TenSecondWarningSound,,, SLOT_None);
+		TurboHUD.PlayerOwner.ClientPlaySound(TenSecondWarningSound,,, SLOT_None);
 	}
 	else if (!bHasPlayedThirtySecondsWarning && TimeRemaining < 30)
 	{
 		bHasPlayedThirtySecondsWarning = true;
-		KFPHUD.PlayerOwner.ClientPlaySound(ThirtySecondsWarningSound,,, SLOT_None);
+		TurboHUD.PlayerOwner.ClientPlaySound(ThirtySecondsWarningSound,,, SLOT_None);
 	}
 	else if (!bHasPlayedMinuteWarning && TimeRemaining <= 60)
 	{
 		bHasPlayedMinuteWarning = true;
-		KFPHUD.PlayerOwner.ClientPlaySound(MinuteWarningSound,,, SLOT_None);
+		TurboHUD.PlayerOwner.ClientPlaySound(MinuteWarningSound,,, SLOT_None);
 	}
 }
 

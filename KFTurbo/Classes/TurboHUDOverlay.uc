@@ -9,17 +9,43 @@ struct Vector2D
 var Vector2D LastKnownClipSize;
 var Vector2D ClipSize;
 
-var TurboHUDKillingFloor KFPHUD;
+var TurboHUDKillingFloor TurboHUD;
+
+simulated function PreBeginPlay()
+{
+	Super.PreBeginPlay();
+	TurboHUD = TurboHUDKillingFloor(Owner);
+}
 
 simulated function Initialize(TurboHUDKillingFloor OwnerHUD)
 {
-	KFPHUD = OwnerHUD;
+	TurboHUD = OwnerHUD;
+}
+
+simulated final function TurboPlayerController GetController()
+{
+	return TurboPlayerController(TurboHUD.PlayerOwner);
+}
+
+simulated final function Pawn GetPawn()
+{
+	return TurboHUD.PlayerOwner.Pawn;
+}
+
+simulated final function KFWeapon GetWeapon()
+{
+	if (TurboHUD.PlayerOwner.Pawn != None)
+	{
+		return KFWeapon(TurboHUD.PlayerOwner.Pawn.Weapon);
+	}
+
+	return None;
 }
 
 //If you want screensize updates (or initial call), always call Super.Render(C) on subclasses.
 simulated function Render(Canvas C)
 {
-	if (KFPHUD == None)
+	if (TurboHUD == None)
 	{
 		return;
 	}

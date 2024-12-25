@@ -98,7 +98,7 @@ simulated function Render(Canvas C)
 	local vector CamPos, ViewDir, ScreenPos;
 	local rotator CamRot;
 
-	if (KFPHUD == None || KFPHUD.Level.GRI == None)
+	if (TurboHUD == None || Level.GRI == None)
 	{
 		return;
 	}
@@ -107,9 +107,9 @@ simulated function Render(Canvas C)
 
 	OpacityScale = 1.f;
 
-	if (KFPHUD.PawnOwner != None && KFWeapon(KFPHUD.PawnOwner.Weapon) != None)
+	if (GetWeapon() != None)
 	{
-		if (KFWeapon(KFPHUD.PawnOwner.Weapon).bAimingRifle)
+		if (GetWeapon().bAimingRifle)
 		{
 			OpacityScale *= 0.33f;
 		}
@@ -150,13 +150,13 @@ simulated final function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float
 	local Color DrawColor;
 	local float BackplateSize;
 
-	Dist = vsize(MarkInfo.TurboMarkPRI.GetMarkLocation() - KFPHUD.PlayerOwner.CalcViewLocation);
+	Dist = vsize(MarkInfo.TurboMarkPRI.GetMarkLocation() - GetController().CalcViewLocation);
 	PlayerDistance = Dist;
-	Dist -= KFPHUD.HealthBarFullVisDist * 2.f;
-	Dist = FClamp(Dist, 0.f, (KFPHUD.HealthBarCutoffDist * 2.f) - (KFPHUD.HealthBarFullVisDist * 2.f));
-	Dist = Dist / ((KFPHUD.HealthBarCutoffDist * 2.f) - (KFPHUD.HealthBarFullVisDist * 2.f));
+	Dist -= TurboHUD.HealthBarFullVisDist * 2.f;
+	Dist = FClamp(Dist, 0.f, (TurboHUD.HealthBarCutoffDist * 2.f) - (TurboHUD.HealthBarFullVisDist * 2.f));
+	Dist = Dist / ((TurboHUD.HealthBarCutoffDist * 2.f) - (TurboHUD.HealthBarFullVisDist * 2.f));
 	//BeaconAlpha = byte(255.f * FMin(PlayerInfo.VisibilityFade * 2.f, 1.f));
-	BeaconScale = Lerp(PlayerDistance / ((KFPHUD.HealthBarCutoffDist * 2.f) - (KFPHUD.HealthBarFullVisDist * 2.f)), 4.f, 8.f);
+	BeaconScale = Lerp(PlayerDistance / ((TurboHUD.HealthBarCutoffDist * 2.f) - (TurboHUD.HealthBarFullVisDist * 2.f)), 4.f, 8.f);
 	BeaconAlpha = byte(FMax(1.f - Dist, 0.66f) * OpacityScale * 255.f);
 
 	if ( MarkInfo.TurboMarkPRI.MarkDisplayString == "")
@@ -166,7 +166,7 @@ simulated final function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float
 
 	OldZ = C.Z;
 	C.Z = 1.0;
-	C.Style = KFPHUD.ERenderStyle.STY_Alpha;
+	C.Style = TurboHUD.ERenderStyle.STY_Alpha;
 
 	DrawColor = MarkInfo.TurboMarkPRI.GetMarkerColor(MarkInfo.TurboMarkPRI.MarkerColor);
 	C.FontScaleX = 1.f;
@@ -177,12 +177,12 @@ simulated final function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float
 	TempX = ScreenLocX;
 	TempY = ScreenLocY;
 	
-	C.Font = KFPHUD.LoadFontStatic(Min(8,BeaconScale + 1));
+	C.Font = TurboHUD.LoadFontStatic(Min(8,BeaconScale + 1));
 	C.TextSize(DistanceString, XL, YL);
 	TempY -= YL;
 	BackplateSize = YL * 2.f;
 
-	C.Font = KFPHUD.LoadFontStatic(Min(8,BeaconScale));
+	C.Font = TurboHUD.LoadFontStatic(Min(8,BeaconScale));
 	C.TextSize(MarkInfo.TurboMarkPRI.MarkDisplayString, XL, YL);
 	TempY -= YL * 0.25f;
 	BackplateSize += YL;
@@ -194,7 +194,7 @@ simulated final function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float
 	C.DrawTile(MarkBackplate, BackplateSize, BackplateSize, 0, 0, MarkBackplate.MaterialUSize(), MarkBackplate.MaterialVSize());	
 
 	//Draw distance.
-	C.Font = KFPHUD.LoadFontStatic(Min(8,BeaconScale + 1));
+	C.Font = TurboHUD.LoadFontStatic(Min(8,BeaconScale + 1));
 	C.TextSize(DistanceString, XL, YL);
 	TempX = ScreenLocX - (XL * 0.5);
 	TempY = ScreenLocY - (YL * 1.f);
@@ -202,7 +202,7 @@ simulated final function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float
 	if (Min(8,BeaconScale + 1) < 7)
 	{
 		C.SetPos(TempX + 2.f, TempY + 2.f);
-		C.DrawColor = KFPHUD.BlackColor;
+		C.DrawColor = TurboHUD.BlackColor;
 		C.DrawColor.A = (float(BeaconAlpha) * 0.5f);
 		C.DrawTextClipped(DistanceString, false);
 	}
@@ -214,7 +214,7 @@ simulated final function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float
 	C.DrawTextClipped(DistanceString, false);
 
 	//Draw mark name.
-	C.Font = KFPHUD.LoadFontStatic(Min(8,BeaconScale));
+	C.Font = TurboHUD.LoadFontStatic(Min(8,BeaconScale));
 	C.TextSize(MarkInfo.TurboMarkPRI.MarkDisplayString, XL, YL);
 
 	TempX = ScreenLocX - (XL * 0.5);
@@ -223,7 +223,7 @@ simulated final function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float
 	TempY = int(TempY);
 
 	C.SetPos(TempX + 2.f, TempY + 2.f);
-	C.DrawColor = KFPHUD.BlackColor;
+	C.DrawColor = TurboHUD.BlackColor;
 	C.DrawColor.A = (float(BeaconAlpha) * 0.5f);
 	C.DrawTextClipped(MarkInfo.TurboMarkPRI.MarkDisplayString, false);
 
@@ -233,7 +233,7 @@ simulated final function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float
 	C.DrawTextClipped(MarkInfo.TurboMarkPRI.MarkDisplayString, false);
 
 	//Draw mark instigator.
-	C.Font = KFPHUD.LoadFontStatic(Min(8,BeaconScale + 1));
+	C.Font = TurboHUD.LoadFontStatic(Min(8,BeaconScale + 1));
 	C.TextSize(MarkInfo.PRI.PlayerName, XL, YL);
 
 	TempX = ScreenLocX - (XL * 0.5);
@@ -243,7 +243,7 @@ simulated final function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float
 	if (Min(8,BeaconScale + 1) < 7)
 	{
 		C.SetPos(TempX + 2.f, TempY + 2.f);
-		C.DrawColor = KFPHUD.BlackColor;
+		C.DrawColor = TurboHUD.BlackColor;
 		C.DrawColor.A = (float(BeaconAlpha) * 0.5f);
 		C.DrawTextClipped(MarkInfo.PRI.PlayerName, false);
 		C.DrawColor = DrawColor;
@@ -252,7 +252,7 @@ simulated final function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float
 
 	C.SetPos(TempX, TempY);
 	C.DrawTextClipped(MarkInfo.PRI.PlayerName, false);
-	C.DrawColor = KFPHUD.BlackColor;
+	C.DrawColor = TurboHUD.BlackColor;
 
 	C.Z = OldZ;
 }

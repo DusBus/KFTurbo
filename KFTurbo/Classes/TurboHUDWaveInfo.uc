@@ -244,7 +244,7 @@ simulated function ReceivedKillMessage(class<KillsMessage> KillsMessageClass, cl
 
 	if (Killer == None)
 	{
-		Killer = KFPHUD.PlayerOwner.PlayerReplicationInfo;
+		Killer = TurboHUD.PlayerOwner.PlayerReplicationInfo;
 	}
 
 	InsertIndex = -1;
@@ -284,7 +284,7 @@ simulated function ReceivedKillMessage(class<KillsMessage> KillsMessageClass, cl
 		InsertIndex = KillFeedList.Length - 1;
 	}
 
-	bIsLocalPlayer = (KFPHUD.PlayerOwner != None && KFPHUD.PlayerOwner.PlayerReplicationInfo != None && KFPHUD.PlayerOwner.PlayerReplicationInfo == Killer);
+	bIsLocalPlayer = (TurboHUD.PlayerOwner != None && TurboHUD.PlayerOwner.PlayerReplicationInfo != None && TurboHUD.PlayerOwner.PlayerReplicationInfo == Killer);
 	InitializeKillFeedEntry(KillFeedList[InsertIndex], TurboPlayerReplicationInfo(Killer), MonsterClass, class<TurboKillsMessage>(KillsMessageClass), bIsLocalPlayer);
 }
 
