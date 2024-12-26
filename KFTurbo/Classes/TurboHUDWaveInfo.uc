@@ -26,9 +26,10 @@ var float DesiredXSize, DesiredYSize;
 var float NumberZedsRemaining;
 var float NumberZedsInterpRate;
 
-var Vector2D BackplateSize;
-var Vector2D ActiveBackplateSize;
-var Vector2D BackplateSpacing; //Distance from top and middle.
+var(Turbo) Vector2D BackplateSize;
+var(Turbo) Vector2D ActiveBackplateSize;
+var(Turbo) Vector2D BackplateSpacing; //Distance from top and middle.
+var(Turbo) Vector2D BackplateTextSpacing; //Distance from top and middle.
 
 //End Trader Vote
 var localized string EndTraderVoteTitle;
@@ -52,6 +53,8 @@ var Texture ActiveWaveIcon;
 var bool bIsTestGameMode;
 var bool bIsGameOver;
 
+var int FontSizeOffset;
+
 //Kill Feed
 struct KillFeedEntry
 {
@@ -68,7 +71,6 @@ struct KillFeedEntry
 var array<KillFeedEntry> KillFeedList;
 var float TrashMonsterKillLifeTime, TrashMonsterKillCountExtension;
 var float EliteMonsterKillLifeTime, EliteMonsterKillCountExtension;
-var int KillFeedFontSizeOffset;
 
 simulated function Initialize(TurboHUDKillingFloor OwnerHUD)
 {
@@ -113,9 +115,7 @@ simulated function TickGameState(float DeltaTime)
 }
 
 simulated function Render(Canvas C)
-{
-	local Vector2D BackplateACenter, BackplateBCenter;
-	
+{	
 	Super.Render(C);
 
 	if (TGRI == None)
@@ -125,9 +125,17 @@ simulated function Render(Canvas C)
 	
 	if (!bIsTestGameMode  && !bIsGameOver)
 	{
-		DrawGameBackplate(C, BackplateACenter, BackplateBCenter);
-		DrawCurrentWave(C, BackplateACenter);
-		DrawWaveData(C, BackplateBCenter);
+		C.Reset();
+		C.DrawColor = class'HudBase'.default.WhiteColor;
+		C.Style = ERenderStyle.STY_Alpha;
+
+		DrawGameData(C);
+
+		C.Reset();
+		C.DrawColor = class'HudBase'.default.WhiteColor;
+		C.Style = ERenderStyle.STY_Alpha;
+
+		DrawWaveData(C);
 	}
 	
 	DrawKillFeed(C);
@@ -139,90 +147,78 @@ simulated function Render(Canvas C)
 
 simulated function OnScreenSizeChange(Canvas C, Vector2D CurrentClipSize, Vector2D PreviousClipSize)
 {
-	KillFeedFontSizeOffset = 0;
+	FontSizeOffset = 0;
 
 	if (CurrentClipSize.Y <= 1440)
 	{
-		KillFeedFontSizeOffset++;
+		FontSizeOffset++;
 	}
 
 	if (CurrentClipSize.Y <= 1080)
 	{
-		KillFeedFontSizeOffset++;
+		FontSizeOffset++;
 	}
 
 	if (CurrentClipSize.Y <= 820)
 	{
-		KillFeedFontSizeOffset++;
+		FontSizeOffset++;
 	}
 
 	if (CurrentClipSize.Y <= 720)
 	{
-		KillFeedFontSizeOffset++;
+		FontSizeOffset++;
 	}
 }
 
-simulated function DrawGameBackplate(Canvas C, out Vector2D BackplateACenter, out Vector2D BackplateBCenter)
+simulated function DrawGameData(Canvas C)
 {
 	local float CenterX, TopY;
 	local float TempX, TempY;
+	local float SizeX, SizeY;
+	local float TextSizeX, TextSizeY, TextScale;
+	local string TestText;
 
 	CenterX = C.ClipX * 0.5f;
 	TopY = C.ClipY * BackplateSpacing.Y;
 
-	TempX = CenterX - (C.ClipX * (BackplateSpacing.X + BackplateSize.X));
+	TempX = CenterX - (C.ClipX * (BackplateSpacing.X + BackplateSize.X + BackplateTextSpacing.X));
 	TempY = TopY;
 
-	C.DrawColor = BackplateColor;
+	SizeX = C.ClipX * BackplateSize.X;
+	SizeY = C.ClipY * BackplateSize.Y;
+
+	TestText = GetStringOfZeroes(5);
 
 	C.SetPos(TempX, TempY);
-	BackplateACenter.X = TempX + (C.ClipX * BackplateSize.X * 0.5f);
-	BackplateACenter.Y = TempY + (C.ClipY * BackplateSize.Y * 0.5f);
 
-	if (RoundedContainer != None)
-	{
-		C.DrawTileStretched(RoundedContainer, C.ClipX * BackplateSize.X, C.ClipY * BackplateSize.Y);
-	}
-	
-	TempX = CenterX + (C.ClipX * BackplateSpacing.X);
-
-	C.SetPos(TempX, TempY);
-	BackplateBCenter.X = TempX + (C.ClipX * ActiveBackplateSize.X * 0.5f);
-	BackplateBCenter.Y = BackplateACenter.Y;
-
-	if (RoundedContainer != None)
-	{
-		C.DrawTileStretched(RoundedContainer, C.ClipX * ActiveBackplateSize.X, C.ClipY * ActiveBackplateSize.Y);
-	}
-}
-
-simulated function DrawCurrentWave(Canvas C, Vector2D Center)
-{
-	local String CurrentWaveString;
-	local float TextSizeX, TextSizeY, TextScale;
-
-	C.DrawColor = C.MakeColor(255, 255, 255, 220);
-	CurrentWaveString = FillStringWithZeroes(string(TGRI.WaveNumber + 1), 2);
-	CurrentWaveString = CurrentWaveString $ "/";
-	CurrentWaveString = CurrentWaveString $ FillStringWithZeroes(string(TGRI.FinalWave), 2);
-	
+	C.Font = class'KFTurboFontHelper'.static.LoadLargeNumberFont(2 + FontSizeOffset);
 	C.FontScaleX = 1.f;
-	C.FontScaleY = 1.f;
-	C.Font = class'KFTurboFontHelper'.static.LoadLargeNumberFont(2);
-	C.TextSize(GetStringOfZeroes(Len(CurrentWaveString)), TextSizeX, TextSizeY);
-	
-	TextScale = (C.ClipY * BackplateSize.Y) / TextSizeY;
+	C.FontScaleX = 1.f;
+	C.TextSize(TestText, TextSizeX, TextSizeY);
+
+	TextScale = (C.ClipY * (BackplateSize.Y - BackplateTextSpacing.Y)) / TextSizeY;
 	C.FontScaleX = TextScale;
 	C.FontScaleY = TextScale;
-	
-	C.TextSize(GetStringOfZeroes(Len(CurrentWaveString)), TextSizeX, TextSizeY);
 
-	C.SetPos(Center.X - (TextSizeX * 0.5f), Center.Y - (TextSizeY * 0.5f));
-	DrawTextMeticulous(C, CurrentWaveString, TextSizeX);
+	C.TextSize(TestText, TextSizeX, TextSizeY);
+	SizeX = TextSizeX + (BackplateTextSpacing.X * C.ClipX);
+
+	if (RoundedContainer != None)
+	{
+		C.DrawColor = BackplateColor;
+		C.SetPos(TempX, TempY);
+		C.DrawTileStretched(RoundedContainer, SizeX, SizeY);
+	}
+	
+	C.DrawColor = C.MakeColor(255, 255, 255, 255);
+	TestText = FillStringWithZeroes(string(Min(TGRI.WaveNumber + 1, 99)), 2);
+	TestText = TestText $ "/";
+	TestText = TestText $ FillStringWithZeroes(string(Min(TGRI.FinalWave, 99)), 2);
+	C.SetPos((TempX + (SizeX * 0.5f)) - (TextSizeX * 0.5f), (TempY + (SizeY * 0.5f)) - (TextSizeY * 0.5f));
+	DrawTextMeticulous(C, TestText, TextSizeX);
 }
 
-
-simulated function DrawWaveData(Canvas C, Vector2D Center) {}
+simulated function DrawWaveData(Canvas C) {}
 
 simulated function ReceivedKillMessage(class<KillsMessage> KillsMessageClass, class<Monster> MonsterClass, PlayerReplicationInfo Killer)
 {
@@ -329,9 +325,9 @@ state ActiveWave
 		}
 	}
 
-	simulated function DrawWaveData(Canvas C, Vector2D Center)
+	simulated function DrawWaveData(Canvas C)
 	{
-		DrawActiveWave(C, Center);
+		DrawActiveWave(C);
 	}
 }
 
@@ -345,9 +341,9 @@ simulated function TickActiveFadeOut(float DeltaTime)
 
 	ActiveWaveFadeRatio = 0.f;
 
-	ActiveBackplateSize.X = Lerp(2.f * ActiveWaveSizeRate * DeltaTime, ActiveBackplateSize.X, BackplateSize.X);
+	ActiveBackplateSize.X = Lerp(2.f * ActiveWaveSizeRate * DeltaTime, ActiveBackplateSize.X, DesiredXSize);
 
-	if (Abs(BackplateSize.X - ActiveBackplateSize.X) > 0.0001f)
+	if (Abs(DesiredXSize - ActiveBackplateSize.X) > 0.0001f)
 	{
 		return;
 	}
@@ -381,28 +377,54 @@ simulated function TickActiveWave(float DeltaTime)
 	NumberZedsRemaining = Lerp(DeltaTime * NumberZedsInterpRate, NumberZedsRemaining, float(TGRI.MaxMonsters));
 }
 
-simulated function DrawActiveWave(Canvas C, Vector2D Center)
+simulated function DrawActiveWave(Canvas C)
 {
+	local float CenterX, TopY;
+	local float TempX, TempY;
+	local float SizeX, SizeY;
 	local float TextSizeX, TextSizeY, TextScale;
-	local string ActiveWaveString;
+	local string TestText;
 
-	ActiveWaveString = string(int(NumberZedsRemaining));
+	CenterX = C.ClipX * 0.5f;
+	TopY = C.ClipY * BackplateSpacing.Y;
+
+	TempX = CenterX + (C.ClipX * BackplateSpacing.X);
+	TempY = TopY;
+
+	SizeY = C.ClipY * BackplateSize.Y;
+
+	TestText = GetStringOfZeroes(Len(string(int(NumberZedsRemaining))));
+
+	C.SetPos(TempX, TempY);
+
+	C.Font = class'KFTurboFontHelper'.static.LoadLargeNumberFont(2 + FontSizeOffset);
 	C.FontScaleX = 1.f;
-	C.FontScaleY = 1.f;
-	C.Font = class'KFTurboFontHelper'.static.LoadLargeNumberFont(2);
-	C.TextSize(GetStringOfZeroes(Len(ActiveWaveString)), TextSizeX, TextSizeY);
-	TextScale = (C.ClipY * BackplateSize.Y) / TextSizeY;
+	C.FontScaleX = 1.f;
+
+	C.TextSize(TestText, TextSizeX, TextSizeY);
+
+	TextScale = (C.ClipY * (BackplateSize.Y - BackplateTextSpacing.Y)) / TextSizeY;
 	C.FontScaleX = TextScale;
 	C.FontScaleY = TextScale;
-	C.TextSize(GetStringOfZeroes(Len(ActiveWaveString)), TextSizeX, TextSizeY);
+
+	C.TextSize(TestText, TextSizeX, TextSizeY);
 
 	DesiredXSize = TextSizeX;
 	DesiredXSize /= C.ClipX;
-	DesiredXSize += 0.01f;
+	DesiredXSize += BackplateTextSpacing.X;
 
 	if (ActiveBackplateSize.X < DesiredXSize)
 	{
 		ActiveBackplateSize.X = DesiredXSize;
+	}
+
+	if (RoundedContainer != None)
+	{
+		SizeX = C.ClipX * ActiveBackplateSize.X;
+
+		C.DrawColor = BackplateColor;
+		C.SetPos(TempX, TempY);
+		C.DrawTileStretched(RoundedContainer, SizeX, SizeY);
 	}
 	
 	if (ActiveWaveFadeRatio <= 0.001f)
@@ -410,19 +432,12 @@ simulated function DrawActiveWave(Canvas C, Vector2D Center)
 		return;
 	}
 
-	if (ActiveWaveIcon != None)
-	{
-		C.DrawColor = ActiveWaveIconColor;
-		C.DrawColor.A = byte(float(ActiveWaveIconColor.A) * ActiveWaveFadeRatio);
-		C.SetPos(Center.X - (C.ClipY * BackplateSize.Y * 0.3f), Center.Y - (C.ClipY * BackplateSize.Y * 0.3f));
-		C.DrawRect(ActiveWaveIcon, C.ClipY * BackplateSize.Y * 0.6f, C.ClipY * BackplateSize.Y * 0.6f);
-	}
-
 	C.SetDrawColor(255, 255, 255);
 	C.DrawColor.A = byte(ActiveWaveFadeRatio * 255.f);
 
-	C.SetPos(Center.X - (TextSizeX * 0.5f), Center.Y - (TextSizeY * 0.5f));
-	DrawTextMeticulous(C, ActiveWaveString, TextSizeX);
+	TestText = string(int(NumberZedsRemaining));
+	C.SetPos(TempX + (C.ClipX * ActiveBackplateSize.X * 0.5f) - (TextSizeX * 0.5f), TempY + (C.ClipY * BackplateSize.Y  * 0.5f) - (TextSizeY * 0.5f));
+	DrawTextMeticulous(C, TestText, TextSizeX);
 }
 
 static final function bool IsEliteMonster(class<Monster> Monster)
@@ -500,11 +515,11 @@ simulated final function DrawKillFeedEntry(Canvas C, out float DrawY, out KillFe
 
 	if (bIsElite)
 	{
-		C.Font = class'KFTurboFontHelper'.static.LoadBoldItalicFontStatic(0 + KillFeedFontSizeOffset);
+		C.Font = class'KFTurboFontHelper'.static.LoadBoldItalicFontStatic(0 + FontSizeOffset);
 	}
 	else
 	{
-		C.Font = class'KFTurboFontHelper'.static.LoadItalicFontStatic(1 + KillFeedFontSizeOffset);
+		C.Font = class'KFTurboFontHelper'.static.LoadItalicFontStatic(1 + FontSizeOffset);
 	}
 	
 	C.FontScaleX = 1.f;
@@ -564,7 +579,7 @@ simulated final function DrawKillFeedEntry(Canvas C, out float DrawY, out KillFe
 	//Draw player name if this isn't our entry.
 	if (!Entry.bIsLocalPlayer)
 	{
-		C.Font = class'KFTurboFontHelper'.static.LoadItalicFontStatic(3 + KillFeedFontSizeOffset);
+		C.Font = class'KFTurboFontHelper'.static.LoadItalicFontStatic(3 + FontSizeOffset);
 		C.FontScaleX = BaseTextScale;
 		C.FontScaleY = BaseTextScale;
 
@@ -652,9 +667,9 @@ state WaitingWave
 		}
 	}
 	
-	simulated function DrawWaveData(Canvas C, Vector2D Center)
+	simulated function DrawWaveData(Canvas C)
 	{
-		DrawTraderWave(C, Center);
+		DrawTraderWave(C);
 		DrawTraderEndVote(C);
 	}
 }
@@ -757,13 +772,51 @@ simulated function TickTraderFadeIn(float DeltaTime)
 	TraderFadeRatio = FMin(TraderFadeRatio + (TraderFadeRate * DeltaTime), 1.f);
 }
 
-simulated function DrawTraderWave(Canvas C, Vector2D Center)
+simulated function DrawTraderWave(Canvas C)
 {
 	local string TraderTime;
 	local int MinutesRemaining;
 	local bool bLessThanMinuteRemains;
 	local float SecondTime, MillisecondTime;
 	local float TextSizeX, TextSizeY, TextScale;
+	local float TempX, TempY, SizeX, SizeY;
+
+	TempX = (C.ClipX * 0.5f) + (C.ClipX * BackplateSpacing.X);
+	TempY = C.ClipY * BackplateSpacing.Y;
+
+	SizeX = C.ClipX * BackplateSize.X;
+	SizeY = C.ClipY * BackplateSize.Y;
+
+	TraderTime = GetStringOfZeroes(5);
+
+	C.SetPos(TempX, TempY);
+
+	C.Font = class'KFTurboFontHelper'.static.LoadLargeNumberFont(2 + FontSizeOffset);
+	C.FontScaleX = 1.f;
+	C.FontScaleX = 1.f;
+	C.TextSize(TraderTime, TextSizeX, TextSizeY);
+
+	TextScale = (C.ClipY * (BackplateSize.Y - BackplateTextSpacing.Y)) / TextSizeY;
+	C.FontScaleX = TextScale;
+	C.FontScaleY = TextScale;
+
+	C.TextSize(TraderTime, TextSizeX, TextSizeY);
+	SizeX = TextSizeX + (BackplateTextSpacing.X * C.ClipX);
+
+	if (RoundedContainer != None)
+	{
+		C.DrawColor = BackplateColor;
+		C.SetPos(TempX, TempY);
+		C.DrawTileStretched(RoundedContainer, SizeX, SizeY);
+	}
+
+	DesiredXSize = SizeX;
+	DesiredXSize /= C.ClipX;
+
+	if (ActiveBackplateSize.X < DesiredXSize)
+	{
+		ActiveBackplateSize.X = DesiredXSize;
+	}
 
 	if (TraderFadeRatio <= 0.001f)
 	{
@@ -791,7 +844,7 @@ simulated function DrawTraderWave(Canvas C, Vector2D Center)
 	
 	C.FontScaleX = 1.f;
 	C.FontScaleY = 1.f;
-	C.Font = class'KFTurboFontHelper'.static.LoadLargeNumberFont(2);
+	C.Font = class'KFTurboFontHelper'.static.LoadLargeNumberFont(2 + FontSizeOffset);
 	C.TextSize(GetStringOfZeroes(Len(TraderTime)), TextSizeX, TextSizeY);
 	
 	TextScale = (C.ClipY * BackplateSize.Y) / TextSizeY;
@@ -800,7 +853,7 @@ simulated function DrawTraderWave(Canvas C, Vector2D Center)
 	
 	C.TextSize(GetStringOfZeroes(Len(TraderTime)), TextSizeX, TextSizeY);
 
-	C.SetPos(Center.X - (TextSizeX * 0.5f), Center.Y - (TextSizeY * 0.5f));
+	C.SetPos((TempX + (SizeX * 0.5f)) - (TextSizeX * 0.5f), (TempY + (SizeY * 0.5f)) - (TextSizeY * 0.5f));
 	DrawTextMeticulous(C, TraderTime, TextSizeX);
 }
 
@@ -820,9 +873,10 @@ simulated function DrawTraderEndVote(Canvas C)
 
 	bHasVotes = false;
 	
+	C.Font = class'KFTurboFontHelper'.static.LoadFontStatic(2 + FontSizeOffset);
 	C.FontScaleX = 1.f;
 	C.FontScaleY = 1.f;
-	C.Font = class'KFTurboFontHelper'.static.LoadFontStatic(4);
+
 	C.TextSize(EndTraderVoteTitle, TextSizeX, TextSizeY);
 
 	C.FontScaleX = FMin((C.ClipY * BackplateSpacing.Y * 1.25f) / TextSizeY, 1.f);
@@ -924,6 +978,7 @@ defaultproperties
 
 	BackplateSize=(X=0.075f,Y=0.05f)
 	BackplateSpacing=(X=0.01f,Y=0.02f)
+	BackplateTextSpacing=(X=0.01f,Y=0.f)
 
 	EndTraderVoteTitle="End Trader Vote:"
 	
@@ -936,7 +991,7 @@ defaultproperties
 	TrashMonsterKillCountExtension=0.1f
 	EliteMonsterKillLifeTime=5.f
 	EliteMonsterKillCountExtension=0.2f
-	KillFeedFontSizeOffset=0
+	FontSizeOffset=0
 
 	ActiveWaveIconColor=(R=255,G=255,B=255,A=80)
 	ActiveWaveIcon=Texture'KFTurbo.Scoreboard.ScoreboardKill_D'
