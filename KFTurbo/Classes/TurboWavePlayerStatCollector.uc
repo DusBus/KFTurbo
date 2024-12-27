@@ -5,7 +5,7 @@ class TurboWavePlayerStatCollector extends TurboPlayerStatCollectorBase;
 var int Wave;
 
 var int Kills, KillsFleshpound, KillsScrake;
-var int DamageDone;
+var int DamageDone, DamageDoneFleshpound, DamageDoneScrake;
 
 var int ShotsFired, ShotsHit, ShotsHeadshot;
 var int MeleeSwings;
@@ -21,7 +21,7 @@ replication
 	reliable if (Role == ROLE_Authority)
 		Wave,
 		Kills, KillsFleshpound, KillsScrake,
-		DamageDone,
+		DamageDone, DamageDoneFleshpound, DamageDoneScrake,
 		ShotsFired, ShotsHit, ShotsHeadshot,
 		MeleeSwings,
 		Reloads,
@@ -39,7 +39,10 @@ function PushStats(TurboPlayerStatCollectorBase Source)
 	Kills = WaveStatsSource.Kills;
 	KillsFleshpound = WaveStatsSource.KillsFleshpound;
 	KillsScrake = WaveStatsSource.KillsScrake;
+
 	DamageDone = WaveStatsSource.DamageDone;
+	DamageDoneFleshpound = WaveStatsSource.DamageDoneFleshpound;
+	DamageDoneScrake = WaveStatsSource.DamageDoneScrake;
 	
 	ShotsFired = WaveStatsSource.ShotsFired;
 	ShotsHit = WaveStatsSource.ShotsHit;
@@ -91,6 +94,15 @@ function IncrementDamageDone(int Damage, class<KFMonster> MonsterClass)
 	}
 
 	DamageDone += Damage;
+
+	if (class<ZombieFleshPound>(MonsterClass) != None)
+	{
+		DamageDoneFleshpound += Damage;
+	}
+	else if (class<ZombieScrake>(MonsterClass) != None)
+	{
+		DamageDoneScrake += Damage;
+	}
 }
 
 function IncrementShotsFired()
@@ -111,7 +123,7 @@ function IncrementShotsHit(bool bIsHeadshot)
 	}
 
 	ShotsHit++;
-
+	
 	if (bIsHeadshot)
 	{
 		ShotsHeadshot++;

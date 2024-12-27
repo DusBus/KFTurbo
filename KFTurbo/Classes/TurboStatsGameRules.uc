@@ -3,7 +3,8 @@
 //Needs to be at the front of the GameRules list so it can make sure all rules have gone first.
 //Distributed under the terms of the GPL-2.0 License.
 //For more information see https://github.com/KFPilot/KFTurbo.
-class TurboStatsGameRules extends TurboGameRules;
+class TurboStatsGameRules extends TurboGameRules
+	config(KFTurbo);
 
 //Used during spin up state.
 var bool bGeneratingStatCollectors;
@@ -18,7 +19,7 @@ var int ControllerListIndex;
 var KFTurboGameType TurboGameType;
 
 //Turns on collector/replicator system. False for now until tested.
-var bool bEnableStatCollector;
+var globalconfig bool bEnableStatCollector;
 
 function PostBeginPlay()
 {
@@ -147,5 +148,5 @@ function ReplicateStatCollector(TurboPlayerController Controller)
 
 defaultproperties
 {
-    bEnableStatCollector=false
+    bEnableStatCollector=true
 }

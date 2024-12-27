@@ -11,8 +11,11 @@ var bool bVotedForTraderEnd;
 var array<TurboPlayerStatCollectorBase> StatCollectorList;
 var array<TurboPlayerStatCollectorBase> StatReplicatorList;
 
+var bool bHasRegisteredOnReceiveStatCollector;
+var bool bHasRegisteredOnReceiveStatReplicator;
 delegate OnReceiveStatCollector(TurboPlayerReplicationInfo PlayerReplicationInfo, TurboPlayerStatCollectorBase Collector);
 delegate OnReceiveStatReplicator(TurboPlayerReplicationInfo PlayerReplicationInfo, TurboPlayerStatCollectorBase Replicator);
+
 
 replication
 {
