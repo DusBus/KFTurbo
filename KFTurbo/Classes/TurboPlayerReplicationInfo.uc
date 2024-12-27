@@ -96,8 +96,8 @@ simulated function UnregisterStatCollector(TurboPlayerStatCollectorBase Collecto
 
 simulated function RegisterStatReplicator(TurboPlayerStatCollectorBase Replicator)
 {
-    StatReplicatorList.Length = StatCollectorList.Length + 1;
-    StatReplicatorList[StatCollectorList.Length - 1] = Replicator;
+    StatReplicatorList.Length = StatReplicatorList.Length + 1;
+    StatReplicatorList[StatReplicatorList.Length - 1] = Replicator;
     OnReceiveStatReplicator(Self, Replicator);
 }
 
