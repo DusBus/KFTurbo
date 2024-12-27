@@ -224,18 +224,27 @@ state DisplayWaveStats
 
 	simulated function Tick(float DeltaTime)
 	{
-		if (DisplayDuration <= 0.f)
+		local bool bIsWaveInProgress;
+		local bool bHasScoreboardOpen;
+		bIsWaveInProgress = KFGameReplicationInfo(Level.GRI) != None && KFGameReplicationInfo(Level.GRI).bWaveInProgress;
+		bHasScoreboardOpen = TurboHUD.bShowScoreboard;
+
+		if (bIsWaveInProgress || (DisplayDuration <= 0.f && !bHasScoreboardOpen))
 		{
 			DisplayRatio = Lerp(FadeOutRate * DeltaTime, DisplayRatio, 0.f);
 
 			if (DisplayRatio <= 0.001f)
 			{
-				GotoState('');
+				DisplayRatio = 0.f;
+				if (bIsWaveInProgress)
+				{
+					GotoState('');
+				}
 			}
 			return;
 		}
 		
-		if (DisplayRatio < 1.f)
+		if (DisplayRatio < 1.f || bHasScoreboardOpen)
 		{
 			DisplayRatio = Lerp(FadeInRate * DeltaTime, DisplayRatio, 1.f);
 
@@ -247,11 +256,6 @@ state DisplayWaveStats
 		}
 
 		DisplayDuration -= DeltaTime;
-
-		if (KFGameReplicationInfo(Level.GRI) != None && KFGameReplicationInfo(Level.GRI).bWaveInProgress)
-		{
-			DisplayDuration = 0.f;
-		}
 	}	
 }
 
@@ -491,6 +495,7 @@ final function DrawAccuracyBar(Canvas C, float PositionX, float PositionY, float
 	local float HitPercent;
 	local float HeadshotPercent;
 	local float TextSizeX, TextSizeY;
+	local string DisplayString;
 
 	PositionX += SizeX * 0.05f;
 	SizeX *= 0.9f;
@@ -514,26 +519,28 @@ final function DrawAccuracyBar(Canvas C, float PositionX, float PositionY, float
 		return;
 	}
 	
+	HitPercent = float(HitAmount) / float(ShotAmount);
+	
+	DisplayString = Repl(StatsAccuracyMissString, "%p", int(Round(100.f * (1.f - HitPercent))));
 	C.DrawColor = BackplateColor;
-	C.TextSize(StatsAccuracyMissString, TextSizeX, TextSizeY);
+	C.TextSize(DisplayString, TextSizeX, TextSizeY);
 	C.SetPos((PositionX + SizeX) - (TextSizeX + (SizeY * 0.1f)), PositionY - (SizeY * 0.19f));
-	C.DrawTextClipped(StatsAccuracyMissString);
+	C.DrawTextClipped(DisplayString);
 
 	if (HitAmount <= 0)
 	{
 		return;
 	}
 
-	HitPercent = float(HitAmount) / float(ShotAmount);
-
 	C.DrawColor = ShotsHitColor;
 	C.SetPos(PositionX, PositionY);
 	C.DrawTileStretched(SquareContainer, SizeX * HitPercent, SizeY);
 	
+	DisplayString = Repl(StatsAccuracyHitString, "%p", int(Round(100.f * HitPercent)));
 	C.DrawColor = BackplateColor;
-	C.TextSize(StatsAccuracyHitString, TextSizeX, TextSizeY);
+	C.TextSize(DisplayString, TextSizeX, TextSizeY);
 	C.SetPos((PositionX + (SizeX * HitPercent)) - (TextSizeX + (SizeY * 0.1f)), PositionY - (SizeY * 0.19f));
-	C.DrawTextClipped(StatsAccuracyHitString);
+	C.DrawTextClipped(DisplayString);
 
 	if (HeadshotAmount <= 0)
 	{
@@ -546,10 +553,11 @@ final function DrawAccuracyBar(Canvas C, float PositionX, float PositionY, float
 	C.SetPos(PositionX, PositionY);
 	C.DrawTileStretched(SquareContainer, SizeX * HeadshotPercent, SizeY);
 	
+	DisplayString = Repl(StatsAccuracyHeadshotString, "%p", int(Round(100.f * HeadshotPercent)));
 	C.DrawColor = BackplateColor;
-	C.TextSize(StatsAccuracyHeadshotString, TextSizeX, TextSizeY);
+	C.TextSize(DisplayString, TextSizeX, TextSizeY);
 	C.SetPos((PositionX + (SizeX * HeadshotPercent)) - (TextSizeX + (SizeY * 0.1f)), PositionY - (SizeY * 0.19f));
-	C.DrawTextClipped(StatsAccuracyHeadshotString);
+	C.DrawTextClipped(DisplayString);
 }
 
 defaultproperties
@@ -560,9 +568,9 @@ defaultproperties
 	StatsShotsFiredString="SHOTS FIRED"
 	StatsAccuracyString="ACCURACY"
 
-	StatsAccuracyMissString="MISS"
-	StatsAccuracyHitString="HIT"
-	StatsAccuracyHeadshotString="HEADSHOT"
+	StatsAccuracyMissString="%p% MISS"
+	StatsAccuracyHitString="%p% HIT"
+	StatsAccuracyHeadshotString="%p% HEADSHOT"
 
 	ProcessingWave=-1
 
