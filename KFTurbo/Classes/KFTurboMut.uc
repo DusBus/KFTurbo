@@ -262,6 +262,6 @@ defaultproperties
 	bDebugClientPerkRepLink=false
 
 	bCheckLatestTurboVersion=true
-	TurboVersion="4.5.3"
+	TurboVersion="4.5.4"
 	bHasVersionUpdate=false
 }
