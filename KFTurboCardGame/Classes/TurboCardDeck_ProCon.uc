@@ -36,7 +36,7 @@ function ActivateBriskPace(TurboCardReplicationInfo CGRI)
 
 function ActivateSpecialization(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyOnPerkDamage(1.5f);
+    CGRI.ModifyOnPerkDamage(1.05f);
     CGRI.ModifyOffPerkDamage(0.85f);
 }
 
