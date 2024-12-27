@@ -213,7 +213,10 @@ static final function ETraceResult WeaponTrace(Vector TraceStart, Vector TraceEn
 	}
     else
     {
-    	class'TurboPlayerEventHandler'.static.CollectMonsterHitData(HitActor, HitLocation, Normal(MomentumVector), HitData);
+		if (NumberMonstersHit != 0)
+		{
+    		class'TurboPlayerEventHandler'.static.CollectMonsterHitData(HitActor, HitLocation, Normal(MomentumVector), HitData);
+		}
 
 		if (HitData.Monster != None)
 		{
