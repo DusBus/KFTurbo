@@ -55,7 +55,7 @@ function ActivateVeryDeepAmmoPockets(TurboCardReplicationInfo CGRI)
 function ActivateEscalation(TurboCardReplicationInfo CGRI)
 {
     CGRI.ModifyPlayerDamage(1.05f);
-    CGRI.ModifyZombieDamage(0.85f);
+    CGRI.ModifyZombieDamage(0.9f);
 }
 
 function ActivateSurplus(TurboCardReplicationInfo CGRI)
@@ -294,7 +294,7 @@ defaultproperties
         CardDescriptionList(0)="Increases damage"
         CardDescriptionList(1)="by players by 5%"
         CardDescriptionList(2)="and damage by"
-        CardDescriptionList(3)="zeds by 15%."
+        CardDescriptionList(3)="zeds by 10%."
         OnActivateCard=ActivateEscalation
         CardID="PROCON_CONFEXCALATION"
     End Object
