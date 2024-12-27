@@ -435,6 +435,7 @@ final function DrawTeamBar(Canvas C, float PositionX, float PositionY, float Siz
 	C.FontScaleY = C.FontScaleX;	
 
 	TeammateBarColor = TurboHUD.WhiteColor;
+	RemainingPercent = 1.f;
 
 	for (Index = 0; Index < TeamAmount.Length; Index++)
 	{
@@ -445,7 +446,7 @@ final function DrawTeamBar(Canvas C, float PositionX, float PositionY, float Siz
 			continue;
 		}
 
-		TeammateBarColor = BlendColor(TeammateBarColor, Config.BarColor, 0.15f);
+		TeammateBarColor = BlendColor(TeammateBarColor, Config.BarColor, 0.3f);
 		C.DrawColor = TeammateBarColor;
 		C.SetPos(PositionX + ((SizeX * (RemainingPercent - TeammateBarPercent)) - 2.f), PositionY);
 		C.DrawTileStretched(SquareContainer, (SizeX * TeammateBarPercent) + 2.f, SizeY);
