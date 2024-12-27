@@ -24,6 +24,9 @@ var TurboHUDOverlay PlayerHUD;
 var class<TurboHUDOverlay> MarkInfoHUDClass;
 var TurboHUDOverlay MarkInfoHUD;
 
+var class<TurboHUDOverlay> WaveStatsHUDClass;
+var TurboHUDOverlay WaveStatsHUD;
+
 var class<TextReactionSettings> TextReactionSettingsClass;
 var TextReactionSettings TextReactionSettings;
 
@@ -116,6 +119,11 @@ simulated function PostBeginPlay()
 		MarkInfoHUDClass = class'TurboHUDMarkInfo';
 	}
 
+	if (WaveStatsHUDClass == None)
+	{
+		WaveStatsHUDClass = class'TurboHUDWaveStats';
+	}
+
 	PlayerInfoHUD = Spawn(PlayerInfoHUDClass, Self);
 	PlayerInfoHUD.Initialize(Self);
 	
@@ -127,6 +135,11 @@ simulated function PostBeginPlay()
 
 	MarkInfoHUD = Spawn(MarkInfoHUDClass, Self);
 	MarkInfoHUD.Initialize(Self);
+	
+	WaveStatsHUD = Spawn(WaveStatsHUDClass, Self);
+	WaveStatsHUD.Initialize(Self);
+
+	AddPreDrawOverlay(WaveStatsHUD);
 
 	if (TextReactionSettingsClass != None)
 	{
