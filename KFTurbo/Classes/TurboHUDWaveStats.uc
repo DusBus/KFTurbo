@@ -67,6 +67,9 @@ var TeamStatBarConfig KillsBar;
 var TeamStatBarConfig DamageBar;
 var TeamStatBarConfig ShotsFiredBar;
 
+var Color StatSubtitleTextColor;
+var Color StatTextColor;
+
 var Color ShotsFiredColor;
 var Color ShotsHitColor;
 var Color ShotsHeadshotColor;
@@ -244,7 +247,9 @@ state DisplayWaveStats
 			return;
 		}
 		
-		if (DisplayRatio < 1.f || bHasScoreboardOpen)
+		DisplayDuration = FMax(DisplayDuration - DeltaTime, 0.f);
+
+		if (DisplayRatio < 1.f)
 		{
 			DisplayRatio = Lerp(FadeInRate * DeltaTime, DisplayRatio, 1.f);
 
@@ -254,8 +259,6 @@ state DisplayWaveStats
 			}
 			return;
 		}
-
-		DisplayDuration -= DeltaTime;
 	}	
 }
 
@@ -312,8 +315,6 @@ simulated function DrawStats(Canvas C)
 		C.DrawTileStretched(SquareContainer, SizeX, SizeY + 2.f);
 	}
 
-	C.DrawColor = TurboHUD.WhiteColor;
-
 	//Draw box title.	
 	C.Font = class'KFTurboFontHelper'.static.LoadFontStatic(1 + FontSizeOffset);
 	C.FontScaleX = 1.f;
@@ -325,13 +326,24 @@ simulated function DrawStats(Canvas C)
 	C.FontScaleY = TextScale;
 	C.TextSize("000", TextSizeX, TextSizeY);
 
+	if (SquareContainer != None)
+	{
+		C.DrawColor = KillsBar.FillColor;
+		C.DrawColor.A = 20;
+		C.SetPos(TempX, TempY + (SizeY * 0.05f));
+		C.DrawTileStretched(SquareContainer, SizeX, TextSizeY - (SizeY * 0.06f));
+		C.DrawColor.A = 80;
+		C.DrawTileStretched(SquareContainer, SizeX * (DisplayDuration / default.DisplayDuration), TextSizeY - (SizeY * 0.06f));
+	}
+
+	C.DrawColor = TurboHUD.WhiteColor;
 	C.SetPos(TempX + (SizeX * 0.05f), TempY + (SizeY * 0.02f));
 	C.DrawText(StatsHeaderString);
 	
 	TempY += TextSizeY;
 	SizeYPerEntry = (SizeY - TextSizeY) / 4.5f;
 	
-	C.Font = class'KFTurboFontHelper'.static.LoadFontStatic(3 + FontSizeOffset);
+	C.Font = class'KFTurboFontHelper'.static.LoadFontStatic(1 + FontSizeOffset);
 	C.FontScaleX = 1.f;
 	C.FontScaleX = 1.f;
 	C.TextSize("000", TextSizeX, TextSizeY);
@@ -349,10 +361,10 @@ simulated function DrawStats(Canvas C)
 	C.Font = SubtitleFont;
 	C.FontScaleX = SubtitleFontScale;
 	C.FontScaleY = SubtitleFontScale;
-	C.DrawColor = BackplateColor;
+	C.DrawColor = StatTextColor;
 	C.SetPos(TempX + (SizeX * 0.025f) + 2.f, TempY + 2.f);
 	C.DrawText(DrawString);
-	C.DrawColor = KillsBar.FillColor;
+	C.DrawColor = StatSubtitleTextColor;
 	C.SetPos(TempX + (SizeX * 0.025f), TempY);
 	C.DrawText(DrawString);
 
@@ -363,10 +375,10 @@ simulated function DrawStats(Canvas C)
 	C.Font = SubtitleFont;
 	C.FontScaleX = SubtitleFontScale;
 	C.FontScaleY = SubtitleFontScale;
-	C.DrawColor = BackplateColor;
+	C.DrawColor = StatTextColor;
 	C.SetPos(TempX + (SizeX * 0.025f) + 2.f, TempY + 2.f);
 	C.DrawText(DrawString);
-	C.DrawColor = DamageBar.FillColor;
+	C.DrawColor = StatSubtitleTextColor;
 	C.SetPos(TempX + (SizeX * 0.025f), TempY);
 	C.DrawText(DrawString);
 	
@@ -377,10 +389,10 @@ simulated function DrawStats(Canvas C)
 	C.Font = SubtitleFont;
 	C.FontScaleX = SubtitleFontScale;
 	C.FontScaleY = SubtitleFontScale;
-	C.DrawColor = BackplateColor;
+	C.DrawColor = StatTextColor;
 	C.SetPos(TempX + (SizeX * 0.025f) + 2.f, TempY + 2.f);
 	C.DrawText(DrawString);
-	C.DrawColor = ShotsFiredBar.FillColor;
+	C.DrawColor = StatSubtitleTextColor;
 	C.SetPos(TempX + (SizeX * 0.025f), TempY);
 	C.DrawText(DrawString);
 	
@@ -390,10 +402,10 @@ simulated function DrawStats(Canvas C)
 	C.Font = SubtitleFont;
 	C.FontScaleX = SubtitleFontScale;
 	C.FontScaleY = SubtitleFontScale;
-	C.DrawColor = BackplateColor;
+	C.DrawColor = StatTextColor;
 	C.SetPos(TempX + (SizeX * 0.025f) + 2.f, TempY + 2.f);
 	C.DrawText(StatsAccuracyString);
-	C.DrawColor = KillsBar.FillColor;
+	C.DrawColor = StatSubtitleTextColor;
 	C.SetPos(TempX + (SizeX * 0.025f), TempY);
 	C.DrawText(StatsAccuracyString);
 }
@@ -435,7 +447,7 @@ final function DrawTeamBar(Canvas C, float PositionX, float PositionY, float Siz
 	C.FontScaleX = 1.f;
 	C.FontScaleX = 1.f;
 	C.TextSize("000", TextSizeX, TextSizeY);
-	C.FontScaleX = (SizeY * 1.4f) / TextSizeY;
+	C.FontScaleX = (SizeY * 1.f) / TextSizeY;
 	C.FontScaleY = C.FontScaleX;	
 
 	TeammateBarColor = TurboHUD.WhiteColor;
@@ -450,13 +462,14 @@ final function DrawTeamBar(Canvas C, float PositionX, float PositionY, float Siz
 			continue;
 		}
 
-		TeammateBarColor = BlendColor(TeammateBarColor, Config.BarColor, 0.3f);
+		TeammateBarColor = BlendColor(TeammateBarColor, Config.FillColor, 0.3f);
 		C.DrawColor = TeammateBarColor;
 		C.SetPos(PositionX + ((SizeX * (RemainingPercent - TeammateBarPercent)) - 2.f), PositionY);
 		C.DrawTileStretched(SquareContainer, (SizeX * TeammateBarPercent) + 2.f, SizeY);
 
-		C.DrawColor = BackplateColor;
-		C.SetPos(PositionX + (SizeX * RemainingPercent) - TextSizeX, PositionY - (SizeY * 0.19f));
+		C.DrawColor = StatTextColor;
+		C.TextSize(TeamAmount[Index].Player.PlayerName, TextSizeX, TextSizeY);
+		C.SetPos(PositionX + (SizeX * RemainingPercent) - TextSizeX, (PositionY + (SizeY * 0.5f)) - (TextSizeY * 0.5f));
 		C.DrawTextClipped(TeamAmount[Index].Player.PlayerName);
 		
 		RemainingPercent -= TeammateBarPercent;
@@ -511,20 +524,22 @@ final function DrawAccuracyBar(Canvas C, float PositionX, float PositionY, float
 	C.FontScaleX = 1.f;
 	C.FontScaleX = 1.f;
 	C.TextSize("000", TextSizeX, TextSizeY);
-	C.FontScaleX = (SizeY * 1.4f) / TextSizeY;
+	C.FontScaleX = (SizeY * 1.f) / TextSizeY;
 	C.FontScaleY = C.FontScaleX;
 
 	if (ShotAmount <= 0)
 	{
 		return;
 	}
+
+	HitAmount = Min(HitAmount, ShotAmount);
 	
 	HitPercent = float(HitAmount) / float(ShotAmount);
 	
 	DisplayString = Repl(StatsAccuracyMissString, "%p", int(Round(100.f * (1.f - HitPercent))));
-	C.DrawColor = BackplateColor;
+	C.DrawColor = StatTextColor;
 	C.TextSize(DisplayString, TextSizeX, TextSizeY);
-	C.SetPos((PositionX + SizeX) - (TextSizeX + (SizeY * 0.1f)), PositionY - (SizeY * 0.19f));
+	C.SetPos((PositionX + SizeX) - (TextSizeX + (SizeY * 0.1f)), (PositionY + (SizeY * 0.5f)) - (TextSizeY * 0.45f));
 	C.DrawTextClipped(DisplayString);
 
 	if (HitAmount <= 0)
@@ -537,10 +552,15 @@ final function DrawAccuracyBar(Canvas C, float PositionX, float PositionY, float
 	C.DrawTileStretched(SquareContainer, SizeX * HitPercent, SizeY);
 	
 	DisplayString = Repl(StatsAccuracyHitString, "%p", int(Round(100.f * HitPercent)));
-	C.DrawColor = BackplateColor;
+	C.DrawColor = StatTextColor;
 	C.TextSize(DisplayString, TextSizeX, TextSizeY);
-	C.SetPos((PositionX + (SizeX * HitPercent)) - (TextSizeX + (SizeY * 0.1f)), PositionY - (SizeY * 0.19f));
-	C.DrawTextClipped(DisplayString);
+
+	//Only draw if can fit.
+	if (SizeX * HitPercent >= TextSizeX)
+	{
+		C.SetPos((PositionX + (SizeX * HitPercent)) - (TextSizeX + (SizeY * 0.1f)), (PositionY + (SizeY * 0.5f)) - (TextSizeY * 0.45f));
+		C.DrawTextClipped(DisplayString);
+	}
 
 	if (HeadshotAmount <= 0)
 	{
@@ -554,10 +574,14 @@ final function DrawAccuracyBar(Canvas C, float PositionX, float PositionY, float
 	C.DrawTileStretched(SquareContainer, SizeX * HeadshotPercent, SizeY);
 	
 	DisplayString = Repl(StatsAccuracyHeadshotString, "%p", int(Round(100.f * HeadshotPercent)));
-	C.DrawColor = BackplateColor;
+	C.DrawColor = StatTextColor;
 	C.TextSize(DisplayString, TextSizeX, TextSizeY);
-	C.SetPos((PositionX + (SizeX * HeadshotPercent)) - (TextSizeX + (SizeY * 0.1f)), PositionY - (SizeY * 0.19f));
-	C.DrawTextClipped(DisplayString);
+	
+	if (SizeX * HeadshotPercent >= TextSizeX)
+	{
+		C.SetPos((PositionX + (SizeX * HeadshotPercent)) - (TextSizeX + (SizeY * 0.1f)), (PositionY + (SizeY * 0.5f)) - (TextSizeY * 0.45f));
+		C.DrawTextClipped(DisplayString);
+	}
 }
 
 defaultproperties
@@ -574,17 +598,20 @@ defaultproperties
 
 	ProcessingWave=-1
 
-	FadeInRate=4.f
-	FadeOutRate=8.f
-	DisplayDuration=25.f
+	FadeInRate=8.f
+	FadeOutRate=4.f
+	DisplayDuration=15.f
 
-	WaveStatsSize=(X=0.25,Y=0.2f)
+	WaveStatsSize=(X=0.25,Y=0.225f)
 	WaveStatsPosition=(X=0.775f,Y=1.f)
 	StatsHeaderSizeY=0.2f
-	StatsSubheaderSizeY=0.1f
+	StatsSubheaderSizeY=0.14f
 	
 	SquareContainer=Texture'KFTurbo.HUD.ContainerSquare_D'
 	BackplateColor=(R=0,G=0,B=0,A=120)
+
+	StatSubtitleTextColor=(R=255,G=255,B=255,A=255)
+	StatTextColor=(R=0,G=0,B=0,A=200)
 
 	KillsBar=(FillColor=(R=120,G=145,B=255,A=255),BarColor=(R=255,G=255,B=255,A=255),bDrawFillMarker=true)
 	DamageBar=(FillColor=(R=255,G=147,B=120,A=255),BarColor=(R=255,G=255,B=255,A=255),bDrawFillMarker=true)
