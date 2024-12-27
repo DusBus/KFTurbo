@@ -95,7 +95,7 @@ static final function PenetratingWeaponTrace(Vector TraceStart, Rotator Directio
 		
 		if (PenetrationMax > 1 && PenetrationMultiplier <= 0.f)
 		{
-			PenetrationMultiplier = 0.75f; //If the weapon didn't provide a weapon penetration modifier (probably because it originally didn't penetrate), give it a nice 25% damage loss.
+			PenetrationMultiplier = 0.5f; //If the weapon didn't provide a weapon penetration modifier (probably because it originally didn't penetrate), give it a nice 50% damage loss.
 		}
 
 		if (PenetrationMultiplier < 1.f && WeaponPenetrationMultiplier > 1.f)
