@@ -102,7 +102,7 @@ function NotifyPlayerMaxHealthChanged()
     {
         if (Controller.Pawn != None && Controller.Pawn.Health > 0 && PlayerController(Controller) != None)
         {
-            Controller.Pawn.HealthMax = Controller.Pawn.default.HealthMax * GetPlayerMaxHealthMultiplier(Controller.Pawn);
+            Controller.Pawn.HealthMax = FMax(Round(Controller.Pawn.default.HealthMax * GetPlayerMaxHealthMultiplier(Controller.Pawn)), 1.f);
             Controller.Pawn.Health = Min(Controller.Pawn.Health, Controller.Pawn.HealthMax);
         }
     }
