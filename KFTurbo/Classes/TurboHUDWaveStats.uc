@@ -431,7 +431,7 @@ final function DrawTeamBar(Canvas C, float PositionX, float PositionY, float Siz
 	PositionX += SizeX * 0.05f;
 	SizeX *= 0.9f;
 
-	PositionY += SizeY * 0.55f;
+	PositionY += SizeY * 0.75f;
 	SizeY *= 0.33f;
 
 	C.DrawColor = Config.BarColor;
@@ -513,7 +513,7 @@ final function DrawAccuracyBar(Canvas C, float PositionX, float PositionY, float
 	PositionX += SizeX * 0.05f;
 	SizeX *= 0.9f;
 
-	PositionY += SizeY * 0.55f;
+	PositionY += SizeY * 0.75f;
 	SizeY *= 0.33f;
 
 	C.DrawColor = ShotsFiredColor;
