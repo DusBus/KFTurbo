@@ -381,9 +381,9 @@ defaultproperties
         CardName(0)="Mass"
         CardName(1)="Detonation"
         CardDescriptionList(0)="Explosive kills"
-        CardDescriptionList(1)="have a 10% chance"
+        CardDescriptionList(1)="have a 25% chance"
         CardDescriptionList(2)="to trigger explosions"
-        CardDescriptionList(3)="that deal 50% of"
+        CardDescriptionList(3)="that deal 25% of"
         CardDescriptionList(4)="the killed zed's"
         CardDescriptionList(5)="max health."
         OnActivateCard=ActivateMassDetonation
