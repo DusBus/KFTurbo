@@ -6,8 +6,8 @@ struct Vector2D
 	var() float Y;
 };
 
-var Vector2D LastKnownClipSize;
-var Vector2D ClipSize;
+var Vector2D LastKnownScreenSize;
+var Vector2D ScreenSize;
 
 var TurboHUDKillingFloor TurboHUD;
 
@@ -50,19 +50,18 @@ simulated function Render(Canvas C)
 		return;
 	}
 	
-	if (LastKnownClipSize.X != C.ClipX || LastKnownClipSize.Y != C.ClipY)
+	if (LastKnownScreenSize.X != C.SizeX || LastKnownScreenSize.Y != C.SizeY)
 	{
-		ClipSize.X = C.ClipX;
-		ClipSize.Y = C.ClipY;
+		ScreenSize.X = C.SizeX;
+		ScreenSize.Y = C.SizeY;
 
-		OnScreenSizeChange(C, ClipSize, LastKnownClipSize);
+		OnScreenSizeChange(C, ScreenSize, LastKnownScreenSize);
 		
-		LastKnownClipSize.X = C.ClipX;
-		LastKnownClipSize.Y = C.ClipY;
+		LastKnownScreenSize = ScreenSize;
 	}
 }
 
-event OnScreenSizeChange(Canvas C, Vector2D CurrentClipSize, Vector2D PreviousClipSize);
+event OnScreenSizeChange(Canvas C, Vector2D CurrentScreenSize, Vector2D PreviousScreenSize);
 
 static final function String GetStringOfZeroes(int NumberOfDigits)
 {
