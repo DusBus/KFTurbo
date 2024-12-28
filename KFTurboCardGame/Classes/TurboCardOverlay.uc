@@ -99,22 +99,6 @@ simulated function bool CanUseLargeCards()
 	return false;
 }
 
-simulated function bool ShouldDrawDarkenedCards()
-{
-	if (!bool(TurboHUD.PlayerOwner.ConsoleCommand("ISFULLSCREEN")))
-	{
-		return false;
-	}
-
-	if (float(TurboHUD.PlayerOwner.ConsoleCommand("get ini:Engine.Engine.ViewportManager Brightness")) > 0.65f
-		|| float(TurboHUD.PlayerOwner.ConsoleCommand("get ini:Engine.Engine.ViewportManager Gamma")) > 1.3f)
-	{
-		return true;
-	}
-
-	return false;
-}
-
 simulated function OnScreenSizeChange(Canvas C, Vector2D CurrentClipSize, Vector2D PreviousClipSize)
 {
 	Super.OnScreenSizeChange(C, CurrentClipSize, PreviousClipSize);
@@ -185,8 +169,6 @@ simulated function Tick(float DeltaTime)
 	{
 		return;
 	}
-
-	bDrawDarkenedCards = ShouldDrawDarkenedCards();
 
 	if (TCRI.bCurrentlyVoting && CurrentCardCount > 0)
 	{
@@ -337,9 +319,7 @@ simulated function Render(Canvas C)
 		return;
 	}
 	
-	C.Reset();
-	C.DrawColor = class'HudBase'.default.WhiteColor;
-	C.Style = ERenderStyle.STY_Alpha;
+	class'TurboHUDKillingFloor'.static.ResetCanvas(C);
 
 	if (TCRI.bCurrentlyVoting && CurrentCardCount > 0)
 	{
@@ -353,9 +333,7 @@ simulated function Render(Canvas C)
 		DrawBorrowedTime(C);
 	}
 
-	C.Reset();
-	C.DrawColor = class'HudBase'.default.WhiteColor;
-	C.Style = ERenderStyle.STY_Alpha;
+	class'TurboHUDKillingFloor'.static.ResetCanvas(C);
 }
 
 simulated function DrawVoter(Canvas C, PlayerReplicationInfo PRI, float X, float Y, float XOffset, out array<int> VoteList)
@@ -431,11 +409,6 @@ simulated function DrawSelectableCardList(Canvas C)
 	local string ColorString, StrippedString;
 	
 	C.SetDrawColor(255, 255, 255, 255);
-
-	if (bDrawDarkenedCards)
-	{
-		C.SetDrawColor(180, 180, 180, 255);
-	}
 
 	C.Font = class'KFTurboFontHelper'.static.LoadBoldFontStatic(BaseFontSize);
 
@@ -544,12 +517,7 @@ simulated function DrawActiveCardList(Canvas C)
 	}
 
 	C.SetDrawColor(255, 255, 255, 255);
-
-	if (bDrawDarkenedCards)
-	{
-		C.SetDrawColor(180, 180, 180, 255);
-	}
-
+	
 	CenterIndex = float(ActiveCardRenderActorList.Length) / 2.f;
 
 	CardSize = C.ClipY / 10.f;

@@ -125,24 +125,18 @@ simulated function Render(Canvas C)
 	
 	if (!bIsTestGameMode  && !bIsGameOver)
 	{
-		C.Reset();
-		C.DrawColor = class'HudBase'.default.WhiteColor;
-		C.Style = ERenderStyle.STY_Alpha;
+		class'TurboHUDKillingFloor'.static.ResetCanvas(C);
 
 		DrawGameData(C);
 
-		C.Reset();
-		C.DrawColor = class'HudBase'.default.WhiteColor;
-		C.Style = ERenderStyle.STY_Alpha;
+		class'TurboHUDKillingFloor'.static.ResetCanvas(C);
 
 		DrawWaveData(C);
 	}
 	
 	DrawKillFeed(C);
 	
-	C.Reset();
-	C.DrawColor = class'HudBase'.default.WhiteColor;
-	C.Style = ERenderStyle.STY_Alpha;
+	class'TurboHUDKillingFloor'.static.ResetCanvas(C);
 }
 
 simulated function OnScreenSizeChange(Canvas C, Vector2D CurrentClipSize, Vector2D PreviousClipSize)

@@ -134,9 +134,7 @@ simulated function Render(Canvas C)
 		}
 	}
 	
-	C.Reset();
-	C.DrawColor = class'HudBase'.default.WhiteColor;
-	C.Style = ERenderStyle.STY_Alpha;
+	class'TurboHUDKillingFloor'.static.ResetCanvas(C);
 }
 
 simulated final function DrawMarkInfo(Canvas C, out MarkInfoData MarkInfo, float ScreenLocX, float ScreenLocY, float OpacityScale)

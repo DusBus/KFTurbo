@@ -36,17 +36,166 @@ var array<HudOverlay> PreDrawOverlays;
 var Texture MerchantPortrait;
 var localized string MerchantString;
 
-simulated event PostRender( canvas Canvas )
+var(Turbo) Plane InvactiveModulate;
+var(Turbo) Plane ActiveModulate;
+
+simulated event PostRender(Canvas Canvas)
 {
+	ResScaleX = Canvas.SizeX / 640.0;
+	ResScaleY = Canvas.SizeY / 480.0;
+
+	BuildMOTD();
+	LinkActors();
+
+	CheckCountDown(PlayerOwner.GameReplicationInfo);
+
+	if (bHideHud)
+	{
+		Canvas.ColorModulate = InvactiveModulate;
+		return;
+	}
+	
 	bUseBloom = bool(ConsoleCommand("get ini:Engine.Engine.ViewportManager Bloom"));
+
+	CalculateModulation();
+	Canvas.ColorModulate = ActiveModulate;
+
 	PlayerOwner.PostFX_SetActive(0, false);
 
-	Super.PostRender(Canvas);
+	if (PawnOwner != None && PawnOwner.bSpecialHUD)
+	{
+		PawnOwner.DrawHud(Canvas); //As far as I can tell, this is never implemented.
+	}
+
+	if (bShowDebugInfo)
+	{
+		ShowDebugInfo(Canvas);
+	}
+	else
+	{
+		if (PlayerOwner == None || PawnOwner == None || PawnOwnerPRI == None || (PlayerOwner.IsSpectating() && PlayerOwner.bBehindView))
+		{
+			DrawSpectatingHud(Canvas);
+		}
+		else if (!PawnOwner.bHideRegularHUD)
+		{
+			DrawHud(Canvas); 
+		}
+
+		RenderHUDOverlays(Canvas);
+
+		if (!DrawLevelAction(Canvas))
+		{
+			if ( PlayerOwner != None )
+			{
+				if ( PlayerOwner.ProgressTimeOut > Level.TimeSeconds )
+				{
+					DisplayProgressMessages(Canvas);
+				}
+				else if ( MOTDState == 1 )
+				{
+					MOTDState=2;
+				}
+			}
+		}
+
+		if ( bShowBadConnectionAlert )
+		{
+			DisplayBadConnectionAlert(Canvas);
+		}
+
+		DisplayMessages(Canvas);
+
+		if ( bShowVoteMenu && VoteMenu != None )
+		{
+			VoteMenu.RenderOverlays(Canvas);
+		}
+	}
+
+	PlayerOwner.RenderOverlays(Canvas);
+
+	if (PlayerConsole != None && PlayerConsole.bTyping)
+	{
+		DrawTypingPrompt(Canvas, PlayerConsole.TypedStr, PlayerConsole.TypedStrPos);
+	}
+
+	if (bDrawHint && !bHideHud)
+	{
+	    DrawHint(Canvas);
+	}
+
+	HudLastRenderTime = Level.TimeSeconds;
+
+	OnPostRender(Self, Canvas);
 
 	if (bUseBloom)
 	{
 		PlayerOwner.PostFX_SetActive(0, bUseBloom);
 	}
+}
+
+simulated final function ShowDebugInfo(Canvas Canvas)
+{
+	local float XPos, YPos;
+
+	Canvas.Font = GetConsoleFont(Canvas);
+	Canvas.Style = ERenderStyle.STY_Alpha;
+	Canvas.DrawColor = ConsoleColor;
+
+	PlayerOwner.ViewTarget.DisplayDebug(Canvas, XPos, YPos);
+	if  (PlayerOwner.ViewTarget != PlayerOwner && (Pawn(PlayerOwner.ViewTarget) == None ||
+			Pawn(PlayerOwner.ViewTarget).Controller == None) )
+	{
+		YPos += XPos * 2;
+		Canvas.SetPos(4, YPos);
+		Canvas.DrawText("----- VIEWER INFO -----");
+		YPos += XPos;
+		Canvas.SetPos(4, YPos);
+		PlayerOwner.DisplayDebug(Canvas, XPos, YPos);
+	}
+}
+
+simulated final function RenderHUDOverlays(Canvas Canvas)
+{
+	local int Index;
+
+	for (Index = 0; Index < Overlays.length; Index++)
+	{
+		Overlays[Index].Render(Canvas);
+	}
+}
+
+simulated function CalculateModulation()
+{
+	local float Brightness;
+	local float Gamma;
+	local float Multiplier;
+
+	ActiveModulate = default.ActiveModulate;
+	if (PlayerOwner == None || !bool(PlayerOwner.ConsoleCommand("ISFULLSCREEN")))
+	{
+		return;
+	}
+
+	Multiplier = 1.f;
+
+	Brightness = float(PlayerOwner.ConsoleCommand("get ini:Engine.Engine.ViewportManager Brightness"));
+
+	if (Brightness > 0.5f)
+	{
+		Multiplier *= Lerp((Brightness - 0.5f) * 2.f, 1.f, 0.25f); 
+	}
+	
+	Gamma = float(PlayerOwner.ConsoleCommand("get ini:Engine.Engine.ViewportManager Gamma"));
+
+	if (Gamma > 1.f)
+	{
+		Multiplier *= Lerp((Gamma - 1.f), 1.f, 0.3f); 
+	}
+
+	ActiveModulate.X *= Multiplier;
+	ActiveModulate.Y *= Multiplier;
+	ActiveModulate.Z *= Multiplier;
 }
 
 //Adds overlay that will draw under the player HUD.
@@ -201,15 +350,11 @@ simulated function DrawHud(Canvas C)
 	RenderDelta = Level.TimeSeconds - LastHUDRenderTime;
     LastHUDRenderTime = Level.TimeSeconds;
 
-	C.Reset();
-	C.DrawColor = class'HudBase'.default.WhiteColor;
-	C.Style = ERenderStyle.STY_Alpha;
+	ResetCanvas(C);
 
 	RenderPreDrawOverlays(C);
 	
-	C.Reset();
-	C.DrawColor = class'HudBase'.default.WhiteColor;
-	C.Style = ERenderStyle.STY_Alpha;
+	ResetCanvas(C);
 
 	if (FontsPrecached < 2)
 	{
@@ -225,9 +370,7 @@ simulated function DrawHud(Canvas C)
 		DrawCinematicHUD(C);
 	}
 
-	C.Reset();
-	C.DrawColor = class'HudBase'.default.WhiteColor;
-	C.Style = ERenderStyle.STY_Alpha;
+	ResetCanvas(C);
 
 	if ( bShowNotification )
 	{
@@ -238,6 +381,7 @@ simulated function DrawHud(Canvas C)
 simulated function DrawGameHud(Canvas C)
 {
 	local KFGameReplicationInfo CurrentGame;
+	local Plane Modulation;
 
 	CurrentGame = KFGameReplicationInfo(Level.GRI);
 
@@ -272,7 +416,9 @@ simulated function DrawGameHud(Canvas C)
 		}
 	}
 
+	Modulation = C.ColorModulate;
 	DisplayLocalMessages(C);
+	C.ColorModulate = Modulation;
 
 	if (CurrentGame != None && CurrentGame.EndGameType > 0)
 	{
@@ -293,18 +439,14 @@ simulated function DrawKFHUDTextElements(Canvas C)
 		return;
 	}
 
-	C.Reset();
-	C.DrawColor = class'HudBase'.default.WhiteColor;
-	C.Style = ERenderStyle.STY_Alpha;
+	ResetCanvas(C);
 
 	if (WaveInfoHUD != None)
 	{
 		WaveInfoHUD.Render(C);
 	}
 
-	C.Reset();
-	C.DrawColor = class'HudBase'.default.WhiteColor;
-	C.Style = ERenderStyle.STY_Alpha;
+	ResetCanvas(C);
 
 	if ( KFPRI == none || KFPRI.Team == none || KFPRI.bOnlySpectator || PawnOwner == none )
 	{
@@ -361,6 +503,7 @@ simulated function DrawKFHUDTextElements(Canvas C)
 	DrawTurboTraderDistance(C);
 }
 
+simulated function DrawModOverlay(Canvas C) {}
 
 simulated function DrawSpectatingHud(Canvas C)
 {
@@ -369,15 +512,11 @@ simulated function DrawSpectatingHud(Canvas C)
 		return;
 	}
 	
-	C.Reset();
-	C.DrawColor = class'HudBase'.default.WhiteColor;
-	C.Style = ERenderStyle.STY_Alpha;
+	ResetCanvas(C);
 
 	RenderPreDrawOverlays(C);
 
-	C.Reset();
-	C.DrawColor = class'HudBase'.default.WhiteColor;
-	C.Style = ERenderStyle.STY_Alpha;
+	ResetCanvas(C);
 
 	if (MarkInfoHUD != None)
 	{
@@ -487,9 +626,7 @@ simulated function DrawEndGameHUD(Canvas C, bool bVictory)
 
 	InitializeEndGameUI(bVictory);
 
-	C.Reset();
-	C.DrawColor = class'HudBase'.default.WhiteColor;
-	C.Style = ERenderStyle.STY_Alpha;
+	ResetCanvas(C);
 
 	FadeAlpha = FMin(EndGameHUDAnimationProgress / (EndGameHUDAnimationDuration * 0.5f), 1.f);
 	ScaleAlpha = FMin(EndGameHUDAnimationProgress / EndGameHUDAnimationDuration, 1.f);
@@ -563,9 +700,7 @@ simulated function DrawHudPassA(Canvas C)
 		C.Style = ERenderStyle.STY_Normal;
 		DrawInventory(C);
 
-		C.Reset();
-		C.DrawColor = class'HudBase'.default.WhiteColor;
-		C.Style = ERenderStyle.STY_Alpha;
+		ResetCanvas(C);
 	}
 
 	if (PlayerHUD != None)
@@ -1094,6 +1229,26 @@ simulated function Font LoadFont(int i)
 {
 	return class'KFTurboFontHelper'.static.LoadFontStatic(i);
 }
+ 
+//Resets all but modulator to expected values.
+static final function ResetCanvas(Canvas Canvas)
+{
+	Canvas.Font        = Canvas.default.Font;
+	Canvas.FontScaleX  = Canvas.default.FontScaleX; // gam
+	Canvas.FontScaleY  = Canvas.default.FontScaleY; // gam
+	Canvas.SpaceX      = Canvas.default.SpaceX;
+	Canvas.SpaceY      = Canvas.default.SpaceY;
+	Canvas.OrgX        = Canvas.default.OrgX;
+	Canvas.OrgY        = Canvas.default.OrgY;
+	Canvas.CurX        = Canvas.default.CurX;
+	Canvas.CurY        = Canvas.default.CurY;
+	Canvas.Style	   = ERenderStyle.STY_Alpha;
+	Canvas.DrawColor   = default.WhiteColor;
+	Canvas.CurYL       = Canvas.default.CurYL;
+	Canvas.bCenter     = false;
+	Canvas.bNoSmooth   = false;
+	Canvas.Z           = 1.0;
+}
 
 defaultproperties
 {
@@ -1113,4 +1268,7 @@ defaultproperties
 
 	BarLength=70.000000
 	BarHeight=10.000000
+
+	InvactiveModulate=(X=0.f,Y=0.f,Z=0.f,W=0.f)
+	ActiveModulate=(X=1.f,Y=1.f,Z=1.f,W=1.f)
 }

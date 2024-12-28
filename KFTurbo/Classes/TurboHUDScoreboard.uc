@@ -67,9 +67,7 @@ simulated function UpdateScoreBoard(Canvas Canvas)
 		return;
 	}
 
-	Canvas.Reset();
-	Canvas.DrawColor = class'HudBase'.default.WhiteColor;
-	Canvas.Style = ERenderStyle.STY_Alpha;
+	class'TurboHUDKillingFloor'.static.ResetCanvas(Canvas);
 
 	PlayerCount = 0;
 	OwnerPRI = TurboPlayerReplicationInfo(KFPlayerController(Owner).PlayerReplicationInfo);
@@ -111,9 +109,7 @@ simulated function UpdateScoreBoard(Canvas Canvas)
 		TempY += EntrySizeY * 1.2f;	
 	}
 
-	Canvas.Reset();
-	Canvas.DrawColor = class'HudBase'.default.WhiteColor;
-	Canvas.Style = ERenderStyle.STY_Alpha;
+	class'TurboHUDKillingFloor'.static.ResetCanvas(Canvas);
 }
 
 simulated final function DrawScoreboardHeader(Canvas Canvas, float CenterY, float SizeY)
