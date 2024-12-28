@@ -39,10 +39,7 @@ var localized string MerchantString;
 simulated event PostRender( canvas Canvas )
 {
 	bUseBloom = bool(ConsoleCommand("get ini:Engine.Engine.ViewportManager Bloom"));
-	if (bUseBloom)
-	{
-		PlayerOwner.PostFX_SetActive(0, false);
-	}
+	PlayerOwner.PostFX_SetActive(0, false);
 
 	Super.PostRender(Canvas);
 
@@ -138,8 +135,6 @@ simulated function PostBeginPlay()
 	
 	WaveStatsHUD = Spawn(WaveStatsHUDClass, Self);
 	WaveStatsHUD.Initialize(Self);
-
-	AddPreDrawOverlay(WaveStatsHUD);
 
 	if (TextReactionSettingsClass != None)
 	{
@@ -577,8 +572,12 @@ simulated function DrawHudPassA(Canvas C)
 	{
 		PlayerHUD.Render(C);
 	}
-}
 
+	if (WaveStatsHUD != None)
+	{
+		WaveStatsHUD.Render(C);
+	}
+}
 
 simulated function DrawHudPassC(Canvas C)
 {
