@@ -17,23 +17,12 @@ var bool bDebugReplacement;
 
 function PostBeginPlay()
 {
-    local int ReplacementIndex;
-
     Super.PostBeginPlay();
     
-    SetTimer(0.15f, true); //Relatively frequently. We're watching for squad changes via Invasion::NextMonsterTime.
+    SetTimer(0.025f, true); //Relatively frequently. We're watching for squad changes via Invasion::NextMonsterTime.
 
     TurboGT = KFTurboGameType(Level.Game);
     LastCheckedNextMonsterTime = -1.f;
-
-    //High difficulty reduces special zed spawn rate.
-    if (TurboGT.IsHighDifficulty())
-    {
-        for (ReplacementIndex = 0; ReplacementIndex < ReplacementList.Length; ReplacementIndex++)
-        {
-            ReplacementList[ReplacementIndex].ReplacementProgress = ReplacementList[ReplacementIndex].ReplacementProgress * 0.5f;
-        }
-    }
 }
 
 static final function DebugLog(string String)
@@ -57,7 +46,7 @@ event Timer()
         return;
     }
 
-    LastCheckedNextMonsterTime = TurboGT.NextMonsterTime + 0.15f;
+    LastCheckedNextMonsterTime = TurboGT.NextMonsterTime + 0.025f;
 
     DebugLog("Applying Replacement");
     ApplyReplacementList(TurboGT.NextSpawnSquad);
