@@ -163,6 +163,8 @@ simulated function OnReceiveStatReplicator(TurboPlayerReplicationInfo PlayerRepl
 		TeammateKillsList.Length = 0;
 		TeammateDamageList.Length = 0;
 		TeammateShotsFiredList.Length = 0;
+		TeammateReloadsList.Length = 0;
+		TeammateFleshpoundDamageList.Length = 0;
 
 		ProcessingWave = WavePlayerStatReplicator.Wave;
 	}
@@ -506,6 +508,7 @@ final function DrawTeamBar(Canvas C, float PositionX, float PositionY, float Siz
 	local float TextSizeX, TextSizeY;
 	
 	local Color TeammateBarColor;
+	local string TeammateString;
 
 	PositionX += SizeX * 0.05f;
 	SizeX *= 0.9f;
@@ -529,7 +532,7 @@ final function DrawTeamBar(Canvas C, float PositionX, float PositionY, float Siz
 	C.FontScaleX = (SizeY * 1.f) / TextSizeY;
 	C.FontScaleY = C.FontScaleX;	
 
-	TeammateBarColor = TurboHUD.WhiteColor;
+	TeammateBarColor = BlendColor(TurboHUD.WhiteColor, Config.FillColor, 0.25f);
 	RemainingPercent = 1.f;
 
 	for (Index = 0; Index < TeamAmount.Length; Index++)
@@ -546,15 +549,16 @@ final function DrawTeamBar(Canvas C, float PositionX, float PositionY, float Siz
 			continue;
 		}
 
-		TeammateBarColor = BlendColor(TeammateBarColor, Config.FillColor, 0.3f);
+		TeammateBarColor = BlendColor(TeammateBarColor, Config.FillColor, 0.25f);
 		C.DrawColor = TeammateBarColor;
 		C.SetPos(PositionX + ((SizeX * (RemainingPercent - TeammateBarPercent)) - 2.f), PositionY);
 		C.DrawTileStretched(SquareContainer, (SizeX * TeammateBarPercent) + 2.f, SizeY);
 
+		TeammateString = class'TurboHUDScoreboard'.static.GetCompressedNumber(TeamAmount[Index].Amount) @ TeamAmount[Index].Player.PlayerName;
 		C.DrawColor = StatTextColor;
-		C.TextSize(TeamAmount[Index].Player.PlayerName, TextSizeX, TextSizeY);
+		C.TextSize(TeammateString, TextSizeX, TextSizeY);
 		C.SetPos(PositionX + (SizeX * RemainingPercent) - TextSizeX, (PositionY + (SizeY * 0.5f)) - (TextSizeY * 0.5f));
-		C.DrawTextClipped(TeamAmount[Index].Player.PlayerName);
+		C.DrawTextClipped(TeammateString);
 		
 		RemainingPercent -= TeammateBarPercent;
 	}
