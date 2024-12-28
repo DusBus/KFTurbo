@@ -17,6 +17,8 @@ struct WaveStats
 
 	var int HealAmount;
 	var int Damage, FleshpoundDamage, ScrakeDamage;
+
+	var int Reloads;
 };
 
 var WaveStats ProcessedWavePlayerStats;
@@ -30,6 +32,9 @@ struct PlayerAmountEntry
 var array<PlayerAmountEntry> TeammateKillsList;
 var array<PlayerAmountEntry> TeammateDamageList;
 var array<PlayerAmountEntry> TeammateShotsFiredList;
+var array<PlayerAmountEntry> TeammateHealthHealedList;
+var array<PlayerAmountEntry> TeammateReloadsList;
+var array<PlayerAmountEntry> TeammateFleshpoundDamageList;
 
 var float FadeInRate;
 var float DisplayDuration;
@@ -42,6 +47,7 @@ var(Turbo) Vector2D WaveStatsSize;
 var(Turbo) Vector2D WaveStatsPosition;
 var(Turbo) float StatsHeaderSizeY;
 var(Turbo) float StatsSubheaderSizeY;
+var(Turbo) float StatsBarOffsetY;
 
 var Texture SquareContainer;
 var Color BackplateColor;
@@ -50,7 +56,9 @@ var localized string StatsHeaderString;
 var localized string StatsKillsString;
 var localized string StatsDamageString;
 var localized string StatsShotsFiredString;
+var localized string StatsHealString;
 var localized string StatsAccuracyString;
+var localized string StatsReloadsString;
 
 var localized string StatsAccuracyMissString;
 var localized string StatsAccuracyHitString;
@@ -66,8 +74,11 @@ struct TeamStatBarConfig
 var TeamStatBarConfig KillsBar;
 var TeamStatBarConfig DamageBar;
 var TeamStatBarConfig ShotsFiredBar;
+var TeamStatBarConfig HealBar;
+var TeamStatBarConfig ReloadsBar;
 
 var Color StatSubtitleTextColor;
+var Color StatSubtitleTextShadowColor;
 var Color StatTextColor;
 
 var Color ShotsFiredColor;
@@ -88,11 +99,12 @@ static final function ProcessStatReplicator(out WaveStats ProcessedStats, TurboW
 	ProcessedStats.KillsFleshpound += Replicator.KillsFleshpound;
 	ProcessedStats.KillsScrake += Replicator.KillsScrake;
 
-	//ProcessedWaveStats.HealAmount += Replicator.HealAmount;
+	ProcessedStats.HealAmount += Replicator.HealingDone;
 
 	ProcessedStats.Damage += Replicator.DamageDone;
 	ProcessedStats.FleshpoundDamage += Replicator.DamageDoneFleshpound;
-	ProcessedStats.ScrakeDamage += Replicator.DamageDoneScrake;
+	
+	ProcessedStats.Reloads += Replicator.Reloads;
 }
 
 simulated function Initialize(TurboHUDKillingFloor OwnerHUD)
@@ -172,6 +184,12 @@ simulated function OnReceiveStatReplicator(TurboPlayerReplicationInfo PlayerRepl
 static final function AddTeammateToStatList(PlayerReplicationInfo PRI, int Amount, out array<PlayerAmountEntry> StatList)
 {
 	local int Index;
+
+	if (Amount == 0)
+	{
+		return;
+	}
+
 	for (Index = 0; Index < StatList.Length; Index++)
 	{
 		if (StatList[Index].Amount > Amount)
@@ -194,6 +212,9 @@ simulated function OnReceiveTeammateReplicator(TurboWavePlayerStatReplicator Rep
 	AddTeammateToStatList(Replicator.PlayerTPRI, Replicator.Kills, TeammateKillsList);
 	AddTeammateToStatList(Replicator.PlayerTPRI, Replicator.DamageDone, TeammateDamageList);
 	AddTeammateToStatList(Replicator.PlayerTPRI, Replicator.ShotsFired, TeammateShotsFiredList);
+	AddTeammateToStatList(Replicator.PlayerTPRI, Replicator.HealingDone, TeammateHealthHealedList);
+	AddTeammateToStatList(Replicator.PlayerTPRI, Replicator.Reloads, TeammateReloadsList);
+	AddTeammateToStatList(Replicator.PlayerTPRI, Replicator.DamageDoneFleshpound, TeammateFleshpoundDamageList);
 }
 
 simulated function Timer()
@@ -298,10 +319,7 @@ simulated function DrawStats(Canvas C)
 	local float SubtitleFontScale;
 
 	local string DrawString;
-
-	//ProcessedWavePlayerStats
-	//ProcessedWaveTeamStats
-
+	
 	TempX = C.ClipX * (WaveStatsPosition.X - (WaveStatsSize.X * 0.5f));
 	TempY = C.ClipY * (WaveStatsPosition.Y - (WaveStatsSize.Y * DisplayRatio));
 
@@ -315,7 +333,7 @@ simulated function DrawStats(Canvas C)
 		C.DrawTileStretched(SquareContainer, SizeX, SizeY + 2.f);
 	}
 
-	//Draw box title.	
+	//Calculate box title size.
 	C.Font = class'KFTurboFontHelper'.static.LoadFontStatic(1 + FontSizeOffset);
 	C.FontScaleX = 1.f;
 	C.FontScaleX = 1.f;
@@ -326,6 +344,8 @@ simulated function DrawStats(Canvas C)
 	C.FontScaleY = TextScale;
 	C.TextSize("000", TextSizeX, TextSizeY);
 
+
+	//Draw box title.	
 	if (SquareContainer != None)
 	{
 		C.DrawColor = KillsBar.FillColor;
@@ -341,7 +361,7 @@ simulated function DrawStats(Canvas C)
 	C.DrawText(StatsHeaderString);
 	
 	TempY += TextSizeY;
-	SizeYPerEntry = (SizeY - TextSizeY) / 4.5f;
+	SizeYPerEntry = (SizeY - TextSizeY) / 5.5f;
 	
 	C.Font = class'KFTurboFontHelper'.static.LoadFontStatic(1 + FontSizeOffset);
 	C.FontScaleX = 1.f;
@@ -355,59 +375,119 @@ simulated function DrawStats(Canvas C)
 	SubtitleFont = C.Font;
 	SubtitleFontScale = C.FontScaleX;
 
-	//Draw Kills Stats
-	DrawTeamBar(C, TempX, TempY, SizeX, SizeYPerEntry, KillsBar, ProcessedWavePlayerStats.Kills, ProcessedWaveTeamStats.Kills, TeammateKillsList);
-	DrawString = StatsKillsString@ProcessedWavePlayerStats.Kills;
-	C.Font = SubtitleFont;
-	C.FontScaleX = SubtitleFontScale;
-	C.FontScaleY = SubtitleFontScale;
-	C.DrawColor = StatTextColor;
-	C.SetPos(TempX + (SizeX * 0.025f) + 2.f, TempY + 2.f);
-	C.DrawText(DrawString);
-	C.DrawColor = StatSubtitleTextColor;
-	C.SetPos(TempX + (SizeX * 0.025f), TempY);
-	C.DrawText(DrawString);
+	if (ProcessedWaveTeamStats.Kills > 0)
+	{
+		//Draw Kills Stats
+		DrawTeamBar(C, TempX, TempY, SizeX, SizeYPerEntry, KillsBar, ProcessedWavePlayerStats.Kills, ProcessedWaveTeamStats.Kills, TeammateKillsList);
+		DrawString = StatsKillsString@ProcessedWavePlayerStats.Kills;
+		C.Font = SubtitleFont;
+		C.FontScaleX = SubtitleFontScale;
+		C.FontScaleY = SubtitleFontScale;
+		C.DrawColor = StatSubtitleTextShadowColor;
+		C.SetPos(TempX + (SizeX * 0.025f) + 2.f, TempY + 2.f);
+		C.DrawText(DrawString);
+		C.DrawColor = StatSubtitleTextColor;
+		C.SetPos(TempX + (SizeX * 0.025f), TempY);
+		C.DrawText(DrawString);
+	}
 
 	TempY += SizeYPerEntry;
-	//Draw Damage Stats
-	DrawTeamBar(C, TempX, TempY, SizeX, SizeYPerEntry, DamageBar, ProcessedWavePlayerStats.Damage, ProcessedWaveTeamStats.Damage, TeammateDamageList);
-	DrawString = StatsDamageString@ProcessedWavePlayerStats.Damage;
-	C.Font = SubtitleFont;
-	C.FontScaleX = SubtitleFontScale;
-	C.FontScaleY = SubtitleFontScale;
-	C.DrawColor = StatTextColor;
-	C.SetPos(TempX + (SizeX * 0.025f) + 2.f, TempY + 2.f);
-	C.DrawText(DrawString);
-	C.DrawColor = StatSubtitleTextColor;
-	C.SetPos(TempX + (SizeX * 0.025f), TempY);
-	C.DrawText(DrawString);
+	if (ProcessedWaveTeamStats.Damage > 0)
+	{
+		//Draw Damage Stats
+		DrawTeamBar(C, TempX, TempY, SizeX, SizeYPerEntry, DamageBar, ProcessedWavePlayerStats.Damage, ProcessedWaveTeamStats.Damage, TeammateDamageList);
+		DrawString = StatsDamageString@ProcessedWavePlayerStats.Damage;
+		C.Font = SubtitleFont;
+		C.FontScaleX = SubtitleFontScale;
+		C.FontScaleY = SubtitleFontScale;
+		C.DrawColor = StatSubtitleTextShadowColor;
+		C.SetPos(TempX + (SizeX * 0.025f) + 2.f, TempY + 2.f);
+		C.DrawText(DrawString);
+		C.DrawColor = StatSubtitleTextColor;
+		C.SetPos(TempX + (SizeX * 0.025f), TempY);
+		C.DrawText(DrawString);
+	}
+
+	TempY += SizeYPerEntry;
+	if (ProcessedWaveTeamStats.ShotsFired > 0)
+	{
+		//Draw Shots Fired Stats
+		DrawTeamBar(C, TempX, TempY, SizeX, SizeYPerEntry, ShotsFiredBar, ProcessedWavePlayerStats.ShotsFired, ProcessedWaveTeamStats.ShotsFired, TeammateShotsFiredList);
+		DrawString = StatsShotsFiredString@ProcessedWavePlayerStats.ShotsFired;
+		C.Font = SubtitleFont;
+		C.FontScaleX = SubtitleFontScale;
+		C.FontScaleY = SubtitleFontScale;
+		C.DrawColor = StatSubtitleTextShadowColor;
+		C.SetPos(TempX + (SizeX * 0.025f) + 2.f, TempY + 2.f);
+		C.DrawText(DrawString);
+		C.DrawColor = StatSubtitleTextColor;
+		C.SetPos(TempX + (SizeX * 0.025f), TempY);
+		C.DrawText(DrawString);
+	}
+	
+	//Try to find something to display!
+	TempY += SizeYPerEntry;
+	if (ProcessedWaveTeamStats.HealAmount > 0)
+	{
+		//Draw Health Healed
+		DrawTeamBar(C, TempX, TempY, SizeX, SizeYPerEntry, HealBar, ProcessedWavePlayerStats.HealAmount, ProcessedWaveTeamStats.HealAmount, TeammateHealthHealedList);
+		DrawString = StatsHealString@ProcessedWavePlayerStats.HealAmount;
+		C.Font = SubtitleFont;
+		C.FontScaleX = SubtitleFontScale;
+		C.FontScaleY = SubtitleFontScale;
+		C.DrawColor = StatSubtitleTextShadowColor;
+		C.SetPos(TempX + (SizeX * 0.025f) + 2.f, TempY + 2.f);
+		C.DrawText(DrawString);
+		C.DrawColor = StatSubtitleTextColor;
+		C.SetPos(TempX + (SizeX * 0.025f), TempY);
+		C.DrawText(DrawString);
+	}
+	else if (ProcessedWaveTeamStats.FleshpoundDamage > 0)
+	{
+		//Draw Fleshpound Damage
+		DrawTeamBar(C, TempX, TempY, SizeX, SizeYPerEntry, DamageBar, ProcessedWavePlayerStats.FleshpoundDamage, ProcessedWaveTeamStats.FleshpoundDamage, TeammateFleshpoundDamageList);
+		DrawString = StatsReloadsString@ProcessedWavePlayerStats.Reloads;
+		C.Font = SubtitleFont;
+		C.FontScaleX = SubtitleFontScale;
+		C.FontScaleY = SubtitleFontScale;
+		C.DrawColor = StatSubtitleTextShadowColor;
+		C.SetPos(TempX + (SizeX * 0.025f) + 2.f, TempY + 2.f);
+		C.DrawText(DrawString);
+		C.DrawColor = StatSubtitleTextColor;
+		C.SetPos(TempX + (SizeX * 0.025f), TempY);
+		C.DrawText(DrawString);
+	}
+	else if (ProcessedWaveTeamStats.Reloads > 0)
+	{
+		//Draw Reloads
+		DrawTeamBar(C, TempX, TempY, SizeX, SizeYPerEntry, ReloadsBar, ProcessedWavePlayerStats.Reloads, ProcessedWaveTeamStats.Reloads, TeammateReloadsList);
+		DrawString = StatsReloadsString@ProcessedWavePlayerStats.Reloads;
+		C.Font = SubtitleFont;
+		C.FontScaleX = SubtitleFontScale;
+		C.FontScaleY = SubtitleFontScale;
+		C.DrawColor = StatSubtitleTextShadowColor;
+		C.SetPos(TempX + (SizeX * 0.025f) + 2.f, TempY + 2.f);
+		C.DrawText(DrawString);
+		C.DrawColor = StatSubtitleTextColor;
+		C.SetPos(TempX + (SizeX * 0.025f), TempY);
+		C.DrawText(DrawString);
+	}
 	
 	TempY += SizeYPerEntry;
-	//Draw Shots Fired Stats
-	DrawTeamBar(C, TempX, TempY, SizeX, SizeYPerEntry, ShotsFiredBar, ProcessedWavePlayerStats.ShotsFired, ProcessedWaveTeamStats.ShotsFired, TeammateShotsFiredList);
-	DrawString = StatsShotsFiredString@ProcessedWavePlayerStats.ShotsFired;
-	C.Font = SubtitleFont;
-	C.FontScaleX = SubtitleFontScale;
-	C.FontScaleY = SubtitleFontScale;
-	C.DrawColor = StatTextColor;
-	C.SetPos(TempX + (SizeX * 0.025f) + 2.f, TempY + 2.f);
-	C.DrawText(DrawString);
-	C.DrawColor = StatSubtitleTextColor;
-	C.SetPos(TempX + (SizeX * 0.025f), TempY);
-	C.DrawText(DrawString);
-	
-	TempY += SizeYPerEntry;
-	//Draw Accuracy Stats
-	DrawAccuracyBar(C, TempX, TempY, SizeX, SizeYPerEntry, ProcessedWavePlayerStats.ShotsFired, ProcessedWavePlayerStats.ShotsHit, ProcessedWavePlayerStats.ShotsHeadshot);
-	C.Font = SubtitleFont;
-	C.FontScaleX = SubtitleFontScale;
-	C.FontScaleY = SubtitleFontScale;
-	C.DrawColor = StatTextColor;
-	C.SetPos(TempX + (SizeX * 0.025f) + 2.f, TempY + 2.f);
-	C.DrawText(StatsAccuracyString);
-	C.DrawColor = StatSubtitleTextColor;
-	C.SetPos(TempX + (SizeX * 0.025f), TempY);
-	C.DrawText(StatsAccuracyString);
+	if (ProcessedWavePlayerStats.ShotsFired > 0)
+	{
+		//Draw Accuracy Stats
+		DrawAccuracyBar(C, TempX, TempY, SizeX, SizeYPerEntry, ProcessedWavePlayerStats.ShotsFired, ProcessedWavePlayerStats.ShotsHit, ProcessedWavePlayerStats.ShotsHeadshot);
+		C.Font = SubtitleFont;
+		C.FontScaleX = SubtitleFontScale;
+		C.FontScaleY = SubtitleFontScale;
+		C.DrawColor = StatSubtitleTextShadowColor;
+		C.SetPos(TempX + (SizeX * 0.025f) + 2.f, TempY + 2.f);
+		C.DrawText(StatsAccuracyString);
+		C.DrawColor = StatSubtitleTextColor;
+		C.SetPos(TempX + (SizeX * 0.025f), TempY);
+		C.DrawText(StatsAccuracyString);
+	}
 }
 
 static final function Color BlendColor(Color A, Color B, float Amount)
@@ -431,7 +511,7 @@ final function DrawTeamBar(Canvas C, float PositionX, float PositionY, float Siz
 	PositionX += SizeX * 0.05f;
 	SizeX *= 0.9f;
 
-	PositionY += SizeY * 0.75f;
+	PositionY += SizeY * StatsBarOffsetY;
 	SizeY *= 0.33f;
 
 	C.DrawColor = Config.BarColor;
@@ -455,6 +535,11 @@ final function DrawTeamBar(Canvas C, float PositionX, float PositionY, float Siz
 
 	for (Index = 0; Index < TeamAmount.Length; Index++)
 	{
+		if (TeamAmount[Index].Player == None)
+		{
+			continue;
+		}
+		
 		TeammateBarPercent = float(TeamAmount[Index].Amount) / float(TotalAmount);
 		
 		if (TeammateBarPercent <= 0.f)
@@ -513,7 +598,7 @@ final function DrawAccuracyBar(Canvas C, float PositionX, float PositionY, float
 	PositionX += SizeX * 0.05f;
 	SizeX *= 0.9f;
 
-	PositionY += SizeY * 0.75f;
+	PositionY += SizeY * StatsBarOffsetY;
 	SizeY *= 0.33f;
 
 	C.DrawColor = ShotsFiredColor;
@@ -588,9 +673,11 @@ defaultproperties
 {
 	StatsHeaderString="WAVE STATS"
 	StatsKillsString="KILLS"
-	StatsDamageString="DAMAGE"
+	StatsDamageString="DAMAGE DEALT"
 	StatsShotsFiredString="SHOTS FIRED"
+	StatsHealString="HEALTH HEALED"
 	StatsAccuracyString="ACCURACY"
+	StatsReloadsString="RELOADS"
 
 	StatsAccuracyMissString="%p% MISS"
 	StatsAccuracyHitString="%p% HIT"
@@ -598,24 +685,28 @@ defaultproperties
 
 	ProcessingWave=-1
 
-	FadeInRate=8.f
-	FadeOutRate=4.f
+	FadeInRate=12.f
+	FadeOutRate=6.f
 	DisplayDuration=15.f
 
-	WaveStatsSize=(X=0.25,Y=0.225f)
+	WaveStatsSize=(X=0.25,Y=0.25f)
 	WaveStatsPosition=(X=0.775f,Y=1.f)
 	StatsHeaderSizeY=0.2f
-	StatsSubheaderSizeY=0.14f
+	StatsSubheaderSizeY=0.125f
+	StatsBarOffsetY=0.75f
 	
 	SquareContainer=Texture'KFTurbo.HUD.ContainerSquare_D'
 	BackplateColor=(R=0,G=0,B=0,A=120)
 
 	StatSubtitleTextColor=(R=255,G=255,B=255,A=255)
+	StatSubtitleTextShadowColor=(R=0,G=0,B=0,A=140)
 	StatTextColor=(R=0,G=0,B=0,A=200)
 
 	KillsBar=(FillColor=(R=120,G=145,B=255,A=255),BarColor=(R=255,G=255,B=255,A=255),bDrawFillMarker=true)
 	DamageBar=(FillColor=(R=255,G=147,B=120,A=255),BarColor=(R=255,G=255,B=255,A=255),bDrawFillMarker=true)
 	ShotsFiredBar=(FillColor=(R=255,G=215,B=120,A=255),BarColor=(R=255,G=255,B=255,A=255),bDrawFillMarker=true)
+	HealBar=(FillColor=(R=135,G=255,B=120,A=255),BarColor=(R=255,G=255,B=255,A=255),bDrawFillMarker=true)
+	ReloadsBar=(FillColor=(R=255,G=215,B=120,A=255),BarColor=(R=255,G=255,B=255,A=255),bDrawFillMarker=true)
 
 	ShotsFiredColor=(R=255,G=255,B=255,A=255)
 	ShotsHitColor=(R=120,G=145,B=255,A=255)

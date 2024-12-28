@@ -55,7 +55,7 @@ static function OnPlayerReload(TurboPlayerController Player, KFWeapon Weapon)
 {
     local TurboWavePlayerStatCollector WavePlayerStatCollector;
     WavePlayerStatCollector = GetPlayerWaveStats(Player);
-
+    
     if (WavePlayerStatCollector == None)
     {
         return;

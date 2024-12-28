@@ -48,6 +48,7 @@ simulated function PostBeginPlay()
 	if (Role == ROLE_Authority)
 	{
 		class'TurboPlayerEventHandler'.static.RegisterPlayerEventHandler(Self, class'TurboPlayerStatsEventHandler');
+		class'TurboHealEventHandler'.static.RegisterHealHandler(Self, class'TurboPlayerStatsHealEventHandler');
 	}
 }
 

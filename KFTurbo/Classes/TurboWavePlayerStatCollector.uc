@@ -12,7 +12,7 @@ var int MeleeSwings;
 
 var int Reloads;
 
-var int HealingDone, HealingReceived;
+var int HealingDone;
 
 var KFTurboGameType GameType;
 
@@ -25,7 +25,7 @@ replication
 		ShotsFired, ShotsHit, ShotsHeadshot,
 		MeleeSwings,
 		Reloads,
-		HealingDone, HealingReceived;
+		HealingDone;
 }
 
 //API to convert a stat collector into a stat replicator.
@@ -49,9 +49,10 @@ function PushStats(TurboPlayerStatCollectorBase Source)
 	ShotsHeadshot = WaveStatsSource.ShotsHeadshot;
 
 	MeleeSwings = WaveStatsSource.MeleeSwings;
+
+	Reloads = WaveStatsSource.Reloads;
 	
 	HealingDone = WaveStatsSource.HealingDone;
-	HealingReceived = WaveStatsSource.HealingReceived;
 }
 
 function PostBeginPlay()
@@ -148,6 +149,16 @@ function IncrementReloads()
 	}
 
 	Reloads++;
+}
+
+function IncrementHealthHealed(int HealAmount)
+{
+	if (!ShouldCollectStats())
+	{
+		return;
+	}
+
+	HealingDone += HealAmount;
 }
 
 defaultproperties
