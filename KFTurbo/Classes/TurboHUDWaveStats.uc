@@ -58,6 +58,7 @@ var localized string StatsDamageString;
 var localized string StatsShotsFiredString;
 var localized string StatsHealString;
 var localized string StatsAccuracyString;
+var localized string StatsFleshpoundDamageString;
 var localized string StatsReloadsString;
 
 var localized string StatsAccuracyMissString;
@@ -446,7 +447,7 @@ simulated function DrawStats(Canvas C)
 	{
 		//Draw Fleshpound Damage
 		DrawTeamBar(C, TempX, TempY, SizeX, SizeYPerEntry, DamageBar, ProcessedWavePlayerStats.FleshpoundDamage, ProcessedWaveTeamStats.FleshpoundDamage, TeammateFleshpoundDamageList);
-		DrawString = StatsReloadsString@ProcessedWavePlayerStats.Reloads;
+		DrawString = StatsFleshpoundDamageString@ProcessedWavePlayerStats.FleshpoundDamage;
 		C.Font = SubtitleFont;
 		C.FontScaleX = SubtitleFontScale;
 		C.FontScaleY = SubtitleFontScale;
@@ -673,10 +674,11 @@ defaultproperties
 {
 	StatsHeaderString="WAVE STATS"
 	StatsKillsString="KILLS"
-	StatsDamageString="DAMAGE DEALT"
+	StatsDamageString="DAMAGE"
 	StatsShotsFiredString="SHOTS FIRED"
 	StatsHealString="HEALTH HEALED"
 	StatsAccuracyString="ACCURACY"
+	StatsFleshpoundDamageString="FLESHPOUND DAMAGE"
 	StatsReloadsString="RELOADS"
 
 	StatsAccuracyMissString="%p% MISS"
