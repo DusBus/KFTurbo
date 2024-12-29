@@ -563,11 +563,6 @@ function ScoreKill(Controller Killer, Controller Killed)
 
     if (Killed != None)
     {
-        if (bSuddenDeathEnabled && KFHumanPawn(Killed.Pawn) != None)
-        {
-            PerformSuddenDeath();
-        }
-
         if (KFMonster(Killed.Pawn) != None)
         {
             RemoveMonsterFromHeadshotList(KFMonster(Killed.Pawn));
@@ -602,8 +597,7 @@ function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<Dam
         return;
     }
 
-    if (bSuddenDeathEnabled && PlayerController(Killed) != None && KFHumanPawn(Killed.Pawn) != None
-        && Killed.PlayerReplicationInfo != None && Killed.PlayerReplicationInfo.Ping < 255)
+    if (bSuddenDeathEnabled && PlayerController(Killed) != None && KFHumanPawn(Killed.Pawn) != None && Killed.PlayerReplicationInfo != None)
     {
         if (ShouldTriggerSuddenDeath(Killed, DamageType))
         {
@@ -624,10 +618,19 @@ function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<Dam
 
 function bool ShouldTriggerSuddenDeath(Controller Killed, class<DamageType> DamageType)
 {
-    //Don't trigger sudden death on suicide during trader time.
-    if (class<Suicided>(DamageType) != None && KFGameType(Level.Game) != None && !KFGameType(Level.Game).bWaveInProgress)
+    if (class<Suicided>(DamageType) != None)
     {
-        return false;
+        //Don't trigger sudden death on suicide during trader time.
+        if (KFGameType(Level.Game) != None && !KFGameType(Level.Game).bWaveInProgress)
+        {
+            return false;
+        }
+
+        //Usually 255 or more is a player timing out.
+        if (Killed.PlayerReplicationInfo.Ping < 255)
+        {
+            return false;
+        }
     }
 
     //Don't trigger sudden death from sudden death.
