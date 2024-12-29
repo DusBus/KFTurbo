@@ -812,10 +812,10 @@ function ModifyDualWeaponMagazineAmmo(float Multiplier)
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
 
-function ModifyDualWeaponReloadRate(float Multiplier)
+function ModifyZedTimeDualWeaponReloadRate(float Multiplier)
 {
-    OwnerMutator.TurboCardGameModifier.DualWeaponMagazineAmmoMultiplier *= Multiplier;
-    log("DualWeaponMagazineAmmoMultiplier"@OwnerMutator.TurboCardGameModifier.DualWeaponMagazineAmmoMultiplier);
+    OwnerMutator.TurboCardGameModifier.ZedTimeDualWeaponReloadRateMultiplier *= Multiplier;
+    log("ZedTimeDualWeaponReloadRateMultiplier"@OwnerMutator.TurboCardGameModifier.ZedTimeDualWeaponReloadRateMultiplier);
     OwnerMutator.TurboCardGameModifier.ForceNetUpdate();
 }
 
@@ -854,6 +854,17 @@ function ModifyWeaponEquipSpeed(float Multiplier)
     
     log("WeaponBringUpSpeedModifier"@OwnerMutator.TurboCardClientModifier.WeaponBringUpSpeedModifier);
     log("WeaponPutDownSpeedModifier"@OwnerMutator.TurboCardClientModifier.WeaponPutDownSpeedModifier);
+
+    OwnerMutator.TurboCardClientModifier.ForceNetUpdate();
+}
+
+function ModifyZedTimeDualWeaponEquipSpeed(float Multiplier)
+{
+    OwnerMutator.TurboCardClientModifier.ZedTimeWeaponBringUpSpeedModifier *= Multiplier;
+    OwnerMutator.TurboCardClientModifier.ZedTimeWeaponPutDownSpeedModifier *= Multiplier;
+    
+    log("ZedTimeWeaponBringUpSpeedModifier"@OwnerMutator.TurboCardClientModifier.ZedTimeWeaponBringUpSpeedModifier);
+    log("ZedTimeWeaponPutDownSpeedModifier"@OwnerMutator.TurboCardClientModifier.ZedTimeWeaponPutDownSpeedModifier);
 
     OwnerMutator.TurboCardClientModifier.ForceNetUpdate();
 }

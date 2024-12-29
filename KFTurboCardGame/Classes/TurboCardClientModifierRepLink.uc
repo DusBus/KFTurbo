@@ -9,6 +9,8 @@ var(Turbo) float StalkerDistractionModifier;
 var(Turbo) float GroundFrictionModifier, LastGroundFrictionModifier;
 var(Turbo) float WeaponBringUpSpeedModifier, LastWeaponBringUpSpeedModifier;
 var(Turbo) float WeaponPutDownSpeedModifier, LastWeaponPutDownSpeedModifier;
+var(Turbo) float ZedTimeWeaponBringUpSpeedModifier, LastZedTimeWeaponBringUpSpeedModifier;
+var(Turbo) float ZedTimeWeaponPutDownSpeedModifier, LastZedTimeWeaponPutDownSpeedModifier;
 
 struct PhysicsVolumeEntry
 {
@@ -30,7 +32,8 @@ replication
     reliable if(bNetDirty && Role == ROLE_Authority)
         StalkerDistractionModifier, MonsterHeadSizeModifier,
         GroundFrictionModifier,
-        WeaponBringUpSpeedModifier, WeaponPutDownSpeedModifier;
+        WeaponBringUpSpeedModifier, WeaponPutDownSpeedModifier,
+        ZedTimeWeaponBringUpSpeedModifier, ZedTimeWeaponPutDownSpeedModifier;
 }
 
 simulated function PostBeginPlay()
@@ -178,6 +181,15 @@ simulated final function ApplyEquipSpeedModifier(KFWeapon Weapon)
     
     Weapon.PutDownTime = Weapon.default.PutDownTime * WeaponPutDownSpeedModifier;
     Weapon.PutDownAnimRate = Weapon.default.PutDownAnimRate / WeaponPutDownSpeedModifier;
+
+    if (Weapon.bDualWeapon && Level.TimeDilation < 1.f)
+    {
+        Weapon.PutDownTime *= ZedTimeWeaponBringUpSpeedModifier;
+        Weapon.SelectAnimRate /= ZedTimeWeaponBringUpSpeedModifier;
+
+        Weapon.PutDownTime *= ZedTimeWeaponPutDownSpeedModifier;
+        Weapon.PutDownAnimRate /= ZedTimeWeaponPutDownSpeedModifier;
+    }
 }
 
 defaultproperties
@@ -194,4 +206,9 @@ defaultproperties
     LastWeaponBringUpSpeedModifier=1.f
     WeaponPutDownSpeedModifier=1.f
     LastWeaponPutDownSpeedModifier=1.f
+
+    ZedTimeWeaponBringUpSpeedModifier=1.f
+    LastZedTimeWeaponBringUpSpeedModifier=1.f
+    ZedTimeWeaponPutDownSpeedModifier=1.f
+    LastZedTimeWeaponPutDownSpeedModifier=1.f
 }

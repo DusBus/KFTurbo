@@ -18,7 +18,7 @@ function ActivateCommando(TurboCardReplicationInfo CGRI)
 function ActivateFirebug(TurboCardReplicationInfo CGRI)
 {
     CGRI.ModifyFireDamage(1.5f);
-    CGRI.ModifyFirebugWeaponFireRate(2.5f);
+    CGRI.ModifyFirebugWeaponFireRate(2.f);
 }
 
 function ActivateUberMedic(TurboCardReplicationInfo CGRI)
@@ -99,12 +99,13 @@ function ActivateMaximumPayne(TurboCardReplicationInfo CGRI)
     CGRI.ModifyWeaponZedTimeDualPistolFireRate(2.f);
     CGRI.ModifyWeaponZedTimeDualPistolExtensions(100);
     CGRI.ModifyDualWeaponMagazineAmmo(1.5f);
-    CGRI.ModifyDualWeaponReloadRate(2.f);
+    CGRI.ModifyZedTimeDualWeaponReloadRate(2.f);
+    CGRI.ModifyZedTimeDualWeaponEquipSpeed(0.25f);
 }
 
 function ActivatePackedShells(TurboCardReplicationInfo CGRI)
 {
-    CGRI.ModifyShotgunPelletCount(1.66f);
+    CGRI.ModifyShotgunPelletCount(1.5f);
 }
 
 function ActivateSuperGrenades(TurboCardReplicationInfo CGRI)
@@ -131,6 +132,16 @@ function ActivateFastHands(TurboCardReplicationInfo CGRI)
 function ActivateMassDetonation(TurboCardReplicationInfo CGRI)
 {
     CGRI.EnableMassDetonation();
+}
+
+function ActivateEverythingMustGo(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyTraderPriceMultiplier(0.33f);
+}
+
+function ActivateSuppressiveFire(TurboCardReplicationInfo CGRI)
+{
+    CGRI.ModifyWeaponFireRate(2.f);
 }
 
 defaultproperties
@@ -168,7 +179,7 @@ defaultproperties
         CardDescriptionList(0)="Increases Firebug"
         CardDescriptionList(1)="on-perk weapon fire"
         CardDescriptionList(2)="damage by 50%"
-        CardDescriptionList(3)="and firerate by 150%."
+        CardDescriptionList(3)="and firerate by 100%."
         OnActivateCard=ActivateFirebug
         CardID="SUPER_FIREHAZARD"
     End Object
@@ -340,7 +351,7 @@ defaultproperties
         CardName(0)="Packed Shells"
         CardDescriptionList(0)="Increases shotgun"
         CardDescriptionList(1)="pellet count"
-        CardDescriptionList(2)="by 66%."
+        CardDescriptionList(2)="by 50%."
         OnActivateCard=ActivatePackedShells
         CardID="SUPER_PACKEDSHELLS"
     End Object
@@ -390,6 +401,28 @@ defaultproperties
         CardID="SUPER_MASSDETONATION"
     End Object
     DeckCardObjectList(22)=TurboCard'MassDetonation'
+
+    Begin Object Name=EverythingMustGo Class=TurboCard_Super
+        CardName(0)="Everything"
+        CardName(1)="Must Go"
+        CardDescriptionList(0)="All ammo and"
+        CardDescriptionList(1)="weapons receive"
+        CardDescriptionList(2)="a 66% discount."
+        OnActivateCard=ActivateEverythingMustGo
+        CardID="SUPER_EVERYTHINGMUSTGO"
+    End Object
+    DeckCardObjectList(23)=TurboCard'EverythingMustGo'
+
+    Begin Object Name=SuppressiveFire Class=TurboCard_Super
+        CardName(0)="Suppressive"
+        CardName(1)="Fire"
+        CardDescriptionList(0)="Increases"
+        CardDescriptionList(1)="firerate of all"
+        CardDescriptionList(2)="weapons by 100%."
+        OnActivateCard=ActivateEverythingMustGo
+        CardID="SUPER_SUPPRESSFIRE"
+    End Object
+    DeckCardObjectList(24)=TurboCard'SuppressiveFire'
 
 /*
     Begin Object Name=DeEvolution Class=TurboCard_Super

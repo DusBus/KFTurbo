@@ -11,7 +11,7 @@ var(Turbo) float BerserkerFireRateMultiplier;
 var(Turbo) float FirebugFireRateMultiplier;
 
 var(Turbo) float ReloadRateMultiplier;
-var(Turbo) float DualWeaponReloadRateMultiplier;
+var(Turbo) float ZedTimeDualWeaponReloadRateMultiplier;
 var(Turbo) float CommandoReloadRateMultiplier;
 
 var(Turbo) float MagazineAmmoMultiplier;
@@ -56,7 +56,7 @@ replication
 {
     reliable if(bNetDirty && Role == ROLE_Authority)
         FireRateMultiplier, ZedTimeDualPistolFireRateMultiplier, BerserkerFireRateMultiplier, FirebugFireRateMultiplier,
-        ReloadRateMultiplier, DualWeaponReloadRateMultiplier, CommandoReloadRateMultiplier,
+        ReloadRateMultiplier, ZedTimeDualWeaponReloadRateMultiplier, CommandoReloadRateMultiplier,
         MagazineAmmoMultiplier, CommandoMagazineAmmoMultiplier, MedicMagazineAmmoMultiplier,
         MaxAmmoMultiplier, CommandoMaxAmmoMultiplier, MedicMaxAmmoMultiplier, GrenadeMaxAmmoMultiplier,
         WeaponPenetrationMultiplier,
@@ -73,7 +73,7 @@ simulated function float GetFireRateMultiplier(KFPlayerReplicationInfo KFPRI, We
     Multiplier = Super.GetFireRateMultiplier(KFPRI, Other);
     Multiplier *= FireRateMultiplier;   
 
-    if (Level.TimeDilation < 1.f && KFWeapon(Other) != None && KFWeapon(Other).bDualWeapon)
+    if (Level.TimeDilation < 1.f && IsDualWeapon(KFWeapon(Other)))
     {
         Multiplier *= ZedTimeDualPistolFireRateMultiplier;
     }
@@ -89,9 +89,9 @@ simulated function float GetReloadRateMultiplier(KFPlayerReplicationInfo KFPRI, 
     local float Multiplier;
     Multiplier = Super.GetReloadRateMultiplier(KFPRI, Other) * ReloadRateMultiplier;
 
-    if (IsDualWeapon(KFWeapon(Other)))
+    if (Level.TimeDilation < 1.f && IsDualWeapon(KFWeapon(Other)))
     {
-        Multiplier *= DualWeaponReloadRateMultiplier;
+        Multiplier *= ZedTimeDualWeaponReloadRateMultiplier;
     }
     
     return Multiplier;
@@ -104,7 +104,7 @@ simulated function float GetMagazineAmmoMultiplier(KFPlayerReplicationInfo KFPRI
     local float Multiplier;
     Multiplier = MagazineAmmoMultiplier;
 
-    if (Other.bDualWeapon)
+    if (IsDualWeapon(Other))
     {
         Multiplier *= DualWeaponMagazineAmmoMultiplier;
     }
@@ -280,7 +280,7 @@ defaultproperties
     FirebugFireRateMultiplier=1.f
 
     ReloadRateMultiplier=1.f
-    DualWeaponReloadRateMultiplier=1.f
+    ZedTimeDualWeaponReloadRateMultiplier=1.f
     CommandoReloadRateMultiplier=1.f
 
     MagazineAmmoMultiplier=1.f
