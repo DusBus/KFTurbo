@@ -117,6 +117,7 @@ function ActivateSuperGrenades(TurboCardReplicationInfo CGRI)
 function ActivateSubstitute(TurboCardReplicationInfo CGRI)
 {
     class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'NegateDamageWaveEventHandler');
+    class'NegateDamageWaveEventHandler'.static.OnWaveStarted(KFTurboGameType(CGRI.Level.Game), KFTurboGameType(CGRI.Level.Game).WaveNum);
 }
 
 function ActivateDeepestAmmoPockets(TurboCardReplicationInfo CGRI)
