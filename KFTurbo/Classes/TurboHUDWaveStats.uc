@@ -163,6 +163,7 @@ simulated function OnReceiveStatReplicator(TurboPlayerReplicationInfo PlayerRepl
 		TeammateKillsList.Length = 0;
 		TeammateDamageList.Length = 0;
 		TeammateShotsFiredList.Length = 0;
+		TeammateHealthHealedList.Length = 0;
 		TeammateReloadsList.Length = 0;
 		TeammateFleshpoundDamageList.Length = 0;
 
