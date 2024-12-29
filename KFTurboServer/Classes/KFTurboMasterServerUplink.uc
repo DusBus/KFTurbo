@@ -5,9 +5,15 @@ class KFTurboMasterServerUplink extends IpDrv.MasterServerUplink
 	config(KFTurboServer);
 
 var config string ServerColorString;
-
 var config int BlueGradientSteps;
 var config array<string> BlueStringGradient;
+
+function PostBeginPlay()
+{
+	Super.PostBeginPlay();
+
+	SetTimer(5.f, true);
+}
 
 final function string ApplyGradientToString(String BaseString)
 {
@@ -34,8 +40,20 @@ final function string ApplyGradientToString(String BaseString)
 	return GradientString;
 }
 
-//Slim down the info the server provides to relevant data.
+//When this gets called seems arbitrary and infrequent from the non-native side...
+//Will still do updates here but now also have a timer do it.
 event Refresh()
+{
+	PerformUpdate();
+}
+
+function Timer()
+{
+	PerformUpdate();
+}
+
+//Slim down the info the server provides to relevant data.
+function PerformUpdate()
 {
 	if ( (!bInitialStateCached) || ( Level.TimeSeconds > CacheRefreshTime )  )
 	{
@@ -67,11 +85,12 @@ event Refresh()
 		Level.Game.GetServerPlayers(FullCachedServerState);
 
 		ServerState 		= FullCachedServerState;
-		CacheRefreshTime 	= Level.TimeSeconds + 60;
+		CacheRefreshTime 	= Level.TimeSeconds + 19.f; //Reduced interval
 		bInitialStateCached = false;
 	}
-	else if (Level.Game.NumPlayers != CachePlayerCount)
+	else if (Level.Game.GetNumPlayers() != CachePlayerCount)
 	{
+		CachedServerState.MaxPlayers = Level.Game.MaxPlayers;
 		ServerState = CachedServerState;
 
 		Level.Game.GetServerPlayers(ServerState);
