@@ -37,6 +37,8 @@ simulated function bool PutDown()
 
 defaultproperties
 {
+	Weight=1
+
 	FireModeClass(0)=Class'KFTurbo.W_Dual9MM_Fire'
 	FireModeClass(1)=Class'KFMod.SingleALTFire'
 	
