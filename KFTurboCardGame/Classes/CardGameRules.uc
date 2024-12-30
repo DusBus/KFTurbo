@@ -47,6 +47,8 @@ struct CheatDeathEntry
 var (Turbo) array<CheatDeathEntry> CheatedDeathPlayerList;
 
 var (Turbo) bool bRussianRouletteEnabled;
+var (Turbo) Sound RussianRoulettePlayerKilledSound, RussianRouletteMonsterKilledSound;
+
 var (Turbo) bool bDisableSyringe;
 
 var (Turbo) bool bSuperGrenades;
@@ -555,18 +557,25 @@ function PlayRussianRouletteSound(Pawn KilledPawn, bool bWasPlayer)
 {
     local Sound TriggerSound;
     local float TriggerVolume;
-    local array<TurboPlayerController> PlayerControllerList;
-    local int Index;
-    PlayerControllerList = class'TurboGameplayHelper'.static.GetPlayerControllerList(Level);
 
     if (bWasPlayer)
     {
-        TriggerSound = Sound'Steamland_SND.UI_Objective_Fail';
+        if (RussianRoulettePlayerKilledSound == None)
+        {
+            RussianRoulettePlayerKilledSound = Sound(DynamicLoadObject("Steamland_SND.SlotMachine_ReelStop", class'Sound'));
+        }
+
+        TriggerSound = RussianRoulettePlayerKilledSound;
         TriggerVolume = 1.f;
     }
     else
     {
-        TriggerSound = Sound'Steamland_SND.UI_ObjectiveComplete';
+        if (RussianRouletteMonsterKilledSound == None)
+        {
+            RussianRouletteMonsterKilledSound = Sound(DynamicLoadObject("Steamland_SND.SlotMachine_Win", class'Sound'));
+        }
+
+        TriggerSound = RussianRouletteMonsterKilledSound;
         TriggerVolume = 0.75f;
     }
 
