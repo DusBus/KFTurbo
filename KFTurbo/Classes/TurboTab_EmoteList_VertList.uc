@@ -5,7 +5,7 @@ var	Texture EntryBackplate;
 
 var array<SRHUDKillingFloor.SmileyMessageType> SmileyTags;
 
-const EMOTES_PER_ENTRY = 5;
+const EMOTES_PER_ENTRY = 3;
 
 function bool PreDraw(Canvas Canvas)
 {
