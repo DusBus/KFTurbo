@@ -1,4 +1,4 @@
-class W_V_Flamethrower_Gold_Pickup extends GoldenFTPickup;
+class W_V_Flamethrower_Gold_Pickup extends W_FlameThrower_Pickup;
 
 defaultproperties
 {

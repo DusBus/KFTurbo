@@ -71,7 +71,11 @@ static function float GetMagCapacityMod(KFPlayerReplicationInfo KFPRI, KFWeapon 
 	local float Multiplier;
 	Multiplier = 1.f;
 
-	if (Flamethrower(Other) != None || MAC10MP(Other) != None || ThompsonSMG(Other) != None)
+	if (Flamethrower(Other) != None)
+	{
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.2f);
+	}
+	else if (MAC10MP(Other) != None || ThompsonSMG(Other) != None)
 	{
 		Multiplier *= LerpStat(KFPRI, 1.f, 1.6f);
 	}
@@ -95,6 +99,10 @@ static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, Class<Ammun
 	ApplyAdjustedExtraAmmo(KFPRI, AmmoType, Multiplier);
 
 	if (class<FragAmmo>(AmmoType) != None)
+	{
+		Multiplier *= LerpStat(KFPRI, 1.f, 1.2f);
+	}
+	else if (class<W_Flamethrower_Ammo>(AmmoType) != None)
 	{
 		Multiplier *= LerpStat(KFPRI, 1.f, 1.2f);
 	}
