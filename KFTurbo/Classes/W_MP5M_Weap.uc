@@ -37,11 +37,15 @@ simulated function bool ConsumeAmmo(int Mode, float Load, optional bool bAmountN
 
 defaultproperties
 {
-     HealAmmoAmount=650.000000
-     MagCapacity=30
-     ReloadRate=3.400000
-     ReloadAnimRate=1.118000
-     FireModeClass(0)=Class'KFTurbo.W_MP5M_Fire'
-     FireModeClass(1)=Class'KFTurbo.W_MP5M_Fire_Alt'
-     PickupClass=Class'KFTurbo.W_MP5M_Pickup'
+	HealAmmoAmount=650.000000
+	HealBoostAmount=30
+	HealAmmoCharge=650.000000
+	AmmoRegenRate=0.200000
+
+	MagCapacity=30
+	ReloadRate=3.400000
+	ReloadAnimRate=1.118000
+	FireModeClass(0)=Class'KFTurbo.W_MP5M_Fire'
+	FireModeClass(1)=Class'KFTurbo.W_MP5M_Fire_Alt'
+	PickupClass=Class'KFTurbo.W_MP5M_Pickup'
 }

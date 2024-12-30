@@ -37,11 +37,12 @@ simulated function bool ConsumeAmmo(int Mode, float Load, optional bool bAmountN
 
 defaultproperties
 {
-     HealAmmoAmount=700.000000
-     HealBoostAmount=30
-     HealAmmoCharge=700
-     AmmoRegenRate=0.200000
-     FireModeClass(0)=Class'KFTurbo.W_MP7M_Fire'
-     FireModeClass(1)=Class'KFTurbo.W_MP7M_Fire_Alt'
-     PickupClass=Class'KFTurbo.W_MP7M_Pickup'
+	HealAmmoAmount=700.000000
+	HealBoostAmount=30
+	HealAmmoCharge=700
+	AmmoRegenRate=0.200000
+	
+	FireModeClass(0)=Class'KFTurbo.W_MP7M_Fire'
+	FireModeClass(1)=Class'KFTurbo.W_MP7M_Fire_Alt'
+	PickupClass=Class'KFTurbo.W_MP7M_Pickup'
 }
