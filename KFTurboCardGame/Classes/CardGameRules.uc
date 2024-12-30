@@ -454,6 +454,8 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
     //If resulting damage was more than 1, check russian roulette if it's enabled.
     if (Damage > 0.f && bRussianRouletteEnabled && FRand() < 0.001 && class<TurboHumanBurned_DT>(DamageType) == None)
     {
+        PlayRussianRouletteSound(Injured, TurboHumanPawn(Injured) != None);
+
         if (InstigatedBy == None)
         {
             Injured.Died(None, class'RussianRoulette_DT', Injured.Location);
@@ -547,6 +549,28 @@ function ApplyThornsDamage(int DamageTaken, KFHumanPawn Injured, KFMonster Insti
     InstigatedBy.TakeFireDamage(float(DamageTaken) * (PlayerThornsDamageMultiplier - 1.f), Injured);
 
     InstigatedBy.FireDamageClass = MonsterFireDamageClass;
+}
+
+function PlayRussianRouletteSound(Pawn KilledPawn, bool bWasPlayer)
+{
+    local Sound TriggerSound;
+    local float TriggerVolume;
+    local array<TurboPlayerController> PlayerControllerList;
+    local int Index;
+    PlayerControllerList = class'TurboGameplayHelper'.static.GetPlayerControllerList(Level);
+
+    if (bWasPlayer)
+    {
+        TriggerSound = Sound'Steamland_SND.UI_Objective_Fail';
+        TriggerVolume = 1.f;
+    }
+    else
+    {
+        TriggerSound = Sound'Steamland_SND.UI_ObjectiveComplete';
+        TriggerVolume = 0.75f;
+    }
+
+    KilledPawn.PlaySound(TriggerSound, ESoundSlot.SLOT_None, TriggerVolume,, 1000.f);
 }
 
 function ScoreKill(Controller Killer, Controller Killed)
