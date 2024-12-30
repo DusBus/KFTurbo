@@ -420,7 +420,7 @@ defaultproperties
         CardDescriptionList(0)="Increases"
         CardDescriptionList(1)="firerate of all"
         CardDescriptionList(2)="weapons by 100%."
-        OnActivateCard=ActivateEverythingMustGo
+        OnActivateCard=ActivateSuppressiveFire
         CardID="SUPER_SUPPRESSFIRE"
     End Object
     DeckCardObjectList(24)=TurboCard'SuppressiveFire'
