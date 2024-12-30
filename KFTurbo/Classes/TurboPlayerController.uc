@@ -703,6 +703,23 @@ simulated function ClientWeaponSpawned(class<Weapon> WeaponClass, Inventory Inv)
 	PreloadFireModeAssets(KFWeaponClass.default.FireModeClass[1]);
 }
 
+simulated function rotator RecoilHandler(rotator NewRotation, float DeltaTime)
+{
+	if (RecoilRotator.Pitch + RecoilRotator.Yaw + RecoilRotator.Roll <= 0)
+	{
+		return NewRotation;
+	}
+
+	NewRotation += (RecoilRotator / RecoilSpeed) * DeltaTime;
+
+    if (Level.TimeSeconds - LastRecoilTime > RecoilSpeed)
+    {
+		RecoilRotator = rot(0,0,0);
+    }
+
+	return NewRotation;
+}
+
 simulated function SetPipebombUsesSpecialGroup(bool bNewPipebombUsesSpecialGroup)
 {
 	local W_Pipebomb_Weap Pipebomb;
