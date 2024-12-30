@@ -10,7 +10,15 @@ simulated function HitWall( vector HitNormal, actor Wall)
 	if(KFDoorMover(Wall) != None)
 	{
 		//We have transformed into a grenade.
-		KFDoorMover(Wall).TakeDamage(100.f, Instigator, Location, MomentumTransfer * Vector(Rotation), class'DamTypeFrag');
+		//First try to break the weld of the door since this doesn't seem to be handled by TakeDamage in some cases.
+		if (KFDoorMover(Wall).bSealed && KFDoorMover(Wall).MyTrigger != None)
+		{
+			KFDoorMover(Wall).MyTrigger.DamageWeld(100.f, Instigator, Location, MomentumTransfer * Vector(Rotation), class'DamTypeFrag');
+		}
+		else
+		{
+			KFDoorMover(Wall).TakeDamage(100.f, Instigator, Location, MomentumTransfer * Vector(Rotation), class'DamTypeFrag');
+		}
 		return;
 	}
 
