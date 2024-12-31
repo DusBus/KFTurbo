@@ -388,7 +388,7 @@ function SelectCard(TurboCard SelectedCard, optional bool bFromVote)
     SelectionUpdateCounter++;
     ClearSelection();
 
-    log("Executing OnActivateCard delegate for"@SelectedCard.CardID);
+    log("Executing OnActivateCard delegate for"@SelectedCard.CardID, 'KFTurboCardGame');
     SelectedCard.OnActivateCard(Self);
     
     CheckForActiveCardUpdates();
