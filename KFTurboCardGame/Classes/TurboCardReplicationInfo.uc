@@ -659,8 +659,8 @@ function ResetPlayerVotes()
 
 function ModifyWaveSpeed(float Multiplier)
 {
-    KFTurboGameType(Level.Game).WaveSpawnRateModifier *= Multiplier;
-    log("WaveSpawnRateModifier"@KFTurboGameType(Level.Game).WaveSpawnRateModifier);
+    KFTurboGameType(Level.Game).GameWaveSpawnRateModifier *= Multiplier;
+    log("WaveSpawnRateModifier"@KFTurboGameType(Level.Game).GameWaveSpawnRateModifier);
 }
 
 function ModifyCashBonus(float Multiplier)

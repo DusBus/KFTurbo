@@ -25,7 +25,9 @@ var(Turbo) float MedicMaxAmmoMultiplier;
 var(Turbo) float GrenadeMaxAmmoMultiplier;
 
 var(Turbo) float WeaponPenetrationMultiplier;
+
 var(Turbo) float WeaponSpreadRecoilMultiplier;
+
 var(Turbo) float ShotgunPelletCountMultiplier;
 var(Turbo) float ShotgunSpreadRecoilMultiplier;
 var(Turbo) float ShotgunKickBackMultiplier;

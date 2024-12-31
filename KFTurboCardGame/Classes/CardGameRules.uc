@@ -22,6 +22,7 @@ var(Turbo) float ExplosiveDamageMultiplier;
 var(Turbo) float ExplosiveRadiusMultiplier;
 var(Turbo) float ShotgunDamageMultiplier;
 var(Turbo) float MedicGrenadeDamageMultiplier;
+var(Turbo) float MeleeDamageMultiplier;
 var(Turbo) float FireDamageMultiplier;
 var(Turbo) float BerserkerMeleeDamageMultiplier;
 var(Turbo) float TrashHeadshotDamageMultiplier;
@@ -365,6 +366,8 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
 
             if (WeaponDamageType.default.bIsMeleeDamage)
             {
+                DamageMultiplier *= MeleeDamageMultiplier;
+
                 if (BerserkerMeleeDamageMultiplier != 1.f && IsBerserker(InstigatedBy))
                 {
                     DamageMultiplier *= BerserkerMeleeDamageMultiplier;
@@ -985,6 +988,7 @@ defaultproperties
     ExplosiveRadiusMultiplier=1.f
     ShotgunDamageMultiplier=1.f
     MedicGrenadeDamageMultiplier=1.f
+    MeleeDamageMultiplier=1.f
     FireDamageMultiplier=1.f
     BerserkerMeleeDamageMultiplier=1.f
     TrashHeadshotDamageMultiplier=1.f

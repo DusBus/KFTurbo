@@ -97,7 +97,7 @@ State MatchInProgress
             WaveNextSquadSpawnTime = MIN_SPAWN_TIME;
         }
 
-        return WaveNextSquadSpawnTime / WaveSpawnRateModifier;
+        return WaveNextSquadSpawnTime / GameWaveSpawnRateModifier;
     }
 
     function OpenShops()

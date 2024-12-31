@@ -15,7 +15,11 @@ var protected int FinalWaveOverride;
 var protected bool bHasAttemptedToApplyFinalWaveOverride;
  
 //Whatever spawn rate is set as, make sure it gets multiplied by this.
-var float WaveSpawnRateModifier;
+var float GameWaveSpawnRateModifier;
+//Whatever max monsters is set as, make sure it gets multiplied by this.
+var float GameMaxMonstersModifier;
+//Whatever total monsters is set as, make sure it gets multiplied by this.
+var float GameTotalMonstersModifier;
 
 //Set to true when the boss has been spawned. Used to prevent duplicate broadcasts of OnBossSpawned event.
 var bool bHasSpawnedBoss;
@@ -346,6 +350,11 @@ function AddBossBuddySquad()
 function SetupWave()
 {
 	Super.SetupWave();
+
+    MaxMonsters = float(MaxMonsters) * GameMaxMonstersModifier;
+
+    TotalMaxMonsters = float(TotalMaxMonsters) * GameTotalMonstersModifier;
+    KFGameReplicationInfo(Level.Game.GameReplicationInfo).MaxMonsters = TotalMaxMonsters;
 	
     ClearTraderEndVotes();
 	class'TurboWaveEventHandler'.static.BroadcastWaveStarted(Self, WaveNum);
@@ -412,7 +421,7 @@ state MatchInProgress
 
 	function float CalcNextSquadSpawnTime()
 	{
-		return Super.CalcNextSquadSpawnTime() / WaveSpawnRateModifier;
+		return Super.CalcNextSquadSpawnTime() / GameWaveSpawnRateModifier;
 	}
 	
 	function StartWaveBoss()
@@ -580,7 +589,9 @@ defaultproperties
     FinalWaveOverride=-1
     bHasAttemptedToApplyFinalWaveOverride=false
 
-	WaveSpawnRateModifier=1.f
+	GameWaveSpawnRateModifier=1.f
+    GameMaxMonstersModifier=1.f
+    GameTotalMonstersModifier=1.f
     bHasSpawnedBoss=false
 
     MonsterClasses(0)=(MClassName="KFTurbo.P_Clot_STA",Mid="A")

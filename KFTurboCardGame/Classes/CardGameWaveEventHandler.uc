@@ -38,7 +38,7 @@ static function OnWaveStarted(KFTurboGameType GameType, int StartedWave)
 
     if (StartedWave >= 7)
     {
-        GameType.WaveSpawnRateModifier *= 1.1f;
+        GameType.GameWaveSpawnRateModifier *= 1.1f;
     }
 }
 
