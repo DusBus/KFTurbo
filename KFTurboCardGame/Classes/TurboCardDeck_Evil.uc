@@ -3,174 +3,398 @@
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboCardDeck_Evil extends TurboCardDeck;
 
-function ActivateHyperbloats(TurboCardReplicationInfo CGRI)
+function ActivateHyperbloats(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyBloatMovementSpeed(4.f);
+    if (bActivate)
+    {
+        GameplayManager.MonsterBloatMovementSpeedModifier.AddModifier(4.f, Card);
+    }
+    else
+    {
+        GameplayManager.MonsterBloatMovementSpeedModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateBelligerentScrakes(TurboCardReplicationInfo CGRI)
+function ActivateBelligerentScrakes(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyScrakeRageThreshold(1000000.f);
+    if (bActivate)
+    {
+        GameplayManager.MonsterScrakeRageThresholdModifier.AddModifier(1000000.f, Card);
+    }
+    else
+    {
+        GameplayManager.MonsterScrakeRageThresholdModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateHairtriggerFleshpounds(TurboCardReplicationInfo CGRI)
+function ActivateHairtriggerFleshpounds(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyFleshpoundRageThreshold(0.0000001f);
+    if (bActivate)
+    {
+        GameplayManager.MonsterFleshpoundRageThresholdModifier.AddModifier(0.0000001f, Card);
+    }
+    else
+    {
+        GameplayManager.MonsterFleshpoundRageThresholdModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateOverclockedHusks(TurboCardReplicationInfo CGRI)
+function ActivateOverclockedHusks(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    class'TurboWaveSpawnEventHandler'.static.RegisterWaveHandler(CGRI, class'OverclockedHuskWaveEventHandler');
-    CGRI.ModifyHuskRefireTime(0.0000001f);
+    if (bActivate)
+    {
+        GameplayManager.MonsterHuskRefireTimeModifier.AddModifier(0.0000001f, Card);
+        GameplayManager.HuskAmountBoostFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.MonsterHuskRefireTimeModifier.RemoveModifier(Card);
+        GameplayManager.HuskAmountBoostFlag.ClearFlag();
+    }
 }
 
-function ActivateRecession(TurboCardReplicationInfo CGRI)
+function ActivateRecession(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyTraderPriceMultiplier(2.5f);
+    if (bActivate)
+    {
+        GameplayManager.TraderPriceModifier.AddModifier(2.5f, Card);
+    }
+    else
+    {
+        GameplayManager.TraderPriceModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateFriendlyFire(TurboCardReplicationInfo CGRI)
+function ActivateFriendlyFire(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyFriendlyFireScale(1.1f);
+    if (bActivate)
+    {
+        GameplayManager.FriendlyFireModifier.AddModifier(1.1f, Card);
+    }
+    else
+    {
+        GameplayManager.FriendlyFireModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateSuperSiren(TurboCardReplicationInfo CGRI)
+function ActivateSuperSiren(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifySirenScreamDamage(3.f);
-    CGRI.ModifySirenScreamRangeModifier(2.f);
+    if (bActivate)
+    {
+        GameplayManager.MonsterSirenScreamDamageModifier.AddModifier(3.f, Card);
+        GameplayManager.MonsterSirenScreamRangeModifier.AddModifier(2.f, Card);
+    }
+    else
+    {
+        GameplayManager.MonsterSirenScreamDamageModifier.RemoveModifier(Card);
+        GameplayManager.MonsterSirenScreamRangeModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateDisablePerkSwitching(TurboCardReplicationInfo CGRI)
+function ActivateDisablePerkSwitching(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    KFTurboGameType(CGRI.Level.Game).LockPerkSelection(true);
+    if (bActivate)
+    {
+        GameplayManager.LockPerkSelectionFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.LockPerkSelectionFlag.ClearFlag();
+    }
 }
 
-function ActivateCashSlowsPlayers(TurboCardReplicationInfo CGRI)
+function ActivateCashSlowsPlayers(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.EnableMoneySlowsPlayers();
+    if (bActivate)
+    {
+        GameplayManager.PlayerGreedSlowsFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.PlayerGreedSlowsFlag.ClearFlag();
+    }
 }
 
-function ActivateSuperSlowPlayers(TurboCardReplicationInfo CGRI)
+function ActivateSuperSlowPlayers(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyPlayerSpeed(0.2f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerMovementSpeedModifier.AddModifier(0.2f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerMovementSpeedModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateFreezeTag(TurboCardReplicationInfo CGRI)
+function ActivateFreezeTag(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.EnableWaveMovementFreeze();
+    if (bActivate)
+    {
+        GameplayManager.PlayerFreezeTagFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.PlayerFreezeTagFlag.ClearFlag();
+    }
 }
 
-function ActivateSuddenDeath(TurboCardReplicationInfo CGRI)
+function ActivateSuddenDeath(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.EnableSuddenDeath();
+    if (bActivate)
+    {
+        GameplayManager.SuddenDeathFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.SuddenDeathFlag.ClearFlag();
+    }
 }
 
-function ActivateBleedingPlayers(TurboCardReplicationInfo CGRI)
+function ActivateBleedingPlayers(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.EnablePlayerBleeding();
+    if (bActivate)
+    {
+        GameplayManager.BleedDamageFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.BleedDamageFlag.ClearFlag();
+    }
 }
 
-function ActivateLightWeightPlayers(TurboCardReplicationInfo CGRI)
+function ActivateLightWeightPlayers(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyZombieMeleeDamage(2.f);
-    CGRI.ModifyZombieMeleeMomentum(10.f);
+    if (bActivate)
+    {
+        GameplayManager.MonsterMeleeDamageModifier.AddModifier(2.f, Card);
+        GameplayManager.MonsterDamageMomentumModifier.AddModifier(10.f, Card);
+    }
+    else
+    {
+        GameplayManager.MonsterMeleeDamageModifier.RemoveModifier(Card);
+        GameplayManager.MonsterDamageMomentumModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivatePoorlyOiledMachine(TurboCardReplicationInfo CGRI)
+function ActivatePoorlyOiledMachine(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.EnableMissingHealthStronglySlows();
+    if (bActivate)
+    {
+        GameplayManager.PlayerLowHealthSlowsFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.BleedDamageFlag.ClearFlag();
+    }
 }
 
-function ActivateSlipperyFloor(TurboCardReplicationInfo CGRI)
+function ActivateSlipperyFloor(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyPlayerAccel(0.5f);
-    CGRI.ModifyMovementFriction(0.05f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerMovementAccelModifier.AddModifier(0.5f, Card);
+        GameplayManager.PlayerMovementFrictionModifier.AddModifier(0.05f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerMovementAccelModifier.RemoveModifier(Card);
+        GameplayManager.PlayerMovementFrictionModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateNoodleArms(TurboCardReplicationInfo CGRI)
+function ActivateNoodleArms(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyPlayerMaxCarryWeight(-2);
+    if (bActivate)
+    {
+        GameplayManager.PlayerCarryCapacityDelta.AddDelta(-2, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerCarryCapacityDelta.RemoveDelta(Card);
+    }
 }
 
-function ActivateInPlainSight(TurboCardReplicationInfo CGRI)
+function ActivateInPlainSight(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.EnablePlainSightSpawning();
+    if (bActivate)
+    {
+        GameplayManager.PlainSightSpawnFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.PlainSightSpawnFlag.ClearFlag();
+    }
 }
 
-function ActivateHandCramps(TurboCardReplicationInfo CGRI)
+function ActivateHandCramps(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyWeaponReloadRate(0.75f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerReloadRateModifier.AddModifier(0.75f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerReloadRateModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateDoorless(TurboCardReplicationInfo CGRI)
+function ActivateDoorless(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'BlowUpDoorsWaveEventHandler');
-    class'BlowUpDoorsWaveEventHandler'.static.OnWaveEnded(KFTurboGameType(CGRI.Level.Game), KFTurboGameType(CGRI.Level.Game).WaveNum);
+    if (bActivate)
+    {
+        GameplayManager.ExplodeDoorFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.ExplodeDoorFlag.ClearFlag();
+    }
 }
 
-function ActivateSmallerBlind(TurboCardReplicationInfo CGRI)
+function ActivateSmallerBlind(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.DecreaseSelectionCount();
+    if (bActivate)
+    {
+        GameplayManager.CardSelectionCountDelta.AddDelta(-1, Card);
+    }
+    else
+    {
+        GameplayManager.CardSelectionCountDelta.RemoveDelta(Card);
+    }
 }
 
-function ActivateBorrowedTime(TurboCardReplicationInfo CGRI)
+function ActivateBorrowedTime(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.EnableBorrowedTime();
+    if (bActivate)
+    {
+        GameplayManager.BorrowedTimeFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.BorrowedTimeFlag.ClearFlag();
+    }
 }
 
-function ActivateBankRun(TurboCardReplicationInfo CGRI)
+function ActivateBankRun(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'BankRunWaveEventHandler');
-    class'BankRunWaveEventHandler'.static.OnWaveStarted(KFTurboGameType(CGRI.Level.Game), KFTurboGameType(CGRI.Level.Game).WaveNum);
+    if (bActivate)
+    {
+        GameplayManager.BankRunFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.BankRunFlag.ClearFlag();
+    }
 }
 
-function ActivateNoRestForTheWicked(TurboCardReplicationInfo CGRI)
+function ActivateNoRestForTheWicked(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.EnableNoRestForTheWicked();
+    if (bActivate)
+    {
+        GameplayManager.NoRestForTheWickedFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.NoRestForTheWickedFlag.ClearFlag();
+    }
 }
 
-function ActivateCurseOfRa(TurboCardReplicationInfo CGRI)
+function ActivateCurseOfRa(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.EnableCurseOfRa();
+    if (bActivate)
+    {
+        GameplayManager.CurseOfRaFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.CurseOfRaFlag.ClearFlag();
+    }
 }
 
-function ActivateGarbageDay(TurboCardReplicationInfo CGRI)
+function ActivateGarbageDay(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyTrashDamage(0.66f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerNonEliteDamageModifier.AddModifier(0.66f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerNonEliteDamageModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateNoJunkies(TurboCardReplicationInfo CGRI)
+function ActivateNoJunkies(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.DisableSyringe();
+    if (bActivate)
+    {
+        GameplayManager.NoSyringeFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.NoSyringeFlag.ClearFlag();
+    }
 }
 
-function ActivateMarkedForDeath(TurboCardReplicationInfo CGRI)
+function ActivateMarkedForDeath(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'MarkedForDeathWaveEventHandler');
-    class'MarkedForDeathWaveEventHandler'.static.OnWaveStarted(KFTurboGameType(CGRI.Level.Game), KFTurboGameType(CGRI.Level.Game).WaveNum);
+    if (bActivate)
+    {
+        GameplayManager.MarkedForDeathFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.MarkedForDeathFlag.ClearFlag();
+    }
 }
 
-function ActivateRestrictedExplosives(TurboCardReplicationInfo CGRI)
+function ActivateRestrictedExplosives(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyExplosiveRadius(0.33f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerExplosiveRadiusModifier.AddModifier(0.33f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerExplosiveRadiusModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateOopsAllScrakes(TurboCardReplicationInfo CGRI)
+function ActivateOopsAllScrakes(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    class'TurboWaveSpawnEventHandler'.static.RegisterWaveHandler(CGRI, class'OopsAllScrakesWaveEventHandler');
+    if (bActivate)
+    {
+        GameplayManager.ScrakeMonsterReplacementFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.ScrakeMonsterReplacementFlag.ClearFlag();
+    }
 }
 
-function ActivateMixedSignals(TurboCardReplicationInfo CGRI)
+function ActivateMixedSignals(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.EnableRandomlyChangingTrader();
+    if (bActivate)
+    {
+        GameplayManager.RandomTraderChangeFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.RandomTraderChangeFlag.ClearFlag();
+    }
 }
 
-function ActivateHighThroughput(TurboCardReplicationInfo CGRI)
+function ActivateHighThroughput(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    class'MaxZedsWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'MaxZedsWaveEventHandler');
-    class'MaxZedsWaveEventHandler'.static.OnWaveStarted(KFTurboGameType(CGRI.Level.Game), KFTurboGameType(CGRI.Level.Game).WaveNum);
-    
-    CGRI.ModifyWaveSpeed(1.15f);
+    if (bActivate)
+    {
+        GameplayManager.MaxMonstersModifier.AddModifier(1.4f, Card);
+        GameplayManager.WaveSpeedModifier.AddModifier(1.15f, Card);
+    }
+    else
+    {
+        GameplayManager.MaxMonstersModifier.RemoveModifier(Card);
+        GameplayManager.WaveSpeedModifier.RemoveModifier(Card);
+    }
 }
 
 defaultproperties

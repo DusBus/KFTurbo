@@ -14,10 +14,15 @@ final function bool IsFlagSet()
     return bFlagSet;
 }
 
-final function SetFlag(string ID)
+final function SetFlag(TurboCard Card)
 {
+    if (Card == None)
+    {
+        return;
+    }
+
     bFlagSet = true;
-    log(FlagID$": Flag set by"@ID@".", 'KFTurboCardGame');
+    log(FlagID$": Flag set by"@Card.CardID@".", 'KFTurboCardGame');
     UpdateFlagSetChange();
 }
 

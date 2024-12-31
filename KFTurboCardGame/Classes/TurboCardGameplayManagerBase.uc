@@ -1,6 +1,7 @@
 //Killing Floor Turbo TurboCardGameplayManagerBase
 //Handles all modifications, deltas and flags that Card Game is applying.
 //Responsible for setting these values elsewhere/spinning up actors to handle the actual gameplay changes.
+//Also has a bunch of convenience functions to help debloat TurboCardGameplayManager.
 //Distributed under the terms of the GPL-2.0 License.
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboCardGameplayManagerBase extends Engine.Info;
@@ -15,6 +16,14 @@ var CardGameRules CardGameRules;
 var array<CardModifierStack> CardModifierList;
 var array<CardDeltaStack> CardDeltaList;
 var array<CardFlag> CardFlagList;
+
+struct DeEvolutionMonsterReplacement
+{
+    var class<KFMonster> TargetParentClass;
+    var class<KFMonster> ReplacementClass;
+};
+
+var array<DeEvolutionMonsterReplacement> WeakReplacementList; //List of KFMonster parent classes, their replacement, and individual chance to be applied.
 
 function PostBeginPlay()
 {
@@ -86,7 +95,183 @@ function PostBeginPlay()
     log("... collection of"@CardModifierList.Length@"modifiers,"@CardDeltaList.Length@"deltas and"@CardFlagList.Length@"flags complete!", 'KFTurboCardGame');
 }
 
-defaultproperties
+function OnWaveStart(int StartedWave)
+{
+    switch (StartedWave)
+    {
+        case 0:
+            ModifyWaveSize(0.1f);
+            break;
+        case 1:
+            ModifyWaveSize(0.15f);
+            break;
+        case 2:
+            ModifyWaveSize(0.2f);
+            break;
+        case 3:
+            ModifyWaveSize(0.25f);
+            break;
+        case 4:
+            ModifyWaveSize(0.35f);
+            break;
+        case 5:
+            ModifyWaveSize(0.45f);
+            break;
+        case 6:
+            ModifyWaveSize(0.6f);
+            break;
+        case 7:
+            ModifyWaveSize(0.75f);
+            break;
+        case 8:
+            ModifyWaveSize(0.9f);
+            break;
+    }
+}
+
+final function ModifyWaveSize(float Multiplier)
+{
+    TurboGameType.TotalMaxMonsters = Max(float(TurboGameType.TotalMaxMonsters) * Multiplier, 1);
+    KFGameReplicationInfo(TurboGameType.GameReplicationInfo).MaxMonsters = TurboGameType.TotalMaxMonsters;
+}
+
+function OnWaveEnd(int EndedWave)
+{
+    CardGameRules.MarkedForDeathPawn = None;
+}
+
+function OnNextSpawnSquadGenerated(out array < class<KFMonster> > NextSpawnSquad)
 {
 
+}
+
+static final function AttemptReplaceWeakMonster(out class<KFMonster> Monster)
+{
+    local int ReplacementIndex;
+    for (ReplacementIndex = 0; ReplacementIndex < default.WeakReplacementList.Length; ReplacementIndex++)
+    {
+        if (ClassIsChildOf(Monster, default.WeakReplacementList[ReplacementIndex].TargetParentClass))
+        {
+            Monster = default.WeakReplacementList[ReplacementIndex].ReplacementClass;
+            return;
+        }
+    }
+}
+
+static function PotentiallyDoubleHuskSpawn(out array < class<KFMonster> > NextSpawnSquad)
+{
+    local int Index;
+    local int HuskCount;
+    HuskCount = 0;
+
+    for (Index = NextSpawnSquad.Length - 1; Index >= 0; Index--)
+    {
+        if (class<P_Husk>(NextSpawnSquad[Index]) != None)
+        {
+            HuskCount++;
+        }
+    }
+
+    while (HuskCount > 0)
+    {
+        HuskCount--;
+
+        if (FRand() < 0.5f)
+        {
+            NextSpawnSquad.Length = NextSpawnSquad.Length + 1;
+            NextSpawnSquad[NextSpawnSquad.Length - 1] = class'P_Husk_STA';
+        }
+    }
+}
+
+function GrantAllPlayersDosh(int Amount)
+{   
+	local Controller Controller;
+
+    for ( Controller = TurboGameType.Level.ControllerList; Controller != None; Controller = Controller.NextController )
+    {
+        if (Controller.Pawn != None && Controller.Pawn.Health > 0 && PlayerController(Controller) != None)
+        {
+            Controller.PlayerReplicationInfo.Score += Amount;
+
+            if(PlayerController(Controller) != none)
+            {
+                PlayerController(Controller).ClientPlaySound(class'CashPickup'.default.PickupSound);
+                PlayerController(Controller).ReceiveLocalizedMessage(class 'Msg_CashReward', Amount);
+            }
+        }
+    }
+}
+
+function GrantAllPlayersArmor()
+{
+	local Controller Controller;
+
+    for ( Controller = TurboGameType.Level.ControllerList; Controller != None; Controller = Controller.NextController )
+    {
+        if (Controller.Pawn != None && Controller.Pawn.Health > 0 && PlayerController(Controller) != None && Controller.Pawn.ShieldStrength < 100.f)
+        {
+            PlayerController(Controller).ClientPlaySound(Sound'KF_InventorySnd.Vest_Pickup');
+            Controller.Pawn.ShieldStrength = 100.f;
+        }
+    }
+}
+
+function GrantRandomSuperCard()
+{
+    CardReplicationInfo.ActivateRandomSuperCard();
+}
+
+function GrantRandomEvilCard()
+{
+    CardReplicationInfo.ActivateRandomEvilCard();
+}
+
+function MultiplyPlayerCash(float Multiplier)
+{
+	local Controller Controller;
+
+    for (Controller = TurboGameType.Level.ControllerList; Controller != None; Controller = Controller.NextController)
+    {
+        if (Controller.Pawn != None && PlayerController(Controller) != None && Controller.PlayerReplicationInfo != None)
+        {
+            Controller.PlayerReplicationInfo.Score = int(Controller.PlayerReplicationInfo.Score * Multiplier);
+        }
+    }
+}
+
+function MarkPlayerForDeath()
+{
+    local TurboHumanPawn HumanPawn;
+    local array<TurboHumanPawn> HumanPawnList;
+
+    HumanPawnList = class'TurboGameplayHelper'.static.GetPlayerPawnList(Level);
+
+    if (HumanPawnList.Length == 0)
+    {
+        return;
+    }
+
+    HumanPawn = HumanPawnList[Rand(HumanPawnList.Length)];
+
+    if (HumanPawn == None || HumanPawn.bDeleteMe || HumanPawn.Health <= 0 || KFWeapon(HumanPawn.Weapon) == None)
+    {
+        return;
+    }
+
+    CardGameRules.MarkedForDeathPawn = HumanPawn;
+    TurboGameType.Level.BroadcastLocalizedMessage(class'MarkedForDeathLocalMessage', 0, HumanPawn.PlayerReplicationInfo);
+}
+
+defaultproperties
+{
+    WeakReplacementList(0)=(TargetParentClass=class'P_Clot',ReplacementClass=class'P_Clot_Weak')
+    WeakReplacementList(1)=(TargetParentClass=class'P_Gorefast',ReplacementClass=class'P_Gorefast_Weak')
+    WeakReplacementList(2)=(TargetParentClass=class'P_Crawler',ReplacementClass=class'P_Crawler_Weak')
+    WeakReplacementList(3)=(TargetParentClass=class'P_Stalker',ReplacementClass=class'P_Stalker_Weak')
+    WeakReplacementList(4)=(TargetParentClass=class'P_Bloat',ReplacementClass=class'P_Bloat_Weak')
+    WeakReplacementList(5)=(TargetParentClass=class'P_Husk',ReplacementClass=class'P_Husk_Weak')
+    WeakReplacementList(6)=(TargetParentClass=class'P_Siren',ReplacementClass=class'P_Siren_Weak')
+    WeakReplacementList(7)=(TargetParentClass=class'P_Scrake',ReplacementClass=class'P_Scrake_Weak')
+    WeakReplacementList(8)=(TargetParentClass=class'P_Fleshpound',ReplacementClass=class'P_Fleshpound_Weak')
 }

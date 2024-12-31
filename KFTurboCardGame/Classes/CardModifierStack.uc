@@ -27,40 +27,49 @@ final function bool HasModifiers()
     return ModifierList.Length != 0;
 }
 
-final function AddModifier(CardModifierEntry Modifier)
+final function AddModifier(float Modifier, TurboCard Card)
 {
     local int Index;
+    local string ID;
 
-    if (Modifier.ID == "")
+    ID = "";
+    if (Card != None)
     {
-        return;
+        ID = Card.CardID;
     }
 
-    log(ModifierStackID$": Applying modifier"@Modifier.Modifier@"from"@Modifier.ID@".", 'KFTurboCardGame');
+    log(ModifierStackID$": Applying modifier"@Modifier@"from"@ID@".", 'KFTurboCardGame');
 
     for (Index = ModifierList.Length - 1; Index >= 0; Index--)
     {
-        if (ModifierList[Index].ID == Modifier.ID)
+        if (ModifierList[Index].ID == ID)
         {
-            ModifierList[Index].Modifier = Modifier.Modifier;
+            ModifierList[Index].Modifier = Modifier;
             UpdateModifier();
             return;
         }
     }
 
     ModifierList.Length = ModifierList.Length + 1;
-    ModifierList[ModifierList.Length - 1] = Modifier;
+    ModifierList[ModifierList.Length - 1].ID = ID;
+    ModifierList[ModifierList.Length - 1].Modifier = Modifier;
     UpdateModifier();
 }
 
-final function RemoveModifier(string ID)
+final function RemoveModifier(TurboCard Card)
 {
     local int Index;
+
+    if (Card == None)
+    {
+        return;
+    }
+
     for (Index = ModifierList.Length - 1; Index >= 0; Index--)
     {
-        if (ModifierList[Index].ID == ID)
+        if (ModifierList[Index].ID == Card.CardID)
         {
-            log(ModifierStackID$": Removing modifier applied by"@ID@".", 'KFTurboCardGame');
+            log(ModifierStackID$": Removing modifier applied by"@Card.CardID@".", 'KFTurboCardGame');
             ModifierList.Remove(Index, 1);
             UpdateModifier();
             return;

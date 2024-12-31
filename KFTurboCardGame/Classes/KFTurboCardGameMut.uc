@@ -7,7 +7,7 @@ class KFTurboCardGameMut extends CardGameMutBase
 #exec obj load file="..\Textures\TurboCardGame.utx" package=KFTurboCardGame
 
 var TurboCardReplicationInfo TurboCardReplicationInfo;
-var TurboCardGameplayManagerBase TurboCardGameplayManagerInfo;
+var TurboCardGameplayManager TurboCardGameplayManagerInfo;
 var TurboCardGameModifierRepLink TurboCardGameModifier;
 var TurboCardClientModifierRepLink TurboCardClientModifier;
 var CardGameRules CardGameRules;
@@ -31,6 +31,9 @@ function PostBeginPlay()
 	AttemptModifyGameLength();
 
 	SetupStatTcpLink();
+	
+	class'TurboWaveEventHandler'.static.RegisterWaveHandler(Self, class'CardGameWaveEventHandler');
+	class'TurboWaveSpawnEventHandler'.static.RegisterWaveHandler(Self, class'CardGameWaveSpawnEventHandler');
 }
 
 //Make game 14 waves long, with first few waves being very small.
@@ -41,7 +44,6 @@ function AttemptModifyGameLength()
 		return;
 	}
 
-	class'TurboWaveEventHandler'.static.RegisterWaveHandler(Self, class'CardGameWaveEventHandler');
 	KFTurboGameType(Level.Game).SetFinalWaveOverride(14);
 }
 
@@ -170,15 +172,13 @@ function AddTurboCardGameModifier(TurboGameReplicationInfo TGRI)
 	TGRI.ForceNetUpdate();
 	TurboCardGameModifier.ForceNetUpdate();
 	TurboCardClientModifier.ForceNetUpdate();
-	//TurboCardGameplayManagerInfo = CreateCardGameplayManager(); Doesn't do anything yet.
+	TurboCardGameplayManagerInfo = CreateCardGameplayManager();
 }
 
 //Should only be spawned after all the other actors are spun up.
-function TurboCardGameplayManagerBase CreateCardGameplayManager()
+function TurboCardGameplayManager CreateCardGameplayManager()
 {
-	local TurboCardGameplayManagerBase GameplayManager;
-	GameplayManager = Spawn(class'TurboCardGameplayManager', Self);
-	return GameplayManager;
+	return Spawn(class'TurboCardGameplayManager', Self);
 }
 
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant)

@@ -28,6 +28,7 @@ var(Turbo) float BerserkerMeleeDamageMultiplier;
 var(Turbo) float TrashHeadshotDamageMultiplier;
 var(Turbo) float TrashDamageMultiplier;
 
+var(Turbo) float DamageTakenMultiplier;
 var(Turbo) float ExplosiveDamageTakenMultiplier;
 var(Turbo) float FallDamageTakenMultiplier;
 
@@ -311,6 +312,8 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
         return Damage;
     }
 
+    DamageMultiplier = 1.f;
+
     //Check for outright damage blocking effects first.
     if (KFHumanPawn(Injured) != None)
     {
@@ -323,9 +326,9 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
         {
             return 0;
         }
+        
+        DamageMultiplier *= DamageTakenMultiplier;
     }
-
-    DamageMultiplier = 1.f;
 
     if (MarkedForDeathPawn == Injured)
     {
@@ -945,6 +948,11 @@ final function ResetNegateDamageList()
     }
 }
 
+final function ClearNegateDamageList()
+{
+    NegateDamageList.Length = 0;
+}
+
 final function bool AttemptNegateDamage(KFHumanPawn Injured)
 {
     local int Index;
@@ -994,6 +1002,7 @@ defaultproperties
     TrashHeadshotDamageMultiplier=1.f
     TrashDamageMultiplier=1.f
 
+    DamageTakenMultiplier=1.f
     ExplosiveDamageTakenMultiplier=1.f
     FallDamageTakenMultiplier=1.f
 

@@ -3,146 +3,338 @@
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboCardDeck_Super extends TurboCardDeck;
 
-function ActivateBerserker(TurboCardReplicationInfo CGRI)
+function ActivateBerserker(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyBerserkerWeaponFireRate(3.f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerBerserkerFireRateModifier.AddModifier(3.f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerBerserkerFireRateModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateCommando(TurboCardReplicationInfo CGRI)
+function ActivateCommando(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyCommandoWeaponMagazineAmmo(2.f);
-    CGRI.ModifyCommandoWeaponReloadRate(1.2f);
-    CGRI.ModifyCommandoWeaponMaxAmmo(1.2f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerCommandoMagazineAmmoModifier.AddModifier(2.f, Card);
+        GameplayManager.PlayerCommandoReloadRateModifier.AddModifier(1.2f, Card);
+        GameplayManager.PlayerCommandoMaxAmmoModifier.AddModifier(1.2f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerCommandoMagazineAmmoModifier.RemoveModifier(Card);
+        GameplayManager.PlayerCommandoReloadRateModifier.RemoveModifier(Card);
+        GameplayManager.PlayerCommandoMaxAmmoModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateFirebug(TurboCardReplicationInfo CGRI)
+function ActivateFirebug(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyFireDamage(1.5f);
-    CGRI.ModifyFirebugWeaponFireRate(2.f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerFireDamageModifier.AddModifier(1.5f, Card);
+        GameplayManager.PlayerFirebugFireRateModifier.AddModifier(2.f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerFireDamageModifier.RemoveModifier(Card);
+        GameplayManager.PlayerFirebugFireRateModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateUberMedic(TurboCardReplicationInfo CGRI)
+function ActivateUberMedic(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyMedicGrenadeDamage(10.f);
-    CGRI.ModifyMedicWeaponMagazineAmmo(2.f);
-    CGRI.ModifyMedicHealPotency(1.5f);
-    CGRI.ModifyMedicWeaponMaxAmmo(1.25f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerMedicGrenadeDamageModifier.AddModifier(10.f, Card);
+        GameplayManager.PlayerMedicMagazineAmmoModifier.AddModifier(2.f, Card);
+        GameplayManager.PlayerMedicHealPotencyModifier.AddModifier(1.5f, Card);
+        GameplayManager.PlayerMedicMaxAmmoModifier.AddModifier(1.25f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerMedicGrenadeDamageModifier.RemoveModifier(Card);
+        GameplayManager.PlayerMedicMagazineAmmoModifier.RemoveModifier(Card);
+        GameplayManager.PlayerMedicHealPotencyModifier.RemoveModifier(Card);
+        GameplayManager.PlayerMedicMaxAmmoModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateFleshpoundDamage(TurboCardReplicationInfo CGRI)
+function ActivateFleshpoundDamage(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyPlayerFleshpoundDamage(1.5f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerFleshpoundDamageModifier.AddModifier(1.5f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerFleshpoundDamageModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateScrakeDamage(TurboCardReplicationInfo CGRI)
+function ActivateScrakeDamage(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyPlayerScrakeDamage(1.5f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerScrakeDamageModifier.AddModifier(1.5f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerScrakeDamageModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateDeEvolution(TurboCardReplicationInfo CGRI)
+function ActivateMaxHealth(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    class'TurboWaveSpawnEventHandler'.static.RegisterWaveHandler(CGRI, class'DeEvolutionWaveEventHandler');
+    if (bActivate)
+    {
+        GameplayManager.PlayerMaxHealthModifier.AddModifier(2.f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerMaxHealthModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateMaxHealth(TurboCardReplicationInfo CGRI)
+function ActivateMovementSpeed(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyPlayerMaxHealth(2.f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerMovementSpeedModifier.AddModifier(1.3f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerMovementSpeedModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateMovementSpeed(TurboCardReplicationInfo CGRI)
+function ActivateReloadSpeed(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyPlayerSpeed(1.3f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerReloadRateModifier.AddModifier(1.5f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerReloadRateModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateReloadSpeed(TurboCardReplicationInfo CGRI)
+function ActivateSirenScreemNullify(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyWeaponReloadRate(1.5f);
+    if (bActivate)
+    {
+        GameplayManager.MonsterSirenScreamDamageModifier.AddModifier(0.f, Card);
+    }
+    else
+    {
+        GameplayManager.MonsterSirenScreamDamageModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateSirenScreemNullify(TurboCardReplicationInfo CGRI)
+function ActivateCheatDeath(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifySirenScreamDamage(0.f);
+    if (bActivate)
+    {
+        GameplayManager.CheatDeathFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.CheatDeathFlag.ClearFlag();
+    }
 }
 
-function ActivateCheatDeath(TurboCardReplicationInfo CGRI)
+function ActivateUnshakeable(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.EnableCheatingDeath();
+    if (bActivate)
+    {
+        GameplayManager.PlayerExplosiveDamageTakenModifier.AddModifier(0.f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerExplosiveDamageTakenModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateUnshakeable(TurboCardReplicationInfo CGRI)
+function ActivateBigHeadMode(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyExplosiveDamageTaken(0.f);
+    if (bActivate)
+    {
+        GameplayManager.MonsterHeadSizeModifier.AddModifier(1.5f, Card);
+    }
+    else
+    {
+        GameplayManager.MonsterHeadSizeModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateBigHeadMode(TurboCardReplicationInfo CGRI)
+function ActivateHypersonicAmmo(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyZombieHeadSize(1.5f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerPenetrationModifier.AddModifier(2.f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerPenetrationModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateHypersonicAmmo(TurboCardReplicationInfo CGRI)
+function ActivateStrongArm(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyWeaponPenetration(2.f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerCarryCapacityDelta.AddDelta(3, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerCarryCapacityDelta.RemoveDelta(Card);
+    }
 }
 
-function ActivateStrongArm(TurboCardReplicationInfo CGRI)
+function ActivateDiazepam(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyPlayerMaxCarryWeight(3);
+    if (bActivate)
+    {
+        GameplayManager.PlayerSpreadRecoilModifier.AddModifier(0.2f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerSpreadRecoilModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateDiazepam(TurboCardReplicationInfo CGRI)
+function ActivateMaximumPayne(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyWeaponSpreadAndRecoil(0.2f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerZedTimeDualWeaponFireRateModifier.AddModifier(2.f, Card);
+        GameplayManager.PlayerDualWeaponZedTimeExtensionDelta.AddDelta(100, Card);
+        GameplayManager.PlayerDualWeaponMagazineAmmoModifier.AddModifier(1.5f, Card);
+        GameplayManager.PlayerZedTimeDualWeaponReloadRateModifier.AddModifier(2.f, Card);
+        GameplayManager.PlayerZedTimeDualWeaponEquipRateModifier.AddModifier(0.25f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerZedTimeDualWeaponFireRateModifier.RemoveModifier(Card);
+        GameplayManager.PlayerDualWeaponZedTimeExtensionDelta.RemoveDelta(Card);
+        GameplayManager.PlayerDualWeaponMagazineAmmoModifier.RemoveModifier(Card);
+        GameplayManager.PlayerZedTimeDualWeaponReloadRateModifier.RemoveModifier(Card);
+        GameplayManager.PlayerZedTimeDualWeaponEquipRateModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateMaximumPayne(TurboCardReplicationInfo CGRI)
+function ActivatePackedShells(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyWeaponZedTimeDualPistolFireRate(2.f);
-    CGRI.ModifyWeaponZedTimeDualPistolExtensions(100);
-    CGRI.ModifyDualWeaponMagazineAmmo(1.5f);
-    CGRI.ModifyZedTimeDualWeaponReloadRate(2.f);
-    CGRI.ModifyZedTimeDualWeaponEquipSpeed(0.25f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerShotgunPelletModifier.AddModifier(1.5f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerShotgunPelletModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivatePackedShells(TurboCardReplicationInfo CGRI)
+function ActivateSuperGrenades(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyShotgunPelletCount(1.5f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerGrenadeMaxAmmoModifier.AddModifier(2.f, Card);
+        GameplayManager.SuperGrenadesFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.PlayerGrenadeMaxAmmoModifier.RemoveModifier(Card);
+        GameplayManager.SuperGrenadesFlag.ClearFlag();
+    }
 }
 
-function ActivateSuperGrenades(TurboCardReplicationInfo CGRI)
+function ActivateSubstitute(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyGrenadeMaxAmmo(2.f);
-    CGRI.EnableSuperGrenades();
+    if (bActivate)
+    {
+        GameplayManager.PlayerDamageSubstituteFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.PlayerDamageSubstituteFlag.ClearFlag();
+    }
 }
 
-function ActivateSubstitute(TurboCardReplicationInfo CGRI)
+function ActivateDeepestAmmoPockets(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'NegateDamageWaveEventHandler');
-    class'NegateDamageWaveEventHandler'.static.OnWaveStarted(KFTurboGameType(CGRI.Level.Game), KFTurboGameType(CGRI.Level.Game).WaveNum);
+    if (bActivate)
+    {
+        GameplayManager.PlayerMaxAmmoModifier.AddModifier(1.35f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerMaxAmmoModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateDeepestAmmoPockets(TurboCardReplicationInfo CGRI)
+function ActivateFastHands(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyWeaponMaxAmmo(1.35f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerEquipRateModifier.AddModifier(0.33f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerEquipRateModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateFastHands(TurboCardReplicationInfo CGRI)
+function ActivateMassDetonation(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyWeaponEquipSpeed(0.33f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerMassDetonationFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.PlayerMassDetonationFlag.ClearFlag();
+    }
 }
 
-function ActivateMassDetonation(TurboCardReplicationInfo CGRI)
+function ActivateEverythingMustGo(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.EnableMassDetonation();
+    if (bActivate)
+    {
+        GameplayManager.TraderPriceModifier.AddModifier(0.25f, Card);
+    }
+    else
+    {
+        GameplayManager.TraderPriceModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateEverythingMustGo(TurboCardReplicationInfo CGRI)
+function ActivateSuppressiveFire(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyTraderPriceMultiplier(0.33f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerFireRateModifier.AddModifier(2.f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerFireRateModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateSuppressiveFire(TurboCardReplicationInfo CGRI)
+function ActivateDeEvolution(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyWeaponFireRate(2.f);
+    if (bActivate)
+    {
+        GameplayManager.WeakMonsterReplacementFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.WeakMonsterReplacementFlag.ClearFlag();
+    }
 }
 
 defaultproperties
@@ -408,7 +600,7 @@ defaultproperties
         CardName(1)="Must Go"
         CardDescriptionList(0)="All ammo and"
         CardDescriptionList(1)="weapons receive"
-        CardDescriptionList(2)="a 66% discount."
+        CardDescriptionList(2)="a 75% discount."
         OnActivateCard=ActivateEverythingMustGo
         CardID="SUPER_EVERYTHINGMUSTGO"
     End Object

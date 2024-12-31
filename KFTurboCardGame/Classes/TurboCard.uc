@@ -30,7 +30,7 @@ var bool bCardDescriptionAllCaps;
 
 var Color CardIDColor;
 
-delegate OnActivateCard(TurboCardReplicationInfo CGRI);
+delegate OnActivateCard(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate);
 
 static function int GetTitleFontSize(ScriptedTexture Tex)
 {

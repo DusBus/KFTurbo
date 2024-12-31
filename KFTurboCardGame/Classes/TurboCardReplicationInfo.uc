@@ -114,16 +114,6 @@ simulated function PostNetBeginPlay()
     }
 }
 
-simulated function PostBeginPlay()
-{
-    Super.PostBeginPlay();
-    
-    if (Role == ROLE_Authority)
-    {
-        class'TurboWaveEventHandler'.static.RegisterWaveHandler(Self, class'CardSelectionWaveEventHandler');
-    }
-}
-
 simulated function Tick(float DeltaTime)
 {
     if (Level.NetMode == NM_DedicatedServer)
@@ -389,7 +379,7 @@ function SelectCard(TurboCard SelectedCard, optional bool bFromVote)
     ClearSelection();
 
     log("Executing OnActivateCard delegate for"@SelectedCard.CardID, 'KFTurboCardGame');
-    SelectedCard.OnActivateCard(Self);
+    SelectedCard.OnActivateCard(OwnerMutator.TurboCardGameplayManagerInfo, SelectedCard, true);
     
     CheckForActiveCardUpdates();
 }
@@ -653,9 +643,6 @@ function ResetPlayerVotes()
         CardLRI.ResetVote();
     }
 }
-
-//===========
-//GAMEPLAY MODIFICATION FUNCTIONS:
 
 function ModifyWaveSpeed(float Multiplier)
 {
@@ -975,11 +962,6 @@ function ModifyHealRecharge(float Multiplier)
 {
     OwnerMutator.TurboCardGameModifier.HealRechargeMultiplier *= Multiplier;
     log("HealRechargeMultiplier"@OwnerMutator.TurboCardGameModifier.HealRechargeMultiplier);
-}
-
-function IncreaseSelectionCount()
-{
-    SelectionCount++;
 }
 
 function DecreaseSelectionCount()

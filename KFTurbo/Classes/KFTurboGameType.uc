@@ -20,6 +20,8 @@ var float GameWaveSpawnRateModifier;
 var float GameMaxMonstersModifier;
 //Whatever total monsters is set as, make sure it gets multiplied by this.
 var float GameTotalMonstersModifier;
+//Whatever total monsters is set as, make sure it gets multiplied by this.
+var float GameTraderTimeModifier;
 
 //Set to true when the boss has been spawned. Used to prevent duplicate broadcasts of OnBossSpawned event.
 var bool bHasSpawnedBoss;
@@ -592,6 +594,7 @@ defaultproperties
 	GameWaveSpawnRateModifier=1.f
     GameMaxMonstersModifier=1.f
     GameTotalMonstersModifier=1.f
+    GameTraderTimeModifier=1.f
     bHasSpawnedBoss=false
 
     MonsterClasses(0)=(MClassName="KFTurbo.P_Clot_STA",Mid="A")

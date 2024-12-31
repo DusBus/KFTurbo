@@ -28,6 +28,12 @@ function Timer()
         SetTimer(0.5f, false);
         return;
     }
+
+    if (KFGameType(Level.Game) != None && !KFGameType(Level.Game).bWaveInProgress)
+    {
+        SetTimer(0.5f, false);
+        return;
+    }
     
     foreach DynamicActors(class'KFDoorMover', Door)
     {
@@ -64,7 +70,21 @@ Begin:
 
 state WaitingToExplodeDoors
 {
+    function BeginState()
+    {
+        SetTimer(0.5f, false);
+    }
 
+    function Timer()
+    {
+        if (KFGameType(Level.Game) != None && !KFGameType(Level.Game).bWaveInProgress)
+        {
+            SetTimer(0.5f, false);
+            return;
+        }
+
+        ExplodeDoors();
+    }
 }
 
 defaultproperties

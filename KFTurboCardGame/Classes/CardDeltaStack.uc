@@ -27,39 +27,46 @@ final function bool HasDeltaChanges()
     return DeltaList.Length != 0;
 }
 
-final function AddDeltaChange(CardDeltaEntry DeltaChange)
+final function AddDelta(int Delta, TurboCard Card)
 {
     local int Index;
-    if (DeltaChange.ID == "")
+    if (Card == None || Card.CardID == "")
     {
         return;
     }
 
-    log(DeltaStackID$": Applying delta"@DeltaChange.Delta@"from"@DeltaChange.ID@".", 'KFTurboCardGame');
+    log(DeltaStackID$": Applying delta"@Delta@"from"@Card.CardID@".", 'KFTurboCardGame');
 
     for (Index = DeltaList.Length - 1; Index >= 0; Index--)
     {
-        if (DeltaList[Index].ID == DeltaChange.ID)
+        if (DeltaList[Index].ID == Card.CardID)
         {
-            DeltaList[Index].Delta = DeltaChange.Delta;
+            DeltaList[Index].Delta = Delta;
             UpdateDeltaChange();
             return;
         }
     }
 
     DeltaList.Length = DeltaList.Length + 1;
-    DeltaList[DeltaList.Length - 1] = DeltaChange;
+    DeltaList[DeltaList.Length - 1].ID = Card.CardID;
+    DeltaList[DeltaList.Length - 1].Delta = Delta;
     UpdateDeltaChange();
 }
 
-final function RemoveDelta(string ID)
+final function RemoveDelta(TurboCard Card)
 {
     local int Index;
+
+    if (Card == None)
+    {
+        return;
+    }
+
     for (Index = DeltaList.Length - 1; Index >= 0; Index--)
     {
-        if (DeltaList[Index].ID == ID)
+        if (DeltaList[Index].ID == Card.CardID)
         {
-            log(DeltaStackID$": Removing delta applied by"@ID@".", 'KFTurboCardGame');
+            log(DeltaStackID$": Removing delta applied by"@Card.CardID@".", 'KFTurboCardGame');
             DeltaList.Remove(Index, 1);
             UpdateDeltaChange();
             return;

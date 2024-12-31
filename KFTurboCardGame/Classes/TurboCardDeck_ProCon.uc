@@ -3,190 +3,415 @@
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboCardDeck_ProCon extends TurboCardDeck;
 
-function ActivateExtraMoneyTraderTime(TurboCardReplicationInfo CGRI)
+function ActivateExtraMoneyTraderTime(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'ExtraMoneyTraderTimeWaveEventHandler');
+    if (bActivate)
+    {
+        GameplayManager.TraderTimeModifier.AddModifier(0.85f, Card);
+        GameplayManager.ShortTermRewardFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.TraderTimeModifier.RemoveModifier(Card);
+        GameplayManager.ShortTermRewardFlag.ClearFlag();
+    }
 }
 
-function ActivateFasterReloadSmallerMag(TurboCardReplicationInfo CGRI)
+function ActivateFasterReloadSmallerMag(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyWeaponReloadRate(1.15f);
-    CGRI.ModifyWeaponMagazineAmmo(0.8f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerReloadRateModifier.AddModifier(1.15f, Card);
+        GameplayManager.PlayerMagazineAmmoModifier.AddModifier(0.8f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerReloadRateModifier.RemoveModifier(Card);
+        GameplayManager.PlayerMagazineAmmoModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateHandSizeWaveSize(TurboCardReplicationInfo CGRI)
+function ActivateHandSizeWaveSize(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.IncreaseSelectionCount();
-    class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'IncreaseHandSizeWaveSizeWaveSizeModifier');
-    class'IncreaseHandSizeWaveSizeWaveSizeModifier'.static.OnWaveStarted(KFTurboGameType(CGRI.Level.Game), KFTurboGameType(CGRI.Level.Game).WaveNum);
+    if (bActivate)
+    {
+        GameplayManager.CardSelectionCountDelta.AddDelta(1, Card);
+        GameplayManager.TotalMonstersModifier.AddModifier(1.25f, Card);
+    }
+    else
+    {
+        GameplayManager.CardSelectionCountDelta.RemoveDelta(Card);
+        GameplayManager.TotalMonstersModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateScrakeDamUpFleshpoundDamDown(TurboCardReplicationInfo CGRI)
+function ActivateScrakeDamUpFleshpoundDamDown(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyPlayerFleshpoundDamage(0.85f);
-    CGRI.ModifyPlayerScrakeDamage(1.1f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerFleshpoundDamageModifier.AddModifier(0.85f, Card);
+        GameplayManager.PlayerScrakeDamageModifier.AddModifier(1.1f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerFleshpoundDamageModifier.RemoveModifier(Card);
+        GameplayManager.PlayerScrakeDamageModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateBriskPace(TurboCardReplicationInfo CGRI)
+function ActivateBriskPace(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyWaveSpeed(3.f);
-    class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'SmallerFasterWavesWaveSizeModifier');
-    class'SmallerFasterWavesWaveSizeModifier'.static.OnWaveStarted(KFTurboGameType(CGRI.Level.Game), KFTurboGameType(CGRI.Level.Game).WaveNum);
+    if (bActivate)
+    {
+        GameplayManager.WaveSpeedModifier.AddModifier(3.f, Card);
+        GameplayManager.TotalMonstersModifier.AddModifier(0.9f, Card);
+    }
+    else
+    {
+        GameplayManager.WaveSpeedModifier.RemoveModifier(Card);
+        GameplayManager.TotalMonstersModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateSpecialization(TurboCardReplicationInfo CGRI)
+function ActivateSpecialization(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyOnPerkDamage(1.05f);
-    CGRI.ModifyOffPerkDamage(0.85f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerOnPerkDamageModifier.AddModifier(1.05f, Card);
+        GameplayManager.PlayerOffPerkDamageModifier.AddModifier(1.05f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerOnPerkDamageModifier.RemoveModifier(Card);
+        GameplayManager.PlayerOffPerkDamageModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivatePrecisionExplosives(TurboCardReplicationInfo CGRI)
+function ActivatePrecisionExplosives(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyExplosiveDamage(1.05f);
-    CGRI.ModifyExplosiveRadius(0.75f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerExplosiveDamageModifier.AddModifier(1.05f, Card);
+        GameplayManager.PlayerExplosiveRadiusModifier.AddModifier(0.75f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerExplosiveDamageModifier.RemoveModifier(Card);
+        GameplayManager.PlayerExplosiveRadiusModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateVeryDeepAmmoPockets(TurboCardReplicationInfo CGRI)
+function ActivateVeryDeepAmmoPockets(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyWeaponMaxAmmo(1.1f);
-    CGRI.ModifyWeaponReloadRate(0.85f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerMaxAmmoModifier.AddModifier(1.1f, Card);
+        GameplayManager.PlayerReloadRateModifier.AddModifier(0.85f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerMaxAmmoModifier.RemoveModifier(Card);
+        GameplayManager.PlayerReloadRateModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateEscalation(TurboCardReplicationInfo CGRI)
+function ActivateEscalation(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyPlayerDamage(1.05f);
-    CGRI.ModifyZombieDamage(0.9f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerDamageModifier.AddModifier(1.05f, Card);
+        GameplayManager.MonsterDamageModifier.AddModifier(1.1f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerDamageModifier.RemoveModifier(Card);
+        GameplayManager.MonsterDamageModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateSurplus(TurboCardReplicationInfo CGRI)
+function ActivateSurplus(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyCashBonus(1.25f);
-    class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'SurplusWaveSizeModifier');
-    class'SurplusWaveSizeModifier'.static.OnWaveStarted(KFTurboGameType(CGRI.Level.Game), KFTurboGameType(CGRI.Level.Game).WaveNum);
+    if (bActivate)
+    {
+        GameplayManager.CashBonusModifier.AddModifier(1.15f, Card);
+        GameplayManager.TotalMonstersModifier.AddModifier(1.1f, Card);
+    }
+    else
+    {
+        GameplayManager.CashBonusModifier.RemoveModifier(Card);
+        GameplayManager.TotalMonstersModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateDoubleEdgeSword(TurboCardReplicationInfo CGRI)
+function ActivateDoubleEdgeSword(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyPlayerDamage(1.05f);
-    CGRI.ModifyFriendlyFireScale(1.05f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerDamageModifier.AddModifier(1.05f, Card);
+        GameplayManager.FriendlyFireModifier.AddModifier(1.05f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerDamageModifier.RemoveModifier(Card);
+        GameplayManager.FriendlyFireModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateHeavyAmmunition(TurboCardReplicationInfo CGRI)
+function ActivateHeavyAmmunition(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyPlayerRangedDamage(1.05f);
-    CGRI.ModifyWeaponMaxAmmo(0.9f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerRangedDamageModifier.AddModifier(1.05f, Card);
+        GameplayManager.PlayerMaxAmmoModifier.AddModifier(0.9f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerRangedDamageModifier.RemoveModifier(Card);
+        GameplayManager.PlayerMaxAmmoModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateMagazineOverclock(TurboCardReplicationInfo CGRI)
+function ActivateMagazineOverclock(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyWeaponFireRate(1.15f);
-    CGRI.ModifyWeaponReloadRate(0.9f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerFireRateModifier.AddModifier(1.15f, Card);
+        GameplayManager.PlayerReloadRateModifier.AddModifier(0.9f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerFireRateModifier.RemoveModifier(Card);
+        GameplayManager.PlayerReloadRateModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivatePrecisionFire(TurboCardReplicationInfo CGRI)
+function ActivatePrecisionFire(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyWeaponFireRate(0.9f);
-    CGRI.ModifyWeaponSpreadAndRecoil(0.7f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerFireRateModifier.AddModifier(0.9f, Card);
+        GameplayManager.PlayerSpreadRecoilModifier.AddModifier(0.7f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerFireRateModifier.RemoveModifier(Card);
+        GameplayManager.PlayerSpreadRecoilModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateThinSkinned(TurboCardReplicationInfo CGRI)
+function ActivateThinSkinned(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyPlayerSpeed(1.1f);
-    CGRI.ModifyZombieDamage(1.1f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerMovementSpeedModifier.AddModifier(1.1f, Card);
+        GameplayManager.PlayerDamageTakenModifier.AddModifier(1.1f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerMovementSpeedModifier.RemoveModifier(Card);
+        GameplayManager.PlayerDamageTakenModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivatePremiumWeapons(TurboCardReplicationInfo CGRI)
+function ActivatePremiumWeapons(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyWeaponFireRate(1.05f);
-    CGRI.ModifyWeaponReloadRate(1.05f);
-    CGRI.ModifyWeaponSpreadAndRecoil(0.95f);
-
-    CGRI.ModifyTraderPriceMultiplier(1.15f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerFireRateModifier.AddModifier(1.05f, Card);
+        GameplayManager.PlayerReloadRateModifier.AddModifier(1.05f, Card);
+        GameplayManager.PlayerSpreadRecoilModifier.AddModifier(0.95f, Card);
+        GameplayManager.TraderPriceModifier.AddModifier(1.15f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerFireRateModifier.RemoveModifier(Card);
+        GameplayManager.PlayerReloadRateModifier.RemoveModifier(Card);
+        GameplayManager.PlayerSpreadRecoilModifier.RemoveModifier(Card);
+        GameplayManager.TraderPriceModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateTurtleShell(TurboCardReplicationInfo CGRI)
+function ActivateTurtleShell(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyPlayerSpeed(0.95f);
-    CGRI.ModifyZombieDamage(0.9f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerMovementSpeedModifier.AddModifier(0.95f, Card);
+        GameplayManager.PlayerDamageTakenModifier.AddModifier(0.9f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerMovementSpeedModifier.RemoveModifier(Card);
+        GameplayManager.PlayerDamageTakenModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivatePaidInBlood(TurboCardReplicationInfo CGRI)
+function ActivatePaidInBlood(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyPlayerMaxHealth(0.9f);
-    CGRI.ModifyTraderPriceMultiplier(0.5f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerMaxHealthModifier.AddModifier(0.9f, Card);
+        GameplayManager.TraderPriceModifier.AddModifier(0.5f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerMaxHealthModifier.RemoveModifier(Card);
+        GameplayManager.TraderPriceModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateDealWithDevil(TurboCardReplicationInfo CGRI)
+function ActivateDealWithDevil(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ActivateRandomSuperCard();
-    CGRI.ActivateRandomEvilCard();
+    if (bActivate)
+    {
+        GameplayManager.GrantRandomSuperCard();
+        GameplayManager.GrantRandomEvilCard();
+    }
 }
 
-function ActivateDistractedDriving(TurboCardReplicationInfo CGRI)
+function ActivateDistractedDriving(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyStalkerMeleeDamage(2.f);
-    CGRI.ModifyStalkerDistraction(1.75f);
+    if (bActivate)
+    {
+        GameplayManager.MonsterStalkerDistractionModifier.AddModifier(1.75f, Card);
+        GameplayManager.MonsterStalkerMeleeDamageModifier.AddModifier(2.f, Card);
+    }
+    else
+    {
+        GameplayManager.MonsterStalkerDistractionModifier.RemoveModifier(Card);
+        GameplayManager.MonsterStalkerMeleeDamageModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateHighSpeedLowDrag(TurboCardReplicationInfo CGRI)
+function ActivateHighSpeedLowDrag(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyPlayerMaxCarryWeight(-1);
-    CGRI.ModifyPlayerSpeed(1.15f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerCarryCapacityDelta.AddDelta(-1, Card);
+        GameplayManager.PlayerMovementSpeedModifier.AddModifier(1.15f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerCarryCapacityDelta.RemoveDelta(Card);
+        GameplayManager.PlayerMovementSpeedModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateUnlicensedPractitioner(TurboCardReplicationInfo CGRI)
+function ActivateUnlicensedPractitioner(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyMedicHealPotency(1.1f);
-    CGRI.ModifyNonMedicHealPotency(0.75f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerMedicHealPotencyModifier.AddModifier(1.1f, Card);
+        GameplayManager.PlayerNonMedicHealPotencyModifier.AddModifier(0.75f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerMedicHealPotencyModifier.RemoveModifier(Card);
+        GameplayManager.PlayerNonMedicHealPotencyModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateRussianRoulette(TurboCardReplicationInfo CGRI)
+function ActivateRussianRoulette(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.EnableRussianRoulette();
+    if (bActivate)
+    {
+        GameplayManager.RussianRouletteFlag.SetFlag(Card);
+    }
+    else
+    {
+        GameplayManager.RussianRouletteFlag.ClearFlag();
+    }
 }
 
-function ActivateConcentratedHeal(TurboCardReplicationInfo CGRI)
+function ActivateConcentratedHeal(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyMedicHealPotency(1.15f);
-    CGRI.ModifyNonMedicHealPotency(1.15f);
-    CGRI.ModifyHealRecharge(0.85f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerMedicHealPotencyModifier.AddModifier(1.15f, Card);
+        GameplayManager.PlayerNonMedicHealPotencyModifier.AddModifier(1.15f, Card);
+        GameplayManager.PlayerHealRechargeModifier.AddModifier(0.85f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerMedicHealPotencyModifier.RemoveModifier(Card);
+        GameplayManager.PlayerNonMedicHealPotencyModifier.RemoveModifier(Card);
+        GameplayManager.PlayerHealRechargeModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateDroppingBallast(TurboCardReplicationInfo CGRI)
+function ActivateDroppingBallast(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyGrenadeMaxAmmo(0.8f);
-    CGRI.ModifyWeaponMaxAmmo(1.1f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerGrenadeMaxAmmoModifier.AddModifier(0.8f, Card);
+        GameplayManager.PlayerMaxAmmoModifier.AddModifier(1.1f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerGrenadeMaxAmmoModifier.RemoveModifier(Card);
+        GameplayManager.PlayerMaxAmmoModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateShotgunsMoreKick(TurboCardReplicationInfo CGRI)
+function ActivateShotgunsMoreKick(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyShotgunPelletCount(1.2f);
-    CGRI.ModifyShotgunRecoil(1.25f);
-    CGRI.ModifyShotgunKickBack(1.25f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerShotgunPelletModifier.AddModifier(1.2f, Card);
+        GameplayManager.PlayerShotgunSpreadRecoilModifier.AddModifier(1.25f, Card);
+        GameplayManager.PlayerShotgunKickbackModifier.AddModifier(1.25f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerShotgunPelletModifier.RemoveModifier(Card);
+        GameplayManager.PlayerShotgunSpreadRecoilModifier.RemoveModifier(Card);
+        GameplayManager.PlayerShotgunKickbackModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateMoreToPlay(TurboCardReplicationInfo CGRI)
+function ActivateMoreToPlay(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyWeaponMaxAmmo(1.15f);
-    CGRI.ModifyPlayerDamage(1.05f);
-
-    class'TurboWaveEventHandler'.static.RegisterWaveHandler(CGRI, class'MoreToPlayWaveSizeModifier');
-    class'MoreToPlayWaveSizeModifier'.static.OnWaveStarted(KFTurboGameType(CGRI.Level.Game), KFTurboGameType(CGRI.Level.Game).WaveNum);
+    if (bActivate)
+    {
+        GameplayManager.PlayerMaxAmmoModifier.AddModifier(1.15f, Card);
+        GameplayManager.PlayerDamageModifier.AddModifier(1.05f, Card);
+        GameplayManager.TotalMonstersModifier.AddModifier(1.2f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerMaxAmmoModifier.RemoveModifier(Card);
+        GameplayManager.PlayerDamageModifier.RemoveModifier(Card);
+        GameplayManager.TotalMonstersModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateCollateralDamage(TurboCardReplicationInfo CGRI)
+function ActivateCollateralDamage(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyExplosiveDamage(1.1f);
-
-    CGRI.ModifyFriendlyFireScale(1.05f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerExplosiveDamageModifier.AddModifier(1.1f, Card);
+        GameplayManager.FriendlyFireModifier.AddModifier(1.05f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerExplosiveDamageModifier.RemoveModifier(Card);
+        GameplayManager.FriendlyFireModifier.RemoveModifier(Card);
+    }
 }
 
-function ActivateHealingAndHurting(TurboCardReplicationInfo CGRI)
+function ActivateHealingAndHurting(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    CGRI.ModifyNonMedicHealPotency(1.2f);
-    CGRI.ModifyMedicHealPotency(1.2f);
-
-    CGRI.ModifyFriendlyFireScale(1.05f);
+    if (bActivate)
+    {
+        GameplayManager.PlayerNonMedicHealPotencyModifier.AddModifier(1.2f, Card);
+        GameplayManager.PlayerMedicHealPotencyModifier.AddModifier(1.2f, Card);
+        GameplayManager.FriendlyFireModifier.AddModifier(1.05f, Card);
+    }
+    else
+    {
+        GameplayManager.PlayerNonMedicHealPotencyModifier.RemoveModifier(Card);
+        GameplayManager.PlayerMedicHealPotencyModifier.RemoveModifier(Card);
+        GameplayManager.FriendlyFireModifier.RemoveModifier(Card);
+    }
 }
 
 defaultproperties
@@ -305,8 +530,8 @@ defaultproperties
         CardName(1)="Surplus"
         CardDescriptionList(0)="Increases dosh"
         CardDescriptionList(1)="received from"
-        CardDescriptionList(2)="kills by 25% and"
-        CardDescriptionList(3)="wave size by 25%."
+        CardDescriptionList(2)="kills by 15% and"
+        CardDescriptionList(3)="wave size by 10%."
         OnActivateCard=ActivateSurplus
         CardID="PROCON_COMPSURPLUS"
     End Object

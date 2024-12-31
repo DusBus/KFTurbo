@@ -9,10 +9,16 @@ class TurboCardGameplayManager extends TurboCardGameplayManagerBase;
 //WAVE
 var CardModifierStack GameWaveSpeedModifier; //Distinct from the modifier that cards apply. Used to increase difficulty throughout card game.
 var CardModifierStack WaveSpeedModifier;
+
 var CardModifierStack MaxMonstersModifier;
 var CardModifierStack TotalMonstersModifier;
 
+var CardModifierStack TraderTimeModifier;
+var CardFlag ShortTermRewardFlag;
+var CardFlag FreeArmorFlag;
+
 var CardModifierStack CashBonusModifier;
+var CardModifierStack AmmoPickupRespawnModifier;
 
 var CardFlag BorrowedTimeFlag;
 var PlayerBorrowedTimeActor BorrowedTimeManager;
@@ -20,6 +26,14 @@ var CardFlag PlainSightSpawnFlag;
 var PlainSightSpawningActor PlainSightManager;
 var CardFlag RandomTraderChangeFlag;
 var RandomTraderManager RandomTraderManager;
+var CardFlag MarkedForDeathFlag;
+
+var CardFlag LockPerkSelectionFlag;
+
+var CardFlag ExplodeDoorFlag;
+var ExplodeDoorsActor ExplodeDoorsActor;
+
+var CardFlag BankRunFlag;
 
 //CARD GAME
 var CardDeltaStack CardSelectionCountDelta;
@@ -38,6 +52,7 @@ var PlayerNoRestForTheWickedActor NoRestForTheWickedManager;
 //DEATH
 var CardFlag SuddenDeathFlag;
 var CardFlag CheatDeathFlag;
+var CardFlag RussianRouletteFlag;
 
 //INVENTORY
 var CardFlag NoSyringeFlag;
@@ -83,7 +98,11 @@ var CardFlag PlayerMassDetonationFlag;
 
 //DAMAGE RECEIVED
 var CardModifierStack PlayerArmorStrengthModifier;
+var CardModifierStack PlayerDamageTakenModifier;
+var CardModifierStack PlayerExplosiveDamageTakenModifier;
 var CardModifierStack PlayerFallDamageModifier;
+
+var CardFlag PlayerDamageSubstituteFlag;
 
 //FIRE RATE
 var CardModifierStack PlayerFireRateModifier;
@@ -127,9 +146,6 @@ var CardModifierStack PlayerShotgunKickbackModifier;
 var CardDeltaStack PlayerZedTimeExtensionDelta;
 var CardDeltaStack PlayerDualWeaponZedTimeExtensionDelta;
 
-//DAMAGE TAKEN
-var CardModifierStack PlayerExplosiveDamageTakenModifier;
-
 //HEALING
 var CardModifierStack PlayerNonMedicHealPotencyModifier;
 var CardModifierStack PlayerMedicHealPotencyModifier;
@@ -148,6 +164,11 @@ var CardModifierStack PlayerThornsModifier;
 
 ////////////////////
 //MONSTER MODIFIERS
+
+//REPLACEMENT/SPAWNING
+var CardFlag WeakMonsterReplacementFlag;
+var CardFlag ScrakeMonsterReplacementFlag;
+var CardFlag HuskAmountBoostFlag;
 
 //DAMAGE
 var CardModifierStack MonsterDamageModifier;
@@ -170,6 +191,79 @@ var CardModifierStack MonsterFleshpoundRageThresholdModifier;
 var CardModifierStack MonsterScrakeRageThresholdModifier;
 var CardModifierStack MonsterHuskRefireTimeModifier;
 
+function OnWaveStart(int StartedWave)
+{
+    Super.OnWaveStart(StartedWave);
+
+    //Start stacking modifiers to this.
+    if (StartedWave >= 7)
+    {
+        GameWaveSpeedModifier.AddModifier(1.1f, None);
+    }
+
+    if (PlayerDamageSubstituteFlag.IsFlagSet())
+    {
+        CardGameRules.ResetNegateDamageList();
+    }
+
+    if (BankRunFlag.IsFlagSet())
+    {
+        MultiplyPlayerCash(0.5f);
+    }
+
+    if (MarkedForDeathFlag.IsFlagSet())
+    {
+        MarkPlayerForDeath();
+    }
+}
+
+function OnWaveEnd(int EndedWave)
+{
+    Super.OnWaveEnd(EndedWave);
+
+    if (TurboGameType.FinalWave <= EndedWave)
+    {
+        return;
+    }
+
+    if (ShortTermRewardFlag.IsFlagSet())
+    {
+        GrantAllPlayersDosh(500);
+    }
+
+    if (FreeArmorFlag.IsFlagSet())
+    {
+        GrantAllPlayersArmor();
+    }
+}
+
+function OnNextSpawnSquadGenerated(out array < class<KFMonster> > NextSpawnSquad)
+{
+    local int SquadIndex;
+
+    if (!WeakMonsterReplacementFlag.IsFlagSet() && !ScrakeMonsterReplacementFlag.IsFlagSet())
+    {
+        return;
+    }
+    
+    for (SquadIndex = 0; SquadIndex < NextSpawnSquad.Length; SquadIndex++)
+    {
+        if (WeakMonsterReplacementFlag.IsFlagSet() && FRand() < 0.15f)
+        {
+            AttemptReplaceWeakMonster(NextSpawnSquad[SquadIndex]);
+        }
+        else if (ScrakeMonsterReplacementFlag.IsFlagSet() && FRand() < 0.05f)
+        {
+            NextSpawnSquad[SquadIndex] = class'P_Scrake_STA';
+        }
+    }
+
+    if (HuskAmountBoostFlag.IsFlagSet())
+    {
+        PotentiallyDoubleHuskSpawn(NextSpawnSquad);
+    }
+}
+
 function WaveSpeedModifierChanged(CardModifierStack ModifiedStack, float Modifier)
 {
     TurboGameType.GameWaveSpawnRateModifier = GameWaveSpeedModifier.GetModifier() * WaveSpeedModifier.GetModifier();
@@ -187,7 +281,7 @@ function MaxMonstersModifierChanged(CardModifierStack ModifiedStack, float Modif
         return;
     }
     
-    TurboGameType.MaxMonsters *= TurboGameType.GameMaxMonstersModifier / OriginalModifier;
+    TurboGameType.MaxMonsters = float(TurboGameType.MaxMonsters) * (TurboGameType.GameMaxMonstersModifier / OriginalModifier);
 }
 
 function TotalMonstersModifierChanged(CardModifierStack ModifiedStack, float Modifier)
@@ -201,12 +295,48 @@ function TotalMonstersModifierChanged(CardModifierStack ModifiedStack, float Mod
         return;
     }
     
-    TurboGameType.TotalMaxMonsters *= TurboGameType.GameTotalMonstersModifier / OriginalModifier;
+    TurboGameType.TotalMaxMonsters = float(TurboGameType.TotalMaxMonsters) * (TurboGameType.GameTotalMonstersModifier / OriginalModifier);
+}
+
+function ShortTermRewardCardFlagChanged(CardFlag Flag, bool bIsEnabled) {}
+
+function FreeArmorCardFlagChanged(CardFlag Flag, bool bIsEnabled)
+{
+    if (!TurboGameType.bWaveInProgress)
+    {
+        return;
+    }
+
+    GrantAllPlayersArmor();
+}
+
+function TraderTimeModifierChanged(CardModifierStack ModifiedStack, float Modifier)
+{
+    local float OriginalModifier;
+    OriginalModifier = TurboGameType.GameTraderTimeModifier;
+    TurboGameType.GameTraderTimeModifier = TraderTimeModifier.GetModifier();
+
+    if (TurboGameType.bWaveInProgress)
+    {
+        return;
+    }
+    
+    TurboGameType.WaveCountDown = float(TurboGameType.WaveCountDown) * (TurboGameType.GameTraderTimeModifier / OriginalModifier);
+    KFGameReplicationInfo(TurboGameType.GameReplicationInfo).TimeToNextWave = TurboGameType.WaveCountDown;
 }
 
 function CashBonusModifierChanged(CardModifierStack ModifiedStack, float Modifier)
 {
     CardGameRules.BonusCashMultiplier = CashBonusModifier.GetModifier();
+}
+
+function AmmoPickupRespawnModifierChanged(CardModifierStack ModifiedStack, float Modifier)
+{
+    local KFAmmoPickup AmmoPickup;
+    foreach AllActors(class'KFAmmoPickup', AmmoPickup)
+    {
+        AmmoPickup.RespawnTime = AmmoPickup.default.RespawnTime * Modifier;
+    }
 }
 
 function BorrowedTimeCardFlagChanged(CardFlag Flag, bool bIsEnabled)
@@ -240,6 +370,7 @@ function PlainSightSpawnCardFlagChanged(CardFlag Flag, bool bIsEnabled)
     {
         if (PlainSightManager != None)
         {
+            PlainSightManager.Revert();
             PlainSightManager.Destroy();
         }
     }
@@ -263,10 +394,44 @@ function RandomTraderChangeFlagChanged(CardFlag Flag, bool bIsEnabled)
     }
 }
 
+function MarkedForDeathFlagChanged(CardFlag Flag, bool bIsEnabled)
+{
+    if (!bIsEnabled)
+    {
+        CardGameRules.MarkedForDeathPawn = None;
+    }
+}
+
+function LockPerkSelectionFlagChanged(CardFlag Flag, bool bIsEnabled)
+{
+    TurboGameType.LockPerkSelection(bIsEnabled);
+}
+
+function ExplodeDoorFlagChanged(CardFlag Flag, bool bIsEnabled)
+{
+    if (bIsEnabled)
+    {
+        if (ExplodeDoorsActor == None)
+        {
+            ExplodeDoorsActor = Spawn(class'ExplodeDoorsActor', Self);
+        }
+    }
+    else
+    {
+        if (ExplodeDoorsActor != None)
+        {
+            ExplodeDoorsActor.Destroy();
+        }
+    }
+}
+
+function BankRunFlagChanged(CardFlag Flag, bool bIsEnabled) {}
+
 //CARD GAME
 function CardSelectionCountDeltaChanged(CardDeltaStack ChangedDelta, int Delta)
 {
     CardReplicationInfo.SelectionCount = CardReplicationInfo.default.SelectionCount + Delta;
+    CardReplicationInfo.SelectionCount = Max(1, CardReplicationInfo.SelectionCount);
 }
 
 function CurseOfRaFlagChanged(CardFlag Flag, bool bIsEnabled)
@@ -349,6 +514,11 @@ function CheatDeathFlagChanged(CardFlag Flag, bool bIsEnabled)
     {
         CardGameRules.CheatedDeathPlayerList.Length = 0;
     }
+}
+
+function RussianRouletteFlagChanged(CardFlag Flag, bool bIsEnabled)
+{
+    CardGameRules.bRussianRouletteEnabled = bIsEnabled;
 }
 
 //INVENTORY
@@ -506,9 +676,31 @@ function PlayerArmorStrengthModifierChanged(CardModifierStack ModifiedStack, flo
     CardGameModifier.ForceNetUpdate();
 }
 
+function PlayerDamageTakenModifierChanged(CardModifierStack ModifiedStack, float Modifier)
+{
+    CardGameRules.DamageTakenMultiplier = Modifier;
+}
+
+function PlayerExplosiveDamageTakenModifierChanged(CardModifierStack ModifiedStack, float Modifier)
+{
+    CardGameRules.ExplosiveDamageTakenMultiplier = Modifier;
+}
+
 function PlayerFallDamageModifierChanged(CardModifierStack ModifiedStack, float Modifier)
 {
     CardGameRules.FallDamageTakenMultiplier = Modifier;
+}
+
+function PlayerDamageSubstituteCardFlagChanged(CardFlag Flag, bool bIsEnabled)
+{
+    if (bIsEnabled)
+    {
+        CardGameRules.ResetNegateDamageList();
+    }
+    else
+    {
+        CardGameRules.ClearNegateDamageList();
+    }
 }
 
 //FIRERATE
@@ -666,12 +858,6 @@ function PlayerDualWeaponZedTimeExtensionDeltaChanged(CardDeltaStack DeltaStack,
     CardGameModifier.ForceNetUpdate();
 }
 
-//DAMAGE TAKEN
-function PlayerExplosiveDamageTakenModifierChanged(CardModifierStack ModifiedStack, float Modifier)
-{
-    CardGameRules.ExplosiveDamageMultiplier = Modifier;
-}
-
 //HEALING
 function PlayerNonMedicHealPotencyModifierChanged(CardModifierStack ModifiedStack, float Modifier)
 {
@@ -739,6 +925,11 @@ function PlayerThornsModifierChanged(CardModifierStack ModifiedStack, float Modi
 
 ////////////////////
 //MONSTER MODIFIERS
+
+//REPLACEMENT
+function WeakMonsterReplacementFlagChanged(Cardflag ModifiedStack, bool bIsEnabled) {}
+function ScrakeMonsterReplacementFlagChanged(Cardflag ModifiedStack, bool bIsEnabled) {}
+function HuskAmountBoostFlagChanged(Cardflag ModifiedStack, bool bIsEnabled) {}
 
 //DAMAGE
 function MonsterDamageModifierChanged(CardModifierStack ModifiedStack, float Modifier)
@@ -837,11 +1028,35 @@ defaultproperties
     End Object
     TotalMonstersModifier=CardModifierStack'TotalMonstersModifierStack'
 
+    Begin Object Name=ShortTermRewardCardFlag Class=CardFlag
+        FlagID="ShortTermReward"
+        OnFlagSetChanged=ShortTermRewardCardFlagChanged
+    End Object
+    ShortTermRewardFlag=CardFlag'ShortTermRewardCardFlag'
+
+    Begin Object Name=FreeArmorCardFlag Class=CardFlag
+        FlagID="FreeArmor"
+        OnFlagSetChanged=FreeArmorCardFlagChanged
+    End Object
+    FreeArmorFlag=CardFlag'FreeArmorCardFlag'
+
+    Begin Object Name=TraderTimeModifierStack Class=CardModifierStack
+        ModifierStackID="TraderTime"
+        OnModifierChanged=TraderTimeModifierChanged
+    End Object
+    TraderTimeModifier=CardModifierStack'TraderTimeModifierStack'
+
     Begin Object Name=CashBonusModifierStack Class=CardModifierStack
         ModifierStackID="CashBonus"
         OnModifierChanged=CashBonusModifierChanged
     End Object
     CashBonusModifier=CardModifierStack'CashBonusModifierStack'
+
+    Begin Object Name=AmmoPickupRespawnModifierStack Class=CardModifierStack
+        ModifierStackID="AmmoPickupRespawn"
+        OnModifierChanged=AmmoPickupRespawnModifierChanged
+    End Object
+    AmmoPickupRespawnModifier=CardModifierStack'AmmoPickupRespawnModifierStack'
 
     Begin Object Name=BorrowedTimeCardFlag Class=CardFlag
         FlagID="BorrowedTime"
@@ -860,6 +1075,30 @@ defaultproperties
         OnFlagSetChanged=RandomTraderChangeFlagChanged
     End Object
     RandomTraderChangeFlag=CardFlag'RandomTraderChangeCardFlag'
+
+    Begin Object Name=MarkedForDeathCardFlag Class=CardFlag
+        FlagID="MarkedForDeath"
+        OnFlagSetChanged=MarkedForDeathFlagChanged
+    End Object
+    MarkedForDeathFlag=CardFlag'MarkedForDeathCardFlag'
+
+    Begin Object Name=LockPerkSelectionCardFlag Class=CardFlag
+        FlagID="LockPerkSelection"
+        OnFlagSetChanged=LockPerkSelectionFlagChanged
+    End Object
+    LockPerkSelectionFlag=CardFlag'LockPerkSelectionCardFlag'
+
+    Begin Object Name=ExplodeDoorCardFlag Class=CardFlag
+        FlagID="ExplodeDoor"
+        OnFlagSetChanged=ExplodeDoorFlagChanged
+    End Object
+    ExplodeDoorFlag=CardFlag'ExplodeDoorCardFlag'
+
+    Begin Object Name=BankRunCardFlag Class=CardFlag
+        FlagID="BankRun"
+        OnFlagSetChanged=BankRunFlagChanged
+    End Object
+    BankRunFlag=CardFlag'BankRunCardFlag'
 
 //CARD GAME
     Begin Object Name=CardSelectionCountDeltaStack Class=CardDeltaStack
@@ -906,6 +1145,12 @@ defaultproperties
         OnFlagSetChanged=CheatDeathFlagChanged
     End Object
     CheatDeathFlag=CardFlag'CheatDeathCardFlag'
+
+    Begin Object Name=RussianRouletteCardFlag Class=CardFlag
+        FlagID="RussianRoulette"
+        OnFlagSetChanged=RussianRouletteFlagChanged
+    End Object
+    RussianRouletteFlag=CardFlag'RussianRouletteCardFlag'
     
 //INVENTORY
     Begin Object Name=NoSyringeCardFlag Class=CardFlag
@@ -1061,11 +1306,29 @@ defaultproperties
     End Object
     PlayerArmorStrengthModifier=CardModifierStack'PlayerArmorStrengthModifierStack'
 
+    Begin Object Name=PlayerDamageTakenModifierStack Class=CardModifierStack
+        ModifierStackID="PlayerDamageTaken"
+        OnModifierChanged=PlayerDamageTakenModifierChanged
+    End Object
+    PlayerDamageTakenModifier=CardModifierStack'PlayerDamageTakenModifierStack'
+
+    Begin Object Name=PlayerExplosiveDamageTakenModifierStack Class=CardModifierStack
+        ModifierStackID="PlayerExplosiveDamageTaken"
+        OnModifierChanged=PlayerExplosiveDamageTakenModifierChanged
+    End Object
+    PlayerExplosiveDamageTakenModifier=CardModifierStack'PlayerExplosiveDamageTakenModifierStack'
+
     Begin Object Name=PlayerFallDamageModifierStack Class=CardModifierStack
         ModifierStackID="PlayerFallDamage"
         OnModifierChanged=PlayerFallDamageModifierChanged
     End Object
     PlayerFallDamageModifier=CardModifierStack'PlayerFallDamageModifierStack'
+
+    Begin Object Name=PlayerDamageSubstituteCardFlag Class=CardFlag
+        FlagID="PlayerDamageSubstitute"
+        OnFlagSetChanged=PlayerDamageSubstituteCardFlagChanged
+    End Object
+    PlayerDamageSubstituteFlag=CardFlag'PlayerDamageSubstituteCardFlag'
 
 //FIRE RATE
     Begin Object Name=PlayerFireRateModifierStack Class=CardModifierStack
@@ -1220,13 +1483,6 @@ defaultproperties
     End Object
     PlayerDualWeaponZedTimeExtensionDelta=CardDeltaStack'PlayerDualWeaponZedTimeExtensionDeltaStack'
 
-//DAMAGE TAKEN
-    Begin Object Name=PlayerExplosiveDamageTakenModifierStack Class=CardModifierStack
-        ModifierStackID="PlayerExplosiveDamageTaken"
-        OnModifierChanged=PlayerExplosiveDamageTakenModifierChanged
-    End Object
-    PlayerExplosiveDamageTakenModifier=CardModifierStack'PlayerExplosiveDamageTakenModifierStack'
-
 //HEALING
     Begin Object Name=PlayerNonMedicHealPotencyModifierStack Class=CardModifierStack
         ModifierStackID="PlayerNonMedicHealPotency"
@@ -1293,7 +1549,28 @@ defaultproperties
 ////////////////////
 //MONSTER MODIFIERS
 
+//REPLACEMENT
+    Begin Object Name=WeakMonsterReplacementCardFlag Class=CardFlag
+        FlagID="WeakMonsterReplacement"
+        OnFlagSetChanged=WeakMonsterReplacementFlagChanged
+    End Object
+    WeakMonsterReplacementFlag=CardFlag'WeakMonsterReplacementCardFlag'
+
+    Begin Object Name=ScrakeMonsterReplacementCardFlag Class=CardFlag
+        FlagID="ScrakeMonsterReplacement"
+        OnFlagSetChanged=ScrakeMonsterReplacementFlagChanged
+    End Object
+    ScrakeMonsterReplacementFlag=CardFlag'ScrakeMonsterReplacementCardFlag'
+
+    Begin Object Name=HuskAmountBoostCardFlag Class=CardFlag
+        FlagID="HuskAmountBoost"
+        OnFlagSetChanged=HuskAmountBoostFlagChanged
+    End Object
+    HuskAmountBoostFlag=CardFlag'HuskAmountBoostCardFlag'
+    
+
 //DAMAGE
+
     Begin Object Name=MonsterDamageModifierStack Class=CardModifierStack
         ModifierStackID="MonsterDamage"
         OnModifierChanged=MonsterDamageModifierChanged
