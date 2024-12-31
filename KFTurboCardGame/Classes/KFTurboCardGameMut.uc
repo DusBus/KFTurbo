@@ -7,6 +7,7 @@ class KFTurboCardGameMut extends CardGameMutBase
 #exec obj load file="..\Textures\TurboCardGame.utx" package=KFTurboCardGame
 
 var TurboCardReplicationInfo TurboCardReplicationInfo;
+var TurboCardGameplayManagerBase TurboCardGameplayManagerInfo;
 var TurboCardGameModifierRepLink TurboCardGameModifier;
 var TurboCardClientModifierRepLink TurboCardClientModifier;
 var CardGameRules CardGameRules;
@@ -120,6 +121,66 @@ function CardGameRules CreateCardGameRules()
 	return CGR;	
 }
 
+function AddTurboCardGameModifier(TurboGameReplicationInfo TGRI)
+{
+	local TurboGameModifierReplicationLink LastGRL;
+	local TurboClientModifierReplicationLink LastCRL;
+	
+	if (TurboCardGameModifier != None)
+	{
+		return;
+	}
+
+	LastGRL = TGRI.CustomTurboModifier;
+	while (LastGRL != None && LastGRL.NextGameModifierLink != None)
+	{
+		LastGRL = LastGRL.NextGameModifierLink;
+	}
+
+	TurboCardGameModifier = Spawn(class'TurboCardGameModifierRepLink', TGRI);
+	TurboCardGameModifier.OwnerGRI = TGRI;
+
+	if (LastGRL != None)
+	{
+		LastGRL.NextGameModifierLink = TurboCardGameModifier;
+	}
+	else
+	{
+		TGRI.CustomTurboModifier = TurboCardGameModifier;
+	}
+	
+	LastCRL = TGRI.CustomTurboClientModifier;
+	while (LastCRL != None && LastCRL.NextClientModifierLink != None)
+	{
+		LastCRL = LastCRL.NextClientModifierLink;
+	}
+
+	TurboCardClientModifier = Spawn(class'TurboCardClientModifierRepLink', TGRI);
+	TurboCardClientModifier.OwnerGRI = TGRI;
+	
+	if (LastCRL != None)
+	{
+		LastCRL.NextClientModifierLink = TurboCardClientModifier;
+	}
+	else
+	{
+		TGRI.CustomTurboClientModifier = TurboCardClientModifier;
+	}
+
+	TGRI.ForceNetUpdate();
+	TurboCardGameModifier.ForceNetUpdate();
+	TurboCardClientModifier.ForceNetUpdate();
+	//TurboCardGameplayManagerInfo = CreateCardGameplayManager(); Doesn't do anything yet.
+}
+
+//Should only be spawned after all the other actors are spun up.
+function TurboCardGameplayManagerBase CreateCardGameplayManager()
+{
+	local TurboCardGameplayManagerBase GameplayManager;
+	GameplayManager = Spawn(class'TurboCardGameplayManager', Self);
+	return GameplayManager;
+}
+
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 {
 	if (KFPlayerReplicationInfo(Other) != None)
@@ -165,52 +226,6 @@ function AddCardGamePlayerReplicationInfo(KFPlayerReplicationInfo PlayerReplicat
 	}
 
 	CardGamePRI.ForceNetUpdate();
-}
-
-function AddTurboCardGameModifier(TurboGameReplicationInfo TGRI)
-{
-	local TurboGameModifierReplicationLink LastGRL;
-	local TurboClientModifierReplicationLink LastCRL;
-
-	LastGRL = TGRI.CustomTurboModifier;
-	while (LastGRL.NextGameModifierLink != None)
-	{
-		LastGRL = LastGRL.NextGameModifierLink;
-	}
-
-	TurboCardGameModifier = Spawn(class'TurboCardGameModifierRepLink', TGRI);
-	TurboCardGameModifier.OwnerGRI = TGRI;
-
-	if (LastGRL != None)
-	{
-		LastGRL.NextGameModifierLink = TurboCardGameModifier;
-	}
-	else
-	{
-		TGRI.CustomTurboModifier = TurboCardGameModifier;
-	}
-	
-	LastCRL = TGRI.CustomTurboClientModifier;
-	while (LastCRL.NextClientModifierLink != None)
-	{
-		LastCRL = LastCRL.NextClientModifierLink;
-	}
-
-	TurboCardClientModifier = Spawn(class'TurboCardClientModifierRepLink', TGRI);
-	TurboCardClientModifier.OwnerGRI = TGRI;
-	
-	if (LastCRL != None)
-	{
-		LastCRL.NextClientModifierLink = TurboCardClientModifier;
-	}
-	else
-	{
-		TGRI.CustomTurboClientModifier = TurboCardClientModifier;
-	}
-
-	TGRI.ForceNetUpdate();
-	TurboCardGameModifier.ForceNetUpdate();
-	TurboCardClientModifier.ForceNetUpdate();
 }
 
 function ModifyPlayer(Pawn Other)

@@ -4,26 +4,68 @@
 class CardModifierStack extends Object
 	instanced;
 
-var array<CardModifier> ModifierList;
-var float CachedModifier;
+var string ModifierStackID;
+
+struct CardModifierEntry
+{
+    var float Modifier;
+    var string ID;
+};
+
+var protected array<CardModifierEntry> ModifierList;
+var protected float CachedModifier;
 
 delegate OnModifierChanged(CardModifierStack ModifiedStack, float Modifier);
+
+function float GetModifier()
+{
+    return CachedModifier;
+}
 
 final function bool HasModifiers()
 {
     return ModifierList.Length != 0;
 }
 
-final function AddModifier(CardModifier Modifier)
+final function AddModifier(CardModifierEntry Modifier)
 {
-    if (Modifier == None)
+    local int Index;
+
+    if (Modifier.ID == "")
     {
         return;
+    }
+
+    log(ModifierStackID$": Applying modifier"@Modifier.Modifier@"from"@Modifier.ID@".", 'KFTurboCardGame');
+
+    for (Index = ModifierList.Length - 1; Index >= 0; Index--)
+    {
+        if (ModifierList[Index].ID == Modifier.ID)
+        {
+            ModifierList[Index].Modifier = Modifier.Modifier;
+            UpdateModifier();
+            return;
+        }
     }
 
     ModifierList.Length = ModifierList.Length + 1;
     ModifierList[ModifierList.Length - 1] = Modifier;
     UpdateModifier();
+}
+
+final function RemoveModifier(string ID)
+{
+    local int Index;
+    for (Index = ModifierList.Length - 1; Index >= 0; Index--)
+    {
+        if (ModifierList[Index].ID == ID)
+        {
+            log(ModifierStackID$": Removing modifier applied by"@ID@".", 'KFTurboCardGame');
+            ModifierList.Remove(Index, 1);
+            UpdateModifier();
+            return;
+        }
+    }
 }
 
 final function ClearModifiers()
@@ -41,6 +83,7 @@ final function UpdateModifier()
         CachedModifier *= ModifierList[Index].Modifier;
     }
 
+    log(ModifierStackID$": New modifier value is"@CachedModifier@".", 'KFTurboCardGame');
     OnModifierChanged(Self, CachedModifier);
 }
 
