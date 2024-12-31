@@ -38,15 +38,19 @@ final function AddModifier(float Modifier, TurboCard Card)
         ID = Card.CardID;
     }
 
-    log(ModifierStackID$": Applying modifier"@Modifier@"from"@ID@".", 'KFTurboCardGame');
+    log(ModifierStackID$": Applying modifier"@Modifier@"from"@Eval(ID != "", ID, "(NO ID)")@".", 'KFTurboCardGame');
 
-    for (Index = ModifierList.Length - 1; Index >= 0; Index--)
+    if (ID != "")
     {
-        if (ModifierList[Index].ID == ID)
+        for (Index = ModifierList.Length - 1; Index >= 0; Index--)
         {
-            ModifierList[Index].Modifier = Modifier;
-            UpdateModifier();
-            return;
+            if (ModifierList[Index].ID == ID)
+            {
+                log("-"$ModifierStackID$": Found existing entry with matching ID. Replacing value.", 'KFTurboCardGame');
+                ModifierList[Index].Modifier = Modifier;
+                UpdateModifier();
+                return;
+            }
         }
     }
 

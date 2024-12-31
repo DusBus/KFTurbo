@@ -76,11 +76,6 @@ static function OnWaveStarted(KFTurboGameType GameType, int StartedWave)
             ModifyWaveSize(GameType, 0.9f);
             break;
     }
-
-    if (StartedWave >= 7)
-    {
-        GameType.GameWaveSpawnRateModifier *= 1.1f;
-    }
     
     CardGameMut.TurboCardGameplayManagerInfo.OnWaveStart(StartedWave);
 }

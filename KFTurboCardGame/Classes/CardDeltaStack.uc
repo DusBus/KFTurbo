@@ -30,20 +30,27 @@ final function bool HasDeltaChanges()
 final function AddDelta(int Delta, TurboCard Card)
 {
     local int Index;
-    if (Card == None || Card.CardID == "")
+    local string ID;
+
+    ID = "";
+    if (Card != None)
     {
-        return;
+        ID = Card.CardID;
     }
 
-    log(DeltaStackID$": Applying delta"@Delta@"from"@Card.CardID@".", 'KFTurboCardGame');
+    log(DeltaStackID$": Applying delta"@Delta@"from"@Eval(ID != "", ID, "(NO ID)")@".", 'KFTurboCardGame');
 
-    for (Index = DeltaList.Length - 1; Index >= 0; Index--)
+    if (ID != "")
     {
-        if (DeltaList[Index].ID == Card.CardID)
+        for (Index = DeltaList.Length - 1; Index >= 0; Index--)
         {
-            DeltaList[Index].Delta = Delta;
-            UpdateDeltaChange();
-            return;
+            if (DeltaList[Index].ID == Card.CardID)
+            {
+                log("-"$DeltaStackID$": Found existing entry with matching ID. Replacing value.", 'KFTurboCardGame');
+                DeltaList[Index].Delta = Delta;
+                UpdateDeltaChange();
+                return;
+            }
         }
     }
 
