@@ -618,7 +618,7 @@ simulated function OnActiveCardsUpdated(TurboCardReplicationInfo CGRI)
 {
 	local int Index;
 	local TurboCard TurboCard;
-	log("Active cards updated.");
+	log("Active cards updated.", 'KFTurboCardGame');
 	for (Index = 0; Index < ArrayCount(CGRI.ActiveCardList); Index++)
 	{
 		TurboCard = class'TurboCardReplicationInfo'.static.ResolveCard(CGRI.ActiveCardList[Index]);
@@ -662,7 +662,7 @@ simulated function OnActiveCardsUpdated(TurboCardReplicationInfo CGRI)
 		}
 
 		ActiveCardRenderActorList[Index].CardActor.bIsActiveCard = true;
-		log("New active card"@ActiveCardRenderActorList[Index].CardActor.Card);
+		log("New active card"@ActiveCardRenderActorList[Index].CardActor.Card, 'KFTurboCardGame');
 	}
 }
 
