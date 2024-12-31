@@ -53,7 +53,7 @@ static final function TurboCardStatsTcpLink FindStats(GameInfo GameInfo)
 
 function PostBeginPlay()
 {
-    log("KFTurbo Card Game is starting up stats TCP link!");
+    log("KFTurbo Card Game is starting up stats TCP link!", 'KFTurboCardGame');
 
 	CRLF = Chr(13) $ Chr(10);
 
@@ -77,7 +77,7 @@ event Resolved(IpAddr ResolvedAddress)
 
 event ResolveFailed()
 {
-    log("Failed to resolve version domain.");
+    log("Failed to resolve version domain.", 'KFTurboCardGame');
 
     if (!OpenNoSteam(CardStatsAddress))
     {
@@ -88,7 +88,7 @@ event ResolveFailed()
 
 function Opened()
 {
-    log("Connection to"@CardStatsDomain@"opened.");
+    log("Connection to"@CardStatsDomain@"opened.", 'KFTurboCardGame');
 }
 
 //Analytics event for a vote that occurred.
