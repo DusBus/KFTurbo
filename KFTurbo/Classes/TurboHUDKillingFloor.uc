@@ -183,17 +183,17 @@ simulated function CalculateModulation()
 
 	if (Brightness > 0.5f)
 	{
-		Multiplier *= Lerp((Brightness - 0.5f) * 2.f, 1.f, 0.3f, true); 
+		Multiplier *= Lerp((Brightness - 0.5f) * 2.f, 1.f, 0.2f, true); 
 	}
 	
 	Gamma = float(PlayerOwner.ConsoleCommand("get ini:Engine.Engine.ViewportManager Gamma"));
 
 	if (Gamma > 1.f)
 	{
-		Multiplier *= Lerp((Gamma - 1.f), 1.f, 0.3f, true); 
+		Multiplier *= Lerp((Gamma - 1.f), 1.f, 02f, true); 
 	}
 
-	Multiplier = FMax(Multiplier, 0.35f);
+	Multiplier = FMax(Multiplier, 0.3f);
 
 	ActiveModulate.X *= Multiplier;
 	ActiveModulate.Y *= Multiplier;
@@ -723,10 +723,14 @@ simulated function DrawHudPassC(Canvas C)
 		ScoreBoard.DrawScoreboard(C);
 	}
 	
+	ResetCanvas(C);
+	
 	if (bShowPortrait && (Portrait != None))
 	{
 		DrawPortraitX(C);
 	}
+	
+	ResetCanvas(C);
 }
 
 simulated final function float GetTextMessageLifeTime(string M, class<LocalMessage> MessageClass, PlayerReplicationInfo PRI)
