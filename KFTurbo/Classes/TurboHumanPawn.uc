@@ -762,6 +762,76 @@ function bool ServerBuyAmmo(Class<Ammunition> AClass, bool bOnlyClip)
 	return true;
 }
 
+function ServerSellWeapon( Class<Weapon> WClass )
+{
+	local Inventory I;
+	local KFWeapon NewWep;
+	local float Price;
+	local class<KFWeapon> SecType;
+
+	if (!CanBuyNow() || Class<KFWeapon>(WClass) == None || Class<KFWeaponPickup>(WClass.Default.PickupClass) == None || Class<KFWeapon>(WClass).Default.bKFNeverThrow)
+	{
+		SetTraderUpdate();
+		return;
+	}
+
+	for (I = Inventory; I != none; I = I.Inventory)
+	{
+		if (I.Class == WClass)
+		{
+			//Check if the runtime version of the item set bKFNeverThrow.
+			if (KFWeapon(I) != None && KFWeapon(I).bKFNeverThrow)
+			{
+				return;
+			}
+
+			if (KFWeapon(I) != None && KFWeapon(I).SellValue != -1)
+			{
+				Price = KFWeapon(I).SellValue;
+			}
+			else
+			{
+				Price = (class<KFWeaponPickup>(WClass.default.PickupClass).default.Cost * 0.75f);
+
+				if (KFPlayerReplicationInfo(PlayerReplicationInfo).ClientVeteranSkill != None)
+				{
+					Price *= KFPlayerReplicationInfo(PlayerReplicationInfo).ClientVeteranSkill.static.GetCostScaling(KFPlayerReplicationInfo(PlayerReplicationInfo), WClass.Default.PickupClass);
+				}
+			}
+
+			if (class'DualWeaponsManager'.Static.IsDualWeapon(WClass,SecType))
+			{
+				NewWep = Spawn(SecType);
+				
+				if(WClass != class'Dualies')
+				{
+					Price *= 0.5f;
+					NewWep.SellValue = Price;
+				}
+				
+				NewWep.GiveTo(self);
+			}
+
+			if (I == Weapon || I == PendingWeapon)
+			{
+				ClientCurrentWeaponSold();
+			}
+
+			PlayerReplicationInfo.Score += int(Price);
+
+			I.Destroy();
+
+			SetTraderUpdate();
+
+			if (KFGameType(Level.Game) != None)
+			{
+				KFGameType(Level.Game).WeaponDestroyed(WClass);
+			}
+			return;
+		}
+	}
+}
+
 exec function TossCash( int Amount )
 {
 	// Relax the fix to cash tossing exploit.
