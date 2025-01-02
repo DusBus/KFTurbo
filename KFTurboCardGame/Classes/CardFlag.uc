@@ -16,9 +16,15 @@ final function bool IsFlagSet()
 
 final function SetFlag(TurboCard Card)
 {
-    if (Card == None)
+    local string ID;
+
+    if (Card != None)
     {
-        return;
+        ID = Card.CardID;
+    }
+    else
+    {
+        ID = "NONE";
     }
 
     bFlagSet = true;
