@@ -28,21 +28,16 @@ var CardReference ActiveCardList[MAX_ACTIVE_CARDS];
 //Counter that is incremented whenever some action is done to the two above replicated arrays.
 var byte SelectionUpdateCounter;
 
-//Starts at 0, represents the last index we knew had a card in it.
-var int LastKnownActiveCardIndex;
 //Starts as false, represents if we were voting on a card last time PostNetReceive was called.
 var bool bCurrentlyVoting;
-//List of cards that are active but still pending the client acknowledging them.
-var array< CardReference > PendingActiveCardList;
+//List of cards that were active last time we received a card list.
+var CardReference LastKnownActiveCardList[MAX_ACTIVE_CARDS];
+
+//Will prevent rerolls from triggering themselves.
+var bool bIsPerformingReRoll;
 
 var TurboCardOverlay TurboCardOverlay;
 var TurboCardInteraction TurboCardInteraction;
-
-var PlayerBleedActor BleedManager;
-var PlayerBorrowedTimeActor BorrwedTimeManage;
-var PlayerNoRestForTheWickedActor NoRestForTheWickedManager;
-var CurseOfRaManager CurseOfRaManager;
-var RandomTraderManager RandomTraderManager;
 
 delegate OnSelectableCardsUpdated(TurboCardReplicationInfo CGRI);
 delegate OnActiveCardsUpdated(TurboCardReplicationInfo CGRI);
@@ -185,20 +180,25 @@ simulated function PostNetReceive()
 simulated function CheckForActiveCardUpdates()
 {
     local int ActiveCardIndex;
+    local TurboCard NewActiveCard, LastKnownActiveCard;
     local bool bHasNewActiveCards;
 
     bHasNewActiveCards = false;
     for (ActiveCardIndex = 0; ActiveCardIndex < ArrayCount(ActiveCardList); ActiveCardIndex++)
     {
-        if (ResolveCard(ActiveCardList[ActiveCardIndex]) == None)
+        NewActiveCard = ResolveCard(ActiveCardList[ActiveCardIndex]);
+        LastKnownActiveCard = ResolveCard(LastKnownActiveCardList[ActiveCardIndex]);
+        //Update the entry after resolving the reference.
+        LastKnownActiveCardList[ActiveCardIndex] = ActiveCardList[ActiveCardIndex];
+
+        if (NewActiveCard != LastKnownActiveCard)
         {
-            break;
+            bHasNewActiveCards = true;
         }
 
-        if (LastKnownActiveCardIndex < ActiveCardIndex)
+        if (NewActiveCard == None && LastKnownActiveCard == None)
         {
-            PendingActiveCardList[PendingActiveCardList.Length] = ActiveCardList[ActiveCardIndex];
-            bHasNewActiveCards = true;
+            break;
         }
     }
 
@@ -207,7 +207,6 @@ simulated function CheckForActiveCardUpdates()
         return;
     }
 
-    LastKnownActiveCardIndex = ActiveCardIndex - 1;
     OnActiveCardsUpdated(Self);
 }
 
@@ -227,17 +226,22 @@ simulated function CheckForSelectableCardUpdates()
 
 function Initialize(KFTurboCardGameMut Mutator)
 {
+    OwnerMutator = Mutator;
+    InitializeCardDecks();
+}
+
+//Sets up card deck. Can called after initial setup to "reset" all decks.
+function InitializeCardDecks()
+{
     local class<TurboCardDeck> GoodTurboDeckClass;
     local class<TurboCardDeck> SuperTurboDeckClass;
     local class<TurboCardDeck> ProConTurboDeckClass;
     local class<TurboCardDeck> EvilTurboDeckClass;
 
-    OwnerMutator = Mutator;
-
     GoodTurboDeckClass = class'TurboCardDeck_Good';
-	if (Mutator.TurboGoodDeckClassOverrideString != "")
+	if (OwnerMutator.TurboGoodDeckClassOverrideString != "")
 	{
-		GoodTurboDeckClass = class<TurboCardDeck>(DynamicLoadObject(Mutator.TurboGoodDeckClassOverrideString, class'Class'));
+		GoodTurboDeckClass = class<TurboCardDeck>(DynamicLoadObject(OwnerMutator.TurboGoodDeckClassOverrideString, class'Class'));
 
         if (GoodTurboDeckClass == None)
         {
@@ -246,9 +250,9 @@ function Initialize(KFTurboCardGameMut Mutator)
 	}
 
     SuperTurboDeckClass = class'TurboCardDeck_Super';
-	if (Mutator.TurboSuperDeckClassOverrideString != "")
+	if (OwnerMutator.TurboSuperDeckClassOverrideString != "")
 	{
-		SuperTurboDeckClass = class<TurboCardDeck>(DynamicLoadObject(Mutator.TurboSuperDeckClassOverrideString, class'Class'));
+		SuperTurboDeckClass = class<TurboCardDeck>(DynamicLoadObject(OwnerMutator.TurboSuperDeckClassOverrideString, class'Class'));
 
         if (SuperTurboDeckClass == None)
         {
@@ -257,9 +261,9 @@ function Initialize(KFTurboCardGameMut Mutator)
 	}
 
     ProConTurboDeckClass = class'TurboCardDeck_ProCon';
-	if (Mutator.TurboProConDeckClassOverrideString != "")
+	if (OwnerMutator.TurboProConDeckClassOverrideString != "")
 	{
-		ProConTurboDeckClass = class<TurboCardDeck>(DynamicLoadObject(Mutator.TurboProConDeckClassOverrideString, class'Class'));
+		ProConTurboDeckClass = class<TurboCardDeck>(DynamicLoadObject(OwnerMutator.TurboProConDeckClassOverrideString, class'Class'));
 
         if (ProConTurboDeckClass == None)
         {
@@ -268,9 +272,9 @@ function Initialize(KFTurboCardGameMut Mutator)
 	}
 
     EvilTurboDeckClass = class'TurboCardDeck_Evil';
-	if (Mutator.TurboEvilDeckClassOverrideString != "")
+	if (OwnerMutator.TurboEvilDeckClassOverrideString != "")
 	{
-		EvilTurboDeckClass = class<TurboCardDeck>(DynamicLoadObject(Mutator.TurboEvilDeckClassOverrideString, class'Class'));
+		EvilTurboDeckClass = class<TurboCardDeck>(DynamicLoadObject(OwnerMutator.TurboEvilDeckClassOverrideString, class'Class'));
 
         if (EvilTurboDeckClass == None)
         {
@@ -499,6 +503,124 @@ function StartSelection(int WaveNumber)
     CheckForSelectableCardUpdates();
 }
 
+function array<TurboCard_Super> GetActiveSuperCardList(optional bool bCheckCanDeactivate)
+{
+    local int Index;
+    local int SuperCount;
+    local array<TurboCard_Super> ActiveSuperCardList;
+
+    ActiveSuperCardList.Length = ArrayCount(AuthActiveCardList);
+    SuperCount = 0;
+
+    for (Index = 0; Index < ArrayCount(AuthActiveCardList); Index++)
+    {
+        if (AuthActiveCardList[Index] == None || (bCheckCanDeactivate && AuthActiveCardList[Index].bCanBeDeactivated))
+        {
+            break;
+        }
+
+        if (TurboCard_Super(AuthActiveCardList[Index]) == None)
+        {
+            continue;
+        }
+
+        ActiveSuperCardList[SuperCount] = TurboCard_Super(AuthActiveCardList[Index]);
+        SuperCount++;
+    }
+
+    ActiveSuperCardList.Length = SuperCount;
+    return ActiveSuperCardList;
+}
+
+function array<TurboCard_Evil> GetActiveEvilCardList(optional bool bCheckCanDeactivate)
+{
+    local int Index;
+    local int EvilCount;
+    local array<TurboCard_Evil> ActiveEvilCardList;
+
+    ActiveEvilCardList.Length = ArrayCount(AuthActiveCardList);
+    EvilCount = 0;
+
+    for (Index = 0; Index < ArrayCount(AuthActiveCardList); Index++)
+    {
+        if (AuthActiveCardList[Index] == None || (bCheckCanDeactivate && !AuthActiveCardList[Index].bCanBeDeactivated))
+        {
+            break;
+        }
+
+        if (TurboCard_Evil(AuthActiveCardList[Index]) == None)
+        {
+            continue;
+        }
+
+        ActiveEvilCardList[EvilCount] = TurboCard_Evil(AuthActiveCardList[Index]);
+        EvilCount++;
+    }
+
+    ActiveEvilCardList.Length = EvilCount;
+    return ActiveEvilCardList;
+}
+
+//Card object must be the one in the AuthActiveCardList.
+//Will shift all cards after the removed card back by one to maintain the array.
+function RemoveActiveCard(TurboCard Card)
+{
+    local int Index;
+    local bool bRemovedCard;
+    local CardReference EmptyReference;
+    EmptyReference.Deck = None;
+    EmptyReference.CardIndex = -1;
+
+    if (Card == None)
+    {
+        return;
+    }
+    
+    log("Attempting to remove card"@Card.CardID$".", 'KFTurboCardGame');
+
+    bRemovedCard = false;
+
+    for (Index = 0; Index < ArrayCount(AuthActiveCardList); Index++)
+    {
+        if (AuthActiveCardList[Index] != Card)
+        {
+            continue;
+        }
+
+        bRemovedCard = true;
+        log("- Found card. Deactivating...", 'KFTurboCardGame');
+        AuthActiveCardList[Index].OnActivateCard(OwnerMutator.TurboCardGameplayManagerInfo, AuthActiveCardList[Index], false);
+        AuthActiveCardList[Index] = None;
+        ActiveCardList[Index] = EmptyReference;
+        break;
+    }
+
+    if (!bRemovedCard)
+    {
+        return;
+    }
+
+    //If there are no cards after the one we removed, return.
+    if (Index >= (ArrayCount(AuthActiveCardList) - 1) || AuthActiveCardList[Index + 1] == None)
+    {
+        return;    
+    }
+
+    log("- Shifting cards down one index.", 'KFTurboCardGame');
+    for (Index = Index; (Index + 1) < ArrayCount(AuthActiveCardList); Index++)
+    {
+        if (AuthActiveCardList[Index + 1] == None)
+        {
+            break;
+        }
+
+        AuthActiveCardList[Index] = AuthActiveCardList[Index + 1];
+        ActiveCardList[Index] = ActiveCardList[Index + 1];
+        AuthActiveCardList[Index + 1] = None;
+        ActiveCardList[Index + 1] = EmptyReference;
+    }
+}
+
 function ActivateRandomSuperCard()
 {
     local TurboCard Card;
@@ -521,6 +643,130 @@ function ActivateRandomEvilCard()
 
     Card = EvilGameDeck.PopRandomCardObject();
     SelectCard(Card);
+}
+
+function DeactivateRandomSuperCard()
+{
+    local array<TurboCard_Super> ActiveSuperCardList;
+    ActiveSuperCardList = GetActiveSuperCardList(false); //Let the random super we deactivate have bCanBeDeactivated be false as a "lucky" deactivation.
+    
+    if (ActiveSuperCardList.Length == 0)
+    {
+        return;
+    }
+
+    RemoveActiveCard(ActiveSuperCardList[Rand(ActiveSuperCardList.Length)]);
+}
+
+function DeactivateRandomEvilCard()
+{
+    local array<TurboCard_Evil> ActiveEvilCardList;
+    ActiveEvilCardList = GetActiveEvilCardList(true); //Only deactivate evil cards that can be deactivated to avoid "unlucky" deactivation.
+
+    if (ActiveEvilCardList.Length == 0)
+    {
+        return;
+    }
+
+    RemoveActiveCard(ActiveEvilCardList[Rand(ActiveEvilCardList.Length)]);
+}
+
+//Resets decks and rerolls all cards. Optionally will place a specific card at the top of the active list.
+function ResetDecksAndReRollCards(optional TurboCard TopCard)
+{
+    local int Index;
+
+    local int NumSuper;
+    local int NumEvil;
+    local int NumGood;
+    local int NumProCon;
+    
+    local CardReference EmptyReference;
+    EmptyReference.Deck = None;
+    EmptyReference.CardIndex = -1;
+
+    if (bIsPerformingReRoll)
+    {
+        return;
+    }
+
+    log("Attempting card reroll...", 'KFTurboCardGame');
+
+    bIsPerformingReRoll = true;
+
+    for (Index = 0; Index < ArrayCount(AuthActiveCardList); Index++)
+    {
+        if (AuthActiveCardList[Index] == None)
+        {
+            break;
+        }
+
+        //Would be nice if we had a better way to do this.
+        if (TurboCard_Super(AuthActiveCardList[Index]) != None)
+        {
+            NumSuper++;
+        }
+        else if (TurboCard_Evil(AuthActiveCardList[Index]) != None)
+        {
+            NumEvil++;
+        }
+        else if (TurboCard_Good(AuthActiveCardList[Index]) != None)
+        {
+            NumGood++;
+        }
+        else if (TurboCard_ProCon(AuthActiveCardList[Index]) != None)
+        {
+            NumProCon++;
+        }
+
+        log("Attempting card deactivation of"@AuthActiveCardList[Index].CardID$".", 'KFTurboCardGame');
+        AuthActiveCardList[Index].OnActivateCard(OwnerMutator.TurboCardGameplayManagerInfo, AuthActiveCardList[Index], false);
+        AuthActiveCardList[Index] = None;
+        ActiveCardList[Index] = EmptyReference;
+    }
+
+    InitializeCardDecks(); //Resets all card decks.
+
+    if (TopCard != None)
+    {
+        log("Placing top card..."@TopCard.CardID$".", 'KFTurboCardGame');
+        AuthActiveCardList[0] = TopCard;
+        ActiveCardList[0] = GetCardReference(TopCard);
+
+        SuperGameDeck.RemoveCardFromDeck(TopCard);
+        GoodGameDeck.RemoveCardFromDeck(TopCard);
+        ProConGameDeck.RemoveCardFromDeck(TopCard);
+        EvilGameDeck.RemoveCardFromDeck(TopCard);
+    }
+
+    log("Rolling cards... (Evil:"@NumEvil@")(ProCon:"@NumProCon@")(Good:"@NumGood@")(Super:"@NumSuper@").", 'KFTurboCardGame');
+
+    //We'll do card activations in order of Evil -> Pro Con -> Good -> Super. Should minimize really bad outcomes.
+    while(NumEvil > 0)
+    {
+        SelectCard(EvilGameDeck.PopRandomCardObject());
+        NumEvil--;
+    }
+
+    while(NumProCon > 0)
+    {
+        SelectCard(ProConGameDeck.PopRandomCardObject());
+        NumProCon--;
+    }
+
+    while(NumGood > 0)
+    {
+        SelectCard(GoodGameDeck.PopRandomCardObject());
+        NumGood--;
+    }
+
+    while(NumSuper > 0)
+    {
+        SelectCard(SuperGameDeck.PopRandomCardObject());
+        NumSuper--;
+    }
+    
+    bIsPerformingReRoll = false;
 }
 
 function int GetSelectionCount()
@@ -649,5 +895,4 @@ defaultproperties
     bAlwaysRelevant=true
     bNetNotify=true
     SelectionCount = 3
-    LastKnownActiveCardIndex = -1
 }

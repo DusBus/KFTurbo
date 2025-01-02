@@ -400,7 +400,8 @@ defaultproperties
     DeckCardObjectList(1)=TurboCard'FirerateIncrease'
 
     Begin Object Name=ExplosiveDamage Class=TurboCard_Good
-        CardName(0)="Higher Explosives"
+        CardName(0)="Higher"
+        CardName(1)="Explosives"
         CardDescriptionList(0)="Explosives deal"
         CardDescriptionList(1)="5% more damage."
         CardID="GOOD_HIGHEXPLOSIVES"

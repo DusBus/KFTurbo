@@ -5,7 +5,7 @@ class TurboCard_Good extends TurboCard;
 
 defaultproperties
 {
-	BackplateTexture=Texture'KFTurboCardGame.Card.CardBackplate_Good_D'
+	BackplateMaterial=Texture'KFTurboCardGame.Card.CardBackplate_Good_D'
 	CardTextShadowColor=(R=20,G=128,B=16,A=100)
 	CardNameColor=(R=255,G=255,B=255,A=255)
 	CardDescriptionColor=(R=255,G=255,B=255,A=255)

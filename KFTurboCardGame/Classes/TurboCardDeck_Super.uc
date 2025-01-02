@@ -325,6 +325,14 @@ function ActivateSuppressiveFire(TurboCardGameplayManager GameplayManager, Turbo
     }
 }
 
+function ActivateCleanse(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    if (bActivate)
+    {
+        GameplayManager.RemoveRandomEvilCard();
+    }
+}
+
 function ActivateDeEvolution(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
     if (bActivate)
@@ -617,6 +625,14 @@ defaultproperties
     End Object
     DeckCardObjectList(24)=TurboCard'SuppressiveFire'
 
+    Begin Object Name=Cleanse Class=TurboCard_Super
+        CardName(0)="Cleanse"
+        CardDescriptionList(0)="Removes a random"
+        CardDescriptionList(1)="Evil card."
+        CardID="SUPER_CLEANSE"
+        OnActivateCard=ActivateCleanse
+    End Object
+    DeckCardObjectList(25)=TurboCard'Cleanse'
 /*
     Begin Object Name=DeEvolution Class=TurboCard_Super
         CardName(0)="De-Evolution"

@@ -414,6 +414,14 @@ function ActivateHealingAndHurting(TurboCardGameplayManager GameplayManager, Tur
     }
 }
 
+function ActivateReRoll(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    if (bActivate)
+    {
+        GameplayManager.ResetDecksAndReRollCards(Card);
+    }
+}
+
 defaultproperties
 {
     Begin Object Name=ExtraMoneyTraderTime Class=TurboCard_ProCon
@@ -751,7 +759,8 @@ defaultproperties
     DeckCardObjectList(26)=TurboCard'MoreToPlay'
     
     Begin Object Name=CollateralDamage Class=TurboCard_ProCon
-        CardName(0)="Collateral Damage"
+        CardName(0)="Collateral"
+        CardName(1)="Damage"
         CardDescriptionList(0)="Increases explosive"
         CardDescriptionList(1)="damage by 10% but"
         CardDescriptionList(2)="increases friendly"
@@ -772,4 +781,15 @@ defaultproperties
         CardID="PROCON_HEALINGANDHURTING"
     End Object
     DeckCardObjectList(28)=TurboCard'MoreHealingAndHurting'
+    
+    Begin Object Name=ReRoll Class=TurboCard_ProConStrange
+        CardName(0)="Re-Roll"
+        CardDescriptionList(0)="All cards are"
+        CardDescriptionList(1)="rerolled and"
+        CardDescriptionList(2)="all card decks"
+        CardDescriptionList(3)="are reset."
+        OnActivateCard=ActivateReRoll
+        CardID="PROCON_REROLL"
+    End Object
+    DeckCardObjectList(29)=TurboCard'ReRoll'
 }

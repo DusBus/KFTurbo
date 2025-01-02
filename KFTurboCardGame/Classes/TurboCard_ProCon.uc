@@ -5,7 +5,7 @@ class TurboCard_ProCon extends TurboCard;
 
 defaultproperties
 {
-	BackplateTexture=Texture'KFTurboCardGame.Card.CardBackplate_ProCon_D'
+	BackplateMaterial=Texture'KFTurboCardGame.Card.CardBackplate_ProCon_D'
 	CardTextShadowColor=(R=160,G=70,B=2,A=160)
 	CardNameColor=(R=255,G=255,B=255,A=255)
 	CardDescriptionColor=(R=255,G=255,B=255,A=255)

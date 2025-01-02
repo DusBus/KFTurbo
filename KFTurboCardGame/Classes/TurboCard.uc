@@ -15,7 +15,7 @@ var string CardID; //String that uniquely identifies this card. Format should be
 var Texture CardIcon;
 var bool bCanEverRepeat;
 
-var Texture BackplateTexture;
+var Material BackplateMaterial;
 var Texture BackplateMaskTexture;
 var Texture LargeBackplateMaskTexture;
 var Color BackplateColor;
@@ -29,8 +29,45 @@ var bool bCardNameAllCaps;
 var bool bCardDescriptionAllCaps;
 
 var Color CardIDColor;
+var bool bCanBeDeactivated; //If true, this card can undo its effect.
 
 delegate OnActivateCard(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate);
+
+final function UpdateModifier(CardModifierStack ModifierStack, float Modifier, bool bActivate)
+{
+	if (bActivate)
+	{
+		ModifierStack.AddModifier(Modifier, Self);
+	}
+	else
+	{
+		ModifierStack.RemoveModifier(Self);	
+	}
+}
+
+final function UpdateDelta(CardDeltaStack DeltaStack, int Delta, bool bActivate)
+{
+	if (bActivate)
+	{
+		DeltaStack.AddDelta(Delta, Self);
+	}
+	else
+	{
+		DeltaStack.RemoveDelta(Self);	
+	}
+}
+
+final function UpdateFlag(CardFlag Flag, bool bActivate)
+{
+	if (bActivate)
+	{
+		Flag.SetFlag(Self);
+	}
+	else
+	{
+		Flag.ClearFlag();
+	}
+}
 
 static function int GetTitleFontSize(ScriptedTexture Tex)
 {
@@ -92,7 +129,7 @@ function SetupScriptedTexture(ScriptedTexture Tex)
 	local string FullTitleString;
 
 	//Draw card backplate.
-	Tex.DrawTile(0, 0, Tex.USize, Tex.VSize, 0, 0, BackplateTexture.USize, BackplateTexture.VSize, BackplateTexture, BackplateColor);
+	Tex.DrawTile(0, 0, Tex.USize, Tex.VSize, 0, 0, BackplateMaterial.MaterialUSize(), BackplateMaterial.MaterialVSize(), BackplateMaterial, BackplateColor);
 
 	SizeX = Tex.USize;
 	SizeY = Tex.VSize;
@@ -221,8 +258,9 @@ function ApplyDescription(ScriptedTexture Tex)
 defaultproperties
 {
 	bCanEverRepeat=false
+	bCanBeDeactivated=true
 
-	BackplateTexture=Texture'KFTurboCardGame.Card.CardBackplate_D'
+	BackplateMaterial=Texture'KFTurboCardGame.Card.CardBackplate_D'
 	BackplateMaskTexture=Texture'KFTurboCardGame.Card.CardBackplate_D'
 	LargeBackplateMaskTexture=Texture'KFTurboCardGame.Card.CardBackplate_Large_D'
 	BackplateColor=(R=255,G=255,B=255,A=255)

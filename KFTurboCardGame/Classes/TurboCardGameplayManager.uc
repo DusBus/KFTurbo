@@ -57,6 +57,8 @@ var CardFlag RussianRouletteFlag;
 //INVENTORY
 var CardFlag NoSyringeFlag;
 var CardFlag SuperGrenadesFlag;
+var CardFlag NoArmorFlag;
+var CardFlag NoDropOrSellItemsFlag;
 
 ////////////////////
 //PLAYER MODIFIERS
@@ -169,6 +171,7 @@ var CardModifierStack PlayerThornsModifier;
 var CardFlag WeakMonsterReplacementFlag;
 var CardFlag ScrakeMonsterReplacementFlag;
 var CardFlag HuskAmountBoostFlag;
+var CardFlag MonsterUpgradeFlag;
 
 //DAMAGE
 var CardModifierStack MonsterDamageModifier;
@@ -215,6 +218,11 @@ function OnWaveStart(int StartedWave)
     {
         MarkPlayerForDeath();
     }
+
+    if (NoArmorFlag.IsFlagset())
+    {
+        RemoveAllPlayersArmor();
+    }
 }
 
 function OnWaveEnd(int EndedWave)
@@ -241,14 +249,18 @@ function OnNextSpawnSquadGenerated(out array < class<KFMonster> > NextSpawnSquad
 {
     local int SquadIndex;
 
-    if (!WeakMonsterReplacementFlag.IsFlagSet() && !ScrakeMonsterReplacementFlag.IsFlagSet())
+    if (!WeakMonsterReplacementFlag.IsFlagSet() && !ScrakeMonsterReplacementFlag.IsFlagSet() && !MonsterUpgradeFlag.IsFlagSet())
     {
         return;
     }
     
     for (SquadIndex = 0; SquadIndex < NextSpawnSquad.Length; SquadIndex++)
     {
-        if (WeakMonsterReplacementFlag.IsFlagSet() && FRand() < 0.15f)
+        if (MonsterUpgradeFlag.IsFlagSet() && FRand() < 0.05f)
+        {
+            AttemptUpgradeMonster(NextSpawnSquad[SquadIndex]);
+        }
+        else if (WeakMonsterReplacementFlag.IsFlagSet() && FRand() < 0.15f)
         {
             AttemptReplaceWeakMonster(NextSpawnSquad[SquadIndex]);
         }
@@ -550,6 +562,23 @@ function NoSyringeFlagChanged(CardFlag Flag, bool bIsEnabled)
 function SuperGrenadesFlagChanged(CardFlag Flag, bool bIsEnabled)
 {
     CardGameRules.bSuperGrenades = bIsEnabled;
+}
+
+function NoArmorFlagChanged(CardFlag Flag, bool bIsEnabled)
+{
+    CardGameModifier.bDisableArmorPurchase = bIsEnabled;
+    CardGameModifier.ForceNetUpdate();
+
+    if (bIsEnabled)
+    {
+        RemoveAllPlayersArmor();
+    }
+}
+
+function NoDropOrSellItemsFlagChanged(CardFlag Flag, bool bIsEnabled)
+{
+    CardGameRules.bNoDropOrSellItems = bIsEnabled;
+    CardGameRules.UpdateCanThrowWeapons();
 }
 
 ////////////////////
@@ -899,19 +928,19 @@ function PlayerMovementFrictionModifierChanged(CardModifierStack ModifiedStack, 
     CardClientModifier.ForceNetUpdate();
 }
 
-function PlayerFreezeTagFlagChanged(Cardflag ModifiedStack, bool bIsEnabled)
+function PlayerFreezeTagFlagChanged(Cardflag Flag, bool bIsEnabled)
 {
     CardGameModifier.bFreezePlayersDuringWave = bIsEnabled;
     CardGameModifier.ForceNetUpdate();
 }
 
-function PlayerGreedSlowsFlagChanged(Cardflag ModifiedStack, bool bIsEnabled)
+function PlayerGreedSlowsFlagChanged(Cardflag Flag, bool bIsEnabled)
 {
     CardGameModifier.bMoneySlowsPlayers = bIsEnabled;
     CardGameModifier.ForceNetUpdate();
 }
 
-function PlayerLowHealthSlowsFlagChanged(Cardflag ModifiedStack, bool bIsEnabled)
+function PlayerLowHealthSlowsFlagChanged(Cardflag Flag, bool bIsEnabled)
 {
     CardGameModifier.bMissingHealthStronglySlows = bIsEnabled;
     CardGameModifier.ForceNetUpdate();
@@ -927,9 +956,10 @@ function PlayerThornsModifierChanged(CardModifierStack ModifiedStack, float Modi
 //MONSTER MODIFIERS
 
 //REPLACEMENT
-function WeakMonsterReplacementFlagChanged(Cardflag ModifiedStack, bool bIsEnabled) {}
-function ScrakeMonsterReplacementFlagChanged(Cardflag ModifiedStack, bool bIsEnabled) {}
-function HuskAmountBoostFlagChanged(Cardflag ModifiedStack, bool bIsEnabled) {}
+function WeakMonsterReplacementFlagChanged(Cardflag Flag, bool bIsEnabled) {}
+function ScrakeMonsterReplacementFlagChanged(Cardflag Flag, bool bIsEnabled) {}
+function HuskAmountBoostFlagChanged(Cardflag Flag, bool bIsEnabled) {}
+function MonsterUpgradeFlagChanged(Cardflag Flag, bool bIsEnabled) {}
 
 //DAMAGE
 function MonsterDamageModifierChanged(CardModifierStack ModifiedStack, float Modifier)
@@ -1164,7 +1194,18 @@ defaultproperties
         OnFlagSetChanged=SuperGrenadesFlagChanged
     End Object
     SuperGrenadesFlag=CardFlag'SuperGrenadesCardFlag'
+
+    Begin Object Name=NoArmorCardFlag Class=CardFlag
+        FlagID="NoArmor"
+        OnFlagSetChanged=NoArmorFlagChanged
+    End Object
+    NoArmorFlag=CardFlag'NoArmorCardFlag'
     
+    Begin Object Name=NoDropOrSellItemsCardFlag Class=CardFlag
+        FlagID="NoDropOrSellItems"
+        OnFlagSetChanged=NoDropOrSellItemsFlagChanged
+    End Object
+    NoDropOrSellItemsFlag=CardFlag'NoDropOrSellItemsCardFlag'
 
 ////////////////////
 //PLAYER MODIFIERS
@@ -1568,6 +1609,11 @@ defaultproperties
     End Object
     HuskAmountBoostFlag=CardFlag'HuskAmountBoostCardFlag'
     
+    Begin Object Name=MonsterUpgradeCardFlag Class=CardFlag
+        FlagID="MonsterUpgrade"
+        OnFlagSetChanged=MonsterUpgradeFlagChanged
+    End Object
+    MonsterUpgradeFlag=CardFlag'MonsterUpgradeCardFlag'
 
 //DAMAGE
 

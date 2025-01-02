@@ -25,6 +25,28 @@ struct DeEvolutionMonsterReplacement
 
 var array<DeEvolutionMonsterReplacement> WeakReplacementList; //List of KFMonster parent classes, their replacement, and individual chance to be applied.
 
+enum EUpgradeType
+{
+    NonElite,
+    Special,
+    Elite
+};
+
+struct UpgradeMonsterCategory
+{
+    var class<KFMonster> TargetParentClass;
+    var EUpgradeType UpgradeType;
+};
+
+var array<UpgradeMonsterCategory> UpgradeCategoryList;
+
+struct UpgradeMonsterReplacement
+{
+    var array <class<KFMonster> > ReplacementClassList;
+};
+
+var array<UpgradeMonsterReplacement> UpgradeReplacementList;
+
 function PostBeginPlay()
 {
     local CardDeltaStack CardDelta;
@@ -145,20 +167,35 @@ function OnNextSpawnSquadGenerated(out array < class<KFMonster> > NextSpawnSquad
 
 }
 
-static final function AttemptReplaceWeakMonster(out class<KFMonster> Monster)
+final function AttemptUpgradeMonster(out class<KFMonster> Monster)
 {
     local int ReplacementIndex;
-    for (ReplacementIndex = 0; ReplacementIndex < default.WeakReplacementList.Length; ReplacementIndex++)
+    local int CategoryIndex;
+    for (ReplacementIndex = 0; ReplacementIndex < UpgradeCategoryList.Length; ReplacementIndex++)
     {
-        if (ClassIsChildOf(Monster, default.WeakReplacementList[ReplacementIndex].TargetParentClass))
+        if (ClassIsChildOf(Monster, UpgradeCategoryList[ReplacementIndex].TargetParentClass))
         {
-            Monster = default.WeakReplacementList[ReplacementIndex].ReplacementClass;
+            CategoryIndex = int(UpgradeCategoryList[ReplacementIndex].UpgradeType);
+            Monster = UpgradeReplacementList[CategoryIndex].ReplacementClassList[Rand(UpgradeReplacementList[CategoryIndex].ReplacementClassList.Length)];
             return;
         }
     }
 }
 
-static function PotentiallyDoubleHuskSpawn(out array < class<KFMonster> > NextSpawnSquad)
+final function AttemptReplaceWeakMonster(out class<KFMonster> Monster)
+{
+    local int ReplacementIndex;
+    for (ReplacementIndex = 0; ReplacementIndex < WeakReplacementList.Length; ReplacementIndex++)
+    {
+        if (ClassIsChildOf(Monster, WeakReplacementList[ReplacementIndex].TargetParentClass))
+        {
+            Monster = WeakReplacementList[ReplacementIndex].ReplacementClass;
+            return;
+        }
+    }
+}
+
+final function PotentiallyDoubleHuskSpawn(out array < class<KFMonster> > NextSpawnSquad)
 {
     local int Index;
     local int HuskCount;
@@ -217,6 +254,20 @@ function GrantAllPlayersArmor()
     }
 }
 
+function RemoveAllPlayersArmor()
+{
+	local Controller Controller;
+
+    for ( Controller = TurboGameType.Level.ControllerList; Controller != None; Controller = Controller.NextController )
+    {
+        if (Controller.Pawn != None && Controller.Pawn.Health > 0 && PlayerController(Controller) != None && Controller.Pawn.ShieldStrength >0.f)
+        {
+            PlayerController(Controller).ClientPlaySound(Sound'KF_InventorySnd.Vest_Pickup');
+            Controller.Pawn.ShieldStrength = 0.f;
+        }
+    }
+}
+
 function GrantRandomSuperCard()
 {
     CardReplicationInfo.ActivateRandomSuperCard();
@@ -225,6 +276,21 @@ function GrantRandomSuperCard()
 function GrantRandomEvilCard()
 {
     CardReplicationInfo.ActivateRandomEvilCard();
+}
+
+function RemoveRandomSuperCard()
+{
+    CardReplicationInfo.DeactivateRandomSuperCard();
+}
+
+function RemoveRandomEvilCard()
+{
+    CardReplicationInfo.DeactivateRandomEvilCard();
+}
+
+function ResetDecksAndReRollCards(optional TurboCard TopCard)
+{
+    CardReplicationInfo.ResetDecksAndReRollCards(TopCard);
 }
 
 function MultiplyPlayerCash(float Multiplier)
@@ -274,4 +340,17 @@ defaultproperties
     WeakReplacementList(6)=(TargetParentClass=class'P_Siren',ReplacementClass=class'P_Siren_Weak')
     WeakReplacementList(7)=(TargetParentClass=class'P_Scrake',ReplacementClass=class'P_Scrake_Weak')
     WeakReplacementList(8)=(TargetParentClass=class'P_Fleshpound',ReplacementClass=class'P_Fleshpound_Weak')
+
+    UpgradeCategoryList(0)=(TargetParentClass=class'P_Clot',UpgradeType=NonElite)
+    UpgradeCategoryList(1)=(TargetParentClass=class'P_Gorefast',UpgradeType=NonElite)
+    UpgradeCategoryList(2)=(TargetParentClass=class'P_Crawler',UpgradeType=NonElite)
+    UpgradeCategoryList(3)=(TargetParentClass=class'P_Stalker',UpgradeType=NonElite)
+    UpgradeCategoryList(4)=(TargetParentClass=class'P_Bloat',UpgradeType=Special)
+    UpgradeCategoryList(5)=(TargetParentClass=class'P_Husk',UpgradeType=Special)
+    UpgradeCategoryList(6)=(TargetParentClass=class'P_Siren',UpgradeType=Special)
+    UpgradeCategoryList(7)=(TargetParentClass=class'P_Scrake',UpgradeType=Elite)
+    UpgradeCategoryList(8)=(TargetParentClass=class'P_Fleshpound',UpgradeType=Elite)
+
+    UpgradeReplacementList(0)=(ReplacementClassList=(class'P_Bloat_STA',class'P_Husk_STA',class'P_Siren_STA'))
+    UpgradeReplacementList(1)=(ReplacementClassList=(class'P_Scrake_STA',class'P_Fleshpound_STA'))
 }

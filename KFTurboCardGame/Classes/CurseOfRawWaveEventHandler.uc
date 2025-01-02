@@ -20,7 +20,7 @@ static function OnBossSpawned(KFTurboGameType GameType)
         return;
     }
 
-    Manager = CardGameMutator.TurboCardReplicationInfo.CurseOfRaManager;
+    Manager = CardGameMutator.TurboCardGameplayManagerInfo.CurseOfRaManager;
 
     if (Manager != None)
     {

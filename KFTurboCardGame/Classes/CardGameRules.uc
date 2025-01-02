@@ -52,9 +52,9 @@ var (Turbo) bool bRussianRouletteEnabled;
 var (Turbo) Sound RussianRoulettePlayerKilledSound, RussianRouletteMonsterKilledSound;
 
 var (Turbo) bool bDisableSyringe;
+var (Turbo) bool bNoDropOrSellItems;
 
 var (Turbo) bool bSuperGrenades;
-
 
 //Monster
 var array<KFMonster> MonsterPawnList;
@@ -444,9 +444,9 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
         }
         else if (KFMonster(InstigatedBy) != None)
         {
-            if (MutatorOwner.TurboCardReplicationInfo.BleedManager != None && class<ZombieMeleeDamage>(DamageType) != None && class<TurboHumanBleed_DT>(DamageType) == None)
+            if (MutatorOwner.TurboCardGameplayManagerInfo.BleedManager != None && class<ZombieMeleeDamage>(DamageType) != None && class<TurboHumanBleed_DT>(DamageType) == None)
             {
-                MutatorOwner.TurboCardReplicationInfo.BleedManager.ApplyBleedToPlayer(KFHumanPawn(Injured));
+                MutatorOwner.TurboCardGameplayManagerInfo.BleedManager.ApplyBleedToPlayer(KFHumanPawn(Injured));
             }
         }
     }
@@ -870,6 +870,11 @@ function ModifyActor(Actor Other)
             ScrakePawnList[ScrakePawnList.Length] = P_Scrake(Other);
         }
     }
+
+    if (KFWeapon(Other) != None)
+    {
+        ModifyWeapon(KFWeapon(Other));
+    }
 }
 
 function ModifyNade(Nade Nade)
@@ -895,6 +900,15 @@ function ModifyNade(Nade Nade)
         {
             MedicNade(Nade).HealBoostAmount *= 2.f;
         }
+    }
+}
+
+function ModifyWeapon(KFWeapon Weapon)
+{
+    if (bNoDropOrSellItems)
+    {
+        Weapon.bKFNeverThrow = true;
+        Weapon.bCanThrow = false;
     }
 }
 
@@ -930,6 +944,42 @@ function DestorySyringe(Pawn Other)
     if (bWasEquipped && Other.Controller != None)
     {
         Other.Controller.ClientSwitchToBestWeapon();
+    }
+}
+
+function UpdateCanThrowWeapons()
+{
+    local array<TurboHumanPawn> PawnList;
+    local Inventory Inv;
+    local KFWeapon Weapon;
+    local int Index;
+
+    PawnList = class'TurboGameplayHelper'.static.GetPlayerPawnList(Level);
+    NegateDamageList.Length = PawnList.Length;
+
+    for (Index = 0; Index < PawnList.Length; Index++)
+    {
+        Inv = PawnList[Index].Inventory;
+        while (Inv != None)
+        {
+            Weapon = KFWeapon(Inv);
+
+            if (Weapon != None)
+            {
+                if (bNoDropOrSellItems)
+                {
+                    Weapon.bKFNeverThrow = true;
+                    Weapon.bCanThrow = false;
+                }
+                else
+                {
+                    Weapon.bKFNeverThrow = Weapon.default.bKFNeverThrow;
+                    Weapon.bCanThrow = Weapon.default.bCanThrow;
+                }
+            }
+
+            Inv = Inv.Inventory;
+        }
     }
 }
 

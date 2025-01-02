@@ -5,7 +5,7 @@ class TurboCard_Super extends TurboCard;
 
 defaultproperties
 {
-	BackplateTexture=Texture'KFTurboCardGame.Card.CardBackplate_Super_D'
+	BackplateMaterial=Texture'KFTurboCardGame.Card.CardBackplate_Super_D'
 	CardNameColor=(R=255,G=255,B=255,A=255)
 	CardDescriptionColor=(R=255,G=255,B=255,A=255)
 	CardTextShadowColor=(R=30,G=60,B=125,A=160)

@@ -397,6 +397,29 @@ function ActivateHighThroughput(TurboCardGameplayManager GameplayManager, TurboC
     }
 }
 
+function ActivateNakedSnake(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    Card.UpdateFlag(GameplayManager.NoArmorFlag, bActivate);
+}
+
+function ActivateThisIsMyRifle(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    Card.UpdateFlag(GameplayManager.NoDropOrSellItemsFlag, bActivate);
+}
+
+function ActivateSacrificialCard(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    if (bActivate)
+    {
+        GameplayManager.RemoveRandomSuperCard();
+    }
+}
+
+function ActivateUnfortunateUpgrade(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    Card.UpdateFlag(GameplayManager.MonsterUpgradeFlag, bActivate);
+}
+
 defaultproperties
 {
     Begin Object Name=Hyperbloats Class=TurboCard_Evil
@@ -732,4 +755,54 @@ defaultproperties
         OnActivateCard=ActivateHighThroughput
     End Object
     DeckCardObjectList(30)=TurboCard'HighThroughput'
+    
+    Begin Object Name=NakedSnake Class=TurboCard_Evil
+        CardName(0)="Naked"
+        CardName(1)="Snake"
+        CardDescriptionList(0)="Players lose their"
+        CardDescriptionList(1)="armor at the start"
+        CardDescriptionList(2)="of each wave and"
+        CardDescriptionList(3)="cannot buy armor"
+        CardDescriptionList(4)="at the trader."
+        CardID="EVIL_NAKEDSNAKE"
+        OnActivateCard=ActivateNakedSnake
+    End Object
+    DeckCardObjectList(31)=TurboCard'NakedSnake'
+    
+    Begin Object Name=ThisIsMyRifle Class=TurboCard_Evil
+        CardName(0)="This Is"
+        CardName(1)="My Rifle"
+        CardDescriptionList(0)="Players cannot"
+        CardDescriptionList(1)="drop or sell"
+        CardDescriptionList(2)="thier weapons."
+        CardID="EVIL_MYRIFLE"
+        OnActivateCard=ActivateThisIsMyRifle
+    End Object
+    DeckCardObjectList(32)=TurboCard'ThisIsMyRifle'
+    
+    Begin Object Name=SacrificialCard Class=TurboCard_Evil
+        CardName(0)="Sacrificial"
+        CardName(1)="Card"
+        CardDescriptionList(0)="Removes a random"
+        CardDescriptionList(1)="Super card."
+        CardID="EVIL_SACRIFICIAL"
+        OnActivateCard=ActivateSacrificialCard
+    End Object
+    DeckCardObjectList(33)=TurboCard'SacrificialCard'
+    
+    Begin Object Name=UnfortunateUpgrade Class=TurboCard_Evil
+        CardName(0)="Unfortunate"
+        CardName(1)="Upgrade"
+        CardDescriptionList(0)="Non-elites have"
+        CardDescriptionList(1)="a 5% chance to be"
+        CardDescriptionList(2)="replaced with a"
+        CardDescriptionList(3)="special zed."
+        CardDescriptionList(4)="Special zeds have"
+        CardDescriptionList(5)="a 5% chance to be"
+        CardDescriptionList(6)="replaced with an."
+        CardDescriptionList(7)="elite zed."
+        CardID="EVIL_UNFORTUPGRADE"
+        OnActivateCard=ActivateUnfortunateUpgrade
+    End Object
+    DeckCardObjectList(34)=TurboCard'UnfortunateUpgrade'
 }

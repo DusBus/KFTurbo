@@ -36,6 +36,30 @@ function TurboCard PopRandomCardObject()
     return Card;
 }
 
+//Not guaranteed to be in the same deck object so we compare card IDs.
+function bool RemoveCardFromDeck(TurboCard Card)
+{
+    local int Index;
+    local string CardID;
+    local bool bRemovedCard;
+
+    CardID = Card.CardID;
+    bRemovedCard = false;
+
+    for (Index = DeckCardObjectList.Length - 1; Index >= 0; Index--)
+    {
+        if (DeckCardObjectList[Index].CardID != CardID)
+        {
+            continue;
+        }
+
+        DeckCardObjectList.Remove(Index, 1);
+        bRemovedCard = true;
+    }
+
+    return bRemovedCard;
+}
+
 defaultproperties
 {
     

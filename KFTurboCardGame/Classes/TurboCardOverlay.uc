@@ -539,6 +539,13 @@ simulated function DrawActiveCardList(Canvas C)
 			continue;
 		}
 
+		//For some reason we have a card actor but not an active card?
+		if (class'TurboCardReplicationInfo'.static.ResolveCard(TCRI.ActiveCardList[Index]) == None)
+		{
+			log("Attempted to draw a card that wasn't real.");
+			continue;
+		}
+
 		CardBonusScale = Lerp(ActiveCardRenderActorList[Index].Ratio, 1.f, 1.75f);
 
 		ActiveCardRenderActorList[Index].CardActor.RenderOverlays(C);
@@ -631,14 +638,13 @@ simulated function OnActiveCardsUpdated(TurboCardReplicationInfo CGRI)
 				{
 					ActiveCardRenderActorList[Index].CardActor.Destroy();
 					ActiveCardRenderActorList[Index].CardActor = None;
+					ActiveCardRenderActorList[Index].Ratio = 0.f;
 				}
 
 				continue;
 			}
-			else
-			{
-				break;
-			}
+
+			break;
 		}
 
 		if (ActiveCardRenderActorList.Length > Index && ActiveCardRenderActorList[Index].CardActor != None)
