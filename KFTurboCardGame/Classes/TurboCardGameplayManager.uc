@@ -276,6 +276,14 @@ function OnNextSpawnSquadGenerated(out array < class<KFMonster> > NextSpawnSquad
     }
 }
 
+function OnBossSpawned()
+{
+    if (CurseOfRaFlag.IsFlagSet() && CurseOfRaManager != None)
+    {
+        CurseOfRaManager.OnBossSpawned();
+    }
+}
+
 function WaveSpeedModifierChanged(CardModifierStack ModifiedStack, float Modifier)
 {
     TurboGameType.GameWaveSpawnRateModifier = GameWaveSpeedModifier.GetModifier() * WaveSpeedModifier.GetModifier();

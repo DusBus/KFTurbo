@@ -16,3 +16,22 @@ static function OnNextSpawnSquadGenerated(KFTurboGameType GameType, out array < 
 
     CardGameMut.TurboCardGameplayManagerInfo.OnNextSpawnSquadGenerated(NextSpawnSquad);
 }
+
+static function OnBossSpawned(KFTurboGameType GameType)
+{
+    local KFTurboCardGameMut CardGameMutator;
+    
+    if (GameType == None)
+    {
+        return;
+    }
+
+    CardGameMutator = class'KFTurboCardGameMut'.static.FindMutator(GameType);
+
+    if (CardGameMutator == None)
+    {
+        return;
+    }
+
+    CardGameMutator.TurboCardGameplayManagerInfo.OnBossSpawned();
+}
