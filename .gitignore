@@ -22,6 +22,7 @@
 /System/**/*
 !/System/ServerPerks.ini
 !/System/ServerAchievements.ini
+!/System/KFTurboMapConfig.ini
 
 #Animation packages.
 !Animations

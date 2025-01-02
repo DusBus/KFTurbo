@@ -14,10 +14,10 @@ var protected bool bPreventGameOver;
 var protected int FinalWaveOverride;
 var protected bool bHasAttemptedToApplyFinalWaveOverride;
  
-//Whatever spawn rate is set as, make sure it gets multiplied by this.
-var float GameWaveSpawnRateModifier;
-//Whatever max monsters is set as, make sure it gets multiplied by this.
-var float GameMaxMonstersModifier;
+//Whatever spawn rate is set as, make sure it gets multiplied by these.
+var float GameWaveSpawnRateModifier, MapWaveSpawnRateModifier;
+//Whatever max monsters is set as, make sure it gets multiplied by these.
+var float GameMaxMonstersModifier, MapMaxMonstersModifier;
 //Whatever total monsters is set as, make sure it gets multiplied by this.
 var float GameTotalMonstersModifier;
 //Whatever total monsters is set as, make sure it gets multiplied by this.
@@ -33,14 +33,51 @@ var array< class<TurboHealEventHandler> > HealEventHandlerList;
 var array< class<TurboWaveEventHandler> > WaveEventHandlerList;
 var array< class<TurboWaveSpawnEventHandler> > WaveSpawnEventHandlerList;
 
+var MapConfigurationObject MapConfigurationObject; //MapConfigurationObject associated with the current map.
+
 //Events that KFTurboServerMut binds to for bridging communication with ServerPerksMut.
 Delegate OnStatsAndAchievementsDisabled();
 Delegate LockPerkSelection(bool bLock);
 
-
 event InitGame( string Options, out string Error )
 {
     Super.InitGame(Options, Error);
+
+    InitializeMapConfigurationObject();
+}
+
+function InitializeMapConfigurationObject()
+{
+    local string MapName;
+    local int Index;
+    MapName = Locs(GetCurrentMapName(Level));
+
+    MapConfigurationObject = new(None, MapName) class'MapConfigurationObject';
+
+    if (MapConfigurationObject != None && MapConfigurationObject.MapNameRedirect != "")
+    {
+        MapConfigurationObject = new(None, Locs(MapConfigurationObject.MapNameRedirect)) class'MapConfigurationObject';
+    }
+
+    if (MapConfigurationObject == None || MapConfigurationObject.bDisabled)
+    {
+        return;
+    }
+
+    log("Loaded MapConfigurationObject for level"@MapName$". Applying modifiers now.", 'KFTurbo');
+
+    log("| Spawn Rate Modifier:"@MapWaveSpawnRateModifier@"| Max Monsters Modifier:"@MapMaxMonstersModifier, 'KFTurbo');
+
+    MapWaveSpawnRateModifier = MapConfigurationObject.WaveSpawnRateMultiplier;
+    MapMaxMonstersModifier = MapConfigurationObject.WaveMaxMonstersMultiplier;
+
+    log("| Zombie Volume Respawn Modifier:"@MapConfigurationObject.ZombieVolumeCanRespawnTimeMultiplier@"| Zombie Volume Min Player Distance Modifier:"@MapConfigurationObject.ZombieVolumeMinDistanceToPlayerMultiplier, 'KFTurbo');
+
+    for (Index = ZedSpawnList.Length - 1; Index >= 0; Index--)
+    {
+        ZedSpawnList[Index].CanRespawnTime *= MapConfigurationObject.ZombieVolumeCanRespawnTimeMultiplier;
+        ZedSpawnList[Index].MinDistanceToPlayer *= MapConfigurationObject.ZombieVolumeMinDistanceToPlayerMultiplier;
+    }
 }
  
 //Provide full context on something dying to TurboGameRules.
@@ -353,7 +390,7 @@ function SetupWave()
 {
 	Super.SetupWave();
 
-    MaxMonsters = float(MaxMonsters) * GameMaxMonstersModifier;
+    MaxMonsters = float(MaxMonsters) * GameMaxMonstersModifier * MapMaxMonstersModifier;
 
     TotalMaxMonsters = float(TotalMaxMonsters) * GameTotalMonstersModifier;
     KFGameReplicationInfo(Level.Game.GameReplicationInfo).MaxMonsters = TotalMaxMonsters;
@@ -423,7 +460,7 @@ state MatchInProgress
 
 	function float CalcNextSquadSpawnTime()
 	{
-		return Super.CalcNextSquadSpawnTime() / GameWaveSpawnRateModifier;
+		return Super.CalcNextSquadSpawnTime() / (GameWaveSpawnRateModifier * MapWaveSpawnRateModifier);
 	}
 	
 	function StartWaveBoss()
@@ -592,7 +629,9 @@ defaultproperties
     bHasAttemptedToApplyFinalWaveOverride=false
 
 	GameWaveSpawnRateModifier=1.f
+    MapWaveSpawnRateModifier=1.f
     GameMaxMonstersModifier=1.f
+    MapMaxMonstersModifier=1.f
     GameTotalMonstersModifier=1.f
     GameTraderTimeModifier=1.f
     bHasSpawnedBoss=false

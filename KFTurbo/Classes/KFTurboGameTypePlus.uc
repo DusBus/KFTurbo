@@ -97,7 +97,7 @@ State MatchInProgress
             WaveNextSquadSpawnTime = MIN_SPAWN_TIME;
         }
 
-        return WaveNextSquadSpawnTime / GameWaveSpawnRateModifier;
+        return WaveNextSquadSpawnTime / (GameWaveSpawnRateModifier * MapWaveSpawnRateModifier);
     }
 
     function OpenShops()
@@ -179,7 +179,10 @@ function SetupWave()
     WaveNumClasses = 0;
 
     MaxMonsters = TurboMonsterCollection.GetWaveMaxMonsters(WaveNum, GameDifficulty, NumPlayers + NumBots);
+    MaxMonsters = float(MaxMonsters) * GameMaxMonstersModifier * MapMaxMonstersModifier;
+
     TotalMaxMonsters = TurboMonsterCollection.GetWaveTotalMonsters(WaveNum, GameDifficulty, NumPlayers + NumBots);
+    TotalMaxMonsters = float(TotalMaxMonsters) * GameTotalMonstersModifier;
 
     WaveNextSquadSpawnTime = TurboMonsterCollection.GetNextSquadSpawnTime(WaveNum, NumPlayers + NumBots);
     if (WaveNextSquadSpawnTime < MIN_SPAWN_TIME)

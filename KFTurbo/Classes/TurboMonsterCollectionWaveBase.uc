@@ -30,7 +30,7 @@ function DebugLog(coerce string Message)
           return;
      }
 
-     Log(Message);
+     Log(Message, 'KFTurboWave');
 }
 
 function InitializeCollection()
