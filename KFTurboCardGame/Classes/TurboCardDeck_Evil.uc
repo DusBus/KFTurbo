@@ -655,7 +655,7 @@ defaultproperties
     Begin Object Name=BankRun Class=TurboCard_Evil
         CardName(0)="Bank Run"
         CardDescriptionList(0)="Players lose half"
-        CardDescriptionList(1)="of thier dosh"
+        CardDescriptionList(1)="of their dosh"
         CardDescriptionList(2)="at the end of"
         CardDescriptionList(3)="trader time."
         CardID="EVIL_BANKRUN"
@@ -774,7 +774,7 @@ defaultproperties
         CardName(1)="My Rifle"
         CardDescriptionList(0)="Players cannot"
         CardDescriptionList(1)="drop or sell"
-        CardDescriptionList(2)="thier weapons."
+        CardDescriptionList(2)="their weapons."
         CardID="EVIL_MYRIFLE"
         OnActivateCard=ActivateThisIsMyRifle
     End Object
