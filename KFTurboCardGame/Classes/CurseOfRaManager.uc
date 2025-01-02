@@ -132,7 +132,7 @@ function Timer()
         return;
     }
 
-    if (FRand() < 0.9f)
+    if (FRand() < 0.8f)
     {
         return;
     }
