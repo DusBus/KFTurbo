@@ -640,7 +640,7 @@ defaultproperties
     End Object
     DeckCardObjectList(17)=TurboCard'PaidInBlood'
     
-    Begin Object Name=DealWithDevil Class=TurboCard_ProCon
+    Begin Object Name=DealWithDevil Class=TurboCard_ProConStrange
         CardName(0)="A Deal With"
         CardName(1)="The Devil"
         CardDescriptionList(0)="In exchange for"
