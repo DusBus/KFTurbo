@@ -204,10 +204,51 @@ function AppendGameModeInfo(out GameInfo.ServerResponseLine ServerState)
 	}
 	else
 	{
-		GameTypeString = "Turbo Game Mode";
+		if (IsPlayingCardGame())
+		{
+			GameTypeString = "Turbo Card Game Mode";
+		}
+		else if (IsPlayingRandomizer())
+		{
+			GameTypeString = "Turbo Randomizer Game Mode";
+		}
+		else
+		{
+			GameTypeString = "Turbo Game Mode";
+		}
 	}
 	
-	class'GameInfo'.static.AddServerDetail( ServerState, "Game Mode", ApplyGradientToString(GameTypeString));
+	class'GameInfo'.static.AddServerDetail(ServerState, "Game Mode", ApplyGradientToString(GameTypeString));
+}
+
+function bool IsPlayingCardGame()
+{
+    return HasMutatorFromGroup("KF-CardGame");
+}
+
+function bool IsPlayingRandomizer()
+{
+    return HasMutatorFromGroup("KF-Randomizer");
+}
+
+function bool HasMutatorFromGroup(string GroupName)
+{
+    local Mutator Mutator;
+
+	if (Level.Game == None)
+	{
+		return false;
+	}
+
+    for (Mutator = Level.Game.BaseMutator; Mutator != None; Mutator = Mutator.NextMutator)
+    {
+        if (Mutator.GroupName == GroupName)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 defaultproperties
