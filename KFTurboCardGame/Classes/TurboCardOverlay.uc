@@ -542,7 +542,7 @@ simulated function DrawActiveCardList(Canvas C)
 		//For some reason we have a card actor but not an active card?
 		if (class'TurboCardReplicationInfo'.static.ResolveCard(TCRI.ActiveCardList[Index]) == None)
 		{
-			log("Attempted to draw a card that wasn't real.");
+			log("Attempted to draw a card that wasn't real.", 'KFTurboCardGame');
 			continue;
 		}
 

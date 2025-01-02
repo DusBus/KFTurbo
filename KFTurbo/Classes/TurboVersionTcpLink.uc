@@ -13,7 +13,7 @@ var string CRLF;
 
 function PostBeginPlay()
 {
-    log("KFTurbo is preparing to check for a new version!");
+    log("KFTurbo is preparing to check for a new version!", 'KFTurboVersion');
 
 	CRLF = Chr(13) $ Chr(10);
 
@@ -37,7 +37,7 @@ event Resolved(IpAddr ResolvedAddress)
 
 event ResolveFailed()
 {
-    log("Failed to resolve version domain.");
+    log("Failed to resolve version domain.", 'KFTurboVersion');
 
     if (!OpenNoSteam(TurboAddress))
     {
@@ -48,7 +48,7 @@ event ResolveFailed()
 
 function Opened()
 {
-    log("Connection to"@TurboDomain@"opened. Requesting version information.");
+    log("Connection to"@TurboDomain@"opened. Requesting version information.", 'KFTurboVersion');
 	SendText("GET "$TurboReleaseURL$" HTTP/1.1"$CRLF$"Host: "$TurboDomain$CRLF$CRLF$CRLF);
 }
 
@@ -89,15 +89,15 @@ function CheckVersionNumber(string Version)
 
     if (Mutator.CheckIfNewerVersion(Version))
     {
-        log("==========================================");
-        log("A NEW VERSION OF KFTURBO IS AVAILABLE.");
-        log("LOCAL:"@class'KFTurboMut'.static.GetTurboVersionID());
-        log("LATEST:"@Version);
-        log("==========================================");
+        log("==========================================", 'KFTurboVersion');
+        log("A NEW VERSION OF KFTURBO IS AVAILABLE.", 'KFTurboVersion');
+        log("LOCAL:"@class'KFTurboMut'.static.GetTurboVersionID(), 'KFTurboVersion');
+        log("LATEST:"@Version, 'KFTurboVersion');
+        log("==========================================", 'KFTurboVersion');
     }
     else
     {
-        log("KFTurbo version check complete! (Local:"@class'KFTurboMut'.static.GetTurboVersionID()$") (Latest:"@Version$")");
+        log("KFTurbo version check complete! (Local:"@class'KFTurboMut'.static.GetTurboVersionID()$") (Latest:"@Version$")", 'KFTurboVersion');
     }
 }
 

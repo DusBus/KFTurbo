@@ -108,11 +108,11 @@ simulated function RepLinkBroken()
 {
     if (bAwaitingDestroy)
     {
-        log("AWAITING DESTROY...");
+        log("AWAITING DESTROY...", 'KFTurbo');
         return;
     }
     
-    log("CLIENT DETECTED TURBOREPLINK WAS BROKEN.");
+    log("CLIENT DETECTED TURBOREPLINK WAS BROKEN.", 'KFTurbo');
     Enable('Tick');
     Tick(0.f);
 }
@@ -124,7 +124,6 @@ simulated function Tick( float DeltaTime )
 
     if (bAwaitingDestroy)
     {
-        log("Was waiting destroy!");
         Destroy();
         return;
     }
