@@ -239,8 +239,9 @@ function bool AllowTextMessage(string Msg)
 		return true;
 	}
 
-	if (Level.TimeSeconds - LastBroadcastTime > 1.f)
+	if (Level.TimeSeconds - LastBroadcastTime > 0.75f)
 	{
+		LastBroadcastTime = Level.TimeSeconds;
 		return true;
 	}
 
