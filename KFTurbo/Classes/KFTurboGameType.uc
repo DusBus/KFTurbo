@@ -640,7 +640,6 @@ defaultproperties
     MapMaxMonstersModifier=1.f
     GameTotalMonstersModifier=1.f
     GameTraderTimeModifier=1.f
-    GameSurvivalRewardModifier=1.f
     bHasSpawnedBoss=false
 
     MonsterClasses(0)=(MClassName="KFTurbo.P_Clot_STA",Mid="A")
