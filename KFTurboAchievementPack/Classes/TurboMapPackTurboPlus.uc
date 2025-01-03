@@ -93,8 +93,7 @@ defaultproperties
     
     //New Map Achievements.
     achievements(36)=(title="Ice Shelf Lockout",description="Win a long game on Northern Solitude on KFTurbo+ difficulty",image=Texture'KFTurbo.Achievement.NorthernSolitude_Turbo')
-    achievements(37)=(title="Figurine Enthusiast",description="Win a long game on Toy House on KFTurbo+ difficulty",image=Texture'KFTurbo.Achievement.ToyHouse_Turbo')
-    achievements(38)=(title="Six Paths of Peril",description="Win a long game on 6Pointer on KFTurbo+ difficulty",image=Texture'KFTurbo.Achievement.SixPointer_Turbo')
-    achievements(39)=(title="Nano Cube Compression",description="Win a long game on Cubical Chamber on KFTurbo+ difficulty",image=Texture'KFTurbo.Achievement.CubicalChamber_Turbo')
-    achievements(40)=(title="Chemical Plant Zone [Extended]",description="Win a long game on Vagrant on KFTurbo+ difficulty",image=Texture'KFTurbo.Achievement.Vagrant_Turbo')
+    achievements(37)=(title="Six Paths of Peril",description="Win a long game on 6Pointer on KFTurbo+ difficulty",image=Texture'KFTurbo.Achievement.SixPointer_Turbo')
+    achievements(38)=(title="Nano Cube Compression",description="Win a long game on Cubical Chamber on KFTurbo+ difficulty",image=Texture'KFTurbo.Achievement.CubicalChamber_Turbo')
+    achievements(39)=(title="Chemical Plant Zone [Extended]",description="Win a long game on Vagrant on KFTurbo+ difficulty",image=Texture'KFTurbo.Achievement.Vagrant_Turbo')
 }
