@@ -17,6 +17,8 @@ var array< class<TurboPlayerEventHandler> > TurboPlayerEventHandlerList;
 
 var bool bPipebombUsesSpecialGroup;
 
+var array< class<PerkLockTurboLocalMessage> > PerkChangeLockList;
+
 replication
 {
 	reliable if( Role == ROLE_Authority )
@@ -432,6 +434,40 @@ function ServerInitializeSteamStatInt(byte Index, int Value)
 		Progress.CurrentValue = Value;
 		Progress.ValueUpdated();
 	}
+}
+
+function bool AttemptChangePerk(class<KFVeterancyTypes> VetSkill)
+{
+	local int Index;
+	local class<TurboVeterancyTypes> TurboVeterancyClass;
+
+	TurboVeterancyClass = class<KFVeterancyTypes>(VetSkill);
+
+	if (TurboVeterancyClass == None)
+	{
+		return false;
+	}
+	
+	for (Index = 0; Index < PerkChangeLockList.Length; Index++)
+	{
+		if (!PerkChangeLockList[Index].static.CanSelectPerk(TurboVeterancyClass))
+		{
+			BroadcastLocalizedMessage(PerkChangeLockList[Index],, PlayerReplicationInfo,, TurboVeterancyClass);
+			return false;
+		}
+	}
+
+	return true;
+}
+
+function SelectVeterancy(class<KFVeterancyTypes> VetSkill, optional bool bForceChange)
+{
+	if (!AttemptChangePerk(VetSkill))
+	{
+		return;
+	}
+
+	Super.SelectVeterancy(VetSkill, bForceChange);
 }
 
 exec function GetWeapon(class<Weapon> NewWeaponClass )
