@@ -45,38 +45,6 @@ static function OnWaveStarted(KFTurboGameType GameType, int StartedWave)
     }
     
     CardGameMut.TurboCardReplicationInfo.OnSelectionTimeEnd();
-
-    switch (StartedWave)
-    {
-        case 0:
-            ModifyWaveSize(GameType, 0.25f);
-            break;
-        case 1:
-            ModifyWaveSize(GameType, 0.3f);
-            break;
-        case 2:
-            ModifyWaveSize(GameType, 0.35f);
-            break;
-        case 3:
-            ModifyWaveSize(GameType, 0.4f);
-            break;
-        case 4:
-            ModifyWaveSize(GameType, 0.5f);
-            break;
-        case 5:
-            ModifyWaveSize(GameType, 0.6f);
-            break;
-        case 6:
-            ModifyWaveSize(GameType, 0.7f);
-            break;
-        case 7:
-            ModifyWaveSize(GameType, 0.8f);
-            break;
-        case 8:
-            ModifyWaveSize(GameType, 0.9f);
-            break;
-    }
-    
     CardGameMut.TurboCardGameplayManagerInfo.OnWaveStart(StartedWave);
 }
 
