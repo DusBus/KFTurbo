@@ -122,39 +122,74 @@ function OnWaveStart(int StartedWave)
     switch (StartedWave)
     {
         case 0:
-            ModifyWaveSize(0.1f);
+            ModifyWaveSize(0.2f);
+            GrantExtraWaveReward(200);
             break;
         case 1:
-            ModifyWaveSize(0.15f);
+            ModifyWaveSize(0.25f);
+            GrantExtraWaveReward(150);
             break;
         case 2:
-            ModifyWaveSize(0.2f);
+            ModifyWaveSize(0.3f);
+            GrantExtraWaveReward(100);
             break;
         case 3:
-            ModifyWaveSize(0.25f);
+            ModifyWaveSize(0.4f);
+            GrantExtraWaveReward(50);
             break;
         case 4:
-            ModifyWaveSize(0.35f);
+            ModifyWaveSize(0.5f);
             break;
         case 5:
-            ModifyWaveSize(0.45f);
-            break;
-        case 6:
             ModifyWaveSize(0.6f);
             break;
+        case 6:
+            ModifyWaveSize(0.7f);
+            break;
         case 7:
-            ModifyWaveSize(0.75f);
+            ModifyWaveSize(0.8f);
             break;
         case 8:
             ModifyWaveSize(0.9f);
             break;
     }
+
 }
 
 final function ModifyWaveSize(float Multiplier)
 {
-    TurboGameType.TotalMaxMonsters = Max(float(TurboGameType.TotalMaxMonsters) * Multiplier, 1);
+    TurboGameType.TotalMaxMonsters = Max(float(TurboGameType.TotalMaxMonsters) * Multiplier, 10);
     KFGameReplicationInfo(TurboGameType.GameReplicationInfo).MaxMonsters = TurboGameType.TotalMaxMonsters;
+}
+
+final function GrantExtraWaveReward(int RewardAmount)
+{
+    local Controller Controller;
+    local TeamInfo Team;
+    local int NumPlayers;
+
+    NumPlayers = 0;
+    for (Controller = Level.ControllerList; Controller != none; Controller = Controller.NextController )
+	{
+        if (!Controller.bIsPlayer || Controller.Pawn != None)
+        {
+            continue;
+        }
+
+        NumPlayers++;
+		
+        if (Team == None && Controller.PlayerReplicationInfo != None && Controller.PlayerReplicationInfo.Team != None)
+		{
+			Team = Controller.PlayerReplicationInfo.Team;
+		}
+	}
+
+    if (Team == None || NumPlayers == 0)
+    {
+        return;
+    }
+
+    Team.Score += int(float(RewardAmount) * (1.f + (float(NumPlayers - 1) * 0.75f)));
 }
 
 function OnWaveEnd(int EndedWave)
