@@ -20,7 +20,7 @@ var float GameWaveSpawnRateModifier, MapWaveSpawnRateModifier;
 var float GameMaxMonstersModifier, MapMaxMonstersModifier;
 //Whatever total monsters is set as, make sure it gets multiplied by this.
 var float GameTotalMonstersModifier;
-//Whatever total monsters is set as, make sure it gets multiplied by this.
+//Whatever trader time is set as, make sure it gets multiplied by this.
 var float GameTraderTimeModifier;
 
 //Set to true when the boss has been spawned. Used to prevent duplicate broadcasts of OnBossSpawned event.
@@ -500,6 +500,12 @@ state MatchInProgress
 	{
 		Super.DoWaveEnd();
 
+        if (GameTraderTimeModifier != 1.f)
+        {
+            WaveCountDown = float(WaveCountDown) * GameTraderTimeModifier;
+            KFGameReplicationInfo(GameReplicationInfo).TimeToNextWave = WaveCountDown;
+        }
+
         InvasionGameReplicationInfo(GameReplicationInfo).WaveNumber = WaveNum;
 		class'TurboWaveEventHandler'.static.BroadcastWaveEnded(Self, WaveNum - 1);
 	}
@@ -634,6 +640,7 @@ defaultproperties
     MapMaxMonstersModifier=1.f
     GameTotalMonstersModifier=1.f
     GameTraderTimeModifier=1.f
+    GameSurvivalRewardModifier=1.f
     bHasSpawnedBoss=false
 
     MonsterClasses(0)=(MClassName="KFTurbo.P_Clot_STA",Mid="A")
