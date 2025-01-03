@@ -53,7 +53,7 @@ defaultproperties
 {
     EndTraderVoteHintString = "%kTrader time %dcan be %kskipped %dby typing %dEndTrader in console%d."
     
-    EndTraderVoteString = "%k%p %kstarted a vote to %kend trader%d. Type %kEndTrader in console %dto vote."
+    EndTraderVoteString = "%k%p %dstarted a vote to %kend trader%d. Type %kEndTrader in console %dto vote."
     AnonymousUserString = "Someone"
 
     Lifetime=10
