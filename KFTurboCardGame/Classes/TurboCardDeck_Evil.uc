@@ -81,8 +81,8 @@ function ActivateSuperSiren(TurboCardGameplayManager GameplayManager, TurboCard 
 {
     if (bActivate)
     {
-        GameplayManager.MonsterSirenScreamDamageModifier.AddModifier(3.f, Card);
-        GameplayManager.MonsterSirenScreamRangeModifier.AddModifier(2.f, Card);
+        GameplayManager.MonsterSirenScreamDamageModifier.AddModifier(2.f, Card);
+        GameplayManager.MonsterSirenScreamRangeModifier.AddModifier(1.25f, Card);
     }
     else
     {
@@ -457,7 +457,7 @@ defaultproperties
         CardName(1)="Husks"
         CardDescriptionList(0)="Husk Fireball"
         CardDescriptionList(1)="refire time"
-        CardDescriptionList(2)="reduced by 90%."
+        CardDescriptionList(2)="reduced by 99%."
         CardID="EVIL_OVERCLOCKHUSK"
         OnActivateCard=ActivateOverclockedHusks
     End Object
@@ -488,9 +488,9 @@ defaultproperties
         CardName(0)="Super Sirens"
         CardDescriptionList(0)="Increases Siren"
         CardDescriptionList(1)="scream damage by"
-        CardDescriptionList(2)="200% and scream"
-        CardDescriptionList(3)="range by 100%."
-        CardID="EVIL_FRIENDLYFIRE"
+        CardDescriptionList(2)="100% and scream"
+        CardDescriptionList(3)="range by 25%."
+        CardID="EVIL_SUPERSIREN"
         OnActivateCard=ActivateSuperSiren
     End Object
     DeckCardObjectList(6)=TurboCard'SuperSiren'
