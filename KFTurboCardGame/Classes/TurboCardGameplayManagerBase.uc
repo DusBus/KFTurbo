@@ -171,7 +171,7 @@ final function GrantExtraWaveReward(int RewardAmount)
     NumPlayers = 0;
     for (Controller = Level.ControllerList; Controller != none; Controller = Controller.NextController )
 	{
-        if (!Controller.bIsPlayer || Controller.Pawn != None)
+        if (!Controller.bIsPlayer || Controller.Pawn == None)
         {
             continue;
         }
@@ -183,7 +183,7 @@ final function GrantExtraWaveReward(int RewardAmount)
 			Team = Controller.PlayerReplicationInfo.Team;
 		}
 	}
-
+    
     if (Team == None || NumPlayers == 0)
     {
         return;
