@@ -30,7 +30,7 @@ var TurboHUDOverlay WaveStatsHUD;
 var class<TextReactionSettings> TextReactionSettingsClass;
 var TextReactionSettings TextReactionSettings;
 
-//Overlays that are drawn before the player HUD.
+//Overlays that are drawn before the player HUD but after victory/game over HUD.
 var array<HudOverlay> PreDrawOverlays;
 
 var Texture MerchantPortrait;
@@ -344,6 +344,7 @@ simulated function Tick(float DeltaTime)
 
 simulated function DrawHud(Canvas C)
 {
+	local KFGameReplicationInfo CurrentGame;
 	if (bHideHud)
 	{
 		return;
@@ -351,6 +352,17 @@ simulated function DrawHud(Canvas C)
 
 	RenderDelta = Level.TimeSeconds - LastHUDRenderTime;
     LastHUDRenderTime = Level.TimeSeconds;
+
+	ResetCanvas(C);
+
+	if (!KFPlayerReplicationInfo(PlayerOwner.PlayerReplicationInfo).bViewingMatineeCinematic)
+	{
+		CurrentGame = KFGameReplicationInfo(Level.GRI);
+		if (CurrentGame != None && CurrentGame.EndGameType > 0)
+		{
+			DrawEndGameHUD(C, (CurrentGame.EndGameType==2));
+		}
+	}
 
 	ResetCanvas(C);
 
@@ -384,8 +396,6 @@ simulated function DrawGameHud(Canvas C)
 {
 	local KFGameReplicationInfo CurrentGame;
 	local Plane Modulation;
-
-	CurrentGame = KFGameReplicationInfo(Level.GRI);
 
 	if ( bShowTargeting )
 	{
@@ -422,9 +432,9 @@ simulated function DrawGameHud(Canvas C)
 	DisplayLocalMessages(C);
 	C.ColorModulate = Modulation;
 
+	CurrentGame = KFGameReplicationInfo(Level.GRI);
 	if (CurrentGame != None && CurrentGame.EndGameType > 0)
 	{
-		DrawEndGameHUD(C, (CurrentGame.EndGameType==2));
 		return;
 	}
 	
@@ -509,9 +519,24 @@ simulated function DrawModOverlay(Canvas C) {}
 
 simulated function DrawSpectatingHud(Canvas C)
 {
+	local KFGameReplicationInfo CurrentGame;
+
 	if (bHideHud)
 	{
 		return;
+	}
+	
+	ResetCanvas(C);
+
+	CurrentGame = KFGameReplicationInfo(Level.GRI);
+	if (CurrentGame != None && CurrentGame.EndGameType > 0)
+	{
+		DrawEndGameHUD(C, True);
+
+		if (CurrentGame.EndGameType == 2)
+		{
+			DrawStoryHUDInfo(C);
+		}
 	}
 	
 	ResetCanvas(C);
@@ -535,23 +560,14 @@ simulated function DrawSpectatingHud(Canvas C)
 		WaveInfoHUD.Render(C);
 	}
 
-	if ( KFPlayerController(PlayerOwner) != None && KFPlayerController(PlayerOwner).ActiveNote != None )
+	if (KFPlayerController(PlayerOwner) != None && KFPlayerController(PlayerOwner).ActiveNote != None)
 	{
 		KFPlayerController(PlayerOwner).ActiveNote = None;
 	}
 
-	if( KFGameReplicationInfo(Level.GRI) != none && KFGameReplicationInfo(Level.GRI).EndGameType > 0 )
+	if (CurrentGame != none && CurrentGame.EndGameType == 2)
 	{
-		if( KFGameReplicationInfo(Level.GRI).EndGameType == 2 )
-		{
-			DrawEndGameHUD(C, True);
-			DrawStoryHUDInfo(C);
-			return;
-		}
-		else
-		{
-			DrawEndGameHUD(C, False);
-		} 
+		return;
 	}
 
 	DrawKFHUDTextElements(C);
