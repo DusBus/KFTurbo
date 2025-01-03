@@ -1,4 +1,4 @@
-//Killing Floor Turbo AfflictionBase
+//Killing Floor Turbo MapConfigurationObject
 //Per-map object that allows for modifications of defined maps' spawn rates/max zeds/etc without needing to alter the map file.
 //Distributed under the terms of the GPL-2.0 License.
 //For more information see https://github.com/KFPilot/KFTurbo.

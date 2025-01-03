@@ -832,6 +832,36 @@ function ServerSellWeapon( Class<Weapon> WClass )
 	}
 }
 
+function TossWeapon(Vector TossVel)
+{
+	local Vector X,Y,Z;
+	local Weapon WeaponToToss;
+	local float Rating;
+
+	if (Health > 0)
+	{
+		Super.TossWeapon(TossVel);
+		return;
+	}
+
+	if (KFWeapon(Weapon) == None || !KFWeapon(Weapon).bKFNeverThrow)
+	{
+		Super.TossWeapon(TossVel);
+		return;
+	}
+
+	WeaponToToss = KFWeapon(Weapon).RecommendWeapon(Rating);
+
+	if (KFWeapon(Weapon) == None || Rating < -50 || KFWeapon(Weapon).bKFNeverThrow)
+	{
+		return;
+	}
+
+	WeaponToToss.Velocity = TossVel;
+	GetAxes(Rotation,X,Y,Z);
+	WeaponToToss.DropFrom(Location + 0.8 * CollisionRadius * X - 0.5 * CollisionRadius * Y);
+}
+
 exec function TossCash( int Amount )
 {
 	// Relax the fix to cash tossing exploit.
