@@ -168,7 +168,7 @@ function ActivateLightWeightPlayers(TurboCardGameplayManager GameplayManager, Tu
     if (bActivate)
     {
         GameplayManager.MonsterMeleeDamageModifier.AddModifier(1.5f, Card);
-        GameplayManager.MonsterDamageMomentumModifier.AddModifier(2.f, Card);
+        GameplayManager.MonsterDamageMomentumModifier.AddModifier(3.f, Card);
     }
     else
     {
@@ -570,7 +570,7 @@ defaultproperties
         CardDescriptionList(0)="Zeds deal"
         CardDescriptionList(1)="50% more damage"
         CardDescriptionList(2)="and knockback is"
-        CardDescriptionList(3)="increased by 100%."
+        CardDescriptionList(3)="increased by 200%."
         CardID="EVIL_LETHALSPEC"
         OnActivateCard=ActivateLightWeightPlayers
     End Object
