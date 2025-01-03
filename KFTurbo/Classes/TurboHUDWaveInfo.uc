@@ -157,11 +157,6 @@ simulated function OnScreenSizeChange(Canvas C, Vector2D CurrentClipSize, Vector
 	{
 		FontSizeOffset++;
 	}
-
-	if (CurrentClipSize.Y <= 720)
-	{
-		FontSizeOffset++;
-	}
 }
 
 simulated function DrawGameData(Canvas C)
@@ -698,10 +693,10 @@ simulated function TickTraderWave(float DeltaTime)
 	{
 		for (EndTraderVoteIndex = EndTraderVoteList.Length - 1; EndTraderVoteIndex >= 0; EndTraderVoteIndex--)
 		{
-			EndTraderVoteList[EndTraderVoteIndex].Ratio = Lerp(2.f * DeltaTime, EndTraderVoteList[EndTraderVoteIndex].Ratio, 0.f);
+			EndTraderVoteList[EndTraderVoteIndex].Ratio = Lerp(8.f * DeltaTime, EndTraderVoteList[EndTraderVoteIndex].Ratio, 0.f);
 		}
 
-		EndTraderVoteRatio = Lerp(4.f * DeltaTime, EndTraderVoteRatio, 0.f);
+		EndTraderVoteRatio = Lerp(8.f * DeltaTime, EndTraderVoteRatio, 0.f);
 		return;
 	}
 
@@ -736,7 +731,7 @@ simulated function TickTraderWave(float DeltaTime)
 
 	for (EndTraderVoteIndex = EndTraderVoteList.Length - 1; EndTraderVoteIndex >= 0; EndTraderVoteIndex--)
 	{
-		EndTraderVoteList[EndTraderVoteIndex].Ratio = Lerp(2.f * DeltaTime, EndTraderVoteList[EndTraderVoteIndex].Ratio, 1.f);
+		EndTraderVoteList[EndTraderVoteIndex].Ratio = Lerp(4.f * DeltaTime, EndTraderVoteList[EndTraderVoteIndex].Ratio, 1.f);
 	}
 
 	if (EndTraderVoteList.Length != 0)
