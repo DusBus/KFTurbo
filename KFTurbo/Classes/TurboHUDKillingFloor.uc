@@ -183,14 +183,14 @@ simulated function CalculateModulation()
 
 	if (Brightness > 0.5f)
 	{
-		Multiplier *= Lerp((Brightness - 0.5f) * 2.f, 1.f, 0.2f); 
+		Multiplier *= Lerp((Brightness - 0.5f) * 2.f, 1.f, 0.45f); 
 	}
 	
 	Gamma = float(PlayerOwner.ConsoleCommand("get ini:Engine.Engine.ViewportManager Gamma"));
 
 	if (Gamma > 1.f)
 	{
-		Multiplier *= Lerp((Gamma - 1.f), 1.f, 0.2f); 
+		Multiplier *= Lerp((Gamma - 1.f), 1.f, 0.3f); 
 	}
 
 	Multiplier = FMax(Multiplier, 0.35f);
