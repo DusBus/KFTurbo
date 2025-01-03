@@ -531,7 +531,7 @@ simulated function DrawSpectatingHud(Canvas C)
 	CurrentGame = KFGameReplicationInfo(Level.GRI);
 	if (CurrentGame != None && CurrentGame.EndGameType > 0)
 	{
-		DrawEndGameHUD(C, True);
+		DrawEndGameHUD(C, CurrentGame.EndGameType == 2);
 
 		if (CurrentGame.EndGameType == 2)
 		{
