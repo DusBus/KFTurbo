@@ -651,6 +651,11 @@ function PlayerExplosiveDamageModifierChanged(CardModifierStack ModifiedStack, f
     CardGameRules.ExplosiveDamageMultiplier = Modifier;
 }
 
+function PlayerExplosiveRadiusModifierChanged(CardModifierStack ModifiedStack, float Modifier)
+{
+    CardGameRules.ExplosiveRadiusMultiplier = Modifier;
+}
+
 function PlayerOnPerkDamageModifierChanged(CardModifierStack ModifiedStack, float Modifier)
 {
     CardGameRules.OnPerkDamageMultiplier = Modifier;
@@ -1281,6 +1286,12 @@ defaultproperties
         OnModifierChanged=PlayerExplosiveDamageModifierChanged
     End Object
     PlayerExplosiveDamageModifier=CardModifierStack'PlayerExplosiveDamageModifierStack'
+
+    Begin Object Name=PlayerExplosiveRadiusStack Class=CardModifierStack
+        ModifierStackID="PlayerExplosiveRadius"
+        OnModifierChanged=PlayerExplosiveRadiusModifierChanged
+    End Object
+    PlayerExplosiveRadiusModifier=CardModifierStack'PlayerExplosiveRadiusStack'
 
     Begin Object Name=PlayerOnPerkDamageModifierStack Class=CardModifierStack
         ModifierStackID="PlayerOnPerkDamage"
