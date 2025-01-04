@@ -22,6 +22,7 @@ function PostBeginPlay()
 {
 	AddToPackageMap("KFTurbo");
 	AddToPackageMap("KFTurboCardGame");
+	AddDeckOverridesToPackageMap();
 
 	TurboCardReplicationInfo = CreateTurboCardReplicationInfo();
 	CardGameRules = CreateCardGameRules();
@@ -34,6 +35,87 @@ function PostBeginPlay()
 	
 	class'TurboWaveEventHandler'.static.RegisterWaveHandler(Self, class'CardGameWaveEventHandler');
 	class'TurboWaveSpawnEventHandler'.static.RegisterWaveHandler(Self, class'CardGameWaveSpawnEventHandler');
+}
+
+function AddDeckOverridesToPackageMap()
+{
+	local array<string> PackageNameList;
+	local string PackageName;
+	local int Index;
+
+	PackageName = GetDeckOverridePackageName(TurboGoodDeckClassOverrideString);
+	if (PackageName != "")
+	{
+		AddUnique(PackageName, PackageNameList);
+	}
+	
+	PackageName = GetDeckOverridePackageName(TurboSuperDeckClassOverrideString);
+	if (PackageName != "")
+	{
+		AddUnique(PackageName, PackageNameList);
+	}
+	
+	PackageName = GetDeckOverridePackageName(TurboProConDeckClassOverrideString);
+	if (PackageName != "")
+	{
+		AddUnique(PackageName, PackageNameList);
+	}
+	
+	PackageName = GetDeckOverridePackageName(TurboEvilDeckClassOverrideString);
+	if (PackageName != "")
+	{
+		AddUnique(PackageName, PackageNameList);
+	}
+
+	for (Index = 0; Index < PackageNameList.Length; Index++)
+	{
+		AddToPackageMap(PackageNameList[Index]);
+	}
+}
+
+function string GetDeckOverridePackageName(string DeckClassOverrideString)
+{
+	local Object DeckClassOverride;
+
+	if (DeckClassOverrideString == "")
+	{
+		return "";
+	}
+
+	DeckClassOverride = DynamicLoadObject(DeckClassOverrideString, class'Class');
+
+	if (DeckClassOverride == None)
+	{
+		return "";
+	}
+	
+	while(DeckClassOverride.Outer != None)
+	{
+		DeckClassOverride = DeckClassOverride.Outer;
+	}
+
+	if (DeckClassOverride.Name == 'KFTurboCardGame')
+	{
+		return "";
+	}
+		
+	return string(DeckClassOverride.Name);
+}
+
+final function AddUnique(string String, out array<string> StringList)
+{
+	local int Index;
+
+	for (Index = 0; Index < StringList.Length; Index++)
+	{
+		if (StringList[Index] == String)
+		{
+			return;
+		}
+	}
+
+	StringList.Length = StringList.Length + 1;
+	StringList[StringList.Length - 1] = String;
 }
 
 //Make game 14 waves long, with first few waves being very small.
