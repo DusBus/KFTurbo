@@ -117,6 +117,11 @@ function PostBeginPlay()
     log("... collection of"@CardModifierList.Length@"modifiers,"@CardDeltaList.Length@"deltas and"@CardFlagList.Length@"flags complete!", 'KFTurboCardGame');
 }
 
+function ModifyPlayer(Pawn Pawn)
+{
+    
+}
+
 function OnWaveStart(int StartedWave)
 {
     switch (StartedWave)

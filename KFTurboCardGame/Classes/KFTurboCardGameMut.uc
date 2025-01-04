@@ -236,6 +236,11 @@ function ModifyPlayer(Pawn Other)
 	{
 		CardGameRules.ModifyPlayer(Other);
 	}
+
+	if (TurboCardGameplayManagerInfo != None)
+	{
+		TurboCardGameplayManagerInfo.ModifyPlayer(Other);
+	}
 }
 
 //There isn't a card ID system so we'll just implement cards we card about in particular.

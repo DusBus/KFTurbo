@@ -194,6 +194,14 @@ var CardModifierStack MonsterFleshpoundRageThresholdModifier;
 var CardModifierStack MonsterScrakeRageThresholdModifier;
 var CardModifierStack MonsterHuskRefireTimeModifier;
 
+function ModifyPlayer(Pawn Pawn)
+{
+    if (LockPerkSelectionFlag.IsFlagSet() && TurboPlayerController(Pawn.Controller) != None)
+    {
+        TurboPlayerController(Pawn.Controller).AddPerkChangeLock(class'LockedInTurboLocalMessage');
+    }
+}
+
 function OnWaveStart(int StartedWave)
 {
     Super.OnWaveStart(StartedWave);
@@ -424,7 +432,19 @@ function MarkedForDeathFlagChanged(CardFlag Flag, bool bIsEnabled)
 
 function LockPerkSelectionFlagChanged(CardFlag Flag, bool bIsEnabled)
 {
-    TurboGameType.LockPerkSelection(bIsEnabled);
+    local array<TurboPlayerController> PlayerList;
+    local int Index;
+    PlayerList = class'TurboGameplayHelper'.static.GetPlayerControllerList(Level);
+    
+    for (Index = 0; Index < PlayerList.Length; Index++)
+    {
+        if (PlayerList[Index].Pawn == None)
+        {
+            continue;
+        }
+
+        PlayerList[Index].AddPerkChangeLock(class'LockedInTurboLocalMessage');
+    }
 }
 
 function ExplodeDoorFlagChanged(CardFlag Flag, bool bIsEnabled)

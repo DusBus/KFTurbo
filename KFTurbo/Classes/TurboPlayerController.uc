@@ -436,12 +436,50 @@ function ServerInitializeSteamStatInt(byte Index, int Value)
 	}
 }
 
+function AddPerkChangeLock(class<PerkLockTurboLocalMessage> Lock)
+{
+	local int Index;
+	if (Lock == None)
+	{
+		return;
+	}
+
+	for (Index = PerkChangeLockList.Length - 1; Index >= 0; Index--)
+	{
+		if (Lock == PerkChangeLockList[Index])
+		{
+			return;
+		}
+	}
+
+	PerkChangeLockList.Length = PerkChangeLockList.Length + 1;
+	PerkChangeLockList[PerkChangeLockList.Length - 1] = Lock;
+}
+
+function RemovePerkChangeLock(class<PerkLockTurboLocalMessage> Lock)
+{
+	local int Index;
+	if (Lock == None)
+	{
+		return;
+	}
+
+	for (Index = PerkChangeLockList.Length - 1; Index >= 0; Index--)
+	{
+		if (Lock == PerkChangeLockList[Index])
+		{
+			PerkChangeLockList.Remove(Index, 1);
+			return;
+		}
+	}
+}
+
 function bool AttemptChangePerk(class<KFVeterancyTypes> VetSkill)
 {
 	local int Index;
 	local class<TurboVeterancyTypes> TurboVeterancyClass;
 
-	TurboVeterancyClass = class<KFVeterancyTypes>(VetSkill);
+	TurboVeterancyClass = class<TurboVeterancyTypes>(VetSkill);
 
 	if (TurboVeterancyClass == None)
 	{
