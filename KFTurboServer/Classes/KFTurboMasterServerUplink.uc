@@ -68,6 +68,7 @@ function PerformUpdate()
 
 		class'GameInfo'.static.AddServerDetail( FullCachedServerState, "Server Mode", Eval(Level.NetMode == NM_ListenServer, "non-dedicated", "dedicated") );
     	class'GameInfo'.static.AddServerDetail( FullCachedServerState, "Server Version", Level.ROVersion );
+    	class'GameInfo'.static.AddServerDetail( FullCachedServerState, "Turbo Version", ApplyGradientToString(class'KFTurboMut'.static.GetTurboVersionID()));
    		class'GameInfo'.static.AddServerDetail( FullCachedServerState, "VAC Secured", Eval(Level.Game.IsVACSecured(), "Enabled", "Disabled"));
 		class'GameInfo'.static.AddServerDetail( FullCachedServerState, "Max Spectators", Level.Game.MaxSpectators );
 
