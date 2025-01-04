@@ -36,7 +36,7 @@ function TurboCard PopRandomCardObject()
     return Card;
 }
 
-//Not guaranteed to be in the same deck object so we compare card IDs.
+//Not guaranteed to be from the same deck object so we compare card IDs.
 function bool RemoveCardFromDeck(TurboCard Card)
 {
     local int Index;
@@ -58,6 +58,12 @@ function bool RemoveCardFromDeck(TurboCard Card)
     }
 
     return bRemovedCard;
+}
+
+//Allows for decks to optionally do something like adding/removing cards based on wave number.
+function OnWaveStarted(int StartedWave)
+{
+    
 }
 
 defaultproperties

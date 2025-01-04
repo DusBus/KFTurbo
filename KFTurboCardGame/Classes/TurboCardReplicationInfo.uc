@@ -869,6 +869,8 @@ function OnSelectionTimeEnd()
     }
 
     ResetPlayerVotes();
+
+    NotifyDecksWaveStarted();
 }
 
 function ResetPlayerVotes()
@@ -888,6 +890,21 @@ function ResetPlayerVotes()
 
         CardLRI.ResetVote();
     }
+}
+
+function NotifyDecksWaveStarted()
+{
+    local int WaveNumber;
+    if (KFGameType(Level.Game) == None)
+    {
+        return;
+    }
+
+    WaveNumber = KFGameType(Level.Game).WaveNum;
+    GoodGameDeck.OnWaveStarted(WaveNumber);
+    SuperGameDeck.OnWaveStarted(WaveNumber);
+    ProConGameDeck.OnWaveStarted(WaveNumber);
+    EvilGameDeck.OnWaveStarted(WaveNumber);
 }
 
 defaultproperties
