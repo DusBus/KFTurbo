@@ -438,6 +438,12 @@ function LockPerkSelectionFlagChanged(CardFlag Flag, bool bIsEnabled)
     
     for (Index = 0; Index < PlayerList.Length; Index++)
     {
+        if (!bIsEnabled)
+        {
+            PlayerList[Index].RemovePerkChangeLock(class'LockedInTurboLocalMessage');
+            continue;
+        }
+
         if (PlayerList[Index].Pawn == None)
         {
             continue;
