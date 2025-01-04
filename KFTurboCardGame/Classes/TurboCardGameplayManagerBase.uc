@@ -25,21 +25,6 @@ struct DeEvolutionMonsterReplacement
 
 var array<DeEvolutionMonsterReplacement> WeakReplacementList; //List of KFMonster parent classes, their replacement, and individual chance to be applied.
 
-enum EUpgradeType
-{
-    NonElite,
-    Special,
-    Elite
-};
-
-struct UpgradeMonsterCategory
-{
-    var class<KFMonster> TargetParentClass;
-    var EUpgradeType UpgradeType;
-};
-
-var array<UpgradeMonsterCategory> UpgradeCategoryList;
-
 struct UpgradeMonsterReplacement
 {
     var array <class<KFMonster> > ReplacementClassList;
@@ -209,17 +194,15 @@ function OnNextSpawnSquadGenerated(out array < class<KFMonster> > NextSpawnSquad
 
 final function AttemptUpgradeMonster(out class<KFMonster> Monster)
 {
-    local int ReplacementIndex;
-    local int CategoryIndex;
-    for (ReplacementIndex = 0; ReplacementIndex < UpgradeCategoryList.Length; ReplacementIndex++)
+    local PawnHelper.EMonsterType MonsterType;
+    MonsterType = class'PawnHelper'.static.GetMonsterType(Monster);
+
+    if (MonsterType == Elite)
     {
-        if (ClassIsChildOf(Monster, UpgradeCategoryList[ReplacementIndex].TargetParentClass))
-        {
-            CategoryIndex = int(UpgradeCategoryList[ReplacementIndex].UpgradeType);
-            Monster = UpgradeReplacementList[CategoryIndex].ReplacementClassList[Rand(UpgradeReplacementList[CategoryIndex].ReplacementClassList.Length)];
-            return;
-        }
+        return;
     }
+
+    Monster = UpgradeReplacementList[int(MonsterType)].ReplacementClassList[Rand(UpgradeReplacementList[int(MonsterType)].ReplacementClassList.Length)];
 }
 
 final function AttemptReplaceWeakMonster(out class<KFMonster> Monster)
@@ -380,16 +363,6 @@ defaultproperties
     WeakReplacementList(6)=(TargetParentClass=class'P_Siren',ReplacementClass=class'P_Siren_Weak')
     WeakReplacementList(7)=(TargetParentClass=class'P_Scrake',ReplacementClass=class'P_Scrake_Weak')
     WeakReplacementList(8)=(TargetParentClass=class'P_Fleshpound',ReplacementClass=class'P_Fleshpound_Weak')
-
-    UpgradeCategoryList(0)=(TargetParentClass=class'P_Clot',UpgradeType=NonElite)
-    UpgradeCategoryList(1)=(TargetParentClass=class'P_Gorefast',UpgradeType=NonElite)
-    UpgradeCategoryList(2)=(TargetParentClass=class'P_Crawler',UpgradeType=NonElite)
-    UpgradeCategoryList(3)=(TargetParentClass=class'P_Stalker',UpgradeType=NonElite)
-    UpgradeCategoryList(4)=(TargetParentClass=class'P_Bloat',UpgradeType=Special)
-    UpgradeCategoryList(5)=(TargetParentClass=class'P_Husk',UpgradeType=Special)
-    UpgradeCategoryList(6)=(TargetParentClass=class'P_Siren',UpgradeType=Special)
-    UpgradeCategoryList(7)=(TargetParentClass=class'P_Scrake',UpgradeType=Elite)
-    UpgradeCategoryList(8)=(TargetParentClass=class'P_Fleshpound',UpgradeType=Elite)
 
     UpgradeReplacementList(0)=(ReplacementClassList=(class'P_Bloat_STA',class'P_Husk_STA',class'P_Siren_STA'))
     UpgradeReplacementList(1)=(ReplacementClassList=(class'P_Scrake_STA',class'P_Fleshpound_STA'))

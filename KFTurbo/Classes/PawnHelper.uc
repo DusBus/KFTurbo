@@ -14,6 +14,13 @@ struct AfflictionData
 	var Pawn LastBurnDamageInstigator; //Stored here instead of within AfflictionBurn because this pointer can become garbage when in an object.
 };
 
+enum EMonsterType
+{
+	Trash,
+	Special,
+	Elite
+};	
+
 static final simulated function bool IsPawnBurning(Pawn Pawn)
 {
 	local KFMonster Monster;
@@ -631,6 +638,44 @@ static final function bool MeleeDamageTarget(KFMonster Monster, int HitDamage, v
 static final function AdjustHeadScale(KFMonster Monster, out float HeadScale)
 {
 	HeadScale /= Monster.default.HeadScale;
+}
+
+//Not the cheapest function ever... Could do some extra work to speed it up via inspecting health ranges.
+static final function EMonsterType GetMonsterType(class<Monster> MonsterClass)
+{
+	//General catch-all for elites.
+	if (MonsterClass.Default.Health > Class'HUDKillingFloor'.Default.MessageHealthLimit || MonsterClass.Default.Mass > Class'HUDKillingFloor'.Default.MessageMassLimit)
+	{
+		return Elite;
+	}
+
+	if (ClassIsChildOf(MonsterClass, class'P_Scrake') || ClassIsChildOf(MonsterClass, class'P_Fleshpound') || ClassIsChildOf(MonsterClass, class'P_Bloat_Fathead'))
+	{
+		return Elite;
+	}
+
+	if (ClassIsChildOf(MonsterClass, class'P_Bloat') || ClassIsChildOf(MonsterClass, class'P_Siren') || ClassIsChildOf(MonsterClass, class'P_Husk')
+		|| ClassIsChildOf(MonsterClass, class'P_Gorefast_Assassin') || ClassIsChildOf(MonsterClass, class'P_Crawler_Jumper'))
+	{
+		return Special;
+	}
+
+	return Trash;
+}
+
+static final function bool IsEliteMonster(class<Monster> Monster)
+{
+	return GetMonsterType(Monster) == Elite;
+}
+
+static final function bool IsSpecialMonster(class<Monster> Monster)
+{
+	return GetMonsterType(Monster) == Special;
+}
+
+static final function bool IsTrashMonster(class<Monster> Monster)
+{
+	return GetMonsterType(Monster) == Trash;
 }
 
 defaultproperties

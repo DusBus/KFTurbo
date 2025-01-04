@@ -429,14 +429,9 @@ simulated function DrawActiveWave(Canvas C)
 	DrawTextMeticulous(C, TestText, TextSizeX);
 }
 
-static final function bool IsEliteMonster(class<Monster> Monster)
-{
-	return Class'HUDKillingFloor'.Default.MessageHealthLimit <= Monster.Default.Health || Class'HUDKillingFloor'.Default.MessageMassLimit <= Monster.Default.Mass;
-}
-
 static final function float GetLifeTimeForMonster(class<Monster> Monster, int Count)
 {
-	if(IsEliteMonster(Monster))
+	if(class'PawnHelper'.static.IsEliteMonster(Monster))
 	{
 		return default.EliteMonsterKillLifeTime + (default.EliteMonsterKillCountExtension * float(Count));
 	}
@@ -446,7 +441,7 @@ static final function float GetLifeTimeForMonster(class<Monster> Monster, int Co
 
 static final function float GetBonusScale(out KillFeedEntry Entry)
 {
-	if (IsEliteMonster(Entry.KilledMonster))
+	if (class'PawnHelper'.static.IsEliteMonster(Entry.KilledMonster))
 	{
 		return Lerp(Entry.TriggerRatio, 1.f, 1.5f) * Lerp(FMin((Entry.Count - 1) / 10.f, 1.f), 1.f, 1.5f);
 	}
@@ -500,7 +495,7 @@ simulated final function DrawKillFeedEntry(Canvas C, out float DrawY, out KillFe
 		return;
 	}
 
-	bIsElite = IsEliteMonster(Entry.KilledMonster);
+	bIsElite = class'PawnHelper'.static.IsEliteMonster(Entry.KilledMonster);
 
 	if (bIsElite)
 	{
