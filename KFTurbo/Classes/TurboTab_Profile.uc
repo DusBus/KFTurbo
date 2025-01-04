@@ -30,6 +30,52 @@ function OnPerkSelected(GUIComponent Sender)
 	}
 }
 
+function SaveSettings()
+{
+	local TurboPlayerController TurboPlayerController;
+	local ClientPerkRepLink CPRL;
+
+	TurboPlayerController = TurboPlayerController(PlayerOwner());
+
+	if (TurboPlayerController != None)
+	{
+		CPRL = TurboPlayerController.GetClientPerkRepLink();
+	}
+
+	if (ChangedCharacter != "")
+	{
+		if (CPRL != None)
+		{
+			CPRL.SelectedCharacter(ChangedCharacter);
+		}
+		else
+		{
+			TurboPlayerController.ConsoleCommand("ChangeCharacter"@ChangedCharacter);
+
+			if (!TurboPlayerController.IsA('xPlayer'))
+			{
+				TurboPlayerController.UpdateURL("Character", ChangedCharacter, True);
+			}
+
+			if (PlayerRec.Sex ~= "Female")
+			{
+				TurboPlayerController.UpdateURL("Sex", "F", True);
+			}
+			else
+			{
+				TurboPlayerController.UpdateURL("Sex", "M", True);
+			}
+		}
+
+		ChangedCharacter = "";
+	}
+
+	if (lb_PerkSelect.GetIndex() >= 0 && TurboPlayerController != None && CPRL != None)
+	{
+		TurboPlayerController.SelectVeterancy(CPRL.CachePerks[lb_PerkSelect.GetIndex()].PerkClass);
+	}
+}
+
 defaultproperties
 {
      Begin Object Class=TurboPerkSelectListBox Name=PerkSelectList

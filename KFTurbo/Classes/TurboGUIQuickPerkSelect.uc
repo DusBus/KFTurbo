@@ -61,15 +61,20 @@ function bool MyOnDraw(Canvas C)
 
 function bool InternalOnClick(GUIComponent Sender)
 {
-	local ClientPerkRepLink S;
+	local TurboPlayerController TurboPlayerController;
 
-	if ( Sender.IsA('KFIndexedGUIImage') && KFIndexedGUIImage(Sender).Index>=0 )
+	if (Sender.IsA('KFIndexedGUIImage') && KFIndexedGUIImage(Sender).Index >= 0)
 	{
-		S = Class'ClientPerkRepLink'.Static.FindStats(PlayerOwner());
-		if ( S!=None )
-			S.ServerSelectPerk(S.CachePerks[KFIndexedGUIImage(Sender).Index].PerkClass);
+		TurboPlayerController = TurboPlayerController(PlayerOwner());
+
+		if (TurboPlayerController != None && TurboPlayerController.GetClientPerkRepLink() != None)
+		{
+			TurboPlayerController.SelectVeterancy(TurboPlayerController.GetClientPerkRepLink().CachePerks[KFIndexedGUIImage(Sender).Index].PerkClass);
+		}
+
 		bPerkChange = true;
 	}
+	
 	return false;	
 }
 

@@ -479,6 +479,11 @@ function bool AttemptChangePerk(class<KFVeterancyTypes> VetSkill)
 	local int Index;
 	local class<TurboVeterancyTypes> TurboVeterancyClass;
 
+	if (TurboPlayerReplicationInfo(PlayerReplicationInfo) == None || TurboPlayerReplicationInfo(PlayerReplicationInfo).ClientVeteranSkill == VetSkill)
+	{
+		return true;
+	}
+
 	TurboVeterancyClass = class<TurboVeterancyTypes>(VetSkill);
 
 	if (TurboVeterancyClass == None)

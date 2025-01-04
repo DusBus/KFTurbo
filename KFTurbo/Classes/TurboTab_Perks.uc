@@ -1,5 +1,19 @@
 class TurboTab_Perks extends SRKFTab_Perks;
 
+function bool OnSaveButtonClicked(GUIComponent Sender)
+{
+	local TurboPlayerController TurboPlayerController;
+
+	TurboPlayerController = TurboPlayerController(PlayerOwner());
+
+	if (lb_PerkSelect.GetIndex() >= 0 && TurboPlayerController != None && TurboPlayerController.GetClientPerkRepLink() != None)
+	{
+		TurboPlayerController.SelectVeterancy(TurboPlayerController.GetClientPerkRepLink().CachePerks[lb_PerkSelect.GetIndex()].PerkClass);
+	}
+	
+	return true;
+}
+
 defaultproperties
 {
      Begin Object Class=TurboPerkSelectListBox Name=PerkSelectList

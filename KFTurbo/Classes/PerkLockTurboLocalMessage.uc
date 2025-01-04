@@ -18,4 +18,8 @@ static function bool IgnoreLocalMessage(TurboPlayerController PlayerController, 
 defaultproperties
 {
     bUseFullFormatting=true
+
+    bIsSpecial=false
+    bIsConsoleMessage=true
+    Lifetime=10
 }

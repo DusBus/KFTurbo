@@ -13,6 +13,6 @@ static function string GetString(optional int Switch, optional PlayerReplication
 
 defaultproperties
 {
-    LockedInString="You are %nknot allowed%d to %nkchange perk%d due to the effects of the %nkLocked In%d card."
+    LockedInString="You are %nknot allowed%d to %nkchange perk%d due to the %nkLocked In%d card."
     bUseFullFormatting=true
 }
