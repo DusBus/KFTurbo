@@ -133,21 +133,24 @@ static final function PenetratingWeaponTrace(Vector TraceStart, Rotator Directio
 			HitCount++;
 		}
 
-		//Need to go find the extended collision if we hit the pawn.
-		if (xPawn(HitList[HitListIndex].HitActor) != None)
+		if (HitList[HitListIndex].HitActor != None)
 		{
-			HitActorExtendedCollision = GetExtendedCollisionFor(xPawn(HitList[HitListIndex].HitActor));
-
-			if (HitActorExtendedCollision != None)
+			//Need to go find the extended collision if we hit the pawn.
+			if (xPawn(HitList[HitListIndex].HitActor) != None)
 			{
-				HitActorExtendedCollision.SetCollision(false);
-				IgnoreActors.Length = IgnoreActors.Length + 1;
-				IgnoreActors[IgnoreActors.Length - 1] = HitActorExtendedCollision;
+				HitActorExtendedCollision = GetExtendedCollisionFor(xPawn(HitList[HitListIndex].HitActor));
+
+				if (HitActorExtendedCollision != None)
+				{
+					HitActorExtendedCollision.SetCollision(false);
+					IgnoreActors.Length = IgnoreActors.Length + 1;
+					IgnoreActors[IgnoreActors.Length - 1] = HitActorExtendedCollision;
+				}
 			}
+			
+			HitList[HitListIndex].HitActor.SetCollision(false);
+			IgnoreActors[IgnoreActors.Length] = HitList[HitListIndex].HitActor;
 		}
-		
-		HitList[HitListIndex].HitActor.SetCollision(false);
-		IgnoreActors[IgnoreActors.Length] = HitList[HitListIndex].HitActor;
 
 		TraceStart = HitList[HitListIndex].HitLocation;
 
@@ -163,7 +166,7 @@ static final function PenetratingWeaponTrace(Vector TraceStart, Rotator Directio
 
 	for (HitCount = 0; HitCount < HitList.Length; HitCount++)
 	{
-		if (HitList[HitCount].HitResult == TR_None)
+		if (HitList[HitCount].HitResult == TR_None || HitList[HitCount].HitActor == None)
 		{
 			continue;
 		}
@@ -176,6 +179,14 @@ static final function TraceHitInfo WeaponTrace(Vector TraceStart, Vector TraceEn
 {
 	local TraceHitInfo HitInfo;	
 	HitInfo.HitActor = Weapon.Instigator.HitPointTrace(HitInfo.HitLocation, HitInfo.HitDirection, TraceEnd, HitInfo.HitPoints, TraceStart,, 1);
+	
+	if (HitInfo.HitActor == None)
+	{
+		HitInfo.HitLocation = TraceEnd;
+		HitInfo.HitDirection = Normal(TraceEnd - TraceStart);
+		HitInfo.HitResult = TR_None;
+		return HitInfo;
+	}
 
 	if(ShouldSkipActor(HitInfo.HitActor, Weapon.Instigator))
 	{
@@ -277,7 +288,7 @@ static final function bool IsWorldHit(Actor Other)
 
 static final function bool ShouldSkipActor(Actor Other, Pawn Instigator)
 {
-	return Other == None || Other == Instigator || Other.Base == Instigator; 
+	return Other == Instigator || Other.Base == Instigator; 
 }
 
 static final function EnableCollision(Array<Actor> IgnoreList)
