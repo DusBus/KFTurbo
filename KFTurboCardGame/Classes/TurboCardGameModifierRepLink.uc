@@ -54,6 +54,8 @@ var(Turbo) float MedicHealPotencyMultiplier, NonMedicHealPotencyMultiplier;
 var(Turbo) float BodyArmorDamageModifier;
 var(Turbo) float HealRechargeMultiplier;
 
+var(Turbo) float WeldStrengthMultiplier;
+
 replication
 {
     reliable if(bNetDirty && Role == ROLE_Authority)
@@ -198,6 +200,11 @@ simulated function float GetHealRechargeMultiplier(KFPlayerReplicationInfo KFPRI
     return Super.GetHealRechargeMultiplier(KFPRI) * HealRechargeMultiplier;
 }
 
+function float GetWeldSpeedModifier(KFPlayerReplicationInfo KFPRI)
+{
+    return Super.GetWeldSpeedModifier(KFPRI) * WeldStrengthMultiplier;
+}
+
 function GetPlayerCarryWeightModifier(KFPlayerReplicationInfo KFPRI, out int OutCarryWeightModifier)
 {
     Super.GetPlayerCarryWeightModifier(KFPRI, OutCarryWeightModifier);
@@ -319,4 +326,5 @@ defaultproperties
     NonMedicHealPotencyMultiplier=1.f
     BodyArmorDamageModifier=1.f
     HealRechargeMultiplier=1.f
+    WeldStrengthMultiplier=1.f
 }

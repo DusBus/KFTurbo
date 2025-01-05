@@ -47,6 +47,7 @@ function GetPlayerCarryWeightModifier(KFPlayerReplicationInfo KFPRI, out int Out
 function GetPlayerZedExtensionModifier(KFPlayerReplicationInfo KFPRI, out int OutZedExtensions) { if (NextGameModifierLink != None) { NextGameModifierLink.GetPlayerZedExtensionModifier(KFPRI, OutZedExtensions); } }
 function float GetHeadshotDamageMultiplier(KFPlayerReplicationInfo KFPRI, KFPawn Pawn, class<DamageType> DamageType) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetHeadshotDamageMultiplier(KFPRI, Pawn, DamageType); } return 1.f; }
 function float GetHealPotencyMultiplier(KFPlayerReplicationInfo KFPRI) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetHealPotencyMultiplier(KFPRI); } return 1.f; }
+function float GetWeldSpeedModifier(KFPlayerReplicationInfo KFPRI) { if (NextGameModifierLink != None) { return NextGameModifierLink.GetWeldSpeedModifier(KFPRI); } return 1.f; }
 function GetBodyArmorDamageModifier(KFPlayerReplicationInfo KFPRI, out float Multiplier) { if (NextGameModifierLink != None) { NextGameModifierLink.GetBodyArmorDamageModifier(KFPRI, Multiplier); } }
 function OnWeaponFire(WeaponFire WeaponFire) { if (NextGameModifierLink != None) { NextGameModifierLink.OnWeaponFire(WeaponFire); } }
 function OnShotgunFire(KFShotgunFire ShotgunFire) { if (NextGameModifierLink != None) { NextGameModifierLink.OnShotgunFire(ShotgunFire); } }

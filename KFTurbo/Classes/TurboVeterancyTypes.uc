@@ -56,10 +56,7 @@ static function bool IsPerkAmmunition(class<Ammunition> AmmoType)
 
 static function ApplyAdjustedMovementSpeedModifier(KFPlayerReplicationInfo KFPRI, KFGameReplicationInfo KFGRI, out float Multiplier)
 {
-	if (TurboGameReplicationInfo(KFGRI) != None)
-	{
-		Multiplier *= TurboGameReplicationInfo(KFGRI).GetPlayerMovementSpeedMultiplier(KFPRI, KFGRI);
-	}
+	Multiplier *= TurboGameReplicationInfo(KFGRI).GetPlayerMovementSpeedMultiplier(KFPRI, KFGRI);
 }
 
 static function float GetMovementSpeedModifier(KFPlayerReplicationInfo KFPRI, KFGameReplicationInfo KFGRI)
@@ -72,29 +69,21 @@ static function float GetMovementSpeedModifier(KFPlayerReplicationInfo KFPRI, KF
 
 static function ApplyAdjustedHeadshotDamageMultiplier(KFPlayerReplicationInfo KFPRI, KFPawn Pawn, class<DamageType> DamageType, out float Multiplier)
 {
-	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-	{
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetHeadshotDamageMultiplier(KFPRI, Pawn, DamageType);
-	}
+	Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetHeadshotDamageMultiplier(KFPRI, Pawn, DamageType);
 }
 
 static function float GetSyringeChargeRate(KFPlayerReplicationInfo KFPRI)
 {
-	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-	{
-		return TurboGameReplicationInfo(KFPRI.Level.GRI).GetHealRechargeMultiplier(KFPRI);
-	}
-
-	return 1.f;
+	return TurboGameReplicationInfo(KFPRI.Level.GRI).GetHealRechargeMultiplier(KFPRI);
 }
 
 static function float GetHealPotency(KFPlayerReplicationInfo KFPRI)
 {
-	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-	{
-		return TurboGameReplicationInfo(KFPRI.Level.GRI).GetHealPotencyMultiplier(KFPRI);
-	}
+	return TurboGameReplicationInfo(KFPRI.Level.GRI).GetHealPotencyMultiplier(KFPRI);
+}
 
+static function float GetWeldSpeedModifier(KFPlayerReplicationInfo KFPRI)
+{
 	return 1.f;
 }
 
@@ -122,10 +111,7 @@ static function ApplyAdjustedExtraAmmo(KFPlayerReplicationInfo KFPRI, class<Ammu
 		}
 	}
 
-	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-	{
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMaxAmmoMultiplier(KFPRI, AmmoType);
-	}
+	Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMaxAmmoMultiplier(KFPRI, AmmoType);
 }
 
 static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, class<Ammunition> AmmoType)
@@ -138,10 +124,7 @@ static function float AddExtraAmmoFor(KFPlayerReplicationInfo KFPRI, class<Ammun
 
 static function ApplyAdjustedFireRate(KFPlayerReplicationInfo KFPRI, Weapon Other, out float Multiplier)
 {
-	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-	{
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetFireRateMultiplier(KFPRI, Other);
-	}
+	Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetFireRateMultiplier(KFPRI, Other);
 }
 
 static function float GetFireSpeedMod(KFPlayerReplicationInfo KFPRI, Weapon Other)
@@ -154,10 +137,7 @@ static function float GetFireSpeedMod(KFPlayerReplicationInfo KFPRI, Weapon Othe
 
 static function ApplyAdjustedReloadRate(KFPlayerReplicationInfo KFPRI, Weapon Other, out float Multiplier)
 {
-	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-	{
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetReloadRateMultiplier(KFPRI, Other);
-	}
+	Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetReloadRateMultiplier(KFPRI, Other);
 }
 
 static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other)
@@ -170,7 +150,7 @@ static function float GetReloadSpeedModifier(KFPlayerReplicationInfo KFPRI, KFWe
 
 static function ApplyAdjustedMagCapacityModifier(KFPlayerReplicationInfo KFPRI, KFWeapon Other, out float Multiplier)
 {
-	if (Other.default.MagCapacity > 2 && TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
+	if (Other.default.MagCapacity > 2)
 	{
 		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetMagazineAmmoMultiplier(KFPRI, Other);
 	}
@@ -186,10 +166,7 @@ static function float GetMagCapacityMod(KFPlayerReplicationInfo KFPRI, KFWeapon 
 
 static function ApplyAdjustedRecoilSpreadModifier(KFPlayerReplicationInfo KFPRI, WeaponFire Other, out float Multiplier)
 {
-	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-	{
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetWeaponSpreadRecoilMultiplier(KFPRI, Other);
-	}
+	Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetWeaponSpreadRecoilMultiplier(KFPRI, Other);
 }
 
 static function float ModifyRecoilSpread(KFPlayerReplicationInfo KFPRI, WeaponFire Other, out float Recoil)
@@ -203,11 +180,7 @@ static function float GetBodyArmorDamageModifier(KFPlayerReplicationInfo KFPRI)
 {
 	local float Multiplier;
 	Multiplier = 1.f;
-	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-	{
-		TurboGameReplicationInfo(KFPRI.Level.GRI).GetBodyArmorDamageModifier(KFPRI, Multiplier);
-	}
-
+	TurboGameReplicationInfo(KFPRI.Level.GRI).GetBodyArmorDamageModifier(KFPRI, Multiplier);
 	return Multiplier;
 }
 
@@ -221,10 +194,7 @@ static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup
 
 static function ApplyCostScalingModifier(KFPlayerReplicationInfo KFPRI, class<Pickup> Item, out float Multiplier)
 {
-	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-	{
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetTraderCostMultiplier(KFPRI, Item);
-	}
+	Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetTraderCostMultiplier(KFPRI, Item);
 }
 
 static function float GetAmmoCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)
@@ -237,14 +207,11 @@ static function float GetAmmoCostScaling(KFPlayerReplicationInfo KFPRI, class<Pi
 
 static function ApplyAmmoCostScalingModifier(KFPlayerReplicationInfo KFPRI, class<Pickup> Item, out float Multiplier)
 {
-	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-	{
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetTraderCostMultiplier(KFPRI, Item);
+	Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetTraderCostMultiplier(KFPRI, Item);
 
-		if (class<FragPickup>(Item) != None)
-		{
-			Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetTraderGrenadeCostMultiplier(KFPRI, Item);
-		}
+	if (class<FragPickup>(Item) != None)
+	{
+		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetTraderGrenadeCostMultiplier(KFPRI, Item);
 	}
 }
 
@@ -259,10 +226,7 @@ static function float GetWeaponPenetrationMultiplier(KFPlayerReplicationInfo KFP
 	local float Multiplier;
 	Multiplier = 1.f;
 
-	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-	{
-		Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetWeaponPenetrationMultiplier(KFPRI, Other);
-	}
+	Multiplier *= TurboGameReplicationInfo(KFPRI.Level.GRI).GetWeaponPenetrationMultiplier(KFPRI, Other);
 
 	return Multiplier;
 }
@@ -271,10 +235,8 @@ static function int AddCarryMaxWeight(KFPlayerReplicationInfo KFPRI)
 {
 	local int CarryWeightBonus;
 	CarryWeightBonus = 0;
-	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-	{
-		TurboGameReplicationInfo(KFPRI.Level.GRI).GetPlayerCarryWeightModifier(KFPRI, CarryWeightBonus);
-	}
+
+	TurboGameReplicationInfo(KFPRI.Level.GRI).GetPlayerCarryWeightModifier(KFPRI, CarryWeightBonus);
 
 	return CarryWeightBonus;
 }
@@ -284,10 +246,7 @@ static function int ZedTimeExtensions(KFPlayerReplicationInfo KFPRI)
 	local int Extensions;
 	Extensions = 0;
 
-	if (TurboGameReplicationInfo(KFPRI.Level.GRI) != None)
-	{
-		TurboGameReplicationInfo(KFPRI.Level.GRI).GetPlayerZedExtensionModifier(KFPRI, Extensions);
-	}
+	TurboGameReplicationInfo(KFPRI.Level.GRI).GetPlayerZedExtensionModifier(KFPRI, Extensions);
 
 	return Extensions;
 }

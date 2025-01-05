@@ -65,6 +65,8 @@ var CardFlag NoDropOrSellItemsFlag;
 
 //HEALTH
 var CardModifierStack PlayerMaxHealthModifier;
+var CardDeltaStack PlayerHealthRegenDelta;
+var PlayerRegenActor PlayerRegenActor;
 
 //CARRY CAPACITY
 var CardDeltaStack PlayerCarryCapacityDelta;
@@ -97,6 +99,8 @@ var CardModifierStack PlayerFleshpoundDamageModifier;
 var CardModifierStack PlayerScrakeDamageModifier;
 
 var CardFlag PlayerMassDetonationFlag;
+
+var CardModifierStack WeldStrengthModifier;
 
 //DAMAGE RECEIVED
 var CardModifierStack PlayerArmorStrengthModifier;
@@ -626,6 +630,27 @@ function PlayerMaxHealthModifierChanged(CardModifierStack ModifiedStack, float M
     CardGameModifier.ForceNetUpdate();
 }
 
+function PlayerHealthRegenDeltaChanged(CardDeltaStack ChangedDelta, int Delta)
+{
+    Delta = Max(Delta, 0);
+    if (Delta != 0)
+    {
+        if (PlayerRegenActor == None)
+        {
+            PlayerRegenActor = Spawn(class'PlayerRegenActor', Self);
+        }
+
+        PlayerRegenActor.SetRegenAmount(Delta);
+    }
+    else
+    {
+        if (PlayerRegenActor != None)
+        {
+            PlayerRegenActor.Destroy();
+        }
+    }
+}
+
 //CARRY CAPACITY
 function PlayerCarryCapacityDeltaChanged(CardDeltaStack ChangedDelta, int Delta)
 {
@@ -735,6 +760,11 @@ function PlayerScrakeDamageModifierChanged(CardModifierStack ModifiedStack, floa
 function PlayerMassDetonationCardFlagChanged(CardFlag Flag, bool bIsEnabled)
 {
     CardGameRules.bMassDetonationEnabled = bIsEnabled;
+}
+
+function WeldStrengthModifierChanged(CardModifierStack ModifiedStack, float Modifier)
+{
+    CardGameModifier.WeldStrengthMultiplier = Modifier;
 }
 
 //DAMAGE RECEIVED
@@ -1256,6 +1286,12 @@ defaultproperties
     End Object
     PlayerMaxHealthModifier=CardModifierStack'PlayerMaxHealthModifierStack'
 
+    Begin Object Name=PlayerHealthRegenDeltaStack Class=CardDeltaStack
+        DeltaStackID="PlayerHealthRegen"
+        OnDeltaChanged=PlayerHealthRegenDeltaChanged
+    End Object
+    PlayerHealthRegenDelta=CardDeltaStack'PlayerHealthRegenDeltaStack'
+
 //CARRY CAPACITY
     Begin Object Name=PlayerCarryCapacityDeltaStack Class=CardDeltaStack
         DeltaStackID="PlayerCarryCapacity"
@@ -1386,6 +1422,13 @@ defaultproperties
     PlayerMassDetonationFlag=CardFlag'PlayerMassDetonationCardFlag'
 
 //DAMAGE RECEIVED
+    Begin Object Name=WeldStrengthModifierStack Class=CardModifierStack
+        ModifierStackID="WeldStrengthModifier"
+        OnModifierChanged=WeldStrengthModifierChanged
+    End Object
+    WeldStrengthModifier=CardModifierStack'WeldStrengthModifierStack'
+    
+
     Begin Object Name=PlayerArmorStrengthModifierStack Class=CardModifierStack
         ModifierStackID="PlayerArmorStrength"
         OnModifierChanged=PlayerArmorStrengthModifierChanged
