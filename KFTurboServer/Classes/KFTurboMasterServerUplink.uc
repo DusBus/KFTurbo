@@ -141,6 +141,8 @@ function ApplyServerFlags(out GameInfo.ServerResponseLine ServerState)
 	{
 		ServerState.Flags = ServerState.Flags | 1;
 	}
+
+	ServerState.Flags = ServerState.Flags & (~(2)); //This flag is being set and that's not intended.
 }
 
 function AppendMutators(out GameInfo.ServerResponseLine ServerState)
