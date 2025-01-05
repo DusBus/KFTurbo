@@ -36,7 +36,12 @@ replication {
 /* OVERRIDEN FUNCTIONS */
 
 simulated function SendSelectedVeterancyToServer(optional bool bForceChange);
-function SelectVeterancy(class<KFVeterancyTypes> VetSkill, optional bool bForceChange);
+
+function SelectVeterancy(class<KFVeterancyTypes> VetSkill, optional bool bForceChange)
+{
+	ServerSetPerk(VetSkill);
+}
+
 exec function TogglePathToTrader();
 function SetShowPathToTrader(bool bShouldShowPath);
 simulated function CheckForHint(int hintType);
