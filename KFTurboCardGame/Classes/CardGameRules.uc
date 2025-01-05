@@ -545,18 +545,12 @@ function MonsterNetDamage(out float DamageMultiplier, KFMonster Injured, Pawn In
 
 function ApplyThornsDamage(int DamageTaken, KFHumanPawn Injured, KFMonster InstigatedBy)
 {
-    local class<DamageType> MonsterFireDamageClass;
     if (PlayerThornsDamageMultiplier <= 1.f)
     {
         return;
     }
 
-    MonsterFireDamageClass = InstigatedBy.FireDamageClass;
-    
-    InstigatedBy.FireDamageClass = None;
-    InstigatedBy.TakeFireDamage(float(DamageTaken) * (PlayerThornsDamageMultiplier - 1.f), Injured);
-
-    InstigatedBy.FireDamageClass = MonsterFireDamageClass;
+    InstigatedBy.TakeDamage(float(DamageTaken) * (PlayerThornsDamageMultiplier - 1.f), Injured, Injured.Location, vect(0, 0, 0), class'PlayerThornsDamage_DT');
 }
 
 function PlayRussianRouletteSound(Pawn KilledPawn, bool bWasPlayer)

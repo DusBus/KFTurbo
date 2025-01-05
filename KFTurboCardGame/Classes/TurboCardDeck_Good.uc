@@ -115,7 +115,7 @@ function ActivateThorns(TurboCardGameplayManager GameplayManager, TurboCard Card
 {
     if (bActivate)
     {
-        GameplayManager.PlayerThornsModifier.AddModifier(1.1f, Card);
+        GameplayManager.PlayerThornsModifier.AddModifier(2.f, Card);
     }
     else
     {
@@ -463,7 +463,7 @@ defaultproperties
 
     Begin Object Name=Thorns Class=TurboCard_Good
         CardName(0)="Thorns"
-        CardDescriptionList(0)="Reflect 10% of"
+        CardDescriptionList(0)="Reflect 100% of"
         CardDescriptionList(1)="received damage"
         CardDescriptionList(2)="back onto zeds."
         CardID="GOOD_THORNS"
