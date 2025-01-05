@@ -11,6 +11,16 @@ enum ETraceResult
 	TR_None
 };
 
+struct TraceHitInfo
+{
+	var ETraceResult HitResult;
+	var Actor HitActor;
+	var int HitCount;
+	var vector HitLocation;
+	var vector HitDirection;
+	var array<int> HitPoints;
+};
+
 //Takes into account cylinder size when giving back a distance.
 static final function float GetDistanceToClosestPointOnActor(Vector Location, Actor Target)
 {
@@ -71,15 +81,15 @@ static final function Actor GetExtendedCollisionFor(xPawn Pawn)
 
 static final function PenetratingWeaponTrace(Vector TraceStart, Rotator Direction, KFWeapon Weapon, KFFire Fire, int PenetrationMax, float PenetrationMultiplier)
 {
-	local Actor HitActor;
 	local Actor HitActorExtendedCollision;
 	local array<Actor> IgnoreActors;
 	local Vector TraceEnd, MomentumVector;
-	local Vector HitLocation;
 	local KFPlayerReplicationInfo KFPRI;
 	local int HitCount;
 	local float WeaponPenetrationMultiplier;
-	local byte NumberMonstersHit;
+	local int NumberMonstersHit;
+	local array<TraceHitInfo> HitList;
+	local int HitListIndex;
 
 	HitCount = 0;
 	NumberMonstersHit = 0;
@@ -108,46 +118,25 @@ static final function PenetratingWeaponTrace(Vector TraceStart, Rotator Directio
 
 	while (HitCount < PenetrationMax)
 	{
-		HitActor = None;
+		HitList.Length = HitList.Length + 1;
+		HitListIndex = HitList.Length - 1;
+		HitList[HitListIndex] = WeaponTrace(TraceStart, TraceEnd, Weapon);
+		HitList[HitListIndex].HitCount = HitCount;
 
-		switch(WeaponTrace(TraceStart, TraceEnd, MomentumVector, Weapon, Fire, HitActor, HitLocation, (PenetrationMultiplier ** float(HitCount)), NumberMonstersHit))
+		if (HitList[HitListIndex].HitResult == TR_Block)
 		{
-		case TR_Block:
-			HitCount = PenetrationMax + 1;
-			EnableCollision(IgnoreActors);
-			return;
-		case TR_Hit:
-			HitCount++;
-			break;
-		case TR_None:
-			HitCount++;
 			break;
 		}
 
-		if (HitActor == None)
+		if (HitList[HitListIndex].HitResult == TR_Hit)
 		{
-			TraceStart = HitLocation;
-
-			if (VSize(TraceStart - TraceEnd) < 0.1)
-			{
-				break;
-			}
-
-			continue;
+			HitCount++;
 		}
 
-		//Needs to handle both player and monster extended collision.
-		if (xPawn(HitActor.Base) != None)
-		{
-			HitActor.SetCollision(false);
-			IgnoreActors.Length = IgnoreActors.Length + 1;
-			IgnoreActors[IgnoreActors.Length - 1] = HitActor;
-			HitActor = HitActor.Base;
-		}
 		//Need to go find the extended collision if we hit the pawn.
-		else if (xPawn(HitActor) != None)
+		if (xPawn(HitList[HitListIndex].HitActor) != None)
 		{
-			HitActorExtendedCollision = GetExtendedCollisionFor(xPawn(HitActor));
+			HitActorExtendedCollision = GetExtendedCollisionFor(xPawn(HitList[HitListIndex].HitActor));
 
 			if (HitActorExtendedCollision != None)
 			{
@@ -157,10 +146,10 @@ static final function PenetratingWeaponTrace(Vector TraceStart, Rotator Directio
 			}
 		}
 		
-		HitActor.SetCollision(false);
-		IgnoreActors[IgnoreActors.Length] = HitActor;
+		HitList[HitListIndex].HitActor.SetCollision(false);
+		IgnoreActors[IgnoreActors.Length] = HitList[HitListIndex].HitActor;
 
-		TraceStart = HitLocation;
+		TraceStart = HitList[HitListIndex].HitLocation;
 
 		if(VSize(TraceStart - TraceEnd) < 0.1)
 		{
@@ -169,69 +158,88 @@ static final function PenetratingWeaponTrace(Vector TraceStart, Rotator Directio
 	}
 
 	EnableCollision(IgnoreActors);
+
+	NumberMonstersHit = 0;
+
+	for (HitCount = 0; HitCount < HitList.Length; HitCount++)
+	{
+		if (HitList[HitCount].HitResult == TR_None)
+		{
+			continue;
+		}
+
+		PerformTraceHit(Fire, HitList[HitCount], MomentumVector, (PenetrationMultiplier ** float(HitCount)), NumberMonstersHit);
+	}
 }
 
-static final function ETraceResult WeaponTrace(Vector TraceStart, Vector TraceEnd, Vector MomentumVector, KFWeapon Weapon, KFFire Fire, out Actor HitActor, out Vector HitLocation, float DamageMultiplier, out byte NumberMonstersHit)
+static final function TraceHitInfo WeaponTrace(Vector TraceStart, Vector TraceEnd, KFWeapon Weapon)
 {
-	local KFPawn HitPawn;
-	local Vector HitNormal;
-	local array<int> HitPoints;
-	
-	local TurboPlayerEventHandler.MonsterHitData HitData;
+	local TraceHitInfo HitInfo;	
+	HitInfo.HitActor = Weapon.Instigator.HitPointTrace(HitInfo.HitLocation, HitInfo.HitDirection, TraceEnd, HitInfo.HitPoints, TraceStart,, 1);
 
-	HitActor = Fire.Instigator.HitPointTrace(HitLocation, HitNormal, TraceEnd, HitPoints, TraceStart,, 1);
-
-	if(ShouldSkipActor(HitActor, Fire.Instigator))
+	if(ShouldSkipActor(HitInfo.HitActor, Weapon.Instigator))
 	{
-		HitActor = None;
-		return TR_None;
+		if (xPawn(HitInfo.HitActor.Base) != None)
+		{
+			HitInfo.HitActor = HitInfo.HitActor.Base;
+		}
+
+		HitInfo.HitResult = TR_None;
+		return HitInfo;
 	}
 
-	if(IsWorldHit(HitActor))
+	if(IsWorldHit(HitInfo.HitActor))
 	{
 		if(KFWeaponAttachment(Weapon.ThirdPersonActor) != None)
 		{
-			KFWeaponAttachment(Weapon.ThirdPersonActor).UpdateHit(HitActor, HitLocation, HitNormal);		
+			KFWeaponAttachment(Weapon.ThirdPersonActor).UpdateHit(HitInfo.HitActor, HitInfo.HitLocation, HitInfo.HitDirection);		
 		}
 
-		return TR_Block;
+		HitInfo.HitResult = TR_Block;
+		return HitInfo;
 	}
 
-	if (xPawn(HitActor.Base) != None)
+	if (xPawn(HitInfo.HitActor.Base) != None)
 	{
-		HitActor = HitActor.Base;
+		HitInfo.HitActor = HitInfo.HitActor.Base;
 	}
 
-	HitPawn = KFPawn(HitActor);
+	HitInfo.HitResult = TR_Hit;
+	return HitInfo;
+}
 
+static final function PerformTraceHit(KFFire Fire, TraceHitInfo HitInfo, Vector Momentum, float PenetrationMultiplier, out int NumberMonstersHit)
+{
+	local KFPawn HitPawn;
+	local TurboPlayerEventHandler.MonsterHitData HitData;
+
+	HitPawn = KFPawn(HitInfo.HitActor);
 	if (HitPawn != None)
 	{
 		if(!HitPawn.bDeleteMe)
 		{
-			HitPawn.ProcessLocationalDamage(int(Fire.DamageMax * DamageMultiplier), Fire.Instigator, HitLocation, MomentumVector, Fire.DamageType, HitPoints);
-		}
-	}
-    else
-    {
-		if (NumberMonstersHit == 0)
-		{
-    		class'TurboPlayerEventHandler'.static.CollectMonsterHitData(HitActor, HitLocation, Normal(MomentumVector), HitData);
+			HitPawn.ProcessLocationalDamage(int(Fire.DamageMax * PenetrationMultiplier), Fire.Instigator, HitInfo.HitLocation, Momentum, Fire.DamageType, HitInfo.HitPoints);
 		}
 
-		if (HitData.Monster != None)
-		{
-			NumberMonstersHit++;
-		}
-
-		HitActor.TakeDamage(int(Fire.DamageMax * DamageMultiplier), Fire.Instigator, HitLocation, MomentumVector, Fire.DamageType);
-
-		if (HitData.DamageDealt > 0)
-		{
-			class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Weapon.Instigator.Controller, Fire, HitData);
-		}
+		return;
 	}
 
-	return TR_Hit;
+	if (NumberMonstersHit == 0)
+	{
+		class'TurboPlayerEventHandler'.static.CollectMonsterHitData(HitInfo.HitActor, HitInfo.HitLocation, Normal(Momentum), HitData);
+	}
+
+	if (HitData.Monster != None)
+	{
+		NumberMonstersHit++;
+	}
+
+	HitInfo.HitActor.TakeDamage(int(Fire.DamageMax * PenetrationMultiplier), Fire.Instigator, HitInfo.HitLocation, Momentum, Fire.DamageType);
+
+	if (HitData.DamageDealt > 0)
+	{
+		class'TurboPlayerEventHandler'.static.BroadcastPlayerFireHit(Fire.Instigator.Controller, Fire, HitData);
+	}
 }
 
 //Gets the trace endpoint and momentum vector given a Weapon and KFFire.
