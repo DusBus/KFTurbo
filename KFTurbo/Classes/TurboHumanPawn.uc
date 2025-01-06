@@ -25,6 +25,8 @@ const LoginMenuFlag = 2;
 
 var byte PlayerFlags;
 
+var float JumpZMultiplier;
+
 replication
 {
 	reliable if (bNetDirty && Role == ROLE_Authority)
@@ -882,10 +884,27 @@ exec function TossCash( int Amount )
 	}
 }
 
+function bool DoJump( bool bUpdating )
+{
+    local float JumpModifier;
+    JumpModifier = GetJumpZModifier();
+
+    MaxFallSpeed = FMax(default.MaxFallSpeed * JumpModifier, default.MaxFallSpeed);
+    JumpZ = default.JumpZ * JumpModifier ;
+    
+	return Super(KFPawn).DoJump(bUpdating);
+}
+
+simulated function float GetJumpZModifier()
+{
+	return Super.GetJumpZModifier() * JumpZMultiplier;
+}
+
 defaultproperties
 {
 	bDebugServerBuyWeapon=false
 	HealthHealingTo=0
+	JumpZMultiplier=1.f
 
 	RequiredEquipment(0)="KFTurbo.W_Knife_Weap"
 	RequiredEquipment(1)="KFTurbo.W_9MM_Weap"

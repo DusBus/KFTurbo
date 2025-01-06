@@ -161,6 +161,7 @@ var CardModifierStack PlayerHealRechargeModifier;
 var CardModifierStack PlayerMovementSpeedModifier;
 var CardModifierStack PlayerMovementAccelModifier;
 var CardModifierStack PlayerMovementFrictionModifier;
+var CardModifierStack PlayerJumpModifier;
 var CardFlag PlayerFreezeTagFlag;
 var CardFlag PlayerGreedSlowsFlag;
 var CardFlag PlayerLowHealthSlowsFlag;
@@ -997,6 +998,24 @@ function PlayerMovementFrictionModifierChanged(CardModifierStack ModifiedStack, 
     CardClientModifier.ForceNetUpdate();
 }
 
+function PlayerJumpModifierChanged(CardModifierStack ModifiedStack, float Modifier)
+{
+    local array<TurboHumanPawn> HumanPawnList;
+    local TurboHumanPawn TurboHumanPawn;
+    local int Index;
+
+    CardGameRules.PlayerJumpZMultiplier = Modifier;
+    
+    HumanPawnList = class'TurboGameplayHelper'.static.GetPlayerPawnList(Level);
+    for (Index = HumanPawnList.Length - 1; Index >= 0; Index--)
+    {
+        TurboHumanPawn = HumanPawnList[Index];
+        TurboHumanPawn.JumpZMultiplier = Modifier;
+        TurboHumanPawn.MaxFallSpeed = FMax(TurboHumanPawn.default.MaxFallSpeed * TurboHumanPawn.GetJumpZModifier(), TurboHumanPawn.default.MaxFallSpeed);
+        TurboHumanPawn.JumpZ = TurboHumanPawn.default.JumpZ * TurboHumanPawn.GetJumpZModifier();
+    }
+}
+
 function PlayerFreezeTagFlagChanged(Cardflag Flag, bool bIsEnabled)
 {
     CardGameModifier.bFreezePlayersDuringWave = bIsEnabled;
@@ -1649,6 +1668,12 @@ defaultproperties
         OnModifierChanged=PlayerMovementFrictionModifierChanged
     End Object
     PlayerMovementFrictionModifier=CardModifierStack'PlayerMovementFrictionModifierStack'
+
+    Begin Object Name=PlayerJumpModifierStack Class=CardModifierStack
+        ModifierStackID="PlayerJump"
+        OnModifierChanged=PlayerJumpModifierChanged
+    End Object
+    PlayerJumpModifier=CardModifierStack'PlayerJumpModifierStack'
 
     Begin Object Name=PlayerFreezeTagCardFlag Class=CardFlag
         FlagID="PlayerFreezeTag"
