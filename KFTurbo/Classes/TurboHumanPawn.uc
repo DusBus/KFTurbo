@@ -837,7 +837,7 @@ function ServerSellWeapon( Class<Weapon> WClass )
 function TossWeapon(Vector TossVel)
 {
 	local Vector X,Y,Z;
-	local Weapon WeaponToToss;
+	local Inventory WeaponToToss;
 	local float Rating;
 
 	if (Health > 0)
@@ -852,9 +852,9 @@ function TossWeapon(Vector TossVel)
 		return;
 	}
 
-	WeaponToToss = KFWeapon(Weapon).RecommendWeapon(Rating);
+	WeaponToToss = Inventory.RecommendWeapon(Rating);
 
-	if (KFWeapon(Weapon) == None || Rating < -50 || KFWeapon(Weapon).bKFNeverThrow)
+	if (KFWeapon(WeaponToToss) == None || Rating < -50 || KFWeapon(WeaponToToss).bKFNeverThrow)
 	{
 		return;
 	}
