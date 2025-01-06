@@ -759,11 +759,9 @@ defaultproperties
     Begin Object Name=NakedSnake Class=TurboCard_Evil
         CardName(0)="Naked"
         CardName(1)="Snake"
-        CardDescriptionList(0)="Players lose their"
-        CardDescriptionList(1)="armor at the start"
-        CardDescriptionList(2)="of each wave and"
-        CardDescriptionList(3)="cannot buy armor"
-        CardDescriptionList(4)="at the trader."
+        CardDescriptionList(0)="Players cannot"
+        CardDescriptionList(1)="buy armor at"
+        CardDescriptionList(2)="the trader."
         CardID="EVIL_NAKEDSNAKE"
         OnActivateCard=ActivateNakedSnake
     End Object

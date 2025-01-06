@@ -231,11 +231,6 @@ function OnWaveStart(int StartedWave)
     {
         MarkPlayerForDeath();
     }
-
-    if (NoArmorFlag.IsFlagset())
-    {
-        RemoveAllPlayersArmor();
-    }
 }
 
 function OnWaveEnd(int EndedWave)
@@ -607,11 +602,6 @@ function NoArmorFlagChanged(CardFlag Flag, bool bIsEnabled)
 {
     CardGameModifier.bDisableArmorPurchase = bIsEnabled;
     CardGameModifier.ForceNetUpdate();
-
-    if (bIsEnabled)
-    {
-        RemoveAllPlayersArmor();
-    }
 }
 
 function NoDropOrSellItemsFlagChanged(CardFlag Flag, bool bIsEnabled)

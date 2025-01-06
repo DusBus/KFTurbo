@@ -277,20 +277,6 @@ function GrantAllPlayersArmor()
     }
 }
 
-function RemoveAllPlayersArmor()
-{
-	local Controller Controller;
-
-    for ( Controller = TurboGameType.Level.ControllerList; Controller != None; Controller = Controller.NextController )
-    {
-        if (Controller.Pawn != None && Controller.Pawn.Health > 0 && PlayerController(Controller) != None && Controller.Pawn.ShieldStrength >0.f)
-        {
-            PlayerController(Controller).ClientPlaySound(Sound'KF_InventorySnd.Vest_Pickup');
-            Controller.Pawn.ShieldStrength = 0.f;
-        }
-    }
-}
-
 function GrantRandomSuperCard()
 {
     CardReplicationInfo.ActivateRandomSuperCard();
