@@ -509,7 +509,15 @@ function MonsterNetDamage(out float DamageMultiplier, KFMonster Injured, Pawn In
 
     if (WeaponDamageType.default.bCheckForHeadShots)
     {
-        bWasHeadshot = Injured.IsHeadShot(HitLocation, Normal(Momentum), 1.f); //It's fine to ask this again since we haven't run PlayHit yet or anything.
+        //It's fine to ask this again since we haven't run PlayHit yet or anything.
+        if (class<DamTypeMelee>(WeaponDamageType) != None)
+        {
+            bWasHeadshot = Injured.IsHeadShot(HitLocation, Normal(Momentum), 1.25f); 
+        }
+        else
+        {
+            bWasHeadshot = Injured.IsHeadShot(HitLocation, Normal(Momentum), 1.f);
+        }
 
         if (bWasHeadshot)
         {
