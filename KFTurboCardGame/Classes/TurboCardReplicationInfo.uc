@@ -3,13 +3,16 @@
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboCardReplicationInfo extends Engine.ReplicationInfo;
 
-var int SelectionCount;
 var KFTurboCardGameMut OwnerMutator;
 
 var TurboCardDeck GoodGameDeck;
 var TurboCardDeck SuperGameDeck;
 var TurboCardDeck ProConGameDeck;
 var TurboCardDeck EvilGameDeck;
+
+var int SelectionCount;
+var int GoodSelectionDelta;
+var int ProConSelectionDelta;
 
 struct CardReference
 {
@@ -489,7 +492,7 @@ function StartSelection(int WaveNumber)
     }
 
     log ("Selected Deck:"@Deck);
-    Count = GetSelectionCount();
+    Count = GetSelectionCount(Deck);
     Count--;
     while (Count >= 0)
     {
@@ -769,8 +772,17 @@ function ResetDecksAndReRollCards(optional TurboCard TopCard)
     bIsPerformingReRoll = false;
 }
 
-function int GetSelectionCount()
+function int GetSelectionCount(TurboCardDeck Deck)
 {
+    if (TurboCardDeck_Good(Deck) != None)
+    {
+        return Max(SelectionCount + GoodSelectionDelta, 1);
+    }
+    else if (TurboCardDeck_ProCon(Deck) != None)
+    {
+        return Max(SelectionCount + ProConSelectionDelta, 1);
+    }
+
     return SelectionCount;
 }
 
@@ -912,4 +924,6 @@ defaultproperties
     bAlwaysRelevant=true
     bNetNotify=true
     SelectionCount = 3
+    GoodSelectionDelta = 0
+    ProConSelectionDelta = 0
 }

@@ -37,6 +37,8 @@ var CardFlag BankRunFlag;
 
 //CARD GAME
 var CardDeltaStack CardSelectionCountDelta;
+var CardDeltaStack GoodCardSelectionCountDelta;
+var CardDeltaStack ProConCardSelectionCountDelta;
 var CardFlag CurseOfRaFlag;
 var CurseOfRaManager CurseOfRaManager;
 
@@ -480,6 +482,16 @@ function CardSelectionCountDeltaChanged(CardDeltaStack ChangedDelta, int Delta)
 {
     CardReplicationInfo.SelectionCount = CardReplicationInfo.default.SelectionCount + Delta;
     CardReplicationInfo.SelectionCount = Max(1, CardReplicationInfo.SelectionCount);
+}
+
+function GoodCardSelectionCountDeltaChanged(CardDeltaStack ChangedDelta, int Delta)
+{
+    CardReplicationInfo.GoodSelectionDelta = Delta;
+}
+
+function ProConCardSelectionCountDeltaChanged(CardDeltaStack ChangedDelta, int Delta)
+{
+    CardReplicationInfo.ProConSelectionDelta = Delta;
 }
 
 function CurseOfRaFlagChanged(CardFlag Flag, bool bIsEnabled)
@@ -1226,6 +1238,18 @@ defaultproperties
         OnDeltaChanged=CardSelectionCountDeltaChanged
     End Object
     CardSelectionCountDelta=CardDeltaStack'CardSelectionCountDeltaStack'
+    
+    Begin Object Name=GoodCardSelectionCountDeltaStack Class=CardDeltaStack
+        DeltaStackID="GoodCardSelectionCount"
+        OnDeltaChanged=GoodCardSelectionCountDeltaChanged
+    End Object
+    GoodCardSelectionCountDelta=CardDeltaStack'GoodCardSelectionCountDeltaStack'
+    
+    Begin Object Name=ProConCardSelectionCountDeltaStack Class=CardDeltaStack
+        DeltaStackID="ProConCardSelectionCount"
+        OnDeltaChanged=ProConCardSelectionCountDeltaChanged
+    End Object
+    ProConCardSelectionCountDelta=CardDeltaStack'ProConCardSelectionCountDeltaStack'
     
     Begin Object Name=CurseOfRaCardFlag Class=CardFlag
         FlagID="CurseOfRa"
