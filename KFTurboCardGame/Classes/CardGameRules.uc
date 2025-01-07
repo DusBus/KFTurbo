@@ -29,6 +29,7 @@ var(Turbo) float BerserkerMeleeDamageMultiplier;
 var(Turbo) float TrashHeadshotDamageMultiplier;
 var(Turbo) float TrashDamageMultiplier;
 var(Turbo) float BossDamageMultiplier;
+var(Turbo) float MonsterFullHealthDamageMultiplier;
 
 var(Turbo) float DamageTakenMultiplier;
 var(Turbo) float ExplosiveDamageTakenMultiplier;
@@ -499,6 +500,11 @@ function MonsterNetDamage(out float DamageMultiplier, KFMonster Injured, Pawn In
     else if (MonsterType == Trash)
     {
         DamageMultiplier *= TrashDamageMultiplier;
+    }
+
+    if ((Injured.Health - Injured.HealthMax) > -1.f)
+    {
+        DamageMultiplier *= MonsterFullHealthDamageMultiplier;
     }
 
     if (WeaponDamageType.default.bCheckForHeadShots)
@@ -1006,6 +1012,7 @@ defaultproperties
     TrashHeadshotDamageMultiplier=1.f
     TrashDamageMultiplier=1.f
     BossDamageMultiplier=1.f
+    MonsterFullHealthDamageMultiplier=1.f
 
     DamageTakenMultiplier=1.f
     ExplosiveDamageTakenMultiplier=1.f
