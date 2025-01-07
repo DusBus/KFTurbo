@@ -91,6 +91,7 @@ var CardModifierStack PlayerBerserkerMeleeDamageModifier;
 
 var CardModifierStack PlayerNonEliteDamageModifier;
 var CardModifierStack PlayerNonEliteHeadshotDamageModifier;
+var CardModifierStack PlayerBossDamageModifier;
 
 var CardModifierStack PlayerSlomoDamageModifier;
 var CardModifierStack PlayerLowHealthDamageModifier;
@@ -726,6 +727,11 @@ function PlayerNonEliteDamageModifierChanged(CardModifierStack ModifiedStack, fl
 function PlayerNonEliteHeadshotDamageModifierChanged(CardModifierStack ModifiedStack, float Modifier)
 {
     CardGameRules.TrashHeadshotDamageMultiplier = Modifier;
+}
+
+function PlayerBossDamageModifierChanged(CardModifierStack ModifiedStack, float Modifier)
+{
+    CardGameRules.BossDamageMultiplier = Modifier;
 }
 
 function PlayerSlomoDamageModifierChanged(CardModifierStack ModifiedStack, float Modifier)
@@ -1399,6 +1405,12 @@ defaultproperties
         OnModifierChanged=PlayerNonEliteHeadshotDamageModifierChanged
     End Object
     PlayerNonEliteHeadshotDamageModifier=CardModifierStack'PlayerNonEliteHeadshotDamageModifierStack'
+
+    Begin Object Name=PlayerBossDamageModifierStack Class=CardModifierStack
+        ModifierStackID="PlayerBossDamage"
+        OnModifierChanged=PlayerBossDamageModifierChanged
+    End Object
+    PlayerBossDamageModifier=CardModifierStack'PlayerBossDamageModifierStack'
 
     Begin Object Name=PlayerSlomoDamageModifierStack Class=CardModifierStack
         ModifierStackID="PlayerSlomoDamage"

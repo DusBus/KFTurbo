@@ -3,6 +3,7 @@
 //Distributed under the terms of the GPL-2.0 License.
 //For more information see https://github.com/KFPilot/KFTurbo.
 class CardGameRules extends TurboGameRules
+    dependson(PawnHelper)
     hidecategories(Advanced,Display,Events,Object,Sound);
 	
 var KFTurboCardGameMut MutatorOwner;
@@ -27,6 +28,7 @@ var(Turbo) float FireDamageMultiplier;
 var(Turbo) float BerserkerMeleeDamageMultiplier;
 var(Turbo) float TrashHeadshotDamageMultiplier;
 var(Turbo) float TrashDamageMultiplier;
+var(Turbo) float BossDamageMultiplier;
 
 var(Turbo) float DamageTakenMultiplier;
 var(Turbo) float ExplosiveDamageTakenMultiplier;
@@ -59,13 +61,6 @@ var (Turbo) bool bSuperGrenades;
 
 //Monster
 var array<KFMonster> MonsterPawnList;
-
-struct HeadshotData
-{
-    var KFMonster Monster;
-    var float HeadHealth;
-};
-var array<HeadshotData> MonsterHeadshotCheckList;
 
 var(Turbo) float BloatMovementSpeedModifier;
 var array<P_Bloat> BloatPawnList;
@@ -216,10 +211,6 @@ function InitializeMonster(KFMonster Monster)
     HeadScaleModifier = MutatorOwner.TurboCardClientModifier.MonsterHeadSizeModifier;
 
     Monster.HeadScale *= HeadScaleModifier;
-
-    MonsterHeadshotCheckList.Length = MonsterHeadshotCheckList.Length + 1;
-    MonsterHeadshotCheckList[MonsterHeadshotCheckList.Length - 1].Monster = Monster;
-    MonsterHeadshotCheckList[MonsterHeadshotCheckList.Length - 1].HeadHealth = Monster.HeadHealth;
 
     if (HeadScaleModifier > 1.f && Monster.MyExtCollision != None)
     {
@@ -495,37 +486,28 @@ function ApplyPerkDamageModifiers(out float DamageMultiplier, KFHumanPawn Instig
     }
 }
 
-function bool WasHeadshot(KFMonster Injured)
-{
-    local int Index;
-    local bool bResult;
-    for (Index = 0; Index < MonsterHeadshotCheckList.Length; Index++)
-    {
-        if (MonsterHeadshotCheckList[Index].Monster == Injured)
-        {
-            bResult = MonsterHeadshotCheckList[Index].HeadHealth > Injured.HeadHealth;
-            MonsterHeadshotCheckList[Index].HeadHealth = Injured.HeadHealth;
-            return bResult;
-        }
-    }
-    
-    return false;
-}
-
 function MonsterNetDamage(out float DamageMultiplier, KFMonster Injured, Pawn InstigatedBy, Vector HitLocation, out Vector Momentum, class<KFWeaponDamageType> WeaponDamageType)
 {
     local bool bWasHeadshot;
-    local bool bIsTrashZed;
-    bWasHeadshot = WasHeadshot(Injured);
-    
-    //We use kill message rules to figure out if something is a trash zed.
-    bIsTrashZed = Injured.Default.Health < Class'HUDKillingFloor'.Default.MessageHealthLimit && Injured.Default.Mass < Class'HUDKillingFloor'.Default.MessageMassLimit;
+    local PawnHelper.EMonsterType MonsterType;
+    MonsterType = class'PawnHelper'.static.GetMonsterType(Injured.Class);
+
+    if (MonsterType == Boss)
+    {
+        DamageMultiplier *= BossDamageMultiplier;
+    }
+    else if (MonsterType == Trash)
+    {
+        DamageMultiplier *= TrashDamageMultiplier;
+    }
 
     if (WeaponDamageType.default.bCheckForHeadShots)
     {
+        bWasHeadshot = Injured.IsHeadShot(HitLocation, Normal(Momentum), 1.f); //It's fine to ask this again since we haven't run PlayHit yet or anything.
+
         if (bWasHeadshot)
         {
-            if(bIsTrashZed)
+            if(MonsterType == Trash)
             {
                 DamageMultiplier *= TrashHeadshotDamageMultiplier;
             }
@@ -534,11 +516,6 @@ function MonsterNetDamage(out float DamageMultiplier, KFMonster Injured, Pawn In
         }
         else
         {
-            if (bIsTrashZed)
-            {
-                DamageMultiplier *= TrashDamageMultiplier;
-            }
-
             DamageMultiplier *= NonHeadshotDamageMultiplier;
         }
     }
@@ -592,33 +569,6 @@ function ScoreKill(Controller Killer, Controller Killed)
         if (BonusCashMultiplier > 1.f && Killer.PlayerReplicationInfo != None && KFMonster(Killed.Pawn) != None)
         {
             GiveBonusCash(Killer.PlayerReplicationInfo, KFMonster(Killed.Pawn));
-        }
-    }
-
-    if (Killed != None)
-    {
-        if (KFMonster(Killed.Pawn) != None)
-        {
-            RemoveMonsterFromHeadshotList(KFMonster(Killed.Pawn));
-        }
-    }
-}
-
-function RemoveMonsterFromHeadshotList(KFMonster Monster)
-{
-    local int Index;
-    for(Index = MonsterHeadshotCheckList.Length - 1; Index > -1; Index--)
-    {
-        if (MonsterHeadshotCheckList[Index].Monster == None)
-        {
-            MonsterHeadshotCheckList.Remove(Index, 1);
-            continue;
-        }
-
-        if (MonsterHeadshotCheckList[Index].Monster == Monster)
-        {
-            MonsterHeadshotCheckList.Remove(Index, 1);
-            break;
         }
     }
 }
@@ -1055,6 +1005,7 @@ defaultproperties
     BerserkerMeleeDamageMultiplier=1.f
     TrashHeadshotDamageMultiplier=1.f
     TrashDamageMultiplier=1.f
+    BossDamageMultiplier=1.f
 
     DamageTakenMultiplier=1.f
     ExplosiveDamageTakenMultiplier=1.f
