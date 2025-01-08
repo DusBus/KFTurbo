@@ -77,7 +77,7 @@ static function OnPlayerDamagedMonster(TurboPlayerController Player, KFMonster T
     WavePlayerStatCollector.IncrementDamageDone(Damage, Target.Class);
 }
 
-static function OnPlayerKilledMonster(TurboPlayerController Player, KFMonster Target)
+static function OnPlayerKilledMonster(TurboPlayerController Player, KFMonster Target, class<DamageType> DamageType)
 {
     local TurboWavePlayerStatCollector WavePlayerStatCollector;
     WavePlayerStatCollector = GetPlayerWaveStats(Player);

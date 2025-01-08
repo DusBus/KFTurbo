@@ -46,7 +46,7 @@ function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<Dam
 
     if (KFMonster(KilledPawn) != None)
     {
-        class'TurboPlayerEventHandler'.static.BroadcastPlayerKilledMonster(Killer, KFMonster(KilledPawn));
+        class'TurboPlayerEventHandler'.static.BroadcastPlayerKilledMonster(Killer, KFMonster(KilledPawn), DamageType);
     }
 }
 
