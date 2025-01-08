@@ -94,6 +94,7 @@ Data payload for a player's wave stats looks like the following;
     "wavenum" : 8,
     "player" : "<steam ID>",
     "playername" : "Player Name",
+    "perk" : "<perk name>",
     "stats" :
         {
          "Kills"  : 2,
@@ -107,6 +108,7 @@ version - The KFTurbo version currently running.
 wavenum - The wave this vote data came from during the game.
 player - the steam ID of the player this payload is for.
 playername - the username of the player this payload is for.
+perk - the perk this player was during the wave.
 stats - A map of tracked non-zero stats accrued during the wave.
     Map key list: Kills, KillsFP, KillsSC, Damage, DamageFP, DamageSC, ShotsFired, MeleeSwings, ShotsHit, ShotsHeadshot, Reloads, Heals, DamageTaken.
 died - Wether or not the player died this wave.

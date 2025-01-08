@@ -3,6 +3,7 @@
 class TurboWavePlayerStatCollector extends TurboPlayerStatCollectorBase;
 
 var int Wave;
+var class<TurboVeterancyTypes> Perk;
 
 var int Kills, KillsFleshpound, KillsScrake;
 var int DamageDone, DamageDoneFleshpound, DamageDoneScrake;
@@ -21,7 +22,7 @@ var KFTurboGameType GameType;
 replication
 {
 	reliable if (Role == ROLE_Authority)
-		Wave,
+		Wave, Perk,
 		Kills, KillsFleshpound, KillsScrake,
 		DamageDone, DamageDoneFleshpound, DamageDoneScrake,
 		ShotsFired, ShotsHit, ShotsHeadshot,
@@ -37,6 +38,7 @@ function PushStats(TurboPlayerStatCollectorBase Source)
 	local TurboWavePlayerStatCollector WaveStatsSource;
 	WaveStatsSource = TurboWavePlayerStatCollector(Source);
 
+	Perk = WaveStatsSource.Perk;
 	Wave = WaveStatsSource.Wave;
 
 	Kills = WaveStatsSource.Kills;
@@ -58,6 +60,16 @@ function PushStats(TurboPlayerStatCollectorBase Source)
 	DamageTaken = WaveStatsSource.DamageTaken;
 	HealingDone = WaveStatsSource.HealingDone;
 	Deaths = WaveStatsSource.Deaths;
+}
+
+function PreBeginPlay()
+{
+	Super.PreBeginPlay();
+	
+	if (PlayerTPRI != None)
+	{
+		Perk = class<TurboVeterancyTypes>(PlayerTPRI.ClientVeteranSkill);
+	}
 }
 
 function PostBeginPlay()

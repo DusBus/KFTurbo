@@ -19,8 +19,10 @@ var int ControllerListIndex;
 var KFTurboGameType TurboGameType;
 var KFTurboMut Mutator;
 
-//Turns on collector/replicator system. False for now until tested.
+//Turns on collector/replicator system.
 var globalconfig bool bEnableStatCollector;
+var globalconfig string WaveStatCollectorClassOverride;
+var class<TurboWavePlayerStatCollector> WaveStatCollectorClass;
 
 function PostBeginPlay()
 {
@@ -28,6 +30,16 @@ function PostBeginPlay()
 
     TurboGameType = KFTurboGameType(Level.Game);
     Mutator = KFTurboMut(Owner);
+
+    if (WaveStatCollectorClassOverride != "")
+    {
+        WaveStatCollectorClass = class<TurboWavePlayerStatCollector>(DynamicLoadObject(WaveStatCollectorClassOverride, class'class'));
+    }
+
+    if (WaveStatCollectorClass == None)
+    {
+        WaveStatCollectorClass = class'TurboWavePlayerStatCollector';
+    }
 }
 
 function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn InstigatedBy, vector HitLocation, out vector Momentum, class<DamageType> DamageType)
@@ -142,7 +154,7 @@ function CreateStatCollector(TurboHumanPawn Pawn)
         return;
     }
 
-    Spawn(class'TurboWavePlayerStatCollector', Pawn.PlayerReplicationInfo);
+    Spawn(WaveStatCollectorClass, Pawn.PlayerReplicationInfo);
 }
 
 function ReplicateStatCollector(TurboPlayerController Controller)

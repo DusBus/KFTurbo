@@ -128,6 +128,16 @@ function Timer()
 	SetTimer(15.f, false);
 }
 
+simulated function TornOff()
+{
+	Super.TornOff();
+
+	if (PlayerTPRI == None)
+	{
+		LifeSpan = 1.f;
+	}
+}
+
 function ForceNetUpdate()
 {
     NetUpdateTime = Max(Level.TimeSeconds - ((1.f / NetUpdateFrequency) + 1.f), 0.1f);

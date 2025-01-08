@@ -75,6 +75,23 @@ function ClearTraderEndVote()
     bVotedForTraderEnd = false;
 }
 
+simulated function Destroyed()
+{
+    local int Index;
+
+    for (Index = StatCollectorList.Length - 1; Index >= 0; Index--)
+    {
+        StatCollectorList[Index].Destroy();
+    }
+
+    for (Index = StatReplicatorList.Length - 1; Index >= 0; Index--)
+    {
+        StatReplicatorList[Index].Destroy();
+    }
+
+    Super.Destroyed();
+}
+
 simulated function RegisterStatCollector(TurboPlayerStatCollectorBase Collector)
 {
     StatCollectorList.Length = StatCollectorList.Length + 1;
