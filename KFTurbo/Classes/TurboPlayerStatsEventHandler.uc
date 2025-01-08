@@ -89,3 +89,16 @@ static function OnPlayerKilledMonster(TurboPlayerController Player, KFMonster Ta
 
     WavePlayerStatCollector.IncrementKills(Target.Class);
 }
+
+static function OnPlayerDied(TurboPlayerController Player, Controller Killer, class<DamageType> DamageType)
+{
+    local TurboWavePlayerStatCollector WavePlayerStatCollector;
+    WavePlayerStatCollector = GetPlayerWaveStats(Player);
+
+    if (WavePlayerStatCollector == None)
+    {
+        return;
+    }
+
+    WavePlayerStatCollector.OnDied(Killer, DamageType);
+}

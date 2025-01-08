@@ -2,7 +2,7 @@
 //Distributed under the terms of the GPL-2.0 License.
 //For more information see https://github.com/KFPilot/KFTurbo.
 class KFTurboCardGameMut extends CardGameMutBase
-		config(KFTurboCardGame);
+	config(KFTurboCardGame);
 
 #exec obj load file="..\Textures\TurboCardGame.utx" package=KFTurboCardGame
 
@@ -31,7 +31,7 @@ function PostBeginPlay()
 
 	AttemptModifyGameLength();
 
-	SetupStatTcpLink();
+	TurboCardStats = SetupStatTcpLink();
 	
 	class'TurboWaveEventHandler'.static.RegisterWaveHandler(Self, class'CardGameWaveEventHandler');
 	class'TurboWaveSpawnEventHandler'.static.RegisterWaveHandler(Self, class'CardGameWaveSpawnEventHandler');
@@ -129,22 +129,22 @@ function AttemptModifyGameLength()
 	KFTurboGameType(Level.Game).SetFinalWaveOverride(14);
 }
 
-function SetupStatTcpLink()
+function TurboCardStatsTcpLink SetupStatTcpLink()
 {
 	local class<TurboCardStatsTcpLink> TcpLinkClass;
 	if (!class'TurboCardStatsTcpLink'.static.ShouldBroadcastAnalytics())
 	{
-		return;
+		return None;
 	}
 
 	TcpLinkClass = class'TurboCardStatsTcpLink'.static.GetCardStatsTcpLinkClass();
 
 	if (TcpLinkClass == None)
 	{
-		return;
+		return None;
 	}
 
-	TurboCardStats = Spawn(TcpLinkClass, Self);
+	return Spawn(TcpLinkClass, Self);
 }
 
 static final function KFTurboCardGameMut FindMutator(GameInfo GameInfo)

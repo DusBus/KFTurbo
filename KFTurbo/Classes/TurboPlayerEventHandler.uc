@@ -21,6 +21,7 @@ static function OnPlayerReload(TurboPlayerController Player, KFWeapon Weapon);
 
 static function OnPlayerDamagedMonster(TurboPlayerController Player, KFMonster Target, int Damage);
 static function OnPlayerKilledMonster(TurboPlayerController Player, KFMonster Target, class<DamageType> DamageType);
+static function OnPlayerDied(TurboPlayerController Player, Controller Killer, class<DamageType> DamageType);
 
 //Event registration.
 static final function RegisterPlayerEventHandler(Controller Target, class<TurboPlayerEventHandler> PlayerEventHandlerClass)
@@ -220,5 +221,20 @@ static final function BroadcastPlayerKilledMonster(Controller Player, KFMonster 
     for (Index = TurboPlayerController.TurboPlayerEventHandlerList.Length - 1; Index >= 0; Index--)
     {
         TurboPlayerController.TurboPlayerEventHandlerList[Index].static.OnPlayerKilledMonster(TurboPlayerController, Target, DamageType);
+    }
+}
+
+static final function BroadcastPlayerDied(TurboPlayerController Player, Controller Killer, class<DamageType> DamageType)
+{
+    local int Index;
+
+    if (Player.Role != ROLE_Authority)
+    {
+        return;
+    }
+
+    for (Index = Player.TurboPlayerEventHandlerList.Length - 1; Index >= 0; Index--)
+    {
+        Player.TurboPlayerEventHandlerList[Index].static.OnPlayerDied(Player, Killer, DamageType);
     }
 }

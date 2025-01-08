@@ -16,12 +16,7 @@ enum EMonster
      Bloat,
      Siren,
      Husk,
-
-     //Some event zeds we want to use.
-     Scrake_Halloween,
-     Fleshpound_Halloween,
-     Bloat_Halloween,
-     Siren_Halloween,
+     Boss,
 
      //"Custom" zeds.
      Crawler_Jumper,
@@ -44,20 +39,14 @@ defaultproperties
      MonsterClasses(6)=(MClassName="KFTurbo.P_Bloat_STA")
      MonsterClasses(7)=(MClassName="KFTurbo.P_Siren_STA")
      MonsterClasses(8)=(MClassName="KFTurbo.P_Husk_STA")
-
-     //Event Monsters
-     MonsterClasses(9)=(MClassName="KFTurbo.P_Scrake_HAL",Mid="J")
-     MonsterClasses(10)=(MClassName="KFTurbo.P_Fleshpound_HAL",Mid="K")
-     MonsterClasses(11)=(MClassName="KFTurbo.P_Bloat_HAL",Mid="L")
-     MonsterClasses(12)=(MClassName="KFTurbo.P_Siren_HAL",Mid="M")
+     MonsterClasses(9)=(MClassName="KFTurbo.P_ZombieBoss_STA",Mid="J")
 
      //Special Monsters
-     MonsterClasses(13)=(MClassName="KFTurbo.P_Crawler_Jumper",Mid="N")
-     MonsterClasses(14)=(MClassName="KFTurbo.P_Gorefast_Classy",Mid="O")
-     MonsterClasses(15)=(MClassName="KFTurbo.P_Gorefast_Assassin",Mid="P")
-     MonsterClasses(16)=(MClassName="KFTurbo.P_Bloat_Fathead",Mid="Q")
-     MonsterClasses(17)=(MClassName="KFTurbo.P_Siren_Caroler",Mid="R")
-
+     MonsterClasses(10)=(MClassName="KFTurbo.P_Crawler_Jumper",Mid="K")
+     MonsterClasses(11)=(MClassName="KFTurbo.P_Gorefast_Classy",Mid="L")
+     MonsterClasses(12)=(MClassName="KFTurbo.P_Gorefast_Assassin",Mid="M")
+     MonsterClasses(13)=(MClassName="KFTurbo.P_Bloat_Fathead",Mid="N")
+     MonsterClasses(14)=(MClassName="KFTurbo.P_Siren_Caroler",Mid="O")
 
      //Clear all these lists out - they won't be used anyways.
      StandardMonsterClasses=()

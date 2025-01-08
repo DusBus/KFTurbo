@@ -10,6 +10,8 @@ class KFTurboMut extends Mutator
 #exec obj load file="..\Animations\KFTurboExtra.ukx" package=KFTurbo
 #exec obj load file="..\Textures\KFTurboHUD.utx" package=KFTurbo
 
+var TurboStatsGameRules StatsGameRules;
+var TurboStatsTcpLink StatsTcpLink;
 var TurboCustomZedHandler CustomZedHandler;
 var TurboDoorManager DoorManager;
 
@@ -57,7 +59,8 @@ simulated function PostBeginPlay()
 	class'TurboHealEventHandler'.static.RegisterHealHandler(Self, class'TurboHealEventHandlerImpl');
 
 	SetupBroadcaster();
-	SetupTurboStatsGameRules();
+	StatsGameRules = SetupTurboStatsGameRules();
+	StatsTcpLink = SetupStatTcpLink();
 
 	if (TeamGame(Level.Game) != None)
 	{
@@ -90,7 +93,7 @@ function SetupBroadcaster()
 }
 
 //Wants to be at the front of the list.
-function SetupTurboStatsGameRules()
+function TurboStatsGameRules SetupTurboStatsGameRules()
 {
 	local TurboStatsGameRules TSGR;
 	local GameRules GameRules;
@@ -99,6 +102,25 @@ function SetupTurboStatsGameRules()
 	GameRules = Level.Game.GameRulesModifiers;
 	Level.Game.GameRulesModifiers = TSGR;
 	TSGR.NextGameRules = GameRules;
+	return TSGR;
+}
+
+function TurboStatsTcpLink SetupStatTcpLink()
+{
+	local class<TurboStatsTcpLink> TcpLinkClass;
+	if (!class'TurboStatsTcpLink'.static.ShouldBroadcastAnalytics())
+	{
+		return None;
+	}
+
+	TcpLinkClass = class'TurboStatsTcpLink'.static.GetStatsTcpLinkClass();
+
+	if (TcpLinkClass == None)
+	{
+		return None;
+	}
+
+	return Spawn(TcpLinkClass, Self);
 }
 
 static function string GetHUDReplacementClass(string HUDClassString)

@@ -2,7 +2,8 @@
 //Sends data regarding card voting to a specified place.
 //Distributed under the terms of the GPL-2.0 License.
 //For more information see https://github.com/KFPilot/KFTurbo.
-class TurboCardStatsTcpLink extends TcpLink;
+class TurboCardStatsTcpLink extends TcpLink
+    config(KFTurboCardGame);
 
 var globalconfig bool bBroadcastAnalytics;
 var globalconfig string CardStatsDomain;
@@ -77,13 +78,10 @@ event Resolved(IpAddr ResolvedAddress)
 
 event ResolveFailed()
 {
-    log("Failed to resolve version domain.", 'KFTurboCardGame');
+    log("Failed to resolve stats domain.", 'KFTurboCardGame');
 
-    if (!OpenNoSteam(CardStatsAddress))
-    {
-        Close();
-        LifeSpan = 1.f;
-    }
+    Close();
+    LifeSpan = 1.f;
 }
 
 function Opened()
@@ -111,6 +109,7 @@ function OnVoteComplete(array<TurboCard> ActiveCardList, array<TurboCard> VoteSe
 Data payload for a vote looks like the following;
 
 {
+    "type": "cardgame_vote",
     "version": "4.4.1",
     "wavenum" : 8,
     "activecards" : ["CARD1", "CARD2", "CARD3", "CARD4", "CARD5", "CARD6", "CARD7"],
@@ -118,6 +117,7 @@ Data payload for a vote looks like the following;
     "votedcard" : "CARD9"
 }
 
+type - refers to the type of payload this is.
 version - The KFTurbo version currently running.
 wavenum - The wave this vote data came from during the game.
 activecards - The cards that have been selected so far.
@@ -128,15 +128,15 @@ votedcard - The card that was ultimately selected.
 static final function string BuildVotePayload(int WaveNumber, array<string> ActiveCardList, array<string> VoteSelectionList, string VotedCardList)
 {
     local string Payload;
-    local string QC;
-    QC = Chr(34);
 
-    Payload = "{"$QC$"version"$QC$":"$QC$class'KFTurboMut'.static.GetTurboVersionID()$QC$",";
-    Payload $= QC$"wavenum"$QC$":"$WaveNumber$",";
-    Payload $= QC$"activecards"$QC$":["$ConvertToString(ActiveCardList)$"],";
-    Payload $= QC$"voteselection"$QC$":["$ConvertToString(VoteSelectionList)$"],";
-    Payload $= QC$"votedcard"$QC$":"$VotedCardList$"}";
+    Payload = "{%qtype%q:%qcardgame_vote%q,";
+    Payload $= "%qversion%q:%q"$class'KFTurboMut'.static.GetTurboVersionID()$"%q,";
+    Payload $= "%qwavenum%q:"$WaveNumber$",";
+    Payload $= "%qactivecards%q:["$ConvertToString(ActiveCardList)$"],";
+    Payload $= "%qvoteselection%q:["$ConvertToString(VoteSelectionList)$"],";
+    Payload $= "%qvotedcard%q:"$VotedCardList$"}";
     
+    Payload = Repl(Payload, "%q", Chr(34));
     return Payload;
 }
 
@@ -149,6 +149,7 @@ function OnGameEnd(int WaveNumber, bool bWonGame, array<TurboCard> ActiveCardLis
 Data payload for a game end looks like the following;
 
 {
+    "type": "cardgame_endgame",
     "version": "4.4.1",
     "win" : false,
     "wavenum" : 3,
@@ -156,6 +157,7 @@ Data payload for a game end looks like the following;
     "showncards" : ["CARD1", "CARD3", "CARD5", ...]
 }
 
+type - refers to the type of payload this is.
 version - The KFTurbo version currently running.
 win - Whether or not this game resulted in a win or not.
 wavenum - The wave this game ended on.
@@ -170,12 +172,14 @@ static final function string BuildEndGamePayload(int WaveNumber, bool bWonGame, 
     local string QC;
     QC = Chr(34);
 
-    Payload = "{"$QC$"version"$QC$":"$QC$class'KFTurboMut'.static.GetTurboVersionID()$QC$",";
-    Payload $= QC$"win"$QC$":"$bWonGame$",";
-    Payload $= QC$"wavenum"$QC$":"$WaveNumber$",";
-    Payload $= QC$"activecards"$QC$":["$ConvertToString(ActiveCardList)$"],";
-    Payload $= QC$"showncards"$QC$":["$ConvertToString(ShownCardList)$"]}";
+    Payload = "{%qtype%q:%qcardgame_endgame%q,";
+    Payload $= "%qversion%q:%q"$class'KFTurboMut'.static.GetTurboVersionID()$"%q,";
+    Payload $= "%qwin%q:"$bWonGame$",";
+    Payload $= "%qwavenum%q:"$WaveNumber$",";
+    Payload $= "%qactivecards%q:["$ConvertToString(ActiveCardList)$"],";
+    Payload $= "%qshowncards%q:["$ConvertToString(ShownCardList)$"]}";
     
+    Payload = Repl(Payload, "%q", Chr(34));
     return Payload;
 }
 
@@ -183,14 +187,11 @@ static final function string ConvertToString(array<string> StringList)
 {
     local string Result;
     local int Index;
-    local string QuoteChar;
-    QuoteChar = Chr(34);
-
     Result = "";
 
     for (Index = 0; Index < StringList.Length; Index++)
     {
-        Result $= QuoteChar$StringList[Index]$QuoteChar;
+        Result $= "%q"$StringList[Index]$"%q";
 
         if (Index < StringList.Length - 1)
         {

@@ -14,6 +14,8 @@ var int Reloads;
 
 var int HealingDone;
 
+var int Deaths;
+
 var KFTurboGameType GameType;
 
 replication
@@ -25,10 +27,10 @@ replication
 		ShotsFired, ShotsHit, ShotsHeadshot,
 		MeleeSwings,
 		Reloads,
-		HealingDone;
+		HealingDone,
+		Deaths;
 }
 
-//API to convert a stat collector into a stat replicator.
 function PushStats(TurboPlayerStatCollectorBase Source)
 {
 	local TurboWavePlayerStatCollector WaveStatsSource;
@@ -53,6 +55,7 @@ function PushStats(TurboPlayerStatCollectorBase Source)
 	Reloads = WaveStatsSource.Reloads;
 	
 	HealingDone = WaveStatsSource.HealingDone;
+	Deaths = WaveStatsSource.Deaths;
 }
 
 function PostBeginPlay()
@@ -65,7 +68,7 @@ function PostBeginPlay()
 
 final function bool ShouldCollectStats()
 {
-	return GameType.bWaveInProgress;
+	return GameType != None && GameType.bWaveInProgress;
 }
 
 function IncrementKills(class<KFMonster> MonsterClass)
@@ -159,6 +162,16 @@ function IncrementHealthHealed(int HealAmount)
 	}
 
 	HealingDone += HealAmount;
+}
+
+function OnDied(Controller Killer, class<DamageType> DamageType)
+{
+	if (!ShouldCollectStats())
+	{
+		return;
+	}
+
+	Deaths++;
 }
 
 defaultproperties

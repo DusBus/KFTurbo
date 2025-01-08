@@ -17,6 +17,7 @@ var array<TurboPlayerController> ControllerList;
 var int ControllerListIndex;
 
 var KFTurboGameType TurboGameType;
+var KFTurboMut Mutator;
 
 //Turns on collector/replicator system. False for now until tested.
 var globalconfig bool bEnableStatCollector;
@@ -26,6 +27,7 @@ function PostBeginPlay()
     Super.PostBeginPlay();
 
     TurboGameType = KFTurboGameType(Level.Game);
+    Mutator = KFTurboMut(Owner);
 }
 
 function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn InstigatedBy, vector HitLocation, out vector Momentum, class<DamageType> DamageType)
@@ -47,6 +49,11 @@ function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<Dam
     if (KFMonster(KilledPawn) != None)
     {
         class'TurboPlayerEventHandler'.static.BroadcastPlayerKilledMonster(Killer, KFMonster(KilledPawn), DamageType);
+    }
+
+    if (TurboPlayerController(Killed) != None)
+    {
+        class'TurboPlayerEventHandler'.static.BroadcastPlayerDied(TurboPlayerController(Killed), Killer, DamageType);
     }
 }
 
@@ -141,6 +148,11 @@ function ReplicateStatCollector(TurboPlayerController Controller)
     if (StatsCollector == None)
     {
         return;
+    }
+    
+    if (Mutator != None && Mutator.StatsTcpLink != None)
+    {
+        Mutator.StatsTcpLink.SendWaveStats(TurboWavePlayerStatCollector(StatsCollector));
     }
 
     StatsCollector.ReplicateStats();

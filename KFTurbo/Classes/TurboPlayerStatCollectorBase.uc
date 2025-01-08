@@ -64,6 +64,32 @@ function PreBeginPlay()
 	Super.PreBeginPlay();
 }
 
+//Intentionally not simulated - we can't resolve Steam IDs this way on the remote (except maybe owning remote?).
+function string GetPlayerSteamID()
+{
+	if (PlayerTPRI == None)
+	{
+		return "";
+	}
+
+	if (PlayerController(PlayerTPRI.Owner) == None)
+	{
+		return "";
+	}
+
+	return PlayerController(PlayerTPRI.Owner).GetPlayerIDHash();
+}
+
+function string GetPlayerName()
+{
+	if (PlayerTPRI == None)
+	{
+		return "";
+	}
+
+	return PlayerTPRI.PlayerName;
+}
+
 simulated function Destoryed()
 {
 	Unregister();
