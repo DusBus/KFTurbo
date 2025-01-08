@@ -108,7 +108,7 @@ wavenum - The wave this vote data came from during the game.
 player - the steam ID of the player this payload is for.
 playername - the username of the player this payload is for.
 stats - A map of tracked non-zero stats accrued during the wave.
-    Map key list: Kills, KillsFP, KillsSC, Damage, DamageFP, DamageSC, ShotsFired, MeleeSwings, ShotsHit, ShotsHeadshot, Reloads, Heals.
+    Map key list: Kills, KillsFP, KillsSC, Damage, DamageFP, DamageSC, ShotsFired, MeleeSwings, ShotsHit, ShotsHeadshot, Reloads, Heals, DamageTaken.
 died - Wether or not the player died this wave.
 */
 

@@ -12,7 +12,7 @@ var int MeleeSwings;
 
 var int Reloads;
 
-var int HealingDone;
+var int DamageTaken, HealingDone;
 
 var int Deaths;
 
@@ -27,6 +27,7 @@ replication
 		ShotsFired, ShotsHit, ShotsHeadshot,
 		MeleeSwings,
 		Reloads,
+		DamageTaken,
 		HealingDone,
 		Deaths;
 }
@@ -54,6 +55,7 @@ function PushStats(TurboPlayerStatCollectorBase Source)
 
 	Reloads = WaveStatsSource.Reloads;
 	
+	DamageTaken = WaveStatsSource.DamageTaken;
 	HealingDone = WaveStatsSource.HealingDone;
 	Deaths = WaveStatsSource.Deaths;
 }
@@ -152,6 +154,16 @@ function IncrementReloads()
 	}
 
 	Reloads++;
+}
+
+function IncrementDamageTaken(int DamageAmount)
+{
+	if (!ShouldCollectStats())
+	{
+		return;
+	}
+
+	DamageTaken += DamageAmount;
 }
 
 function IncrementHealthHealed(int HealAmount)

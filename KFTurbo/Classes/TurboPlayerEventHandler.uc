@@ -20,6 +20,7 @@ static function OnPlayerMedicDartFire(TurboPlayerController Player, WeaponFire F
 static function OnPlayerReload(TurboPlayerController Player, KFWeapon Weapon);
 
 static function OnPlayerDamagedMonster(TurboPlayerController Player, KFMonster Target, int Damage);
+static function OnPlayerReceivedDamage(TurboPlayerController Player, KFMonster Instigator, int Damage);
 static function OnPlayerKilledMonster(TurboPlayerController Player, KFMonster Target, class<DamageType> DamageType);
 static function OnPlayerDied(TurboPlayerController Player, Controller Killer, class<DamageType> DamageType);
 
@@ -198,6 +199,24 @@ static final function BroadcastPlayerDamagedMonster(Controller Player, KFMonster
     for (Index = TurboPlayerController.TurboPlayerEventHandlerList.Length - 1; Index >= 0; Index--)
     {
         TurboPlayerController.TurboPlayerEventHandlerList[Index].static.OnPlayerDamagedMonster(TurboPlayerController, Target, Damage);
+    }
+}
+
+static final function BroadcastPlayerReceivedDamage(Controller Player, KFMonster Instigator, int Damage)
+{
+    local TurboPlayerController TurboPlayerController;
+    local int Index;
+
+    TurboPlayerController = TurboPlayerController(Player);
+
+    if (TurboPlayerController == None || TurboPlayerController.Role != ROLE_Authority)
+    {
+        return;
+    }
+
+    for (Index = TurboPlayerController.TurboPlayerEventHandlerList.Length - 1; Index >= 0; Index--)
+    {
+        TurboPlayerController.TurboPlayerEventHandlerList[Index].static.OnPlayerReceivedDamage(TurboPlayerController, Instigator, Damage);
     }
 }
 
