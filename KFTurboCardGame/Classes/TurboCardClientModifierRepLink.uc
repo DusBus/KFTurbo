@@ -182,7 +182,7 @@ simulated final function ApplyEquipSpeedModifier(KFWeapon Weapon)
     Weapon.PutDownTime = Weapon.default.PutDownTime * WeaponPutDownSpeedModifier;
     Weapon.PutDownAnimRate = Weapon.default.PutDownAnimRate / WeaponPutDownSpeedModifier;
 
-    if (Weapon.bDualWeapon && Level.TimeDilation < 1.f)
+    if (Weapon.bDualWeapon && Level.TimeDilation < 0.75f)
     {
         Weapon.PutDownTime *= ZedTimeWeaponBringUpSpeedModifier;
         Weapon.SelectAnimRate /= ZedTimeWeaponBringUpSpeedModifier;

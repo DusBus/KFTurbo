@@ -414,7 +414,7 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
 
     if (KFHumanPawn(InstigatedBy) != None)
     {
-        if (Level.TimeDilation < 1.f)
+        if (Level.TimeDilation < 0.75f)
         {
             DamageMultiplier *= SlomoDamageMultiplier;
         }

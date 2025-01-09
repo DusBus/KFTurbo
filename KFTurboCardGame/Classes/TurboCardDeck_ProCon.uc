@@ -3,6 +3,45 @@
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboCardDeck_ProCon extends TurboCardDeck;
 
+//This is sorta weird but this is how I imagine we'll handle 
+var bool bCanUseTradeIn, bHasUsedTradeIn;
+var TurboCard TradeInCard;
+
+function TurboCard DrawRandomCard()
+{
+    local int EffectiveDeckSize;
+
+    EffectiveDeckSize = DeckCardObjectList.Length;
+    if (!bHasUsedTradeIn && bCanUseTradeIn)
+    {
+        EffectiveDeckSize++;
+        if (FRand() < (1.f / float(EffectiveDeckSize)))
+        {
+            bHasUsedTradeIn = true;
+            return TradeInCard;
+        }
+    }
+
+    return Super.DrawRandomCard();
+}
+
+function OnDeckDraw(TurboCardReplicationInfo TCRI)
+{
+    local int GoodCardCount, SuperCardCount, ProConCardCount, EvilCardCount;
+    TCRI.GetActiveCardCounts(GoodCardCount, SuperCardCount, ProConCardCount, EvilCardCount);
+    bCanUseTradeIn = GoodCardCount >= 3;
+}
+
+function ActivateTradeIn(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    if (bActivate)
+    {
+        bHasUsedTradeIn = true;
+        GameplayManager.DeactivateAllGoodCards();
+        GameplayManager.GrantRandomSuperCard();
+    }
+}
+
 function ActivateExtraMoneyTraderTime(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
     if (bActivate)
@@ -422,8 +461,27 @@ function ActivateReRoll(TurboCardGameplayManager GameplayManager, TurboCard Card
     }
 }
 
+function ActivateDrawOne(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    if (bActivate)
+    {
+        GameplayManager.GrantRandomCard();
+    }
+}
+
 defaultproperties
 {
+    Begin Object Name=TradeIn Class=TurboCard_ProConStrange
+        CardName(0)="Trade In"
+        CardDescriptionList(0)="Removes all good"
+        CardDescriptionList(1)="cards in exchange"
+        CardDescriptionList(2)="for a random"
+        CardDescriptionList(3)="super card."
+        OnActivateCard=ActivateTradeIn
+        CardID="PROCON_TRADEIN"
+    End Object
+    TradeInCard=TurboCard'TradeIn'
+
     Begin Object Name=ExtraMoneyTraderTime Class=TurboCard_ProCon
         CardName(0)="Short Term"
         CardName(1)="Reward"
@@ -792,4 +850,14 @@ defaultproperties
         CardID="PROCON_REROLL"
     End Object
     DeckCardObjectList(29)=TurboCard'ReRoll'
+    
+    Begin Object Name=DrawOne Class=TurboCard_ProConStrange
+        CardName(0)="Draw One"
+        CardDescriptionList(0)="Receive a random"
+        CardDescriptionList(1)="card from any"
+        CardDescriptionList(2)="deck."
+        OnActivateCard=ActivateDrawOne
+        CardID="PROCON_DRAWONE"
+    End Object
+    DeckCardObjectList(30)=TurboCard'DrawOne'
 }

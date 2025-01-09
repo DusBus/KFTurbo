@@ -491,12 +491,14 @@ function StartSelection(int WaveNumber)
         }
     }
 
+    Deck.OnDeckDraw(Self);
+
     log ("Selected Deck:"@Deck);
     Count = GetSelectionCount(Deck);
     Count--;
     while (Count >= 0)
     {
-        AuthSelectableCardList[Count] = Deck.PopRandomCardObject();
+        AuthSelectableCardList[Count] = Deck.DrawRandomCard();
         SelectableCardList[Count] = GetCardReference(AuthSelectableCardList[Count]);
         log ("- Selected Card:"@Count@AuthSelectableCardList[Count].CardName[0]);
         Count--;
@@ -632,7 +634,8 @@ function ActivateRandomSuperCard()
         return;
     }
 
-    Card = SuperGameDeck.PopRandomCardObject();
+    SuperGameDeck.OnDeckDraw(Self);
+    Card = SuperGameDeck.DrawRandomCard();
     SelectCard(Card);
 }
 
@@ -644,7 +647,37 @@ function ActivateRandomEvilCard()
         return;
     }
 
-    Card = EvilGameDeck.PopRandomCardObject();
+    EvilGameDeck.OnDeckDraw(Self);
+    Card = EvilGameDeck.DrawRandomCard();
+    SelectCard(Card);
+}
+
+function ActivateRandomCard()
+{
+    local float Random;
+    local TurboCardDeck RandomDeck;
+    local TurboCard Card;
+
+    Random = FRand();
+    if (Random < 0.25f)
+    {
+        RandomDeck = GoodGameDeck;
+    }
+    else if (Random < 0.5f)
+    {
+        RandomDeck = SuperGameDeck;
+    }
+    else if (Random < 0.75f)
+    {
+        RandomDeck = ProConGameDeck;
+    }
+    else
+    {
+        RandomDeck = EvilGameDeck;
+    }
+
+    RandomDeck.OnDeckDraw(Self);
+    Card = RandomDeck.DrawRandomCard();
     SelectCard(Card);
 }
 
@@ -745,31 +778,52 @@ function ResetDecksAndReRollCards(optional TurboCard TopCard)
     log("Rolling cards... (Evil:"@NumEvil@")(ProCon:"@NumProCon@")(Good:"@NumGood@")(Super:"@NumSuper@").", 'KFTurboCardGame');
 
     //We'll do card activations in order of Evil -> Pro Con -> Good -> Super. Should minimize really bad outcomes.
+    EvilGameDeck.OnDeckDraw(Self);
     while(NumEvil > 0)
     {
-        SelectCard(EvilGameDeck.PopRandomCardObject());
+        SelectCard(EvilGameDeck.DrawRandomCard());
         NumEvil--;
     }
 
+    ProConGameDeck.OnDeckDraw(Self);
     while(NumProCon > 0)
     {
-        SelectCard(ProConGameDeck.PopRandomCardObject());
+        SelectCard(ProConGameDeck.DrawRandomCard());
         NumProCon--;
     }
 
+    GoodGameDeck.OnDeckDraw(Self);
     while(NumGood > 0)
     {
-        SelectCard(GoodGameDeck.PopRandomCardObject());
+        SelectCard(GoodGameDeck.DrawRandomCard());
         NumGood--;
     }
 
+    SuperGameDeck.OnDeckDraw(Self);
     while(NumSuper > 0)
     {
-        SelectCard(SuperGameDeck.PopRandomCardObject());
+        SelectCard(SuperGameDeck.DrawRandomCard());
         NumSuper--;
     }
     
     bIsPerformingReRoll = false;
+}
+
+function DeactivateAllGoodCards()
+{
+    local int Index;
+    for (Index = ArrayCount(AuthActiveCardList) - 1; Index >= 0; Index--)
+    {
+        if (AuthActiveCardList[Index] == None)
+        {
+            return;
+        }
+
+        if (TurboCard_Good(AuthActiveCardList[Index]) != None)
+        {
+            RemoveActiveCard(AuthActiveCardList[Index]);
+        }
+    }
 }
 
 function int GetSelectionCount(TurboCardDeck Deck)
@@ -913,10 +967,46 @@ function NotifyDecksWaveStarted()
     }
 
     WaveNumber = KFGameType(Level.Game).WaveNum;
-    GoodGameDeck.OnWaveStarted(WaveNumber);
-    SuperGameDeck.OnWaveStarted(WaveNumber);
-    ProConGameDeck.OnWaveStarted(WaveNumber);
-    EvilGameDeck.OnWaveStarted(WaveNumber);
+    GoodGameDeck.OnWaveStarted(Self, WaveNumber);
+    SuperGameDeck.OnWaveStarted(Self, WaveNumber);
+    ProConGameDeck.OnWaveStarted(Self, WaveNumber);
+    EvilGameDeck.OnWaveStarted(Self, WaveNumber);
+}
+
+function GetActiveCardCounts(out int GoodCardCount, out int SuperCardCount, out int ProConCardCount, out int EvilCardCount)
+{
+    local int Index;
+
+    GoodCardCount = 0;
+    SuperCardCount = 0;
+    ProConCardCount = 0;
+    EvilCardCount = 0;
+
+    for (Index = 0; Index < ArrayCount(AuthActiveCardList); Index++)
+    {
+        if (AuthActiveCardList[Index] == None)
+        {
+            return;
+        }
+
+        if (TurboCard_Good(AuthActiveCardList[Index]) != None)
+        {
+            GoodCardCount++;
+        }
+        else if (TurboCard_Super(AuthActiveCardList[Index]) != None)
+        {
+            SuperCardCount++;
+        }
+        else if (TurboCard_ProCon(AuthActiveCardList[Index]) != None)
+        {
+            ProConCardCount++;
+        }
+        else if (TurboCard_Evil(AuthActiveCardList[Index]) != None)
+        {
+            EvilCardCount++;
+        }
+    }
+
 }
 
 defaultproperties

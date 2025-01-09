@@ -287,6 +287,11 @@ function GrantRandomEvilCard()
     CardReplicationInfo.ActivateRandomEvilCard();
 }
 
+function GrantRandomCard()
+{
+    CardReplicationInfo.ActivateRandomCard();
+}
+
 function RemoveRandomSuperCard()
 {
     CardReplicationInfo.DeactivateRandomSuperCard();
@@ -300,6 +305,11 @@ function RemoveRandomEvilCard()
 function ResetDecksAndReRollCards(optional TurboCard TopCard)
 {
     CardReplicationInfo.ResetDecksAndReRollCards(TopCard);
+}
+
+function DeactivateAllGoodCards()
+{
+    CardReplicationInfo.DeactivateAllGoodCards();
 }
 
 function MultiplyPlayerCash(float Multiplier)

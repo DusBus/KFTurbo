@@ -26,7 +26,7 @@ static function TurboCard GetCardFromReference(TurboCardReplicationInfo.CardRefe
     return default.DeckCardObjectList[Reference.CardIndex];
 }
 
-function TurboCard PopRandomCardObject()
+function TurboCard DrawRandomCard()
 {
     local TurboCard Card;
     local int Index;
@@ -60,8 +60,14 @@ function bool RemoveCardFromDeck(TurboCard Card)
     return bRemovedCard;
 }
 
-//Allows for decks to optionally do something like adding/removing cards based on wave number.
-function OnWaveStarted(int StartedWave)
+//Allows for decks to optionally do something like adding/removing cards based on game state/wave number.
+function OnWaveStarted(TurboCardReplicationInfo TCRI, int StartedWave)
+{
+    
+}
+
+//Called right before we intend to draw card(s) from this deck. Can be for vote selection or other reasons (like Re-Roll or Deal With The Devil).
+function OnDeckDraw(TurboCardReplicationInfo TCRI)
 {
     
 }

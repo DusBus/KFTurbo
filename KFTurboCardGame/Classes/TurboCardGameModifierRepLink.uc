@@ -80,7 +80,7 @@ simulated function float GetFireRateMultiplier(KFPlayerReplicationInfo KFPRI, We
     Multiplier = Super.GetFireRateMultiplier(KFPRI, Other);
     Multiplier *= FireRateMultiplier;   
 
-    if (Level.TimeDilation < 1.f && IsDualWeapon(KFWeapon(Other)))
+    if (Level.TimeDilation < 0.75f && IsDualWeapon(KFWeapon(Other)))
     {
         Multiplier *= ZedTimeDualPistolFireRateMultiplier;
     }
@@ -96,7 +96,7 @@ simulated function float GetReloadRateMultiplier(KFPlayerReplicationInfo KFPRI, 
     local float Multiplier;
     Multiplier = Super.GetReloadRateMultiplier(KFPRI, Other) * ReloadRateMultiplier;
 
-    if (Level.TimeDilation < 1.f && IsDualWeapon(KFWeapon(Other)))
+    if (Level.TimeDilation < 0.75f && IsDualWeapon(KFWeapon(Other)))
     {
         Multiplier *= ZedTimeDualWeaponReloadRateMultiplier;
     }
