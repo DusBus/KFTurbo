@@ -37,15 +37,9 @@ static function class<TurboStatsTcpLink> GetStatsTcpLinkClass()
 
 static final function TurboStatsTcpLink FindStats(GameInfo GameInfo)
 {
-    local KFTurboMut CardGameMut;
-    CardGameMut = class'KFTurboMut'.static.FindMutator(GameInfo);
-
-    if (CardGameMut == None)
-    {
-        return None;
-    }
-
-    return CardGameMut.StatsTcpLink;
+    local KFTurboMut TurboMut;
+    TurboMut = class'KFTurboMut'.static.FindMutator(GameInfo);
+    return TurboMut.StatsTcpLink;
 }
 
 function PostBeginPlay()
@@ -91,6 +85,7 @@ Data payload for a player's wave stats looks like the following;
 {
     "type": "wavestats",
     "version": "5.2.2",
+    "session": "<session ID>",
     "wavenum" : 8,
     "player" : "<steam ID>",
     "playername" : "Player Name",
@@ -105,6 +100,7 @@ Data payload for a player's wave stats looks like the following;
 
 type - refers to the type of payload this is.
 version - The KFTurbo version currently running.
+session - The session ID for this game.
 wavenum - The wave this vote data came from during the game.
 player - the steam ID of the player this payload is for.
 playername - the username of the player this payload is for.
@@ -127,9 +123,12 @@ final function SendWaveStats(TurboWavePlayerStatCollector Stats)
 static final function string BuildWaveStatsPayload(TurboWavePlayerStatCollector Stats)
 {
     local string Payload;
+    local KFTurboMut TurboMut;
+    TurboMut = class'KFTurboMut'.static.FindMutator(Level.Game);
 
     Payload = "{%qtype%q:%qwavestats%q,";
-    Payload $= "%qversion%q:%q"$class'KFTurboMut'.static.GetTurboVersionID()$"%q,";
+    Payload $= "%qversion%q:%q"$TurboMut.GetTurboVersionID()$"%q,";
+    Payload $= "%qsession%q:%q"$TurboMut.GetSessionID()$"%q,";
     Payload $= "%qwavenum%q:"$Stats.Wave$",";
     Payload $= "%qplayer%q:"$Stats.GetPlayerSteamID()$",";
     Payload $= "%qplayername%q:"$Stats.GetPlayerName()$",";

@@ -21,6 +21,9 @@ var globalconfig bool bCheckLatestTurboVersion;
 var private string TurboVersion;
 var private bool bHasVersionUpdate;
 
+var protected string SessionID;
+var protected string GameStartTime;
+
 delegate SetPerkSwitchEnabled(bool bEnable);
 
 simulated function PostBeginPlay()
@@ -260,18 +263,41 @@ static final function bool HasVersionUpdate(GameInfo Game)
 {
     local KFTurboMut Mutator;
     Mutator = class'KFTurboMut'.static.FindMutator(Game);
-
-	if (Mutator == None)
-	{
-		return false;
-	}
-
 	return Mutator.bHasVersionUpdate;
 }
 
 simulated function String GetHumanReadableName()
 {
 	return FriendlyName;
+}
+
+final function string GetSessionID()
+{
+    if (SessionID == "")
+	{
+		GameStartTime = FullTimeDate();
+		SessionID = GenerateSessionID();
+	}
+
+	return SessionID;
+}
+
+//Taken from GameStats.uc
+// Date/Time in MYSQL format
+function String FullTimeDate()
+{
+	return Level.Year$"-"$Level.Month$"-"$Level.Day$" "$Level.Hour$":"$Level.Minute$":"$Level.Second;
+}
+
+//By default session IDs are Y-M-D H:M:S|<map_file_name_without_ext>
+function string GenerateSessionID()
+{
+	return GameStartTime $ "|" $ Left(string(Level), InStr(string(Level), "."));
+}
+
+function OnGameStart()
+{
+	GetSessionID();
 }
 
 defaultproperties

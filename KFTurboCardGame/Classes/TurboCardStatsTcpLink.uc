@@ -111,6 +111,7 @@ Data payload for a vote looks like the following;
 {
     "type": "cardgame_vote",
     "version": "4.4.1",
+    "session": "<session ID>",
     "wavenum" : 8,
     "activecards" : ["CARD1", "CARD2", "CARD3", "CARD4", "CARD5", "CARD6", "CARD7"],
     "voteselection" : ["CARD8", "CARD9", "CARD10"],
@@ -128,9 +129,12 @@ votedcard - The card that was ultimately selected.
 static final function string BuildVotePayload(int WaveNumber, array<string> ActiveCardList, array<string> VoteSelectionList, string VotedCardList)
 {
     local string Payload;
+    local KFTurboMut Mutator;
+    Mutator = class'KFTurboMut'.static.FindMutator(Level.Game);
 
     Payload = "{%qtype%q:%qcardgame_vote%q,";
-    Payload $= "%qversion%q:%q"$class'KFTurboMut'.static.GetTurboVersionID()$"%q,";
+    Payload $= "%qversion%q:%q"$Mutator.GetTurboVersionID()$"%q,";
+    Payload $= "%qsession%q:%q"$Mutator.GetSessionID()$"%q,";
     Payload $= "%qwavenum%q:"$WaveNumber$",";
     Payload $= "%qactivecards%q:["$ConvertToString(ActiveCardList)$"],";
     Payload $= "%qvoteselection%q:["$ConvertToString(VoteSelectionList)$"],";
@@ -151,6 +155,7 @@ Data payload for a game end looks like the following;
 {
     "type": "cardgame_endgame",
     "version": "4.4.1",
+    "session": "<session ID>",
     "win" : false,
     "wavenum" : 3,
     "activecards" : ["CARD2", "CARD4", "CARD8"],
@@ -169,11 +174,12 @@ showncards - The cards that were not selected during the game.
 static final function string BuildEndGamePayload(int WaveNumber, bool bWonGame, array<string> ActiveCardList, array<string> ShownCardList)
 {
     local string Payload;
-    local string QC;
-    QC = Chr(34);
+    local KFTurboMut Mutator;
+    Mutator = class'KFTurboMut'.static.FindMutator(Level.Game);
 
     Payload = "{%qtype%q:%qcardgame_endgame%q,";
-    Payload $= "%qversion%q:%q"$class'KFTurboMut'.static.GetTurboVersionID()$"%q,";
+    Payload $= "%qversion%q:%q"$Mutator.GetTurboVersionID()$"%q,";
+    Payload $= "%qsession%q:%q"$Mutator.GetSessionID()$"%q,";
     Payload $= "%qwin%q:"$bWonGame$",";
     Payload $= "%qwavenum%q:"$WaveNumber$",";
     Payload $= "%qactivecards%q:["$ConvertToString(ActiveCardList)$"],";

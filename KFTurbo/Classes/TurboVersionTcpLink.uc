@@ -81,12 +81,6 @@ function CheckVersionNumber(string Version)
 {
     local KFTurboMut Mutator;
     Mutator = class'KFTurboMut'.static.FindMutator(Level.Game);
-
-    if (Mutator == None)
-    {
-        return;
-    }
-
     if (Mutator.CheckIfNewerVersion(Version))
     {
         log("==========================================", 'KFTurboVersion');

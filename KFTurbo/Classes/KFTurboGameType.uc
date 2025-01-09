@@ -415,6 +415,7 @@ state MatchInProgress
             BroadcastLocalized(Level.GRI, class'TurboVersionLocalMessage');
         }
 
+        NotifyMutatorGameStart();
 		class'TurboWaveEventHandler'.static.BroadcastGameStarted(Self, WaveNum);
     }
 
@@ -623,6 +624,13 @@ function ClearTraderEndVotes()
 
         TPRI.ClearTraderEndVote();
     }
+}
+
+function NotifyMutatorGameStart()
+{
+    local KFTurboMut TurboMut;
+    TurboMut = class'KFTurboMut'.static.FindMutator(Self);
+    TurboMut.OnGameStart();
 }
 
 defaultproperties
