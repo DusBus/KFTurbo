@@ -126,7 +126,7 @@ voteselection - The cards to vote on for this round of voting.
 votedcard - The card that was ultimately selected.
 */
 
-static final function string BuildVotePayload(int WaveNumber, array<string> ActiveCardList, array<string> VoteSelectionList, string VotedCardList)
+final function string BuildVotePayload(int WaveNumber, array<string> ActiveCardList, array<string> VoteSelectionList, string VotedCardList)
 {
     local string Payload;
     local KFTurboMut Mutator;
@@ -171,7 +171,7 @@ showncards - The cards that were not selected during the game.
 */
 
 //Analytics event for a game ending.
-static final function string BuildEndGamePayload(int WaveNumber, bool bWonGame, array<string> ActiveCardList, array<string> ShownCardList)
+final function string BuildEndGamePayload(int WaveNumber, bool bWonGame, array<string> ActiveCardList, array<string> ShownCardList)
 {
     local string Payload;
     local KFTurboMut Mutator;
@@ -189,7 +189,7 @@ static final function string BuildEndGamePayload(int WaveNumber, bool bWonGame, 
     return Payload;
 }
 
-static final function string ConvertToString(array<string> StringList)
+final function string ConvertToString(array<string> StringList)
 {
     local string Result;
     local int Index;

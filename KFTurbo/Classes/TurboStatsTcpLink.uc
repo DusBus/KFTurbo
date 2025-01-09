@@ -120,7 +120,7 @@ final function SendWaveStats(TurboWavePlayerStatCollector Stats)
     SendText(BuildWaveStatsPayload(Stats));
 }
 
-static final function string BuildWaveStatsPayload(TurboWavePlayerStatCollector Stats)
+final function string BuildWaveStatsPayload(TurboWavePlayerStatCollector Stats)
 {
     local string Payload;
     local KFTurboMut TurboMut;
