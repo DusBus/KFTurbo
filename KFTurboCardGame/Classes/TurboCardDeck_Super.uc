@@ -209,22 +209,13 @@ function ActivateDiazepam(TurboCardGameplayManager GameplayManager, TurboCard Ca
 
 function ActivateMaximumPayne(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
-    if (bActivate)
-    {
-        GameplayManager.PlayerZedTimeDualWeaponFireRateModifier.AddModifier(2.f, Card);
-        GameplayManager.PlayerDualWeaponZedTimeExtensionDelta.AddDelta(100, Card);
-        GameplayManager.PlayerDualWeaponMagazineAmmoModifier.AddModifier(1.5f, Card);
-        GameplayManager.PlayerZedTimeDualWeaponReloadRateModifier.AddModifier(2.f, Card);
-        GameplayManager.PlayerZedTimeDualWeaponEquipRateModifier.AddModifier(0.25f, Card);
-    }
-    else
-    {
-        GameplayManager.PlayerZedTimeDualWeaponFireRateModifier.RemoveModifier(Card);
-        GameplayManager.PlayerDualWeaponZedTimeExtensionDelta.RemoveDelta(Card);
-        GameplayManager.PlayerDualWeaponMagazineAmmoModifier.RemoveModifier(Card);
-        GameplayManager.PlayerZedTimeDualWeaponReloadRateModifier.RemoveModifier(Card);
-        GameplayManager.PlayerZedTimeDualWeaponEquipRateModifier.RemoveModifier(Card);
-    }
+    Card.UpdateModifier(GameplayManager.PlayerDualWeaponMagazineAmmoModifier, 1.5f, bActivate);
+
+    Card.UpdateDelta(GameplayManager.PlayerDualWeaponZedTimeExtensionDelta, 100, bActivate);
+
+    Card.UpdateModifier(GameplayManager.PlayerZedTimeDualWeaponFireRateModifier, 2.f, bActivate);
+    Card.UpdateModifier(GameplayManager.PlayerZedTimeDualWeaponReloadRateModifier, 10.f, bActivate);
+    Card.UpdateModifier(GameplayManager.PlayerZedTimeDualWeaponEquipRateModifier, 0.1f, bActivate);
 }
 
 function ActivatePackedShells(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
@@ -336,6 +327,11 @@ function ActivateCleanse(TurboCardGameplayManager GameplayManager, TurboCard Car
 function ActivateLargerBlind(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
     Card.UpdateDelta(GameplayManager.CardSelectionCountDelta, 1, bActivate);
+}
+
+function ActivateCriticalHit(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    Card.UpdateFlag(GameplayManager.CriticalShotFlag, bActivate);
 }
 
 function ActivateDeEvolution(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
@@ -647,6 +643,16 @@ defaultproperties
         OnActivateCard=ActivateLargerBlind
     End Object
     DeckCardObjectList(26)=TurboCard'LargerBlind'
+
+    Begin Object Name=CriticalHit Class=TurboCard_Super
+        CardName(0)="Critical Hit"
+        CardDescriptionList(0)="Players' 10th shots"
+        CardDescriptionList(1)="and swings deal"
+        CardDescriptionList(2)="150% more damage."
+        CardID="SUPER_CRITICAL"
+        OnActivateCard=ActivateCriticalHit
+    End Object
+    DeckCardObjectList(27)=TurboCard'CriticalHit'
 /*
     Begin Object Name=DeEvolution Class=TurboCard_Super
         CardName(0)="De-Evolution"

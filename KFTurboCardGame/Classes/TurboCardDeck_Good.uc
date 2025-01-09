@@ -397,6 +397,11 @@ function ActivateBroaderGamble(TurboCardGameplayManager GameplayManager, TurboCa
     Card.UpdateDelta(GameplayManager.ProConCardSelectionCountDelta, 1, bActivate);
 }
 
+function ActivateElDiabloSlayer(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    Card.UpdateModifier(GameplayManager.PlayerBossDamageModifier, 1.1f, bActivate);
+}
+
 defaultproperties
 {
     Begin Object Name=BonusCashKill Class=TurboCard_Good
@@ -743,4 +748,15 @@ defaultproperties
         OnActivateCard=ActivateBroaderGamble
     End Object
     DeckCardObjectList(33)=TurboCard'BroaderGamble'
+
+    Begin Object Name=ElDiabloSlayer Class=TurboCard_Good
+        CardName(0)="Slayer Of"
+        CardName(1)="El Diablo"
+        CardDescriptionList(0)="Increases damage"
+        CardDescriptionList(1)="dealt to the"
+        CardDescriptionList(2)="Patriarch by 10%."
+        CardID="GOOD_DIABLOSLAYER"
+        OnActivateCard=ActivateElDiabloSlayer
+    End Object
+    DeckCardObjectList(34)=TurboCard'ElDiabloSlayer'
 }

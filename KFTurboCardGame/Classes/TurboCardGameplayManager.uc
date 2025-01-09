@@ -107,6 +107,8 @@ var CardFlag PlayerMassDetonationFlag;
 
 var CardModifierStack WeldStrengthModifier;
 
+var CardFlag CriticalShotFlag;
+
 //DAMAGE RECEIVED
 var CardModifierStack PlayerArmorStrengthModifier;
 var CardModifierStack PlayerDamageTakenModifier;
@@ -795,6 +797,11 @@ function PlayerMassDetonationCardFlagChanged(CardFlag Flag, bool bIsEnabled)
 function WeldStrengthModifierChanged(CardModifierStack ModifiedStack, float Modifier)
 {
     CardGameModifier.WeldStrengthMultiplier = Modifier;
+}
+
+function CriticalShotCardFlagChanged(CardFlag Flag, bool bIsEnabled)
+{
+    CardGameRules.bCriticalHitEnabled = bIsEnabled;
 }
 
 //DAMAGE RECEIVED
@@ -1499,14 +1506,19 @@ defaultproperties
     End Object
     PlayerMassDetonationFlag=CardFlag'PlayerMassDetonationCardFlag'
 
-//DAMAGE RECEIVED
     Begin Object Name=WeldStrengthModifierStack Class=CardModifierStack
         ModifierStackID="WeldStrengthModifier"
         OnModifierChanged=WeldStrengthModifierChanged
     End Object
     WeldStrengthModifier=CardModifierStack'WeldStrengthModifierStack'
-    
 
+    Begin Object Name=CriticalShotCardFlag Class=CardFlag
+        FlagID="CriticalShot"
+        OnFlagSetChanged=CriticalShotCardFlagChanged
+    End Object
+    CriticalShotFlag=CardFlag'CriticalShotCardFlag'
+
+//DAMAGE RECEIVED
     Begin Object Name=PlayerArmorStrengthModifierStack Class=CardModifierStack
         ModifierStackID="PlayerArmorStrength"
         OnModifierChanged=PlayerArmorStrengthModifierChanged

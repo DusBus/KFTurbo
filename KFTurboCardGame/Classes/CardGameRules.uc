@@ -43,6 +43,9 @@ var(Turbo) float NonHeadshotDamageMultiplier;
 
 var(Turbo) float LowHealthDamageMultiplier;
 
+var (Turbo) bool bCriticalHitEnabled;
+var bool bHasPerformedCriticalHitEffect;
+
 var (Turbo) bool bCheatDeathEnabled;
 struct CheatDeathEntry
 {
@@ -126,6 +129,8 @@ function Tick(float DeltaTime)
 	local int Index;
 
 	Super.Tick(DeltaTime);
+
+    bHasPerformedCriticalHitEffect = false;
 
 	for(Index = MonsterPawnList.Length - 1; Index > -1; Index--)
 	{
@@ -384,6 +389,11 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
             {
                 MonsterNetDamage(DamageMultiplier, KFMonster(Injured), InstigatedBy, HitLocation, Momentum, WeaponDamageType);
             }
+
+            if (bCriticalHitEnabled)
+            {
+                DamageMultiplier *= GetCriticalHitMultiplier(InstigatedBy, HitLocation);
+            }
         }
 
         if (KFHumanPawn(Injured) != None && WeaponDamageType.default.bIsExplosive)
@@ -456,7 +466,7 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
     //If resulting damage was more than 1, check russian roulette if it's enabled.
     if (Damage > 0.f && bRussianRouletteEnabled && FRand() < 0.001 && class<TurboHumanBurned_DT>(DamageType) == None)
     {
-        PlayRussianRouletteSound(Injured, TurboHumanPawn(Injured) != None);
+        PerformRussianRouletteEffect(Injured, TurboHumanPawn(Injured) != None);
 
         if (InstigatedBy == None)
         {
@@ -536,6 +546,35 @@ function MonsterNetDamage(out float DamageMultiplier, KFMonster Injured, Pawn In
     }
 }
 
+function float GetCriticalHitMultiplier(Pawn InstigatedBy, vector HitLocation)
+{
+    local TurboWavePlayerStatCollector Collector;
+    if (InstigatedBy == None || InstigatedBy.Controller == None || !InstigatedBy.Controller.bIsPlayer)
+    {
+        return 1.f;
+    }
+
+    Collector = TurboWavePlayerStatCollector(class'TurboWavePlayerStatCollector'.static.FindStats(TurboPlayerReplicationInfo(InstigatedBy.PlayerReplicationInfo)));
+
+    if (Collector == None)
+    {
+        return 1.f;
+    }
+
+    if (Collector.ShotsFired % 10 != 0)
+    {
+        return 1.f;
+    }
+
+    if (!bHasPerformedCriticalHitEffect)
+    {
+        bHasPerformedCriticalHitEffect = true;
+        Spawn(class'CriticalHitEffect', InstigatedBy.Controller,, HitLocation);
+    }
+    
+    return 2.5f;
+}
+
 function ApplyThornsDamage(int DamageTaken, KFHumanPawn Injured, KFMonster InstigatedBy)
 {
     if (PlayerThornsDamageMultiplier <= 1.f)
@@ -546,33 +585,16 @@ function ApplyThornsDamage(int DamageTaken, KFHumanPawn Injured, KFMonster Insti
     InstigatedBy.TakeDamage(float(DamageTaken) * (PlayerThornsDamageMultiplier - 1.f), Injured, Injured.Location, vect(0, 0, 0), class'PlayerThornsDamage_DT');
 }
 
-function PlayRussianRouletteSound(Pawn KilledPawn, bool bWasPlayer)
+function PerformRussianRouletteEffect(Pawn KilledPawn, bool bWasPlayer)
 {
-    local Sound TriggerSound;
-    local float TriggerVolume;
-
     if (bWasPlayer)
     {
-        if (RussianRoulettePlayerKilledSound == None)
-        {
-            RussianRoulettePlayerKilledSound = Sound(DynamicLoadObject("Steamland_SND.SlotMachine_ReelStop", class'Sound'));
-        }
-
-        TriggerSound = RussianRoulettePlayerKilledSound;
-        TriggerVolume = 1.f;
+        Spawn(class'RoulettePlayerEffect', KilledPawn,, KilledPawn.Location + (vect(0, 0, 1) * KilledPawn.CollisionHeight));
     }
     else
     {
-        if (RussianRouletteMonsterKilledSound == None)
-        {
-            RussianRouletteMonsterKilledSound = Sound(DynamicLoadObject("Steamland_SND.SlotMachine_Win", class'Sound'));
-        }
-
-        TriggerSound = RussianRouletteMonsterKilledSound;
-        TriggerVolume = 0.75f;
+        Spawn(class'RouletteEffect', KilledPawn,, KilledPawn.Location + (vect(0, 0, 1) * KilledPawn.CollisionHeight));
     }
-
-    KilledPawn.PlaySound(TriggerSound, ESoundSlot.SLOT_None, TriggerVolume,, 1000.f);
 }
 
 function ScoreKill(Controller Killer, Controller Killed)
