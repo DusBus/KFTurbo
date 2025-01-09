@@ -56,6 +56,8 @@ var(Turbo) float HealRechargeMultiplier;
 
 var(Turbo) float WeldStrengthMultiplier;
 
+var(Turbo) bool bOversizedPipebombs;
+
 replication
 {
     reliable if(bNetDirty && Role == ROLE_Authority)
@@ -68,7 +70,8 @@ replication
         TraderCostMultiplier, TraderGrenadeCostMultiplier, bDisableArmorPurchase,
         PlayerMovementSpeedMultiplier, PlayerMovementAccelMultiplier, bFreezePlayersDuringWave, bMoneySlowsPlayers, bMissingHealthStronglySlows,
         PlayerMaxHealthMultiplier,
-        HealRechargeMultiplier;
+        HealRechargeMultiplier,
+        bOversizedPipebombs;
 } 
 
 simulated function float GetFireRateMultiplier(KFPlayerReplicationInfo KFPRI, Weapon Other)
@@ -123,9 +126,14 @@ simulated function float GetMaxAmmoMultiplier(KFPlayerReplicationInfo KFPRI, cla
 {
     local float Multiplier;
     Multiplier = MaxAmmoMultiplier;
-    if (class<FragAmmo>(AmmoType) != None)
+    if (GrenadeMaxAmmoMultiplier != 1.f && class<FragAmmo>(AmmoType) != None)
     {
         Multiplier *= GrenadeMaxAmmoMultiplier;
+    }
+
+    if (bOversizedPipebombs && class<PipeBombAmmo>(AmmoType) != None)
+    {
+        Multiplier *= 0.5f;
     }
 
     return Super.GetMaxAmmoMultiplier(KFPRI, AmmoType) * Multiplier;

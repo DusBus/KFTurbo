@@ -317,7 +317,7 @@ function ActivateSuppressiveFire(TurboCardGameplayManager GameplayManager, Turbo
 {
     if (bActivate)
     {
-        GameplayManager.PlayerFireRateModifier.AddModifier(2.f, Card);
+        GameplayManager.PlayerFireRateModifier.AddModifier(1.66f, Card);
     }
     else
     {
@@ -331,6 +331,11 @@ function ActivateCleanse(TurboCardGameplayManager GameplayManager, TurboCard Car
     {
         GameplayManager.RemoveRandomEvilCard();
     }
+}
+
+function ActivateLargerBlind(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    Card.UpdateDelta(GameplayManager.CardSelectionCountDelta, 1, bActivate);
 }
 
 function ActivateDeEvolution(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
@@ -619,7 +624,7 @@ defaultproperties
         CardName(1)="Fire"
         CardDescriptionList(0)="Increases"
         CardDescriptionList(1)="firerate of all"
-        CardDescriptionList(2)="weapons by 100%."
+        CardDescriptionList(2)="weapons by 66%."
         OnActivateCard=ActivateSuppressiveFire
         CardID="SUPER_SUPPRESSFIRE"
     End Object
@@ -633,6 +638,15 @@ defaultproperties
         OnActivateCard=ActivateCleanse
     End Object
     DeckCardObjectList(25)=TurboCard'Cleanse'
+
+    Begin Object Name=LargerBlind Class=TurboCard_Super
+        CardName(0)="Larger Blind"
+        CardDescriptionList(0)="Increases card"
+        CardDescriptionList(1)="selection by 1."
+        CardID="SUPER_LARGEBLIND"
+        OnActivateCard=ActivateLargerBlind
+    End Object
+    DeckCardObjectList(26)=TurboCard'LargerBlind'
 /*
     Begin Object Name=DeEvolution Class=TurboCard_Super
         CardName(0)="De-Evolution"

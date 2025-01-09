@@ -377,6 +377,26 @@ function ActivateFasterMedical(TurboCardGameplayManager GameplayManager, TurboCa
     }
 }
 
+function ActivateWalkItOff(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    Card.UpdateDelta(GameplayManager.PlayerHealthRegenDelta, 1, bActivate);
+}
+
+function ActivateAdvancedWelding(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    Card.UpdateModifier(GameplayManager.WeldStrengthModifier, 1.5f, bActivate);
+}
+
+function ActivateLargerQuanityOfLowQuality(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    Card.UpdateDelta(GameplayManager.GoodCardSelectionCountDelta, 1, bActivate);
+}
+
+function ActivateBroaderGamble(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    Card.UpdateDelta(GameplayManager.ProConCardSelectionCountDelta, 1, bActivate);
+}
+
 defaultproperties
 {
     Begin Object Name=BonusCashKill Class=TurboCard_Good
@@ -682,4 +702,45 @@ defaultproperties
         OnActivateCard=ActivateFasterMedical
     End Object
     DeckCardObjectList(29)=TurboCard'FasterMedical'
+
+    Begin Object Name=WalkItOff Class=TurboCard_Good
+        CardName(0)="Walk It Off"
+        CardDescriptionList(0)="Increases health"
+        CardDescriptionList(1)="regen by 1 every"
+        CardDescriptionList(2)="5 seconds."
+        CardID="GOOD_WALKITOFF"
+        OnActivateCard=ActivateWalkItOff
+    End Object
+    DeckCardObjectList(30)=TurboCard'WalkItOff'
+
+    Begin Object Name=AdvancedWelding Class=TurboCard_Good
+        CardName(0)="Advanced"
+        CardName(1)="Welding"
+        CardDescriptionList(0)="Increases weld"
+        CardDescriptionList(1)="speed by 50%."
+        CardID="GOOD_ADVWELD"
+        OnActivateCard=ActivateAdvancedWelding
+    End Object
+    DeckCardObjectList(31)=TurboCard'AdvancedWelding'
+
+    Begin Object Name=LargerQuanityOfLowQuality Class=TurboCard_Good
+        CardName(0)="Large Quantity"
+        CardName(1)="Low Quality"
+        CardDescriptionList(0)="Increases good"
+        CardDescriptionList(1)="card selection"
+        CardDescriptionList(2)="by 1."
+        CardID="GOOD_LARGEQUANLOWQUAL"
+        OnActivateCard=ActivateLargerQuanityOfLowQuality
+    End Object
+    DeckCardObjectList(32)=TurboCard'LargerQuanityOfLowQuality'
+
+    Begin Object Name=BroaderGamble Class=TurboCard_Good
+        CardName(0)="Broader Gamble"
+        CardDescriptionList(0)="Increases pro/con"
+        CardDescriptionList(1)="card selection"
+        CardDescriptionList(2)="by 1."
+        CardID="GOOD_BROADGAMBLE"
+        OnActivateCard=ActivateBroaderGamble
+    End Object
+    DeckCardObjectList(33)=TurboCard'BroaderGamble'
 }

@@ -59,6 +59,7 @@ var (Turbo) bool bNoDropOrSellItems;
 var (Turbo) float PlayerJumpZMultiplier;
 
 var (Turbo) bool bSuperGrenades;
+var (Turbo) bool bOversizedPipebombs;
 
 //Monster
 var array<KFMonster> MonsterPawnList;
@@ -797,6 +798,13 @@ function ModifyActor(Actor Other)
     if (Projectile(Other) != None && KFHumanPawn(Other.Instigator) != None)
     {
         Projectile(Other).DamageRadius *= ExplosiveRadiusMultiplier;
+        
+        if (bOversizedPipebombs && PipeBombProjectile(Other) != None)
+        {
+            Other.SetDrawScale(Other.DrawScale * 1.75f);
+            Projectile(Other).Damage *= 1.5f;
+            Projectile(Other).DamageRadius *= 1.25f;
+        }
 
         if (Nade(Other) != None)
         {

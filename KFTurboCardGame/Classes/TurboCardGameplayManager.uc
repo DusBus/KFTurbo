@@ -61,6 +61,7 @@ var CardFlag NoSyringeFlag;
 var CardFlag SuperGrenadesFlag;
 var CardFlag NoArmorFlag;
 var CardFlag NoDropOrSellItemsFlag;
+var CardFlag OversizedPipebombFlag;
 
 ////////////////////
 //PLAYER MODIFIERS
@@ -240,6 +241,8 @@ function OnWaveStart(int StartedWave)
     {
         ExplodeDoorsActor.ExplodeDoors();
     }
+
+    OversizedPipebombFlag.SetFlag(None);
 }
 
 function OnWaveEnd(int EndedWave)
@@ -627,6 +630,13 @@ function NoDropOrSellItemsFlagChanged(CardFlag Flag, bool bIsEnabled)
 {
     CardGameRules.bNoDropOrSellItems = bIsEnabled;
     CardGameRules.UpdateCanThrowWeapons();
+}
+
+function OversizedPipebombFlagChanged(CardFlag Flag, bool bIsEnabled)
+{
+    CardGameModifier.bOversizedPipebombs = bIsEnabled;
+    CardGameModifier.ForceNetUpdate();
+    CardGameRules.bOversizedPipebombs = bIsEnabled;
 }
 
 ////////////////////
@@ -1325,6 +1335,12 @@ defaultproperties
         OnFlagSetChanged=NoDropOrSellItemsFlagChanged
     End Object
     NoDropOrSellItemsFlag=CardFlag'NoDropOrSellItemsCardFlag'
+
+    Begin Object Name=OversizedPipebombCardFlag Class=CardFlag
+        FlagID="OversizedPipebomb"
+        OnFlagSetChanged=OversizedPipebombFlagChanged
+    End Object
+    OversizedPipebombFlag=CardFlag'OversizedPipebombCardFlag'
 
 ////////////////////
 //PLAYER MODIFIERS

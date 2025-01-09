@@ -120,6 +120,7 @@ Data payload for a vote looks like the following;
 
 type - refers to the type of payload this is.
 version - The KFTurbo version currently running.
+session - The session ID for this game.
 wavenum - The wave this vote data came from during the game.
 activecards - The cards that have been selected so far.
 voteselection - The cards to vote on for this round of voting.
@@ -164,6 +165,7 @@ Data payload for a game end looks like the following;
 
 type - refers to the type of payload this is.
 version - The KFTurbo version currently running.
+session - The session ID for this game.
 win - Whether or not this game resulted in a win or not.
 wavenum - The wave this game ended on.
 activecards - The cards that were selected during the game.
