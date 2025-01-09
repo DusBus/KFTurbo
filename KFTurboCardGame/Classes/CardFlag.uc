@@ -28,7 +28,7 @@ final function SetFlag(TurboCard Card)
     }
 
     bFlagSet = true;
-    log(FlagID$": Flag set by"@Card.CardID@".", 'KFTurboCardGame');
+    log(FlagID$": Flag set by"@ID@".", 'KFTurboCardGame');
     UpdateFlagSetChange();
 }
 
