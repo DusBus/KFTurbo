@@ -795,50 +795,56 @@ function GiveBonusCash(PlayerReplicationInfo KillerPRI, KFMonster Monster)
 
 function ModifyActor(Actor Other)
 {
-    if (Projectile(Other) != None && KFHumanPawn(Other.Instigator) != None)
+    if (Projectile(Other) != None)
     {
-        Projectile(Other).DamageRadius *= ExplosiveRadiusMultiplier;
-        
-        if (bOversizedPipebombs && PipeBombProjectile(Other) != None)
+        if (KFHumanPawn(Other.Instigator) != None)
         {
-            Other.SetDrawScale(Other.DrawScale * 1.75f);
-            Projectile(Other).Damage *= 1.5f;
-            Projectile(Other).DamageRadius *= 1.25f;
-        }
+            Projectile(Other).DamageRadius *= ExplosiveRadiusMultiplier;
+            
+            if (bOversizedPipebombs && PipeBombProjectile(Other) != None)
+            {
+                Other.SetDrawScale(Other.DrawScale * 1.75f);
+                Projectile(Other).Damage *= 1.5f;
+                Projectile(Other).DamageRadius *= 1.25f;
+            }
 
-        if (Nade(Other) != None)
-        {
-            ModifyNade(Nade(Other));
+            if (Nade(Other) != None)
+            {
+                ModifyNade(Nade(Other));
+            }
         }
     }
 
-    if (KFMonster(Other) != None)
+    else if (Pawn(Other) != None)
     {
-        MonsterPawnList[MonsterPawnList.Length] = KFMonster(Other);
+        if (KFMonster(Other) != None)
+        {
+            MonsterPawnList[MonsterPawnList.Length] = KFMonster(Other);
 
-        if (BloatMovementSpeedModifier != 1.f && P_Bloat(Other) != None)
-        {
-            BloatPawnList[BloatPawnList.Length] = P_Bloat(Other);
-        }
-        else if (FleshpoundRageThresholdModifier != 1.f && P_Fleshpound(Other) != None)
-        {
-            FleshpoundPawnList[FleshpoundPawnList.Length] = P_Fleshpound(Other);
-        }
-        else if (HuskRefireTimeModifier != 1.f && P_Husk(Other) != None)
-        {
-            HuskPawnList[HuskPawnList.Length] = P_Husk(Other);
-        }
-        else if (SirenScreamRangeModifier != 1.f && P_Siren(Other) != None)
-        {
-            SirenPawnList[SirenPawnList.Length] = P_Siren(Other);
-        }
-        else if (ScrakeRageThresholdModifier != 1.f && P_Scrake(Other) != None)
-        {
-            ScrakePawnList[ScrakePawnList.Length] = P_Scrake(Other);
+            if (BloatMovementSpeedModifier != 1.f && P_Bloat(Other) != None)
+            {
+                BloatPawnList[BloatPawnList.Length] = P_Bloat(Other);
+            }
+            else if (FleshpoundRageThresholdModifier != 1.f && P_Fleshpound(Other) != None)
+            {
+                FleshpoundPawnList[FleshpoundPawnList.Length] = P_Fleshpound(Other);
+            }
+            else if (HuskRefireTimeModifier != 1.f && P_Husk(Other) != None)
+            {
+                HuskPawnList[HuskPawnList.Length] = P_Husk(Other);
+            }
+            else if (SirenScreamRangeModifier != 1.f && P_Siren(Other) != None)
+            {
+                SirenPawnList[SirenPawnList.Length] = P_Siren(Other);
+            }
+            else if (ScrakeRageThresholdModifier != 1.f && P_Scrake(Other) != None)
+            {
+                ScrakePawnList[ScrakePawnList.Length] = P_Scrake(Other);
+            }
         }
     }
 
-    if (KFWeapon(Other) != None)
+    else if (KFWeapon(Other) != None)
     {
         ModifyWeapon(KFWeapon(Other));
     }
