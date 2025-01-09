@@ -469,6 +469,29 @@ function ActivateDrawOne(TurboCardGameplayManager GameplayManager, TurboCard Car
     }
 }
 
+function ActivateOversizedPipebombs(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    Card.UpdateFlag(GameplayManager.OversizedPipebombFlag, bActivate);
+}
+
+function ActivateShortHop(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    Card.UpdateModifier(GameplayManager.PlayerMovementSpeedModifier, 1.1f, bActivate);
+    Card.UpdateModifier(GameplayManager.PlayerJumpModifier, 0.5f, bActivate);
+}
+
+function ActivateChargeExchange(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    Card.UpdateModifier(GameplayManager.PlayerHealRechargeModifier, 1.25f, bActivate);
+    Card.UpdateModifier(GameplayManager.WeldStrengthModifier, 0.5f, bActivate);
+}
+
+function ActivateRiskyRegen(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    Card.UpdateDelta(GameplayManager.PlayerHealthRegenDelta, 3, bActivate);
+    Card.UpdateModifier(GameplayManager.PlayerMaxHealthModifier, 0.9f, bActivate);
+}
+
 defaultproperties
 {
     Begin Object Name=TradeIn Class=TurboCard_ProConStrange
@@ -860,4 +883,52 @@ defaultproperties
         CardID="PROCON_DRAWONE"
     End Object
     DeckCardObjectList(30)=TurboCard'DrawOne'
+    
+    Begin Object Name=OversizedPipebombs Class=TurboCard_ProCon
+        CardName(0)="Oversized"
+        CardName(1)="Pipebombs"
+        CardDescriptionList(0)="Increases Pipebomb"
+        CardDescriptionList(1)="damage by 50% and"
+        CardDescriptionList(2)="radius by 25% but"
+        CardDescriptionList(3)="reduces Pipebomb"
+        CardDescriptionList(4)="max ammo by 50%."
+        OnActivateCard=ActivateOversizedPipebombs
+        CardID="PROCON_OVERSIZEPIPE"
+    End Object
+    DeckCardObjectList(31)=TurboCard'OversizedPipebombs'
+    
+    Begin Object Name=ShortHop Class=TurboCard_ProCon
+        CardName(0)="Short Hop"
+        CardDescriptionList(0)="Increases player"
+        CardDescriptionList(1)="speed by 10% but"
+        CardDescriptionList(2)="reduces jump"
+        CardDescriptionList(3)="height by 75%."
+        OnActivateCard=ActivateShortHop
+        CardID="PROCON_OVERSIZEPIPE"
+    End Object
+    DeckCardObjectList(32)=TurboCard'ShortHop'
+    
+    Begin Object Name=ChargeExchange Class=TurboCard_ProCon
+        CardName(0)="Charge"
+        CardName(1)="Exchange"
+        CardDescriptionList(0)="Increases heal"
+        CardDescriptionList(1)="recharge speed by"
+        CardDescriptionList(2)="25% but reduces"
+        CardDescriptionList(3)="weld speed by 50%."
+        OnActivateCard=ActivateChargeExchange
+        CardID="PROCON_CHARGEEXCHANGE"
+    End Object
+    DeckCardObjectList(33)=TurboCard'ChargeExchange'
+    
+    Begin Object Name=RiskyRegen Class=TurboCard_ProCon
+        CardName(0)="Risky Regen"
+        CardDescriptionList(0)="Increases regen"
+        CardDescriptionList(1)="by 3 every 5"
+        CardDescriptionList(2)="seconds but"
+        CardDescriptionList(3)="reduces max"
+        CardDescriptionList(4)="health by 10%."
+        OnActivateCard=ActivateRiskyRegen
+        CardID="PROCON_RISKYREGEN"
+    End Object
+    DeckCardObjectList(34)=TurboCard'RiskyRegen'
 }
