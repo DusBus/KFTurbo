@@ -65,4 +65,5 @@ defaultproperties
 {
     ShrapnelClass=Class'KFTurbo.W_PipeBomb_Shrapnel'
     DeflectSoundRef="ProjectileSounds.cannon_rounds.AP_deflect"
+    bGameRelevant=false
 }

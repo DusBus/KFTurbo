@@ -96,4 +96,5 @@ defaultproperties
 	ArmDistSquared=202500.000000
 	ImpactDamage=475
 	Damage=1000.000000
+    bGameRelevant=false
 }

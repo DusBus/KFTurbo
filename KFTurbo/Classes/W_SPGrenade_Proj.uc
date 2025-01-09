@@ -104,4 +104,5 @@ defaultproperties
     TrickBounceCount=0
     TrickBounceMultiplier=1.5f
     TrickBounceBonusCoefficient=1.1f
+    bGameRelevant=false
 }

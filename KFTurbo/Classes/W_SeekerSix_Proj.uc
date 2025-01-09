@@ -270,5 +270,6 @@ defaultproperties
 	ImpactDamage=150
 	Damage=350.000000
 	DamageRadius=150.000000
+    bGameRelevant=false
 }
 

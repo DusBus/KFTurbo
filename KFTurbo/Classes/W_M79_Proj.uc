@@ -64,4 +64,5 @@ simulated function ProcessTouch(Actor Other, Vector HitLocation)
 defaultproperties
 {
     MyDamageType=Class'KFMod.DamTypeM79Grenade'
+    bGameRelevant=false
 }

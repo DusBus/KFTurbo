@@ -7,6 +7,7 @@ function TakeDamage(int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Mo
 
 defaultproperties
 {
-     MyDamageType=Class'KFTurbo.W_M4203_DT'
-     ImpactDamageType=Class'KFTurbo.W_M4203_Impact_DT'
+    MyDamageType=Class'KFTurbo.W_M4203_DT'
+    ImpactDamageType=Class'KFTurbo.W_M4203_Impact_DT'
+    bGameRelevant=false
 }
