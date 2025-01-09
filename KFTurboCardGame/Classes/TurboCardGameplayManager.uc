@@ -235,6 +235,11 @@ function OnWaveStart(int StartedWave)
     {
         MarkPlayerForDeath();
     }
+
+    if (ExplodeDoorsActor != None)
+    {
+        ExplodeDoorsActor.ExplodeDoors();
+    }
 }
 
 function OnWaveEnd(int EndedWave)

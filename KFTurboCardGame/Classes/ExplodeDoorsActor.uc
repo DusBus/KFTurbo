@@ -3,87 +3,105 @@
 //For more information see https://github.com/KFPilot/KFTurbo.
 class ExplodeDoorsActor extends Engine.Info;
 
-var array<KFDoorMover> DoorList;
-var int DoorListIndex;
+var array<KFUseTrigger> UseTriggerList;
+var int TriggerIndex;
+
+var KFGameType GameType;
+var bool bExplodePending;
 
 function PostBeginPlay()
 {
     Super.PostBeginPlay();
 
-    SetTimer(0.5f, false);
+    GameType = KFGameType(Level.Game);
+    SetTimer(1.f, false);
 }
 
 function Timer()
 {
-    local KFDoorMover Door;
+    local KFUseTrigger UserTrigger;
 
-    if (Level.Game == None)
+    foreach DynamicActors(class'KFUseTrigger', UserTrigger)
     {
-        SetTimer(0.5f, false);
-        return;
-    }
-
-    if (Level.Game.bWaitingToStartMatch)
-    {
-        SetTimer(0.5f, false);
-        return;
-    }
-
-    if (KFGameType(Level.Game) != None && !KFGameType(Level.Game).bWaveInProgress)
-    {
-        SetTimer(0.5f, false);
-        return;
-    }
-    
-    foreach DynamicActors(class'KFDoorMover', Door)
-    {
-        if (Door.MyTrigger == None)
+        if (UserTrigger == None || UserTrigger.DoorOwners.Length == 0)
         {
             continue;
         }
 
-        DoorList[DoorList.Length] = Door;
+        UseTriggerList[UseTriggerList.Length] = UserTrigger;
     }
-
-    ExplodeDoors();
+    
+    GotoState('WaitingToExplodeDoors');
 }
 
 function ExplodeDoors()
 {
-    GotoState('ExplodingDoors');
+    bExplodePending = true;
 }
 
 state ExplodingDoors
 {
+    function ExplodeDoors() {}
+
 Begin:
-    DoorListIndex = 0;
+    bExplodePending = false;
+    TriggerIndex = 0;
     Sleep(1.f);
-    while(DoorListIndex < DoorList.Length)
+    while(TriggerIndex < UseTriggerList.Length)
     {
-        DoorList[DoorListIndex].GoBang(None, vect(0, 0, 0), vect(0, 0, 0), class'DamageType');
-        DoorListIndex++;
+        Explode(UseTriggerList[TriggerIndex]);
+        TriggerIndex++;
         Sleep(0.1f);
     }
-
+    
     GotoState('WaitingToExplodeDoors');
+}
+
+final function Explode(KFUseTrigger UseTrigger)
+{
+    local int Index;
+    local Mover Follower;
+    
+    for (Index = UseTrigger.DoorOwners.Length - 1; Index >= 0; Index--)
+    {
+        if (UseTrigger.DoorOwners[Index] == None || UseTrigger.DoorOwners[Index].bDoorIsDead)
+        {
+            continue;
+        }
+
+        UseTrigger.DoorOwners[Index].GoBang(None, vect(0, 0, 0), vect(0, 0, 0), class'DamageType');
+
+        Follower = UseTrigger.DoorOwners[Index].Follower;
+        while (Follower != None)
+        {
+            if (KFDoorMover(Follower) != None && !KFDoorMover(Follower).bDoorIsDead)
+            {
+                KFDoorMover(Follower).GoBang(None, vect(0, 0, 0), vect(0, 0, 0), class'DamageType');
+            }
+
+            Follower = Follower.Follower;
+        }
+    }
 }
 
 state WaitingToExplodeDoors
 {
     function BeginState()
     {
-        SetTimer(0.5f, false);
+        if (bExplodePending)
+        {
+            SetTimer(0.1f, false);
+        }
     }
 
     function Timer()
     {
-        if (KFGameType(Level.Game) != None && !KFGameType(Level.Game).bWaveInProgress)
-        {
-            SetTimer(0.5f, false);
-            return;
-        }
-
         ExplodeDoors();
+    }
+
+    function ExplodeDoors()
+    {
+        GotoState('ExplodingDoors');
     }
 }
 
