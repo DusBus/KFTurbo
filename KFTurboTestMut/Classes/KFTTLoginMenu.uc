@@ -39,7 +39,7 @@ defaultproperties
 	Panels(5)=(ClassName="KFGui.KFTab_MidGameVoiceChat",Caption="Communication",Hint="Manage communication with other players")
 	Panels(6)=(ClassName="KFTurboTestMut.KFTTTabHelp",Caption="Help",Hint="List of all available commands")
 	Panels(7)=(ClassName="KFTurbo.TurboTab_EmoteList",Caption="Emotes",Hint="List of emotes.")
-	Panels(8)=(ClassName="KFTurbo.TurboTab_TurboSettings",Caption="Turbo",Hint="KFTurbo settings.")
+	Panels(8)=(ClassName="KFTurbo.TurboTab_TurboSettings",Caption="Settings",Hint="KFTurbo settings.")
 	Begin Object Class=GUITabControl Name=LoginMenuTC
 		bDockPanels=True
 		BackgroundStyleName="TabBackground"

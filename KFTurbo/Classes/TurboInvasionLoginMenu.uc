@@ -210,6 +210,7 @@ function Closed(GUIComponent Sender, bool bCancelled)
 
 defaultproperties
 {
+	Panels(0)=(Caption="Info",Hint="Information about KFTurbo.")
     Panels(3)=(ClassName="KFTurbo.TurboTab_EmoteList",Caption="Emotes",Hint="List of emotes.")
-    Panels(4)=(ClassName="KFTurbo.TurboTab_TurboSettings",Caption="Turbo",Hint="KFTurbo settings.")
+    Panels(4)=(ClassName="KFTurbo.TurboTab_TurboSettings",Caption="Settings",Hint="KFTurbo settings.")
 }
