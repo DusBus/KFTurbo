@@ -11,6 +11,7 @@ defaultproperties
      MonsterClasses(6)=(MClassName="KFTurbo.P_Bloat_HAL")
      MonsterClasses(7)=(MClassName="KFTurbo.P_Siren_HAL")
      MonsterClasses(8)=(MClassName="KFTurbo.P_Husk_HAL")
+     MonsterClasses(9)=(MClassName="KFTurbo.P_ZombieBoss_HAL",Mid="J")
      StandardMonsterClasses(0)=(MClassName="KFTurbo.P_Clot_HAL")
      StandardMonsterClasses(1)=(MClassName="KFTurbo.P_Crawler_HAL")
      StandardMonsterClasses(2)=(MClassName="KFTurbo.P_Gorefast_HAL")

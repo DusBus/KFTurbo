@@ -14,13 +14,38 @@ struct AfflictionData
 	var Pawn LastBurnDamageInstigator; //Stored here instead of within AfflictionBurn because this pointer can become garbage when in an object.
 };
 
-enum EMonsterType
+enum EMonsterTier
 {
 	Trash,
 	Special,
 	Elite,
 	Boss
-};	
+};
+
+//NOTE: THESE ENUMS MUST LINE UP WITH THE MC_TURBO MONSTERCLASSES LIST.
+enum EMonster
+{
+	Clot,
+	Crawler,
+	Gorefast,
+	Stalker,
+	Scrake,
+	Fleshpound,
+	Bloat,
+	Siren,
+	Husk,
+	Boss,
+
+	//"Custom" zeds.
+	Crawler_Jumper,
+	Gorefast_Classy,
+	Gorefast_Assassin,
+	Bloat_Fathead,
+	Siren_Caroler,
+
+	//Failed to resolve.
+	Unknown
+};
 
 static final simulated function bool IsPawnBurning(Pawn Pawn)
 {
@@ -642,7 +667,7 @@ static final function AdjustHeadScale(KFMonster Monster, out float HeadScale)
 }
 
 //Not the cheapest function ever... Could do some extra work to speed it up via inspecting health ranges.
-static final function EMonsterType GetMonsterType(class<Monster> MonsterClass)
+static final function EMonsterTier GetMonsterTier(class<Monster> MonsterClass)
 {
 	//It's a pain to maintain but this is probably a bit faster than doing a bunch of ChildClassOf()s.
 	switch(MonsterClass)
@@ -714,32 +739,156 @@ static final function EMonsterType GetMonsterType(class<Monster> MonsterClass)
 		return Elite;
 	}
 
-	if (ClassIsChildOf(MonsterClass, class'P_Scrake') || ClassIsChildOf(MonsterClass, class'P_Fleshpound'))
-	{
-		return Elite;
-	}
-
 	if (ClassIsChildOf(MonsterClass, class'P_Bloat') || ClassIsChildOf(MonsterClass, class'P_Siren') || ClassIsChildOf(MonsterClass, class'P_Husk'))
 	{
 		return Special;
 	}
 
+	if (ClassIsChildOf(MonsterClass, class'P_Scrake') || ClassIsChildOf(MonsterClass, class'P_Fleshpound'))
+	{
+		return Elite;
+	}
+
 	return Trash;
+}
+
+static final function EMonster GetMonsterType(class<Monster> MonsterClass)
+{
+	//It's a pain to maintain but this is probably a bit faster than doing a ton of ChildClassOf()s.
+	switch(MonsterClass)
+	{
+		case class'P_Clot_STA':
+		case class'P_Clot_HAL':
+		case class'P_Clot_SUM':
+		case class'P_Clot_XMA':
+			return Clot;
+
+		case class'P_Crawler_STA':
+		case class'P_Crawler_HAL':
+		case class'P_Crawler_SUM':
+		case class'P_Crawler_XMA':
+		case class'P_Crawler_Jumper':
+			return Crawler;
+
+		case class'P_Stalker_STA':
+		case class'P_Stalker_HAL':
+		case class'P_Stalker_SUM':
+		case class'P_Stalker_XMA':
+			return Stalker;
+		
+		case class'P_Gorefast_STA':
+		case class'P_Gorefast_HAL':
+		case class'P_Gorefast_SUM':
+		case class'P_Gorefast_XMA':
+		case class'P_Gorefast_Assassin':
+			return Gorefast;
+
+		case class'P_Bloat_STA':
+		case class'P_Bloat_HAL':
+		case class'P_Bloat_SUM':
+		case class'P_Bloat_XMA':
+		case class'P_Bloat_Fathead':
+			return Bloat;
+		
+		case class'P_Husk_STA':
+		case class'P_Husk_HAL':
+		case class'P_Husk_SUM':
+		case class'P_Husk_XMA':
+			return Husk;
+		
+		case class'P_Siren_STA':
+		case class'P_Siren_HAL':
+		case class'P_Siren_SUM':
+		case class'P_Siren_XMA':
+		case class'P_Siren_Caroler':
+			return Siren;
+		
+		case class'P_Scrake_STA':
+		case class'P_Scrake_HAL':
+		case class'P_Scrake_SUM':
+		case class'P_Scrake_XMA':
+			return Scrake;
+		
+		case class'P_Fleshpound_STA':
+		case class'P_Fleshpound_HAL':
+		case class'P_Fleshpound_SUM':
+		case class'P_Fleshpound_XMA':
+			return Fleshpound;
+	
+		case class'P_ZombieBoss_STA':
+		case class'P_ZombieBoss_HAL':
+		case class'P_ZombieBoss_SUM':
+		case class'P_ZombieBoss_XMAS':
+			return Boss;
+	}
+
+	//Slow fallback.
+	if (ClassIsChildOf(MonsterClass, class'P_Clot'))
+	{
+		return Clot;
+	}
+
+	if (ClassIsChildOf(MonsterClass, class'P_Crawler'))
+	{
+		return Crawler;
+	}
+
+	if (ClassIsChildOf(MonsterClass, class'P_Stalker'))
+	{
+		return Stalker;
+	}
+
+	if (ClassIsChildOf(MonsterClass, class'P_Gorefast'))
+	{
+		return Gorefast;
+	}
+
+	if (ClassIsChildOf(MonsterClass, class'P_Bloat'))
+	{
+		return Bloat;
+	}
+
+	if (ClassIsChildOf(MonsterClass, class'P_Husk'))
+	{
+		return Husk;
+	}
+
+	if (ClassIsChildOf(MonsterClass, class'P_Siren'))
+	{
+		return Siren;
+	}
+
+	if (ClassIsChildOf(MonsterClass, class'P_Scrake'))
+	{
+		return Scrake;
+	}
+
+	if (ClassIsChildOf(MonsterClass, class'P_Fleshpound'))
+	{
+		return Fleshpound;
+	}
+
+	if (ClassIsChildOf(MonsterClass, class'P_ZombieBoss'))
+	{
+		return Boss;
+	}
+	
+	return Unknown;
 }
 
 static final function bool IsEliteMonster(class<Monster> Monster)
 {
-	return GetMonsterType(Monster) == Elite;
+	return GetMonsterTier(Monster) == Elite;
 }
 
 static final function bool IsSpecialMonster(class<Monster> Monster)
 {
-	return GetMonsterType(Monster) == Special;
+	return GetMonsterTier(Monster) == Special;
 }
 
 static final function bool IsTrashMonster(class<Monster> Monster)
 {
-	return GetMonsterType(Monster) == Trash;
+	return GetMonsterTier(Monster) == Trash;
 }
 
 defaultproperties

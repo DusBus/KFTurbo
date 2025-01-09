@@ -491,14 +491,14 @@ function ApplyPerkDamageModifiers(out float DamageMultiplier, KFHumanPawn Instig
 function MonsterNetDamage(out float DamageMultiplier, KFMonster Injured, Pawn InstigatedBy, Vector HitLocation, out Vector Momentum, class<KFWeaponDamageType> WeaponDamageType)
 {
     local bool bWasHeadshot;
-    local PawnHelper.EMonsterType MonsterType;
-    MonsterType = class'PawnHelper'.static.GetMonsterType(Injured.Class);
+    local PawnHelper.EMonsterTier MonsterTier;
+    MonsterTier = class'PawnHelper'.static.GetMonsterTier(Injured.Class);
 
-    if (MonsterType == Boss)
+    if (MonsterTier == Boss)
     {
         DamageMultiplier *= BossDamageMultiplier;
     }
-    else if (MonsterType == Trash)
+    else if (MonsterTier == Trash)
     {
         DamageMultiplier *= TrashDamageMultiplier;
     }
@@ -522,7 +522,7 @@ function MonsterNetDamage(out float DamageMultiplier, KFMonster Injured, Pawn In
 
         if (bWasHeadshot)
         {
-            if(MonsterType == Trash)
+            if(MonsterTier == Trash)
             {
                 DamageMultiplier *= TrashHeadshotDamageMultiplier;
             }
@@ -820,26 +820,23 @@ function ModifyActor(Actor Other)
         if (KFMonster(Other) != None)
         {
             MonsterPawnList[MonsterPawnList.Length] = KFMonster(Other);
-
-            if (BloatMovementSpeedModifier != 1.f && P_Bloat(Other) != None)
+            switch (class'PawnHelper'.static.GetMonsterType(MonsterPawnList[MonsterPawnList.Length - 1].Class))
             {
-                BloatPawnList[BloatPawnList.Length] = P_Bloat(Other);
-            }
-            else if (FleshpoundRageThresholdModifier != 1.f && P_Fleshpound(Other) != None)
-            {
-                FleshpoundPawnList[FleshpoundPawnList.Length] = P_Fleshpound(Other);
-            }
-            else if (HuskRefireTimeModifier != 1.f && P_Husk(Other) != None)
-            {
-                HuskPawnList[HuskPawnList.Length] = P_Husk(Other);
-            }
-            else if (SirenScreamRangeModifier != 1.f && P_Siren(Other) != None)
-            {
-                SirenPawnList[SirenPawnList.Length] = P_Siren(Other);
-            }
-            else if (ScrakeRageThresholdModifier != 1.f && P_Scrake(Other) != None)
-            {
-                ScrakePawnList[ScrakePawnList.Length] = P_Scrake(Other);
+                case Bloat:
+                    BloatPawnList[BloatPawnList.Length] = P_Bloat(Other);
+                    return;
+                case Husk:
+                    HuskPawnList[HuskPawnList.Length] = P_Husk(Other);
+                    return;
+                case Siren:
+                    SirenPawnList[SirenPawnList.Length] = P_Siren(Other);
+                    return;
+                case Scrake:
+                    ScrakePawnList[ScrakePawnList.Length] = P_Scrake(Other);
+                    return;
+                case Fleshpound:
+                    FleshpoundPawnList[FleshpoundPawnList.Length] = P_Fleshpound(Other);
+                    return;
             }
         }
     }

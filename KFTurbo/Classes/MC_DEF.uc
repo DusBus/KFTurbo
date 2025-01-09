@@ -11,6 +11,7 @@ defaultproperties
      MonsterClasses(6)=(MClassName="KFTurbo.P_Bloat_STA")
      MonsterClasses(7)=(MClassName="KFTurbo.P_Siren_STA")
      MonsterClasses(8)=(MClassName="KFTurbo.P_Husk_STA")
+     MonsterClasses(9)=(MClassName="KFTurbo.P_ZombieBoss_STA",Mid="J")
      StandardMonsterClasses(0)=(MClassName="KFTurbo.P_Clot_STA")
      StandardMonsterClasses(1)=(MClassName="KFTurbo.P_Crawler_STA")
      StandardMonsterClasses(2)=(MClassName="KFTurbo.P_Gorefast_STA")

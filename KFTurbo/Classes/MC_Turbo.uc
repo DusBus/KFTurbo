@@ -4,31 +4,10 @@
 //For more information see https://github.com/KFPilot/KFTurbo.
 class MC_Turbo extends MC_DEF;
 
-//NOTE: THESE ENUMS MUST LINE UP WITH THE MC_TURBO MONSTERCLASSES LIST.
-enum EMonster
-{
-     Clot,
-     Crawler,
-     Gorefast,
-     Stalker,
-     Scrake,
-     Fleshpound,
-     Bloat,
-     Siren,
-     Husk,
-     Boss,
-
-     //"Custom" zeds.
-     Crawler_Jumper,
-     Gorefast_Classy,
-     Gorefast_Assassin,
-     Bloat_Fathead,
-     Siren_Caroler,
-};
 
 defaultproperties
 {
-     //NOTE: THESE CLASSES MUST LINE UP WITH THE EMONSTER ENUM LIST.
+     //NOTE: THESE CLASSES MUST LINE UP WITH THE PAWNHELPER EMONSTER ENUM LIST.
      //Standard Monsters
      MonsterClasses(0)=(MClassName="KFTurbo.P_Clot_STA")
      MonsterClasses(1)=(MClassName="KFTurbo.P_Crawler_STA")
@@ -39,7 +18,7 @@ defaultproperties
      MonsterClasses(6)=(MClassName="KFTurbo.P_Bloat_STA")
      MonsterClasses(7)=(MClassName="KFTurbo.P_Siren_STA")
      MonsterClasses(8)=(MClassName="KFTurbo.P_Husk_STA")
-     MonsterClasses(9)=(MClassName="KFTurbo.P_ZombieBoss_STA",Mid="J")
+     MonsterClasses(9)=(MClassName="KFTurbo.P_ZombieBoss_STA")
 
      //Special Monsters
      MonsterClasses(10)=(MClassName="KFTurbo.P_Crawler_Jumper",Mid="K")

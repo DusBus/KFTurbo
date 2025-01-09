@@ -4,7 +4,7 @@ class TurboMonsterSquad extends Object
 
 struct SquadEntry
 {
-     var MC_Turbo.EMonster Monster;
+     var PawnHelper.EMonster Monster;
      var int Count;
 };
 

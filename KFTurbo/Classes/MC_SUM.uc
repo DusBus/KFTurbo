@@ -11,6 +11,7 @@ defaultproperties
      MonsterClasses(6)=(MClassName="KFTurbo.P_Bloat_SUM")
      MonsterClasses(7)=(MClassName="KFTurbo.P_Siren_SUM")
      MonsterClasses(8)=(MClassName="KFTurbo.P_Husk_SUM")
+     MonsterClasses(9)=(MClassName="KFTurbo.P_ZombieBoss_SUM",Mid="J")
      StandardMonsterClasses(0)=(MClassName="KFTurbo.P_Clot_SUM")
      StandardMonsterClasses(1)=(MClassName="KFTurbo.P_Crawler_SUM")
      StandardMonsterClasses(2)=(MClassName="KFTurbo.P_Gorefast_SUM")

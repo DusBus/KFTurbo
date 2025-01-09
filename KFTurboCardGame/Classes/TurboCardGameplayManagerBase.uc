@@ -194,15 +194,15 @@ function OnNextSpawnSquadGenerated(out array < class<KFMonster> > NextSpawnSquad
 
 final function AttemptUpgradeMonster(out class<KFMonster> Monster)
 {
-    local PawnHelper.EMonsterType MonsterType;
-    MonsterType = class'PawnHelper'.static.GetMonsterType(Monster);
+    local PawnHelper.EMonsterTier MonsterTier;
+    MonsterTier = class'PawnHelper'.static.GetMonsterTier(Monster);
 
-    if (MonsterType == Elite)
+    if (MonsterTier == Elite)
     {
         return;
     }
 
-    Monster = UpgradeReplacementList[int(MonsterType)].ReplacementClassList[Rand(UpgradeReplacementList[int(MonsterType)].ReplacementClassList.Length)];
+    Monster = UpgradeReplacementList[int(MonsterTier)].ReplacementClassList[Rand(UpgradeReplacementList[int(MonsterTier)].ReplacementClassList.Length)];
 }
 
 final function AttemptReplaceWeakMonster(out class<KFMonster> Monster)
