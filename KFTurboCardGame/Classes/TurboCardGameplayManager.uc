@@ -244,8 +244,6 @@ function OnWaveStart(int StartedWave)
     {
         ExplodeDoorsActor.ExplodeDoors();
     }
-
-    OversizedPipebombFlag.SetFlag(None);
 }
 
 function OnWaveEnd(int EndedWave)
