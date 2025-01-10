@@ -267,8 +267,8 @@ defaultproperties
 	FlockMaxForce=600.000000
 	FlockCurlForce=450.000000
 
-	ImpactDamage=150
-	Damage=350.000000
+	ImpactDamage=50
+	Damage=300.000000
 	DamageRadius=150.000000
     bGameRelevant=false
 }
