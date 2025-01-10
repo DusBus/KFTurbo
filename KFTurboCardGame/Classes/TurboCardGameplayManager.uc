@@ -169,6 +169,7 @@ var CardModifierStack PlayerMovementSpeedModifier;
 var CardModifierStack PlayerMovementAccelModifier;
 var CardModifierStack PlayerMovementFrictionModifier;
 var CardModifierStack PlayerJumpModifier;
+var CardModifierStack PlayerAirControlModifier;
 var CardFlag PlayerFreezeTagFlag;
 var CardFlag PlayerGreedSlowsFlag;
 var CardFlag PlayerLowHealthSlowsFlag;
@@ -1052,6 +1053,20 @@ function PlayerJumpModifierChanged(CardModifierStack ModifiedStack, float Modifi
     }
 }
 
+function PlayerAirControlModifierChanged(CardModifierStack ModifiedStack, float Modifier)
+{
+    local array<TurboHumanPawn> HumanPawnList;
+    local int Index;
+
+    CardGameRules.PlayerAirControlMultiplier = Modifier;
+    
+    HumanPawnList = class'TurboGameplayHelper'.static.GetPlayerPawnList(Level);
+    for (Index = HumanPawnList.Length - 1; Index >= 0; Index--)
+    {
+        HumanPawnList[Index].AirControl = FMin(HumanPawnList[Index].default.AirControl * Modifier, 4.f);
+    }
+}
+
 function PlayerFreezeTagFlagChanged(Cardflag Flag, bool bIsEnabled)
 {
     CardGameModifier.bFreezePlayersDuringWave = bIsEnabled;
@@ -1746,6 +1761,12 @@ defaultproperties
     End Object
     PlayerJumpModifier=CardModifierStack'PlayerJumpModifierStack'
 
+    Begin Object Name=PlayerAirControlModifierStack Class=CardModifierStack
+        ModifierStackID="PlayerAirControl"
+        OnModifierChanged=PlayerAirControlModifierChanged
+    End Object
+    PlayerAirControlModifier=CardModifierStack'PlayerAirControlModifierStack'
+    
     Begin Object Name=PlayerFreezeTagCardFlag Class=CardFlag
         FlagID="PlayerFreezeTag"
         OnFlagSetChanged=PlayerFreezeTagFlagChanged

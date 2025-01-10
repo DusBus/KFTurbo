@@ -60,6 +60,7 @@ var (Turbo) Sound RussianRoulettePlayerKilledSound, RussianRouletteMonsterKilled
 var (Turbo) bool bDisableSyringe;
 var (Turbo) bool bNoDropOrSellItems;
 var (Turbo) float PlayerJumpZMultiplier;
+var (Turbo) float PlayerAirControlMultiplier;
 
 var (Turbo) bool bSuperGrenades;
 var (Turbo) bool bOversizedPipebombs;
@@ -918,6 +919,7 @@ function ModifyPlayer(Pawn Other)
         TurboHumanPawn.JumpZMultiplier = PlayerJumpZMultiplier;
         TurboHumanPawn.MaxFallSpeed = FMax(TurboHumanPawn.default.MaxFallSpeed * TurboHumanPawn.GetJumpZModifier(), TurboHumanPawn.default.MaxFallSpeed);
         TurboHumanPawn.JumpZ = TurboHumanPawn.default.JumpZ * TurboHumanPawn.GetJumpZModifier();
+        TurboHumanPawn.AirControl = FMin(TurboHumanPawn.default.AirControl * PlayerAirControlMultiplier, 4.f);
     }
 }
 
@@ -1068,6 +1070,7 @@ defaultproperties
     LowHealthDamageMultiplier=1.f
 
     PlayerJumpZMultiplier=1.f
+    PlayerAirControlMultiplier=1.f  
 
     SirenScreamDamageMultiplier=1.f
 

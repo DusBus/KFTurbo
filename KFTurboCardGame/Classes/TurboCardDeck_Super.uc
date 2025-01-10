@@ -334,6 +334,11 @@ function ActivateCriticalHit(TurboCardGameplayManager GameplayManager, TurboCard
     Card.UpdateFlag(GameplayManager.CriticalShotFlag, bActivate);
 }
 
+function ActivateTooMuchForZBlock(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
+{
+    Card.UpdateModifier(GameplayManager.PlayerAirControlModifier, 10000.f, bActivate);
+}
+
 function ActivateDeEvolution(TurboCardGameplayManager GameplayManager, TurboCard Card, bool bActivate)
 {
     if (bActivate)
@@ -653,6 +658,17 @@ defaultproperties
         OnActivateCard=ActivateCriticalHit
     End Object
     DeckCardObjectList(27)=TurboCard'CriticalHit'
+
+    Begin Object Name=TooMuchForZBlock Class=TurboCard_Super
+        CardName(0)="Too Much"
+        CardName(1)="For zBlock"
+        CardDescriptionList(0)="Increases player"
+        CardDescriptionList(1)="air control"
+        CardDescriptionList(2)="significantly."
+        CardID="SUPER_ZBLOCK"
+        OnActivateCard=ActivateTooMuchForZBlock
+    End Object
+    DeckCardObjectList(28)=TurboCard'TooMuchForZBlock'
 /*
     Begin Object Name=DeEvolution Class=TurboCard_Super
         CardName(0)="De-Evolution"

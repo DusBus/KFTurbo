@@ -204,7 +204,6 @@ function ApplySpeedModification(Pawn Pawn)
 		return;
 	}
 	
-	Pawn.AirControl = Pawn.default.AirControl * FMax(1.f, TurboGameReplicationInfo(Level.GRI).GetPlayerMovementSpeedMultiplier(KFPlayerReplicationInfo(Pawn.PlayerReplicationInfo), TurboGameReplicationInfo(Level.GRI)));
 	Pawn.AccelRate = Pawn.default.AccelRate * FMax(0.f, TurboGameReplicationInfo(Level.GRI).GetPlayerMovementAccelMultiplier(KFPlayerReplicationInfo(Pawn.PlayerReplicationInfo), TurboGameReplicationInfo(Level.GRI)));
 }
 

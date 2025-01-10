@@ -90,7 +90,6 @@ function NotifyPlayerMovementSpeedChanged()
         if (Controller.Pawn != None && Controller.Pawn.Health > 0 && PlayerController(Controller) != None)
         {
             Controller.Pawn.ModifyVelocity(0.f, Controller.Pawn.Velocity);
-            Controller.Pawn.AirControl = Controller.Pawn.default.AirControl * FMax(1.f, GetPlayerMovementSpeedMultiplier(KFPlayerReplicationInfo(Controller.PlayerReplicationInfo), Self));
             Controller.Pawn.AccelRate = FMax(0.f, Controller.Pawn.default.AccelRate * GetPlayerMovementAccelMultiplier(KFPlayerReplicationInfo(Controller.PlayerReplicationInfo), Self));
         }
     }
