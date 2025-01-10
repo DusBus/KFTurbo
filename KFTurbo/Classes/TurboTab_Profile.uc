@@ -76,6 +76,16 @@ function SaveSettings()
 	}
 }
 
+function bool PickModel(GUIComponent Sender)
+{
+	if ( Controller.OpenMenu(string(Class'TurboTab_ModelSelect'), PlayerRec.DefaultName, Eval(Controller.CtrlPressed, PlayerRec.Race, "")) )
+	{
+		Controller.ActivePage.OnClose = ModelSelectClosed;
+	}
+
+	return true;
+}
+
 defaultproperties
 {
      Begin Object Class=TurboPerkSelectListBox Name=PerkSelectList

@@ -9,6 +9,7 @@ class KFTurboMut extends Mutator
 #exec obj load file="..\Textures\KFTurboVet.utx" package=KFTurbo
 #exec obj load file="..\Animations\KFTurboExtra.ukx" package=KFTurbo
 #exec obj load file="..\Textures\KFTurboHUD.utx" package=KFTurbo
+#exec obj load file="..\Textures\KFTurboCharacters.utx" package=KFTurbo
 
 var TurboStatsGameRules StatsGameRules;
 var TurboStatsTcpLink StatsTcpLink;
