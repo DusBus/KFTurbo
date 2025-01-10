@@ -48,8 +48,9 @@ Begin:
 final function CheckUseTrigger(KFUseTrigger UseTrigger)
 {
     local int DoorIndex;
-    local KFDoorMover Door;
     local bool bWasSealed;
+    local KFDoorMover Door;
+    local Mover Follower;
 
     if (IsPartiallyBroken(UseTrigger))
     {
@@ -63,6 +64,18 @@ final function CheckUseTrigger(KFUseTrigger UseTrigger)
             }
 
             Door.GoBang(None, Door.Location, vect(0.f, 0.f, 0.f), None);
+
+            Follower = UseTrigger.DoorOwners[DoorIndex].Follower;
+            
+            while (Follower != None)
+            {
+                if (KFDoorMover(Follower) != None)
+                {
+                    KFDoorMover(Follower).GoBang(None, Follower.Location, vect(0.f, 0.f, 0.f), None);
+                }
+
+                Follower = Follower.Follower;
+            }
         }
 
         return;
@@ -84,6 +97,19 @@ final function CheckUseTrigger(KFUseTrigger UseTrigger)
             Door.bSealed = false;
             Door.DoClose();
             Door.bSealed = bWasSealed;
+
+            while (Follower != None)
+            {
+                if (KFDoorMover(Follower) != None)
+                {
+                    bWasSealed = KFDoorMover(Follower).bSealed;
+                    KFDoorMover(Follower).bSealed = false;
+                    KFDoorMover(Follower).DoClose();
+                    KFDoorMover(Follower).bSealed = bWasSealed;
+                }
+
+                Follower = Follower.Follower;
+            }
         }
 
         return;
@@ -95,6 +121,7 @@ final function bool IsPartiallyBroken(KFUseTrigger UseTrigger)
     local int DoorIndex;
     local bool bHasBrokenDoor;
     local bool bHasAliveDoor;
+    local Mover Follower;
 
     bHasBrokenDoor = false;
     bHasAliveDoor = false;
@@ -109,6 +136,24 @@ final function bool IsPartiallyBroken(KFUseTrigger UseTrigger)
         {
             bHasAliveDoor = true;
         }
+        
+        Follower = UseTrigger.DoorOwners[DoorIndex].Follower;
+        while(Follower != None)
+        {
+            if (KFDoorMover(Follower) != None)
+            {
+                if (KFDoorMover(Follower).bDoorIsDead)
+                {
+                    bHasBrokenDoor = true;
+                }
+                else
+                {
+                    bHasAliveDoor = true;
+                }
+            }
+
+            Follower = Follower.Follower;
+        }
     }
 
     return bHasBrokenDoor && bHasAliveDoor;
@@ -119,6 +164,7 @@ final function bool IsPartiallyOpen(KFUseTrigger UseTrigger)
     local int DoorIndex;
     local bool bHasOpenDoor;
     local bool bHasClosedDoor;
+    local Mover Follower;
 
     bHasOpenDoor = false;
     bHasClosedDoor = false;
@@ -132,6 +178,24 @@ final function bool IsPartiallyOpen(KFUseTrigger UseTrigger)
         else
         {
             bHasOpenDoor = true;
+        }
+
+        Follower = UseTrigger.DoorOwners[DoorIndex].Follower;
+        while(Follower != None)
+        {
+            if (KFDoorMover(Follower) != None)
+            {
+                if (Follower.bClosed)
+                {
+                    bHasClosedDoor = true;
+                }
+                else
+                {
+                    bHasOpenDoor = true;
+                }
+            }
+
+            Follower = Follower.Follower;
         }
     }
 
