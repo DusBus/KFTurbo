@@ -102,7 +102,7 @@ function OnVoteComplete(array<TurboCard> ActiveCardList, array<TurboCard> VoteSe
         ShownCardList[ShownStartingIndex + Index] = VoteSelectionList[Index];
     }
 
-    SendText(BuildVotePayload(Level.Game.GetCurrentWaveNum() - 1, ConvertCardToCardID(ActiveCardList), ConvertCardToCardID(VoteSelectionList), SelectedCard.CardID));
+    SendText(BuildVotePayload(Level.Game.GetCurrentWaveNum(), ConvertCardToCardID(ActiveCardList), ConvertCardToCardID(VoteSelectionList), SelectedCard.CardID));
 }
 
 /*
@@ -145,9 +145,9 @@ final function string BuildVotePayload(int WaveNumber, array<string> ActiveCardL
     return Payload;
 }
 
-function OnGameEnd(int WaveNumber, bool bWonGame, array<TurboCard> ActiveCardList)
+function OnGameEnd(array<TurboCard> ActiveCardList)
 {
-    SendText(BuildEndGamePayload(WaveNumber, bWonGame, ConvertCardToCardID(ActiveCardList), ConvertCardToCardID(ShownCardList)));
+    SendText(BuildEndGamePayload(Level.Game.GetCurrentWaveNum(), ConvertCardToCardID(ActiveCardList), ConvertCardToCardID(ShownCardList)));
 }
 
 /*
@@ -157,8 +157,6 @@ Data payload for a game end looks like the following;
     "type": "cardgame_endgame",
     "version": "4.4.1",
     "session": "<session ID>",
-    "win" : false,
-    "wavenum" : 3,
     "activecards" : ["CARD2", "CARD4", "CARD8"],
     "showncards" : ["CARD1", "CARD3", "CARD5", ...]
 }
@@ -166,14 +164,12 @@ Data payload for a game end looks like the following;
 type - refers to the type of payload this is.
 version - The KFTurbo version currently running.
 session - The session ID for this game.
-win - Whether or not this game resulted in a win or not.
-wavenum - The wave this game ended on.
 activecards - The cards that were selected during the game.
 showncards - The cards that were not selected during the game.
 */
 
 //Analytics event for a game ending.
-final function string BuildEndGamePayload(int WaveNumber, bool bWonGame, array<string> ActiveCardList, array<string> ShownCardList)
+final function string BuildEndGamePayload(int WaveNumber, array<string> ActiveCardList, array<string> ShownCardList)
 {
     local string Payload;
     local KFTurboMut Mutator;
@@ -182,8 +178,6 @@ final function string BuildEndGamePayload(int WaveNumber, bool bWonGame, array<s
     Payload = "{%qtype%q:%qcardgame_endgame%q,";
     Payload $= "%qversion%q:%q"$Mutator.GetTurboVersionID()$"%q,";
     Payload $= "%qsession%q:%q"$Mutator.GetSessionID()$"%q,";
-    Payload $= "%qwin%q:"$bWonGame$",";
-    Payload $= "%qwavenum%q:"$WaveNumber$",";
     Payload $= "%qactivecards%q:["$ConvertToString(ActiveCardList)$"],";
     Payload $= "%qshowncards%q:["$ConvertToString(ShownCardList)$"]}";
     

@@ -24,6 +24,7 @@ var private bool bHasVersionUpdate;
 
 var protected string SessionID;
 var protected string GameStartTime;
+var protected string GameType;
 
 delegate SetPerkSwitchEnabled(bool bEnable);
 
@@ -295,9 +296,38 @@ function string GenerateSessionID()
 	return GameStartTime $ "|" $ Left(string(Level), InStr(string(Level), "."));
 }
 
+function SetGameType(Object Context, string InGameType)
+{
+	if (Context == None)
+	{
+		return;
+	}
+
+	GameType = InGameType;
+	log("Turbo GameType set to"@GameType@"by"@Context$".",'KFTurbo');
+}
+
+final function string GetGameType()
+{
+	return GameType;
+}
+
 function OnGameStart()
 {
 	GetSessionID();
+
+	if (StatsTcpLink != None)
+	{
+		StatsTcpLink.SendGameStart();
+	}
+}
+
+function OnGameEnd(int Result)
+{
+	if (StatsTcpLink != None)
+	{
+		StatsTcpLink.SendGameStart();
+	}
 }
 
 defaultproperties
@@ -312,4 +342,6 @@ defaultproperties
 	bCheckLatestTurboVersion=true
 	TurboVersion="5.3.1"
 	bHasVersionUpdate=false
+
+	GameType="turbo"
 }

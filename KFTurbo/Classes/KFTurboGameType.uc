@@ -415,7 +415,7 @@ state MatchInProgress
             BroadcastLocalized(Level.GRI, class'TurboVersionLocalMessage');
         }
 
-        NotifyMutatorGameStart();
+        NotifyTurboMutatorGameStart();
 		class'TurboWaveEventHandler'.static.BroadcastGameStarted(Self, WaveNum);
     }
 
@@ -538,6 +538,7 @@ function bool CheckEndGame(PlayerReplicationInfo Winner, string Reason)
     if (!bGameIsOver && KFGameReplicationInfo(GameReplicationInfo).EndGameType != 0)
     {
 		class'TurboWaveEventHandler'.static.BroadcastGameEnded(Self, KFGameReplicationInfo(GameReplicationInfo).EndGameType);
+        NotifyTurboMutatorGameEnd(KFGameReplicationInfo(GameReplicationInfo).EndGameType);
     }
 
     return bResult;
@@ -626,11 +627,18 @@ function ClearTraderEndVotes()
     }
 }
 
-function NotifyMutatorGameStart()
+function NotifyTurboMutatorGameStart()
 {
     local KFTurboMut TurboMut;
     TurboMut = class'KFTurboMut'.static.FindMutator(Self);
     TurboMut.OnGameStart();
+}
+
+function NotifyTurboMutatorGameEnd(int Result)
+{
+    local KFTurboMut TurboMut;
+    TurboMut = class'KFTurboMut'.static.FindMutator(Self);
+    TurboMut.OnGameEnd(Result);
 }
 
 defaultproperties

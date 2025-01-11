@@ -80,6 +80,120 @@ function Opened()
 }
 
 /*
+Data payload for a game starting looks like the following;
+
+{
+    "type": "gamebegin",
+    "version": "5.2.2",
+    "session": "<session ID>",
+    "gametype" : "turbo"
+}
+
+type - refers to the type of payload this is.
+version - The KFTurbo version currently running.
+session - The session ID for this game."
+gametype - The type of game being played. Can be "turbo", "turbocardgame", "turborandomizer", "turboplus".
+*/
+
+function SendGameStart()
+{
+    SendText(BuildGameStartPayload());
+}
+
+final function string BuildGameStartPayload()
+{
+    local string Payload;
+    local KFTurboMut Mutator;
+    Mutator = class'KFTurboMut'.static.FindMutator(Level.Game);
+
+    Payload = "{%qtype%q:%qgamebegin%q,";
+    Payload $= "%qversion%q:%q"$Mutator.GetTurboVersionID()$"%q,";
+    Payload $= "%qsession%q:%q"$Mutator.GetSessionID()$"%q,";
+    Payload $= "%qgametype%q:%q"$Mutator.GetGameType()$"%q,";
+    
+    Payload = Repl(Payload, "%q", Chr(34));
+    return Payload;
+}
+
+/*
+Data payload for a game ending looks like the following;
+
+{
+    "type": "gameend",
+    "version": "5.2.2",
+    "session": "<session ID>",
+    "wavenum" : 3,
+    "result" : "won"
+}
+
+type - refers to the type of payload this is.
+version - The KFTurbo version currently running.
+session - The session ID for this game."
+wavenum - The wave this game ended on.
+result - The result of the game. Can be "won", "lost", "aborted". Aborted refers to a map vote that occurred without a game end state being reached.
+*/
+
+function SendGameEnd(int Result)
+{
+    SendText(BuildGameEndPayload(Level.Game.GetCurrentWaveNum(), GetResultName(Result)));
+}
+
+final function string BuildGameEndPayload(int WaveNum, string Result)
+{
+    local string Payload;
+    local KFTurboMut Mutator;
+    Mutator = class'KFTurboMut'.static.FindMutator(Level.Game);
+
+    Payload = "{%qtype%q:%qgameend%q,";
+    Payload $= "%qversion%q:%q"$Mutator.GetTurboVersionID()$"%q,";
+    Payload $= "%qsession%q:%q"$Mutator.GetSessionID()$"%q,";
+    Payload $= "%qwavenum%q:"$WaveNum$",";
+    Payload $= "%qresult%q:%q"$Result$"%q,";
+    
+    Payload = Repl(Payload, "%q", Chr(34));
+    return Payload;
+}
+
+/*
+Data payload for a wave starting looks like the following;
+
+{
+    "type": "gameend",
+    "version": "5.2.2",
+    "session": "<session ID>",
+    "wavenum" : 2,
+    "playerlist" : ["<steam ID 1>","<steam ID 2>", "<steam ID 3>", ...]
+}
+
+type - refers to the type of payload this is.
+version - The KFTurbo version currently running.
+session - The session ID for this game."
+wavenum - The wave that started.
+playerlist - The Steam IDs of the players in the game at the wave start.
+*/
+
+function SendWaveStart()
+{
+    SendText(BuildWaveStartPayload(Level.Game.GetCurrentWaveNum()));
+}
+
+final function string BuildWaveStartPayload(int WaveNum)
+{
+    local string Payload;
+    local KFTurboMut Mutator;
+    Mutator = class'KFTurboMut'.static.FindMutator(Level.Game);
+
+    Payload = "{%qtype%q:%qgameend%q,";
+    Payload $= "%qversion%q:%q"$Mutator.GetTurboVersionID()$"%q,";
+    Payload $= "%qsession%q:%q"$Mutator.GetSessionID()$"%q,";
+    Payload $= "%qwavenum%q:"$WaveNum$",";
+    Payload $= "%qplayerlist%q:["$GetPlayerList()$"],";
+    
+    Payload = Repl(Payload, "%q", Chr(34));
+    return Payload;
+}
+
+/*
 Data payload for a player's wave stats looks like the following;
 
 {
@@ -110,7 +224,7 @@ stats - A map of tracked non-zero stats accrued during the wave.
 died - Wether or not the player died this wave.
 */
 
-final function SendWaveStats(TurboWavePlayerStatCollector Stats)
+function SendWaveStats(TurboWavePlayerStatCollector Stats)
 {
     if (Stats == None)
     {
@@ -177,6 +291,43 @@ static final function string AppendStat(string StatName, int StatAmount)
     }
 
     return ",%q"$StatName$"%q : "$StatAmount;
+}
+
+static final function string GetResultName(int GameResult)
+{
+    switch(GameResult)
+    {
+        case 1:
+            return "won";
+        case 2:
+            return "lost";
+    }
+
+    return "aborted";
+}
+
+final function string GetPlayerList()
+{
+    local Controller C;
+    local string PlayerList;
+    PlayerList = "";
+
+    for (C = Level.ControllerList; C != None; C = C.NextController)
+    {
+        if (!C.bIsPlayer || C.PlayerReplicationInfo == None || C.PlayerReplicationInfo.bOnlySpectator || PlayerController(C) == None)
+        {
+            continue;
+        }
+
+        PlayerList $= ",%q"$PlayerController(C).GetPlayerIDHash()$"%q";
+    }
+
+    if (PlayerList != "" && Left(PlayerList, 1) == ",")
+    {
+        PlayerList = Mid(PlayerList, 1);
+    }
+
+    return PlayerList;
 }
 
 defaultproperties

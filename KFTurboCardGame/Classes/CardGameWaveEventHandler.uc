@@ -30,7 +30,7 @@ static function OnGameEnded(KFTurboGameType GameType, int Result)
         return;
     }
 
-    StatsTcpLink.OnGameEnd(GameType.WaveNum, Result == 1, CardGameMut.TurboCardReplicationInfo.GetActiveCardList());
+    StatsTcpLink.OnGameEnd(CardGameMut.TurboCardReplicationInfo.GetActiveCardList());
 }
 
 static function OnWaveStarted(KFTurboGameType GameType, int StartedWave)

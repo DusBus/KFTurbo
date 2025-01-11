@@ -37,6 +37,13 @@ function PostBeginPlay()
 	class'TurboWaveSpawnEventHandler'.static.RegisterWaveHandler(Self, class'CardGameWaveSpawnEventHandler');
 }
 
+function Tick(float DeltaTime)
+{
+	class'KFTurboMut'.static.FindMutator(Level.Game).SetGameType(Self, "turbocardgame");
+
+	Disable('Tick');
+}
+
 function AddDeckOverridesToPackageMap()
 {
 	local array<string> PackageNameList;

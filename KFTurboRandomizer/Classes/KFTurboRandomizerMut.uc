@@ -75,6 +75,13 @@ function PostBeginPlay()
 	SetTimer(1.f, false);
 }
 
+function Tick(float DeltaTime)
+{
+	class'KFTurboMut'.static.FindMutator(Level.Game).SetGameType(Self, "turborandomizer");
+
+	Disable('Tick');
+}
+
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 {
 	//Get rid of ALL of them.
