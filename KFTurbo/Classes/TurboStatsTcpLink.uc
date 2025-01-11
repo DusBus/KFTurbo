@@ -248,11 +248,40 @@ final function string BuildWaveStatsPayload(TurboWavePlayerStatCollector Stats)
     Payload $= "%qwavenum%q:"$Stats.Wave$",";
     Payload $= "%qplayer%q:%q"$Stats.GetPlayerSteamID()$"%q,";
     Payload $= "%qplayername%q:%q"$Stats.GetPlayerName()$"%q,";
+    Payload $= "%qperk%q:%q"$GetPerkID(Stats.PlayerTPRI)$"%q,";
     Payload $= "%qstats%q:{"$BuildStatsMap(Stats)$"},";
     Payload $= "%qdied%q:"$Locs(string(Stats.Deaths > 0))$"}";
     
     Payload = Repl(Payload, "%q", Chr(34));
     return Payload;
+}
+
+static final function string GetPerkID(TurboPlayerReplicationInfo TPRI)
+{
+    if (TPRI == None || TPRI.ClientVeteranSkill == None)
+    {
+        return "NONE";
+    }
+
+    switch(TPRI.ClientVeteranSkill)
+    {
+        case class'KFTurbo.V_FieldMedic':
+            return "MED";
+        case class'KFTurbo.V_SupportSpec':
+            return "SUP";
+        case class'KFTurbo.V_Sharpshooter':
+            return "SHA";
+        case class'KFTurbo.V_Commando':
+            return "COM";
+        case class'KFTurbo.V_Berserker':
+            return "BER";
+        case class'KFTurbo.V_Firebug':
+            return "FIR";
+        case class'KFTurbo.V_Demolitions':
+            return "DEM";
+    }
+
+    return "NONE";
 }
 
 static final function string BuildStatsMap(TurboWavePlayerStatCollector Stats)
