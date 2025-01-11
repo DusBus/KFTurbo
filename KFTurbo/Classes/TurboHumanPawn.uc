@@ -887,10 +887,13 @@ exec function TossCash( int Amount )
 function bool DoJump( bool bUpdating )
 {
     local float JumpModifier;
-    JumpModifier = GetJumpZModifier();
 
-    MaxFallSpeed = FMax(default.MaxFallSpeed * JumpModifier, default.MaxFallSpeed);
-    JumpZ = default.JumpZ * JumpModifier ;
+	if (Role == Role_Authority)
+	{
+    	JumpModifier = GetJumpZModifier();
+		MaxFallSpeed = FMax(default.MaxFallSpeed * JumpModifier, default.MaxFallSpeed);
+		JumpZ = default.JumpZ * JumpModifier;
+	}
     
 	return Super(KFPawn).DoJump(bUpdating);
 }
