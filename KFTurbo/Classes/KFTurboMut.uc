@@ -330,6 +330,21 @@ function OnGameEnd(int Result)
 	}
 }
 
+function ServerTraveling(string URL, bool bItems)
+{
+	if (StatsTcpLink == None)
+	{
+		return;
+	}
+
+	if (KFGameReplicationInfo(Level.GRI) == None || KFGameReplicationInfo(Level.GRI).EndGameType != 0)
+	{
+		return;
+	}
+
+	StatsTcpLink.SendGameEnd(-1);
+}
+
 defaultproperties
 {
 	bAddToServerPackages=True
@@ -340,7 +355,7 @@ defaultproperties
 	bDebugClientPerkRepLink=false
 
 	bCheckLatestTurboVersion=true
-	TurboVersion="5.3.1"
+	TurboVersion="5.3.2"
 	bHasVersionUpdate=false
 
 	GameType="turbo"
