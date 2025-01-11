@@ -363,7 +363,7 @@ defaultproperties
 	bDebugClientPerkRepLink=false
 
 	bCheckLatestTurboVersion=true
-	TurboVersion="5.3.2"
+	TurboVersion="5.3.3"
 	bHasVersionUpdate=false
 
 	GameType="turbo"
