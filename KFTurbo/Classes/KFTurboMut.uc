@@ -326,7 +326,15 @@ function OnGameEnd(int Result)
 {
 	if (StatsTcpLink != None)
 	{
-		StatsTcpLink.SendGameStart();
+		StatsTcpLink.SendGameEnd(Result);
+	}
+}
+
+function OnWaveStart()
+{
+	if (StatsTcpLink != None)
+	{
+		StatsTcpLink.SendWaveStart();
 	}
 }
 

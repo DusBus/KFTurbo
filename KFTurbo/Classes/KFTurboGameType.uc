@@ -396,6 +396,7 @@ function SetupWave()
     KFGameReplicationInfo(Level.Game.GameReplicationInfo).MaxMonsters = TotalMaxMonsters;
 	
     ClearTraderEndVotes();
+    class'KFTurboMut'.static.FindMutator(Self).OnWaveStart();
 	class'TurboWaveEventHandler'.static.BroadcastWaveStarted(Self, WaveNum);
 }
 
@@ -467,6 +468,7 @@ state MatchInProgress
 	function StartWaveBoss()
 	{
 		Super.StartWaveBoss();
+        class'KFTurboMut'.static.FindMutator(Self).OnWaveStart();
 		class'TurboWaveEventHandler'.static.BroadcastWaveStarted(Self, WaveNum);
 	}
 

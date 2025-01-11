@@ -138,20 +138,12 @@ function AttemptModifyGameLength()
 
 function TurboCardStatsTcpLink SetupStatTcpLink()
 {
-	local class<TurboCardStatsTcpLink> TcpLinkClass;
-	if (!class'TurboCardStatsTcpLink'.static.ShouldBroadcastAnalytics())
+	if (!class'TurboStatsTcpLink'.static.ShouldBroadcastAnalytics())
 	{
 		return None;
 	}
 
-	TcpLinkClass = class'TurboCardStatsTcpLink'.static.GetCardStatsTcpLinkClass();
-
-	if (TcpLinkClass == None)
-	{
-		return None;
-	}
-
-	return Spawn(TcpLinkClass, Self);
+	return Spawn(class'TurboCardStatsTcpLink', Self);
 }
 
 static final function KFTurboCardGameMut FindMutator(GameInfo GameInfo)

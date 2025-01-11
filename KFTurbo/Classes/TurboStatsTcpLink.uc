@@ -56,11 +56,13 @@ function PostBeginPlay()
 
 event Resolved(IpAddr ResolvedAddress)
 {
+    log("Resolved domain"@StatsDomain$".", 'KFTurbo');
     StatsAddress = ResolvedAddress;
     StatsAddress.Port = StatsPort;
 
     if (!OpenNoSteam(StatsAddress))
     {
+        log("OpenNoSteam failed for"@StatsDomain$"!", 'KFTurbo');
         Close();
         LifeSpan = 1.f;
     }
@@ -109,7 +111,7 @@ final function string BuildGameStartPayload()
     Payload = "{%qtype%q:%qgamebegin%q,";
     Payload $= "%qversion%q:%q"$Mutator.GetTurboVersionID()$"%q,";
     Payload $= "%qsession%q:%q"$Mutator.GetSessionID()$"%q,";
-    Payload $= "%qgametype%q:%q"$Mutator.GetGameType()$"%q,";
+    Payload $= "%qgametype%q:%q"$Mutator.GetGameType()$"%q}";
     
     Payload = Repl(Payload, "%q", Chr(34));
     return Payload;
@@ -148,7 +150,7 @@ final function string BuildGameEndPayload(int WaveNum, string Result)
     Payload $= "%qversion%q:%q"$Mutator.GetTurboVersionID()$"%q,";
     Payload $= "%qsession%q:%q"$Mutator.GetSessionID()$"%q,";
     Payload $= "%qwavenum%q:"$WaveNum$",";
-    Payload $= "%qresult%q:%q"$Result$"%q,";
+    Payload $= "%qresult%q:%q"$Result$"%q}";
     
     Payload = Repl(Payload, "%q", Chr(34));
     return Payload;
@@ -183,11 +185,11 @@ final function string BuildWaveStartPayload(int WaveNum)
     local KFTurboMut Mutator;
     Mutator = class'KFTurboMut'.static.FindMutator(Level.Game);
 
-    Payload = "{%qtype%q:%qgameend%q,";
+    Payload = "{%qtype%q:%qwavestart%q,";
     Payload $= "%qversion%q:%q"$Mutator.GetTurboVersionID()$"%q,";
     Payload $= "%qsession%q:%q"$Mutator.GetSessionID()$"%q,";
     Payload $= "%qwavenum%q:"$WaveNum$",";
-    Payload $= "%qplayerlist%q:["$GetPlayerList()$"],";
+    Payload $= "%qplayerlist%q:["$GetPlayerList()$"]}";
     
     Payload = Repl(Payload, "%q", Chr(34));
     return Payload;
@@ -244,10 +246,10 @@ final function string BuildWaveStatsPayload(TurboWavePlayerStatCollector Stats)
     Payload $= "%qversion%q:%q"$TurboMut.GetTurboVersionID()$"%q,";
     Payload $= "%qsession%q:%q"$TurboMut.GetSessionID()$"%q,";
     Payload $= "%qwavenum%q:"$Stats.Wave$",";
-    Payload $= "%qplayer%q:"$Stats.GetPlayerSteamID()$",";
-    Payload $= "%qplayername%q:"$Stats.GetPlayerName()$",";
+    Payload $= "%qplayer%q:%q"$Stats.GetPlayerSteamID()$"%q,";
+    Payload $= "%qplayername%q:%q"$Stats.GetPlayerName()$"%q,";
     Payload $= "%qstats%q:{"$BuildStatsMap(Stats)$"},";
-    Payload $= "%died%q:"$(Stats.Deaths > 0)$"}";
+    Payload $= "%qdied%q:"$Locs(string(Stats.Deaths > 0))$"}";
     
     Payload = Repl(Payload, "%q", Chr(34));
     return Payload;
@@ -290,7 +292,7 @@ static final function string AppendStat(string StatName, int StatAmount)
         return "";
     }
 
-    return ",%q"$StatName$"%q : "$StatAmount;
+    return ",%q"$StatName$"%q:"$StatAmount;
 }
 
 static final function string GetResultName(int GameResult)

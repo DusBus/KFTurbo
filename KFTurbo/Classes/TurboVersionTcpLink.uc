@@ -95,7 +95,6 @@ function CheckVersionNumber(string Version)
     }
 }
 
-
 defaultproperties
 {
     TurboDomain="version.kfturbo.com"

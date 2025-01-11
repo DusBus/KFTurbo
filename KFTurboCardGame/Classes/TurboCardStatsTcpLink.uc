@@ -1,42 +1,14 @@
 //Killing Floor Turbo TurboCardStatsTcpLink
-//Sends data regarding card voting to a specified place.
+//Sends data regarding card voting to a specified place. Piggy backs off TurboStatsLink to send data.
 //Distributed under the terms of the GPL-2.0 License.
 //For more information see https://github.com/KFPilot/KFTurbo.
-class TurboCardStatsTcpLink extends TcpLink
+class TurboCardStatsTcpLink extends Info
     config(KFTurboCardGame);
 
-var globalconfig bool bBroadcastAnalytics;
-var globalconfig string CardStatsDomain;
-var globalconfig int CardStatsPort;
-var globalconfig string StatsTcpLinkClassOverride;
-
-var IpAddr CardStatsAddress;
-
-var string CRLF;
+var TurboStatsTcpLink StatsTcpLink;
 
 //Cached list of shown cards. Slowly built up using SendVote()'s VoteSelectionList.
 var array<TurboCard> ShownCardList;
-
-static function bool ShouldBroadcastAnalytics()
-{
-    return default.bBroadcastAnalytics && default.CardStatsDomain != "" && default.CardStatsPort >= 0;
-}
-
-static function class<TurboCardStatsTcpLink> GetCardStatsTcpLinkClass()
-{
-    local class<TurboCardStatsTcpLink> TcpLinkClass;
-    if (default.StatsTcpLinkClassOverride != "")
-    {
-        TcpLinkClass = class<TurboCardStatsTcpLink>(DynamicLoadObject(default.StatsTcpLinkClassOverride, class'class'));
-    }
-
-    if (TcpLinkClass == None)
-    {
-        TcpLinkClass = class'TurboCardStatsTcpLink';
-    }
-
-    return TcpLinkClass;
-}
 
 //static final function KFTurboCardGameMut FindMutator(GameInfo GameInfo)
 static final function TurboCardStatsTcpLink FindStats(GameInfo GameInfo)
@@ -52,41 +24,19 @@ static final function TurboCardStatsTcpLink FindStats(GameInfo GameInfo)
     return CardGameMut.TurboCardStats;
 }
 
+final function TurboStatsTcpLink GetStatsTcpLink()
+{
+    if (StatsTcpLink == None)
+    {
+        StatsTcpLink = class'KFTurboMut'.static.FindMutator(Level.Game).StatsTcpLink;
+    }
+
+    return StatsTcpLink;
+}
+
 function PostBeginPlay()
 {
     log("KFTurbo Card Game is starting up stats TCP link!", 'KFTurboCardGame');
-
-	CRLF = Chr(13) $ Chr(10);
-
-    LinkMode = MODE_Text;
-    ReceiveMode = RMODE_Event;
-    BindPort();
-    Resolve(CardStatsDomain);
-}
-
-event Resolved(IpAddr ResolvedAddress)
-{
-    CardStatsAddress = ResolvedAddress;
-    CardStatsAddress.Port = CardStatsPort;
-
-    if (!OpenNoSteam(CardStatsAddress))
-    {
-        Close();
-        LifeSpan = 1.f;
-    }
-}
-
-event ResolveFailed()
-{
-    log("Failed to resolve stats domain.", 'KFTurboCardGame');
-
-    Close();
-    LifeSpan = 1.f;
-}
-
-function Opened()
-{
-    log("Connection to"@CardStatsDomain@"opened.", 'KFTurboCardGame');
 }
 
 //Analytics event for a vote that occurred.
@@ -102,7 +52,7 @@ function OnVoteComplete(array<TurboCard> ActiveCardList, array<TurboCard> VoteSe
         ShownCardList[ShownStartingIndex + Index] = VoteSelectionList[Index];
     }
 
-    SendText(BuildVotePayload(Level.Game.GetCurrentWaveNum(), ConvertCardToCardID(ActiveCardList), ConvertCardToCardID(VoteSelectionList), SelectedCard.CardID));
+    GetStatsTcpLink().SendText(BuildVotePayload(Level.Game.GetCurrentWaveNum(), ConvertCardToCardID(ActiveCardList), ConvertCardToCardID(VoteSelectionList), SelectedCard.CardID));
 }
 
 /*
@@ -139,7 +89,7 @@ final function string BuildVotePayload(int WaveNumber, array<string> ActiveCardL
     Payload $= "%qwavenum%q:"$WaveNumber$",";
     Payload $= "%qactivecards%q:["$ConvertToString(ActiveCardList)$"],";
     Payload $= "%qvoteselection%q:["$ConvertToString(VoteSelectionList)$"],";
-    Payload $= "%qvotedcard%q:"$VotedCardList$"}";
+    Payload $= "%qvotedcard%q:%q"$VotedCardList$"%q}";
     
     Payload = Repl(Payload, "%q", Chr(34));
     return Payload;
@@ -147,7 +97,7 @@ final function string BuildVotePayload(int WaveNumber, array<string> ActiveCardL
 
 function OnGameEnd(array<TurboCard> ActiveCardList)
 {
-    SendText(BuildEndGamePayload(Level.Game.GetCurrentWaveNum(), ConvertCardToCardID(ActiveCardList), ConvertCardToCardID(ShownCardList)));
+    GetStatsTcpLink().SendText(BuildEndGamePayload(Level.Game.GetCurrentWaveNum(), ConvertCardToCardID(ActiveCardList), ConvertCardToCardID(ShownCardList)));
 }
 
 /*
@@ -213,6 +163,11 @@ static final function array<string> ConvertCardToCardID(array<TurboCard> CardLis
 
     for (Index = 0; Index < CardList.Length; Index++)
     {
+        if (CardList[Index] == None)
+        {
+            continue;
+        }
+
         Result[Index] = CardList[Index].CardID;
     }
 
@@ -222,10 +177,5 @@ static final function array<string> ConvertCardToCardID(array<TurboCard> CardLis
 
 defaultproperties
 {
-    LinkMode=MODE_Text
 
-    bBroadcastAnalytics=false
-    CardStatsDomain="";
-    CardStatsPort=-1;
-    StatsTcpLinkClassOverride=""
 }

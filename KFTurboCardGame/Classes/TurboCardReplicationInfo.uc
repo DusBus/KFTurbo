@@ -305,13 +305,12 @@ final function array<TurboCard> GetActiveCardList()
 
     for (Index = 0; Index < ArrayCount(AuthActiveCardList); Index++)
     {
-        if (AuthActiveCardList[Index] != None)
+        if (AuthActiveCardList[Index] == None)
         {
-            continue;
+            break;
         }
 
         CardList[Index] = AuthActiveCardList[Index];
-        break;
     }
 
     CardList.Length = Index;
@@ -327,13 +326,12 @@ final function array<TurboCard> GetSelectableCardList()
 
     for (Index = 0; Index < ArrayCount(AuthSelectableCardList); Index++)
     {
-        if (AuthSelectableCardList[Index] != None)
+        if (AuthSelectableCardList[Index] == None)
         {
-            continue;
+            break;
         }
 
         CardList[Index] = AuthSelectableCardList[Index];
-        break;
     }
 
     CardList.Length = Index;
