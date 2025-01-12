@@ -53,7 +53,7 @@ function int NetDamage(int OriginalDamage, int Damage, Pawn Injured, Pawn Instig
 
     if (Injured != None && Injured.Controller != None && Injured.Controller.bIsPlayer)
     {
-        class'TurboPlayerEventHandler'.static.BroadcastPlayerReceivedDamage(InstigatedBy.Controller, KFMonster(InstigatedBy), Damage);
+        class'TurboPlayerEventHandler'.static.BroadcastPlayerReceivedDamage(Injured.Controller, KFMonster(InstigatedBy), Damage);
     }
 
     return Damage;
