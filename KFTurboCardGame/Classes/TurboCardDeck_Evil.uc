@@ -351,7 +351,7 @@ function ActivateRestrictedExplosives(TurboCardGameplayManager GameplayManager, 
 {
     if (bActivate)
     {
-        GameplayManager.PlayerExplosiveRadiusModifier.AddModifier(0.33f, Card);
+        GameplayManager.PlayerExplosiveRadiusModifier.AddModifier(0.5f, Card);
     }
     else
     {
@@ -716,7 +716,7 @@ defaultproperties
         CardName(0)="Restricted"
         CardName(1)="Explosives"
         CardDescriptionList(0)="Reduces explosive"
-        CardDescriptionList(1)="range by 66%."
+        CardDescriptionList(1)="range by 50%."
         CardID="EVIL_RESTEXPLOSIVES"
         OnActivateCard=ActivateRestrictedExplosives
     End Object
