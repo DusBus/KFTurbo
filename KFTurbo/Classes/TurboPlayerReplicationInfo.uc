@@ -81,12 +81,18 @@ simulated function Destroyed()
 
     for (Index = StatCollectorList.Length - 1; Index >= 0; Index--)
     {
-        StatCollectorList[Index].Destroy();
+        if (StatCollectorList[Index] != None)
+        {
+            StatCollectorList[Index].Destroy();
+        }
     }
 
     for (Index = StatReplicatorList.Length - 1; Index >= 0; Index--)
     {
-        StatReplicatorList[Index].Destroy();
+        if (StatReplicatorList[Index] != None)
+        {
+            StatReplicatorList[Index].Destroy();
+        }
     }
 
     Super.Destroyed();
