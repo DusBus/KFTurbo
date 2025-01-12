@@ -36,3 +36,6 @@ Scary Ghost for [Server Achievements](https://github.com/scaryghost/ServerAchiev
 RuneStorm for grenades assets from [Ballistics Weapons](https://www.runestorm.com/ballistic).
 
 BroodOvermind for the [Classy Gorefast](https://steamcommunity.com/sharedfiles/filedetails/?id=112768245).
+
+## Note
+Killing Floor Turbo will never solicit nor accept donations.
