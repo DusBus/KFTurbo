@@ -9,7 +9,12 @@
 - **New Scoreboard**: Easier to tell crucial information at a glance. Now includes healing done.
 - **Added a Ping system**: Players can now ping enemies or pickups (default: X) to create a little text for their teammates.
 - **Custom Achievements**: Players can complete brand new KFTurbo-related server-tracked achievements.
- 
+- **Custom Emotes and Sound-Emotes**: Type a \[semicolon\] to insert an Emote in chat. Press \[Tab\] to autocomplete. Some of them even have cool sound effects.
+- **End of Wave statistics**: See Kills, Damage, Healing and Accuracy stats at the end of each wave.
+- **Optimized weapon penetration**: Fixed penetrating weapons not using recoil and spread and fixed several bugs related to bad penetration calculation.
+- **Fixed Various Grenade-related Exploits**: Such as throwing 2 grenades at point blank and getting instant weapon switching by inputting a grenade throw command.
+- **Vote to skip trader time**: Players can type `endtrader` in console to skip trader time.
+
 
 - **TBA**: insert changes here🚧
 
@@ -18,7 +23,7 @@
     - No longer causes zed to panic (dancing animation)
     - No longer flinches zeds
     - Reduces movement speed based on the weapon it is inflicted with
-    - Reduces damage dealt by the afflicted zed by 20%
+    - Reduces damage dealt by the afflicted zed by 10%
 - **Stasis**
     - Reduces movement speed by 10%
     - Increases damage small zeds take by 100%
@@ -30,6 +35,7 @@
     - Causes zed to panic
     - Reduces movement speed by 50%
     - Reduces scrake movement speed by 75%
+    - Disables siren scream
 
 ## Perk Changes
 
@@ -37,7 +43,6 @@
 - Spawn with a Shotgun ⚠️
 
 - **Weapons**
-
     - **Shotgun**: 
         - Weight 8 -> 7 🟢
         - 20% faster reload speed 🟢
@@ -81,10 +86,12 @@
     - **Hunting Shotgun**:
         - Unchanged 🟦
 
-    - **VLAD-9000**: Reworked
+    - **VLAD-9000**: Reworked ⚠️
         - Fires a single nail that deals high damage and pierces multiple zeds 🆕
         - Alternate fire toggles a laser aim module 🆕
         - Has no spread and inaccuracy 🟢
+        - 25% faster fire rate 🟢
+        - 40% faster reload speed 🟢
         - Weight 8 -> 11 🔻
         - Great for stunning scrakes or taking out long range threats ⚠️
 
@@ -96,13 +103,14 @@
     - 1.8x bonus headshot multiplier for the VLAD 9000
     - 1.5x bonus headshot multiplier for off-perk weapons
 - Crossbow and M99 Ammo now gets a 30% purchase cost discount 🟢
-- 44 Magnum and Dual Magnum bonus reload speed 60% -> 40%. 🔻
 - M99 and Crossbow bonus reload speed 60% -> 15%. 🔻
 - Crossbow and M99 no longer get a purchase cost discount 🔻
 - 60% faster reload speed with perk weapons 🟦
 - Spawn with a Lever Action Rifle ⚠️
 
 - **Weapons**
+    - **Dual 9mm**
+        - Weight 3 -> 1 🟢
 
     - **MK23 & Dual MK23**
         - 9% faster reload speed 🟢
@@ -132,7 +140,7 @@
         - 60% tighter spread 🟢
 
         - 20% more recoil 🔻
-        - Magazine capacity 10 -> 6 🔻
+        - Magazine capacity 10 -> 7 🔻
         - 17% more expensive 🔻
         - Headshot bonus damage reduced by 13% 🔻
         - 20% less maximum ammo 🔻
@@ -155,8 +163,7 @@
 - Thompson Drum bonus magazine size 25% -> 60% 🟢
 - M4 203 bonus magazine size 25% -> 34% 🟢
 - FN FAL bonus magazine size 25% -> 67% 🟢
-- SCARMK17 bonus magazine size 25% -> 20% 🔻
-- Thompson SMG bonus magazine size 25% -> 20% 🔻
+- Bullpup, AK47, MKb42,Thompson SMG bonus magazine size 25% -> 20% 🔻
 - Spawn with a Bullpup ⚠️
 
 - **Weapons**
@@ -289,17 +296,17 @@
         - 43% more player pushback on firing 🔻
     - **Pipe Bomb**
         - Removed the exploit which let players detonate pipe bombs multiple times by shooting it ⚠️
-        - Moved to inventory group 5 ⚠️
+        - Players can opt into moving it to weapon category slot 5 via the Turbo menu ⚠️
 
     - **Seeker Six Rocket Launcher** 
-        - 250% increased explosive damage 🟢
-        - 100% increased impact damage 🟢
+        - 200% increased explosive damage 🟢
         - 24% cheaper base price 🟢
 
+        - 33% reduced impact damage 🔻
         - Weight 7 -> 8 🔻
         - 11% more expensive 🔻
         - 7% slower reload speed 🔻
-        - 63% less maximum ammo 🔻
+        - 45% less maximum ammo 🔻
 
 ### Field Medic
 - Healing grenades now have a new model and bounce more 🆕
@@ -324,9 +331,11 @@
         - 45% less maximum ammo 🔻
         - 19% lower fire rate 🔻
     - **MP5**
-        - 17% increased damage 🟢
+        - 13% increased damage 🟢
         - 12% faster reload speed 🟢
         - 56% cheaper base price. 🟢
+        - 50% tighter spread 🟢
+        - 20% less recoil 🟢
         - Firing type is no longer high RoF ⚠️
         
         - Magazine capacity 32 -> 30 🔻
@@ -369,13 +378,13 @@
 
 ### Berserker
 - Grenades are replaced with stun grenades that put zeds into [**Stasis**](#afflictions) 🆕
-- 20% siren scream damage reduction 🆕
+- 40% siren scream damage reduction 🆕
 - 20% increase to grenade capacity 🟢
 - Stun grenades cannot be disintegrated by siren screams 🟢
 - Melee movement speed bonus 30% -> 25% 🔻
-- Damage resistance 40% -> 10% 🔻
+- Damage resistance 40% -> 15% 🔻
 - Melee swing speed 25% -> 15% 🔻
-- Bloat bile damage reduction 80% -> 60% 🔻
+- Bloat bile damage reduction 80% -> 70% 🔻
 - Patriarch can never deal more than 95 damage to the Berserker ⚠️
 - Spawn with a Machete ⚠️
 
@@ -421,14 +430,19 @@
 ### Firebug
 - Fire grenades now have a new model and bounce more 🆕
 - Trenchgun, MAC-10 and Thompson SMG now receive a 15% damage bonus 🟢
-- Flamethrower, MAC-10 and Thompson SMG receive a 60% magazine capacity bonus 🟢
+- MAC-10 and Thompson SMG receive a 60% magazine capacity bonus 🟢
+- Flamethrower receives a 20% magazine capacity bonus 🔻
+- Bonus fuel capacity for the Flame Thrower 60% -> 20% 🔻
 - 60% faster reload speed for perk weapons 🟢
 - Fire DoT mechanics changed [**Burning**](#afflictions) ⚠️
 - Spawns with a MAC-10 and no armor ⚠️
 
 - **Weapons**
-    - **Flamethrower**
-        - 50% reduced direct damage 🔻
+    - **Flamethrower** Reworked ⚠️
+        - Now pierces up to 10 zeds 🆕
+        - Hitting a zed the first time causes a small explosion that deals AoE damage 🆕
+        - No longer detonates projectiles 🆕
+        - 33% reduced direct damage 🔻
         - 10% increased spread 🔻
         
     - **MAC10**
@@ -470,18 +484,19 @@
         - Chargeup time reduced by 33% 🟢
         - 100% tighter spread 🟢
         - 25% more maximum and starting ammo 🟢
+        - Projectile cannot be disintegrated by sirens 🟢
         
         - Weight 8 -> 11 🔻
 
 ## Zed changes
 
 ### Crawler
-- Added a new variant: Raptor
+- Added a new special variant: Raptor
 ### Gorefast
 - Added a new cosmetic variant: Classy Gorefast
-- Added a new variant: Assassin
+- Added a new special variant: Assassin
 ### Bloat
-- Added a new variant: Fathead
+- Added a new elite variant: Fathead
 ### Stalker
 - Fixed inconsistent cloaking state on dedicated servers.
 ### Husk
@@ -489,7 +504,7 @@
 ### Siren
 - No longer deals damage after dying
 - Now able to destroy high-speed projectiles on dedicated servers.
-- Added a new variant: Caroler
+- Added a new special variant: Caroler
 ### Scrake
 - Fixed "Slow Rage" state, where the scrake would be stuck with a slow movement speed in his charging animation
 - Now has a 25% damage resistance to Flare Revolver
