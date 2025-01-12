@@ -326,7 +326,10 @@ function OnGameEnd(int Result)
 {
 	if (StatsTcpLink != None)
 	{
-		StatsTcpLink.SendGameEnd(Result);
+		if (!Level.Game.bWaitingToStartMatch)
+		{
+			StatsTcpLink.SendGameEnd(Result);
+		}
 	}
 }
 
