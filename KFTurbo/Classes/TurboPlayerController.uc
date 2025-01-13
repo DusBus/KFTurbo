@@ -30,7 +30,7 @@ replication
 	reliable if( Role < ROLE_Authority )
 		ServerDebugSkipWave, ServerDebugRestartWave, ServerDebugSetWave, ServerDebugPreventGameOver;
 	reliable if( Role < ROLE_Authority )
-		AdminSetTraderTime, AdminSetMaxPlayers, AdminSetFakedPlayer, AdminSetPlayerHealth, AdminSetSpawnRate, AdminSetMaxMonsters;
+		AdminSetTraderTime, AdminSetMaxPlayers, AdminSetFakedPlayer, AdminSetPlayerHealth, AdminSetSpawnRate, AdminSetMaxMonsters, AdminShowSettings;
 }
 
 simulated function PostBeginPlay()
@@ -61,6 +61,17 @@ simulated function InitInputSystem()
 	Super.InitInputSystem();
 
 	SetupTurboInteraction();
+}
+
+exec function ChangeCharacter(string newCharacter, optional string inClass)
+{
+	Super.ChangeCharacter(newCharacter,inClass);
+
+	if (Level.NetMode == NM_Standalone && xPawn(Pawn) != None && PawnSetupRecord.Species != None)
+	{
+		xPawn(Pawn).bAlreadySetup = false;
+		PawnSetupRecord.Species.static.Setup(Pawn, PawnSetupRecord);
+	}
 }
 
 simulated function Tick(float DeltaTime)
@@ -807,6 +818,27 @@ exec function AdminSetMaxMonsters(float MaxMonstersModifier)
 	TurboGameType = KFTurboGameType(Level.Game);
 	MaxMonstersModifier = TurboGameType.SetAdminMaxMonstersModifier(MaxMonstersModifier);
 	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (9 | ((class'TurboAdminLocalMessage'.static.EncodeFloat(MaxMonstersModifier)) << 8)), PlayerReplicationInfo); //EAdminCommand.AC_SetMaxMonstersModifier
+}
+
+exec function AdminShowSettings()
+{
+	local KFTurboGameType TurboGameType;
+
+	if (Role != ROLE_Authority)
+	{
+		return;
+	}
+
+	if (!IsAdmin())
+	{
+		return;
+	}
+	
+	TurboGameType = KFTurboGameType(Level.Game);
+	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (10 | (TurboGameType.GetFakedPlayerCount() << 8)), PlayerReplicationInfo); 			//EAdminCommand.AC_GetFakedPlayerCount
+	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (11 | (TurboGameType.GetForcedPlayerHealthCount() << 8)), PlayerReplicationInfo);	//EAdminCommand.AC_GetPlayerHealthCount
+	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (12 | (class'TurboAdminLocalMessage'.static.EncodeFloat(TurboGameType.AdminSpawnRateModifier) << 8)), PlayerReplicationInfo);	//EAdminCommand.AC_GetSpawnRateModifier
+	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (13 | (class'TurboAdminLocalMessage'.static.EncodeFloat(TurboGameType.AdminMaxMonstersModifier) << 8)), PlayerReplicationInfo);	//EAdminCommand.AC_GetMaxMonstersModifier
 }
 
 exec function EndTrader()
