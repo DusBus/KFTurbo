@@ -415,35 +415,16 @@ static final function TakeFireDamage(KFMonster Monster, int Damage, Pawn Instiga
 	}
 }
 
-static final function int GetFakedPlayerAdjustedCount(LevelInfo Level)
+static final function int GetMonsterHealthPlayerCount(LevelInfo Level)
 {
-	local Controller C;
-	local int FakedPlayers;
-	local int PlayerCount;
-	FakedPlayers = 0;
-	PlayerCount = 0;
-
-	if(KFTurboGameTypePlus(Level.Game) != None)
-	{
-		FakedPlayers = KFTurboGameTypePlus(Level.Game).FAKED_P_HEALTH;
-	}
-
-	for( C=Level.ControllerList; C!=None; C=C.NextController )
-    {
-        if( C.bIsPlayer && C.Pawn!=None && C.Pawn.Health > 0 )
-        {
-            PlayerCount++;
-        }
-    }
-
-	return Max(FakedPlayers, PlayerCount);
+	return KFTurboGameType(Level.Game).GetMonsterHealthPlayerCount();
 }
 
 static final function float GetBodyHealthModifier(KFMonster KFM, LevelInfo Level)
 {
 	local int AdjustedPlayerCount;
     local float AdjustedModifier;
-	AdjustedPlayerCount = GetFakedPlayerAdjustedCount(Level);
+	AdjustedPlayerCount = GetMonsterHealthPlayerCount(Level);
     AdjustedModifier = 1.f;
 
     if( AdjustedPlayerCount > 1 )
@@ -459,7 +440,7 @@ static final function float GetHeadHealthModifier(KFMonster KFM, LevelInfo Level
 	local int AdjustedPlayerCount;
 	local float AdjustedModifier;
 
-	AdjustedPlayerCount = GetFakedPlayerAdjustedCount(Level);
+	AdjustedPlayerCount = GetMonsterHealthPlayerCount(Level);
     AdjustedModifier = 1.f;
 
     if( AdjustedPlayerCount > 1 )

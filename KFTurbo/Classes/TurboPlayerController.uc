@@ -28,7 +28,9 @@ replication
 	reliable if( Role < ROLE_Authority )
 		EndTrader, ServerMarkActor, ServerNotifyShoppingState, ServerNotifyLoginMenuState;
 	reliable if( Role < ROLE_Authority )
-		ServerDebugSkipWave, ServerDebugRestartWave, ServerDebugSetWave, ServerDebugPreventGameOver, AdminSetTraderTime, AdminSetMaxPlayers;
+		ServerDebugSkipWave, ServerDebugRestartWave, ServerDebugSetWave, ServerDebugPreventGameOver;
+	reliable if( Role < ROLE_Authority )
+		AdminSetTraderTime, AdminSetMaxPlayers, AdminSetFakedPlayer, AdminSetPlayerHealth, AdminSetSpawnRate, AdminSetMaxMonsters;
 }
 
 simulated function PostBeginPlay()
@@ -523,6 +525,11 @@ exec function GetWeapon(class<Weapon> NewWeaponClass )
 	Super.GetWeapon(NewWeaponClass);
 }
 
+final function bool IsAdmin()
+{
+	return PlayerReplicationInfo != None && (Level.NetMode == NM_Standalone || PlayerReplicationInfo.bAdmin);
+}
+
 exec function ServerDebugSkipWave()
 {
 	local KFTurboGameType TurboGameType;
@@ -532,7 +539,7 @@ exec function ServerDebugSkipWave()
 		return;
 	}
 
-	if (PlayerReplicationInfo == None || (Level.NetMode != NM_Standalone && !PlayerReplicationInfo.bAdmin))
+	if (!IsAdmin())
 	{
 		return;
 	}
@@ -564,7 +571,7 @@ exec function ServerDebugRestartWave()
 		return;
 	}
 
-	if (PlayerReplicationInfo == None || (Level.NetMode != NM_Standalone && !PlayerReplicationInfo.bAdmin))
+	if (!IsAdmin())
 	{
 		return;
 	}
@@ -598,7 +605,7 @@ exec function ServerDebugSetWave(int NewWaveNum)
 		return;
 	}
 
-	if (PlayerReplicationInfo == None || (Level.NetMode != NM_Standalone && !PlayerReplicationInfo.bAdmin))
+	if (!IsAdmin())
 	{
 		return;
 	}
@@ -644,7 +651,7 @@ exec function ServerDebugPreventGameOver()
 		return;
 	}
 
-	if (PlayerReplicationInfo == None || (Level.NetMode != NM_Standalone && !PlayerReplicationInfo.bAdmin))
+	if (!IsAdmin())
 	{
 		return;
 	}
@@ -672,7 +679,7 @@ exec function AdminSetTraderTime(int Time)
 		return;
 	}
 
-	if (PlayerReplicationInfo == None || (Level.NetMode != NM_Standalone && !PlayerReplicationInfo.bAdmin))
+	if (!IsAdmin())
 	{
 		return;
 	}
@@ -705,7 +712,7 @@ exec function AdminSetMaxPlayers(int PlayerCount)
 		return;
 	}
 
-	if (PlayerReplicationInfo == None || (Level.NetMode != NM_Standalone && !PlayerReplicationInfo.bAdmin))
+	if (!IsAdmin())
 	{
 		return;
 	}
@@ -724,6 +731,82 @@ exec function AdminSetMaxPlayers(int PlayerCount)
     TurboGameType.default.MaxPlayers = PlayerCount;
 	
 	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (4 | ((PlayerCount) << 8)), PlayerReplicationInfo); //EAdminCommand.AC_SetMaxPlayers
+}
+
+exec function AdminSetFakedPlayer(int FakedPlayerCount)
+{
+	local KFTurboGameType TurboGameType;
+
+	if (Role != ROLE_Authority)
+	{
+		return;
+	}
+
+	if (!IsAdmin())
+	{
+		return;
+	}
+
+	TurboGameType = KFTurboGameType(Level.Game);
+	FakedPlayerCount = TurboGameType.SetFakedPlayerCount(FakedPlayerCount);
+	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (6 | ((FakedPlayerCount) << 8)), PlayerReplicationInfo); //EAdminCommand.AC_SetFakedPlayerCount
+}
+
+exec function AdminSetPlayerHealth(int PlayerHealthCount)
+{
+	local KFTurboGameType TurboGameType;
+
+	if (Role != ROLE_Authority)
+	{
+		return;
+	}
+
+	if (!IsAdmin())
+	{
+		return;
+	}
+	
+	TurboGameType = KFTurboGameType(Level.Game);
+	PlayerHealthCount = TurboGameType.SetForcedPlayerHealthCount(PlayerHealthCount);
+	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (7 | ((PlayerHealthCount) << 8)), PlayerReplicationInfo); //EAdminCommand.AC_SetPlayerHealthCount
+}
+
+exec function AdminSetSpawnRate(float SpawnRateModifier)
+{
+	local KFTurboGameType TurboGameType;
+
+	if (Role != ROLE_Authority)
+	{
+		return;
+	}
+
+	if (!IsAdmin())
+	{
+		return;
+	}
+	
+	TurboGameType = KFTurboGameType(Level.Game);
+	SpawnRateModifier = TurboGameType.SetAdminSpawnRateModifier(SpawnRateModifier);
+	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (8 | ((class'TurboAdminLocalMessage'.static.EncodeFloat(SpawnRateModifier)) << 8)), PlayerReplicationInfo); //EAdminCommand.AC_SetSpawnRateModifier
+}
+
+exec function AdminSetMaxMonsters(float MaxMonstersModifier)
+{
+	local KFTurboGameType TurboGameType;
+
+	if (Role != ROLE_Authority)
+	{
+		return;
+	}
+
+	if (!IsAdmin())
+	{
+		return;
+	}
+	
+	TurboGameType = KFTurboGameType(Level.Game);
+	MaxMonstersModifier = TurboGameType.SetAdminMaxMonstersModifier(MaxMonstersModifier);
+	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (9 | ((class'TurboAdminLocalMessage'.static.EncodeFloat(MaxMonstersModifier)) << 8)), PlayerReplicationInfo); //EAdminCommand.AC_SetMaxMonstersModifier
 }
 
 exec function EndTrader()

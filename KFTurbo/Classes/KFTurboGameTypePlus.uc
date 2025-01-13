@@ -13,8 +13,6 @@ var float WaveNextSquadSpawnTime;
 const INITIAL_CASH = 42069;
 const MIN_SPAWN_TIME = 0.01f;
 const WAVE_COUNTDOWN = 60;
-const STD_MAX_ZOMBIES = 48;
-const FAKED_P_HEALTH = 0; // Currently not being used but maybe in the future? Force to 6p?
 
 // Function called before the game begins
 function PreBeginPlay()
@@ -63,7 +61,6 @@ function PostBeginPlay()
 
     StartingCash = INITIAL_CASH;
     MinRespawnCash = INITIAL_CASH;
-    StandardMaxZombiesOnce = STD_MAX_ZOMBIES;
     WaveNextSquadSpawnTime = MIN_SPAWN_TIME;
 }
 
@@ -98,8 +95,9 @@ State MatchInProgress
         {
             WaveNextSquadSpawnTime = MIN_SPAWN_TIME;
         }
-
-        return WaveNextSquadSpawnTime / (GameWaveSpawnRateModifier * MapWaveSpawnRateModifier);
+        WaveNextSquadSpawnTime /= (GameWaveSpawnRateModifier * MapWaveSpawnRateModifier* AdminSpawnRateModifier);
+        
+        return WaveNextSquadSpawnTime;
     }
 
     function OpenShops()
@@ -180,20 +178,19 @@ function SetupWave()
     WaveMonsters = 0;
     WaveNumClasses = 0;
 
-    MaxMonsters = TurboMonsterCollection.GetWaveMaxMonsters(WaveNum, GameDifficulty, NumPlayers + NumBots);
+    MaxMonsters = TurboMonsterCollection.GetWaveMaxMonsters(WaveNum, GameDifficulty, NumPlayers);
     MaxMonsters = float(MaxMonsters) * GameMaxMonstersModifier * MapMaxMonstersModifier;
 
-    TotalMaxMonsters = TurboMonsterCollection.GetWaveTotalMonsters(WaveNum, GameDifficulty, NumPlayers + NumBots);
-    TotalMaxMonsters = float(TotalMaxMonsters) * GameTotalMonstersModifier;
+    TotalMaxMonsters = CalculateTotalMaxMonster();
+    KFGameReplicationInfo(Level.Game.GameReplicationInfo).MaxMonsters = TotalMaxMonsters;
+    KFGameReplicationInfo(Level.Game.GameReplicationInfo).MaxMonstersOn = true;
 
-    WaveNextSquadSpawnTime = TurboMonsterCollection.GetNextSquadSpawnTime(WaveNum, NumPlayers + NumBots);
+    WaveNextSquadSpawnTime = TurboMonsterCollection.GetNextSquadSpawnTime(WaveNum, NumPlayers);
     if (WaveNextSquadSpawnTime < MIN_SPAWN_TIME)
     {
         WaveNextSquadSpawnTime = MIN_SPAWN_TIME;
     }
-
-    KFGameReplicationInfo(Level.Game.GameReplicationInfo).MaxMonsters = TotalMaxMonsters;
-    KFGameReplicationInfo(Level.Game.GameReplicationInfo).MaxMonstersOn = true;
+    WaveNextSquadSpawnTime /= (GameWaveSpawnRateModifier * MapWaveSpawnRateModifier* AdminSpawnRateModifier);
 
     WaveEndTime = Level.TimeSeconds + 255;
     AdjustedDifficulty = GameDifficulty + TurboMonsterCollection.GetWaveDifficulty(WaveNum);
@@ -208,6 +205,11 @@ function SetupWave()
     ClearTraderEndVotes();
     class'KFTurboMut'.static.FindMutator(Self).OnWaveStart();
 	class'TurboWaveEventHandler'.static.BroadcastWaveStarted(Self, WaveNum);
+}
+
+function int CalculateTotalMaxMonster()
+{
+    return float(TurboMonsterCollection.GetWaveTotalMonsters(WaveNum, GameDifficulty, GetMaxMonsterPlayerCount())) * GameTotalMonstersModifier;
 }
 
 function AddSpecialSquad()

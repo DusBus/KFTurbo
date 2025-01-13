@@ -15,9 +15,9 @@ var protected int FinalWaveOverride;
 var protected bool bHasAttemptedToApplyFinalWaveOverride;
  
 //Whatever spawn rate is set as, make sure it gets multiplied by these.
-var float GameWaveSpawnRateModifier, MapWaveSpawnRateModifier;
+var float GameWaveSpawnRateModifier, MapWaveSpawnRateModifier, AdminSpawnRateModifier;
 //Whatever max monsters is set as, make sure it gets multiplied by these.
-var float GameMaxMonstersModifier, MapMaxMonstersModifier;
+var float GameMaxMonstersModifier, MapMaxMonstersModifier, AdminMaxMonstersModifier;
 //Whatever total monsters is set as, make sure it gets multiplied by this.
 var float GameTotalMonstersModifier;
 //Whatever trader time is set as, make sure it gets multiplied by this.
@@ -34,6 +34,10 @@ var array< class<TurboWaveEventHandler> > WaveEventHandlerList;
 var array< class<TurboWaveSpawnEventHandler> > WaveSpawnEventHandlerList;
 
 var MapConfigurationObject MapConfigurationObject; //MapConfigurationObject associated with the current map.
+
+var protected int FakedPlayerCount; //Faked player count. Used to make wave size larger.
+var protected int ForcedPlayerHealthCount; //Forced player health count. Used to scale up monster health.
+const MAX_FORCED_PLAYER_HEALTH = 6; //Used to keep monster health at 6 players or fewer.
 
 //Events that KFTurboServerMut binds to for bridging communication with ServerPerksMut.
 Delegate OnStatsAndAchievementsDisabled();
@@ -78,6 +82,62 @@ function InitializeMapConfigurationObject()
         ZedSpawnList[Index].CanRespawnTime *= MapConfigurationObject.ZombieVolumeCanRespawnTimeMultiplier;
         ZedSpawnList[Index].MinDistanceToPlayer *= MapConfigurationObject.ZombieVolumeMinDistanceToPlayerMultiplier;
     }
+}
+
+final function int GetAlivePlayerCount()
+{
+    local Controller C;
+    local int PlayerCount;
+    PlayerCount = 0;
+	for (C = Level.ControllerList; C != None; C = C.NextController)
+    {
+        if (C.bIsPlayer && C.Pawn!=None && C.Pawn.Health > 0)
+        {
+            PlayerCount++;
+        }
+    }
+
+    return PlayerCount;
+}
+
+//Player count to use when calculating MaxMonsters. Handles faked players.
+final function int GetMaxMonsterPlayerCount()
+{
+    return Min(Max(NumPlayers, FakedPlayerCount), MaxPlayers);
+}
+
+//Player count to use when calculating monster health. Handles forced player monster health. KFTurbo caps this to 6.
+final function int GetMonsterHealthPlayerCount()
+{
+    return Min(Max(GetAlivePlayerCount(), ForcedPlayerHealthCount), MAX_FORCED_PLAYER_HEALTH);
+}
+
+function int SetFakedPlayerCount(int NewFakedPlayerCount)
+{
+    FakedPlayerCount = Min(Max(NewFakedPlayerCount, 0), MaxPlayers);
+    return FakedPlayerCount;
+}
+
+function int SetForcedPlayerHealthCount(int NewForcedPlayerHealthCount)
+{
+    NewForcedPlayerHealthCount = Clamp(NewForcedPlayerHealthCount, 1, MAX_FORCED_PLAYER_HEALTH);
+    ForcedPlayerHealthCount = NewForcedPlayerHealthCount;
+    return ForcedPlayerHealthCount;
+}
+
+function float SetAdminSpawnRateModifier(float NewAdminSpawnRateModifier)
+{
+    NewAdminSpawnRateModifier = FClamp(NewAdminSpawnRateModifier, 1.f, 100.f);
+    AdminSpawnRateModifier = FMax(NewAdminSpawnRateModifier, 1.f);
+    return AdminSpawnRateModifier;
+}
+
+function float SetAdminMaxMonstersModifier(float NewAdminMaxMonstersModifier)
+{
+    NewAdminMaxMonstersModifier = FClamp(NewAdminMaxMonstersModifier, 1.f, 100.f);
+    NewAdminMaxMonstersModifier = FMax(NewAdminMaxMonstersModifier, 1.f);
+    AdminMaxMonstersModifier = NewAdminMaxMonstersModifier;
+    return AdminMaxMonstersModifier;
 }
  
 //Provide full context on something dying to TurboGameRules.
@@ -392,12 +452,67 @@ function SetupWave()
 
     MaxMonsters = float(MaxMonsters) * GameMaxMonstersModifier * MapMaxMonstersModifier;
 
-    TotalMaxMonsters = float(TotalMaxMonsters) * GameTotalMonstersModifier;
+    TotalMaxMonsters = CalculateTotalMaxMonster();
     KFGameReplicationInfo(Level.Game.GameReplicationInfo).MaxMonsters = TotalMaxMonsters;
 	
     ClearTraderEndVotes();
     class'KFTurboMut'.static.FindMutator(Self).OnWaveStart();
 	class'TurboWaveEventHandler'.static.BroadcastWaveStarted(Self, WaveNum);
+}
+
+function int CalculateTotalMaxMonster()
+{
+    local int NewTotalMaxMonsters;
+    local float Modifier;
+    NewTotalMaxMonsters = Waves[WaveNum].WaveMaxMonsters;
+    Modifier = 1.f;
+
+    if (GameDifficulty >= 7.0)
+    {
+        Modifier *= 1.7f;
+    }
+    else if (GameDifficulty >= 5.0)
+    {
+        Modifier *= 1.5f;
+    }
+    else if (GameDifficulty >= 4.0)
+    {
+        Modifier *= 1.3f;
+    }
+    else if (GameDifficulty >= 2.0)
+    {
+        Modifier *= 1.f;
+    }
+    else
+    {
+        Modifier *= 0.7f;
+    }
+
+    switch (GetMaxMonsterPlayerCount())
+    {
+        case 1:
+            Modifier *= 1.f;
+            break;
+        case 2:
+            Modifier *= 2.f;
+            break;
+        case 3:
+            Modifier *= 2.75f;
+            break;
+        case 4:
+            Modifier *= 3.5f;
+            break;
+        case 5:
+            Modifier *= 4.f;
+            break;
+        case 6:
+            Modifier *= 4.5f;
+            break;
+        default:
+            Modifier *= float(GetMaxMonsterPlayerCount()) * 0.8f;
+    }
+
+    return float(NewTotalMaxMonsters) * Modifier * GameTotalMonstersModifier;
 }
 
 //Function needs to be declared outside of state scope if it wants to be called outside of the state's scope...
@@ -462,7 +577,7 @@ state MatchInProgress
 
 	function float CalcNextSquadSpawnTime()
 	{
-		return Super.CalcNextSquadSpawnTime() / (GameWaveSpawnRateModifier * MapWaveSpawnRateModifier);
+		return Super.CalcNextSquadSpawnTime() / (GameWaveSpawnRateModifier * MapWaveSpawnRateModifier * AdminSpawnRateModifier);
 	}
 	
 	function StartWaveBoss()
@@ -654,8 +769,12 @@ defaultproperties
 
 	GameWaveSpawnRateModifier=1.f
     MapWaveSpawnRateModifier=1.f
+    AdminSpawnRateModifier=1.f
+
     GameMaxMonstersModifier=1.f
     MapMaxMonstersModifier=1.f
+    AdminMaxMonstersModifier=1.f
+
     GameTotalMonstersModifier=1.f
     GameTraderTimeModifier=1.f
     bHasSpawnedBoss=false
