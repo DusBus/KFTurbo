@@ -183,14 +183,14 @@ simulated function CalculateModulation()
 
 	if (Brightness > 0.5f)
 	{
-		Multiplier *= Lerp((Brightness - 0.5f) * 2.f, 1.f, 0.65f); 
+		Multiplier *= Lerp((Brightness - 0.5f) * 2.f, 1.f, 0.5f); 
 	}
 	
 	Gamma = float(PlayerOwner.ConsoleCommand("get ini:Engine.Engine.ViewportManager Gamma"));
 
 	if (Gamma > 1.f)
 	{
-		Multiplier *= Lerp((Gamma - 1.f), 1.f, 0.65f); 
+		Multiplier *= Lerp((Gamma - 1.f), 1.f, 0.5f); 
 	}
 
 	Multiplier = FMax(Multiplier, 0.6f);
@@ -198,6 +198,13 @@ simulated function CalculateModulation()
 	ActiveModulate.X *= Multiplier;
 	ActiveModulate.Y *= Multiplier;
 	ActiveModulate.Z *= Multiplier;
+}
+
+simulated function ReduceModulation(Canvas C, float Interpolation)
+{
+	C.ColorModulate.X = Lerp(Interpolation, C.ColorModulate.X, 1.f);
+	C.ColorModulate.Y = Lerp(Interpolation, C.ColorModulate.Y, 1.f);
+	C.ColorModulate.Z = Lerp(Interpolation, C.ColorModulate.Z, 1.f);
 }
 
 //Adds overlay that will draw under the player HUD.
@@ -578,10 +585,12 @@ simulated function DrawSpectatingHud(Canvas C)
 		ScoreBoard.DrawScoreboard(C);
 	}
 
+	ReduceModulation(C, 0.5f);
 	if ( bShowPortrait && Portrait != None )
 	{
 		DrawPortraitX(C);
 	}
+	C.ColorModulate = ActiveModulate;
 	
 	if ( bDrawHint )
 	{
@@ -741,10 +750,12 @@ simulated function DrawHudPassC(Canvas C)
 	
 	ResetCanvas(C);
 	
+	ReduceModulation(C, 0.5f);
 	if (bShowPortrait && (Portrait != None))
 	{
 		DrawPortraitX(C);
 	}
+	C.ColorModulate = ActiveModulate;
 	
 	ResetCanvas(C);
 }
