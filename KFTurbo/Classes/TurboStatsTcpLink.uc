@@ -160,7 +160,7 @@ final function string BuildGameEndPayload(int WaveNum, string Result)
 Data payload for a wave starting looks like the following;
 
 {
-    "type": "gameend",
+    "type": "wavestart",
     "version": "5.2.2",
     "session": "<session ID>",
     "wavenum" : 2,
@@ -328,9 +328,9 @@ static final function string GetResultName(int GameResult)
 {
     switch(GameResult)
     {
-        case 1:
-            return "won";
         case 2:
+            return "won";
+        case 1:
             return "lost";
     }
 
