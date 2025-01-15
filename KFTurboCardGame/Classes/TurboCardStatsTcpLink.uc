@@ -95,9 +95,9 @@ final function string BuildVotePayload(int WaveNumber, array<string> ActiveCardL
     return Payload;
 }
 
-function OnGameEnd(array<TurboCard> ActiveCardList)
+function OnGameEnd(int Result, array<TurboCard> ActiveCardList)
 {
-    GetStatsTcpLink().SendText(BuildEndGamePayload(Level.Game.GetCurrentWaveNum(), ConvertCardToCardID(ActiveCardList), ConvertCardToCardID(ShownCardList)));
+    GetStatsTcpLink().SendText(BuildEndGamePayload(Result, ConvertCardToCardID(ActiveCardList), ConvertCardToCardID(ShownCardList)));
 }
 
 /*
@@ -107,6 +107,7 @@ Data payload for a game end looks like the following;
     "type": "cardgame_endgame",
     "version": "4.4.1",
     "session": "<session ID>",
+    "result": "won",
     "activecards" : ["CARD2", "CARD4", "CARD8"],
     "showncards" : ["CARD1", "CARD3", "CARD5", ...]
 }
@@ -114,12 +115,13 @@ Data payload for a game end looks like the following;
 type - refers to the type of payload this is.
 version - The KFTurbo version currently running.
 session - The session ID for this game.
+result - The result of the game. Can be "won", "lost", "aborted". Aborted refers to a map vote that occurred without a game end state being reached.
 activecards - The cards that were selected during the game.
 showncards - The cards that were not selected during the game.
 */
 
 //Analytics event for a game ending.
-final function string BuildEndGamePayload(int WaveNumber, array<string> ActiveCardList, array<string> ShownCardList)
+final function string BuildEndGamePayload(int Result, array<string> ActiveCardList, array<string> ShownCardList)
 {
     local string Payload;
     local KFTurboMut Mutator;
@@ -128,6 +130,7 @@ final function string BuildEndGamePayload(int WaveNumber, array<string> ActiveCa
     Payload = "{%qtype%q:%qcardgame_endgame%q,";
     Payload $= "%qversion%q:%q"$Mutator.GetTurboVersionID()$"%q,";
     Payload $= "%qsession%q:%q"$Mutator.GetSessionID()$"%q,";
+    Payload $= "%qresult%q:"$Result$",";
     Payload $= "%qactivecards%q:["$ConvertToString(ActiveCardList)$"],";
     Payload $= "%qshowncards%q:["$ConvertToString(ShownCardList)$"]}";
     
