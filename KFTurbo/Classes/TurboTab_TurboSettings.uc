@@ -124,6 +124,8 @@ function InitializePage()
     ShiftToTradeCheckBox.Checked(class'TurboInteraction'.static.IsShiftTradeEnabled(PlayerController));
     RightSection.ManageComponent(PipebombGroupCheckBox);
     PipebombGroupCheckBox.Checked(class'TurboInteraction'.static.ShouldPipebombUseSpecialGroup(PlayerController));
+    
+    PlayerController.GenerateExtraOptions(Self, PipebombGroupCheckBox.TabOrder);
 }
 
 function UpdatePage()

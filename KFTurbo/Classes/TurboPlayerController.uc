@@ -19,6 +19,8 @@ var bool bPipebombUsesSpecialGroup;
 
 var array< class<PerkLockTurboLocalMessage> > PerkChangeLockList;
 
+var protected array<TurboOptionObject> ExternalOptionList;
+
 replication
 {
 	reliable if( Role == ROLE_Authority )
@@ -524,6 +526,25 @@ function SelectVeterancy(class<KFVeterancyTypes> VetSkill, optional bool bForceC
 	}
 
 	Super.SelectVeterancy(VetSkill, bForceChange);
+}
+
+simulated function AddExtraOptionConfig(TurboOptionObject Config)
+{
+	if (Config == None)
+	{
+		return;
+	}
+
+	ExternalOptionList[ExternalOptionList.Length] = Config;
+}
+
+simulated function GenerateExtraOptions(TurboTab_TurboSettings TurboSettings, int TabOrder)
+{
+	local int Index;
+	for (Index = 0; Index < ExternalOptionList.Length; Index++)
+	{
+		ExternalOptionList[Index].GenerateOptions(TurboSettings, TabOrder + Index);
+	}
 }
 
 exec function GetWeapon(class<Weapon> NewWeaponClass )
