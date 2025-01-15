@@ -51,9 +51,9 @@ static function final string FormatEndTraderString(string Input, optional string
 
 defaultproperties
 {
-    EndTraderVoteHintString = "%kTrader time %dcan be %kskipped %dby typing %dEndTrader in console%d."
+    EndTraderVoteHintString = "%kTrader time%d can be %kskipped%d by typing %kEndTrader in console%d."
     
-    EndTraderVoteString = "%k%p %dstarted a vote to %kend trader%d. Type %kEndTrader in console %dto vote."
+    EndTraderVoteString = "%k%p%d started a vote to %kend trader%d. Type %kEndTrader in console%d to vote."
     AnonymousUserString = "Someone"
 
     Lifetime=10

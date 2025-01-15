@@ -341,6 +341,14 @@ function OnWaveStart()
 	}
 }
 
+function OnWaveEnd()
+{
+	if (StatsTcpLink != None)
+	{
+		StatsTcpLink.SendWaveEnd();
+	}
+}
+
 function ServerTraveling(string URL, bool bItems)
 {
 	if (StatsTcpLink == None)

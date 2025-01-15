@@ -635,6 +635,7 @@ state MatchInProgress
         }
 
         InvasionGameReplicationInfo(GameReplicationInfo).WaveNumber = WaveNum;
+        class'KFTurboMut'.static.FindMutator(Self).OnWaveEnd();
 		class'TurboWaveEventHandler'.static.BroadcastWaveEnded(Self, WaveNum - 1);
 	}
 }

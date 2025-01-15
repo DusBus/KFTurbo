@@ -196,6 +196,41 @@ final function string BuildWaveStartPayload(int WaveNum)
 }
 
 /*
+Data payload for a wave ending looks like the following;
+
+{
+    "type": "waveend",
+    "version": "5.2.2",
+    "session": "<session ID>",
+    "wavenum" : 2
+}
+
+type - refers to the type of payload this is.
+version - The KFTurbo version currently running.
+session - The session ID for this game."
+wavenum - The wave that started.
+*/
+
+function SendWaveEnd()
+{
+    SendText(BuildWaveEndPayload(Level.Game.GetCurrentWaveNum() - 1));
+}
+
+final function string BuildWaveEndPayload(int WaveNum)
+{
+    local string Payload;
+    local KFTurboMut Mutator;
+    Mutator = class'KFTurboMut'.static.FindMutator(Level.Game);
+
+    Payload = "{%qtype%q:%qwaveend%q,";
+    Payload $= "%qversion%q:%q"$Mutator.GetTurboVersionID()$"%q,";
+    Payload $= "%qsession%q:%q"$Mutator.GetSessionID()$"%q}";
+    
+    Payload = Repl(Payload, "%q", Chr(34));
+    return Payload;
+}
+
+/*
 Data payload for a player's wave stats looks like the following;
 
 {
