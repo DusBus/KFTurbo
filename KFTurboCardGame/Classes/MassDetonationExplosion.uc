@@ -27,7 +27,7 @@ defaultproperties
      Emitters(2)=SpriteEmitter'KFMod.KFNadeExplosion.SpriteEmitter86'
      Emitters(3)=SpriteEmitter'KFMod.KFNadeExplosion.SpriteEmitter87'
 
-    Begin Object Class=SpriteEmitter Name=RouletteSpriteEmitter
+    Begin Object Class=SpriteEmitter Name=MassDetonationSpriteEmitter
         UseDirectionAs=PTDU_Scale
         UseColorScale=True
         RespawnDeadParticles=False
@@ -58,10 +58,10 @@ defaultproperties
         StartSizeRange=(X=(Min=12.000000,Max=12.000000),Y=(Min=-12.000000,Max=-12.000000),Z=(Min=0.000000,Max=0.000000))
         ScaleSizeByVelocityMax=0.000000
         DrawStyle=PTDS_AlphaBlend
-        Texture=Texture'KFTurboCardGame.Effects.Roulette_D'
+        Texture=Texture'KFTurboCardGame.Effects.MassDetonation_D'
         StartVelocityRange=(X=(Min=-15.000000,Max=15.000000),Y=(Min=-15.000000,Max=15.000000),Z=(Min=75.000000,Max=75.000000))
         VelocityLossRange=(X=(Min=2.000000,Max=2.000000),Y=(Min=2.000000,Max=2.000000),Z=(Min=4.000000,Max=4.000000))
         AutoDestroy=true
     End Object
-    Emitters(4)=SpriteEmitter'RouletteSpriteEmitter'
+    Emitters(4)=SpriteEmitter'MassDetonationSpriteEmitter'
 }

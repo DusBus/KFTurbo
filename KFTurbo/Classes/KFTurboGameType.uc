@@ -125,7 +125,7 @@ final function int GetFakedPlayerCount()
 
 function int SetForcedPlayerHealthCount(int NewForcedPlayerHealthCount)
 {
-    NewForcedPlayerHealthCount = Clamp(NewForcedPlayerHealthCount, 1, MAX_FORCED_PLAYER_HEALTH);
+    NewForcedPlayerHealthCount = Clamp(NewForcedPlayerHealthCount, 0, MAX_FORCED_PLAYER_HEALTH);
     ForcedPlayerHealthCount = NewForcedPlayerHealthCount;
     return ForcedPlayerHealthCount;
 }

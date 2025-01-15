@@ -828,7 +828,7 @@ defaultproperties
         CardName(0)="Bad Blood"
         CardDescriptionList(0)="Decreases max"
         CardDescriptionList(1)="health for all"
-        CardDescriptionList(2)="players by 25%."
+        CardDescriptionList(2)="players by 20%."
         CardID="EVIL_BADBLOOD"
         OnActivateCard=ActivateBadBlood
     End Object
