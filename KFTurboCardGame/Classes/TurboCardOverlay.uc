@@ -42,6 +42,7 @@ var int LastWarnTime;
 
 var float VoteMenuScale;
 var bool bHasShiftPressed;
+var bool bReduceCardVisibility;
 
 enum EBorrowedTimeWarnLevel
 {
@@ -83,6 +84,8 @@ simulated function InitializeCardGameHUD(TurboCardReplicationInfo CGRI)
 	}
 
 	OnActiveCardsUpdated(CGRI);
+
+	bReduceCardVisibility = class'TurboCardInteraction'.static.ShouldReduceCardVisibility(TurboPlayerController(TurboHUD.PlayerOwner));
 }
 
 simulated function bool CanUseLargeCards()
@@ -507,6 +510,7 @@ simulated function DrawActiveCardList(Canvas C)
 	local float CardSize, CardOffset, CardScale;
 	local float CenterIndex;
 	local float TempX, TempY;
+	local float CardX;
 	local float CardBonusScale;
 	local float DisplayCardY, ScrollDisplayY;
 	local float TextSizeX, TextSizeY, MaxTextSizeX;
@@ -552,7 +556,14 @@ simulated function DrawActiveCardList(Canvas C)
 		
 		CardScale = CardSize / float(ActiveCardRenderActorList[Index].CardActor.CardScriptedTexture.USize);
 
-		C.SetPos((TempX - (CardSize * 0.95f)) - ((CardBonusScale - 1.f) * CardSize * 0.95f), TempY + (CardOffset * 0.5f) - (CardSize * CardBonusScale));
+		CardX = (TempX - (CardSize * 0.95f)) - ((CardBonusScale - 1.f) * CardSize * 0.95f);
+
+		if (bReduceCardVisibility)
+		{
+			CardX += Lerp(ActiveCardRenderActorList[Index].Ratio, 1.f, 0.f) * CardSize * 0.8f;
+		}
+
+		C.SetPos(CardX, TempY + (CardOffset * 0.5f) - (CardSize * CardBonusScale));
 		C.DrawTileScaled(ActiveCardRenderActorList[Index].CardActor.CardShader, CardScale * CardBonusScale, CardScale * CardBonusScale);
 		ScrollDisplayY = FMax(ScrollDisplayY, TempY + (CardSize * CardBonusScale));
 		TempY += CardOffset;
@@ -564,7 +575,14 @@ simulated function DrawActiveCardList(Canvas C)
 
 		CardScale = CardSize / float(ActiveCardRenderActorList[CardIndexToDisplay].CardActor.CardScriptedTexture.USize);
 
-		C.SetPos((TempX - (CardSize * 0.95f)) - ((CardBonusScale - 1.f) * CardSize * 0.95f), DisplayCardY + (CardOffset * 0.5f) - (CardSize * CardBonusScale));
+		CardX = (TempX - (CardSize * 0.95f)) - ((CardBonusScale - 1.f) * CardSize * 0.95f);
+		
+		if (bReduceCardVisibility)
+		{
+			CardX += Lerp(ActiveCardRenderActorList[CardIndexToDisplay].Ratio, 1.f, 0.f) * CardSize * 0.8f;
+		}
+
+		C.SetPos(CardX, DisplayCardY + (CardOffset * 0.5f) - (CardSize * CardBonusScale));
 		C.DrawTileScaled(ActiveCardRenderActorList[CardIndexToDisplay].CardActor.CardShader, CardScale * CardBonusScale, CardScale * CardBonusScale);
 		
 		ScrollDisplayY = FMax(ScrollDisplayY, DisplayCardY + (CardSize * CardBonusScale));

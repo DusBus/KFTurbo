@@ -11,9 +11,14 @@ function InitializeDeck()
 
     for (Index = 0; Index < DeckCardObjectList.Length; Index++)
     {
-        DeckCardObjectList[Index].DeckClass = Class;
-        DeckCardObjectList[Index].CardIndex = Index;
+        InitializeCard(DeckCardObjectList[Index], Index);
     }
+}
+
+final function InitializeCard(TurboCard Card, int Index)
+{
+    Card.DeckClass = Class;
+    Card.CardIndex = Index;
 }
 
 static function TurboCard GetCardFromReference(TurboCardReplicationInfo.CardReference Reference)

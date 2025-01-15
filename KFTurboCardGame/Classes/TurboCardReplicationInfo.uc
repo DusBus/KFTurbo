@@ -143,6 +143,11 @@ simulated function SetupTurboCardInteraction()
     }
     
     TurboCardInteraction = TurboCardInteraction(Level.GetLocalPlayerController().Player.InteractionMaster.AddInteraction("KFTurboCardGame.TurboCardInteraction", Level.GetLocalPlayerController().Player));
+
+    if (TurboCardInteraction != None)
+    {
+        TurboCardInteraction.InitializeInteraction();
+    }
 }
 
 simulated function Destroyed()
