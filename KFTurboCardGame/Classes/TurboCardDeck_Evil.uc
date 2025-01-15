@@ -833,14 +833,4 @@ defaultproperties
         OnActivateCard=ActivateBadBlood
     End Object
     DeckCardObjectList(36)=TurboCard'BadBlood'
-    
-    Begin Object Name=BadBlood Class=TurboCard_Evil
-        CardName(0)="Bad Blood"
-        CardDescriptionList(0)="Decreases max"
-        CardDescriptionList(1)="health for all"
-        CardDescriptionList(2)="players by 20%."
-        CardID="EVIL_BADBLOOD"
-        OnActivateCard=ActivateBadBlood
-    End Object
-    DeckCardObjectList(37)=TurboCard'BadBlood'
 }
