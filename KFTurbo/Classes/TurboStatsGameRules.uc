@@ -17,6 +17,7 @@ var array<TurboPlayerController> ControllerList;
 var int ControllerListIndex;
 
 var KFTurboGameType TurboGameType;
+var TurboGameReplicationInfo TurboGRI;
 var KFTurboMut Mutator;
 
 //Turns on collector/replicator system.
@@ -29,6 +30,7 @@ function PostBeginPlay()
     Super.PostBeginPlay();
 
     TurboGameType = KFTurboGameType(Level.Game);
+    TurboGRI = TurboGameReplicationInfo(Level.GRI);
     Mutator = KFTurboMut(Owner);
 
     if (WaveStatCollectorClassOverride != "")
@@ -100,6 +102,12 @@ state WaveStart
             return;
         }
 
+        if (TurboGRI.EndGameType != 0)
+        {
+            GotoState('GameEnd');
+            return;
+        }
+
         if (TurboGameType.bWaveInProgress)
         {
             return;
@@ -128,6 +136,12 @@ state WaveEnd
             return;
         }
 
+        if (TurboGRI.EndGameType != 0)
+        {
+            GotoState('GameEnd');
+            return;
+        }
+
         if (!TurboGameType.bWaveInProgress)
         {
             return;
@@ -145,6 +159,31 @@ Begin:
         ReplicateStatCollector(ControllerList[ControllerListIndex]);
     }
     bReplicatingStatCollectors = false;
+}
+
+//Game ends. We do a last attempt to replicate stat collectors, wave end event (if we didn't manage to complete the wave), and then finally a game end event.
+state GameEnd
+{
+    function Tick(float DeltaTime) {} //No more ticking. This is our last state.
+
+Begin:
+    bReplicatingStatCollectors = true;
+    ControllerList = class'TurboGameplayHelper'.static.GetPlayerControllerList(Level);
+    for (ControllerListIndex = 0; ControllerListIndex < ControllerList.Length; ControllerListIndex++)
+    {
+        Sleep(0.1f);
+        ReplicateStatCollector(ControllerList[ControllerListIndex]);
+    }
+    bReplicatingStatCollectors = false;
+
+    if (TurboGameType.bWaveInProgress)
+    {
+        Sleep(0.1f);
+        SendWaveEnd();
+    }
+
+    Sleep(0.1f);
+    SendEndGameStats();
 }
 
 function CreateStatCollector(TurboHumanPawn Pawn)
@@ -173,6 +212,22 @@ function ReplicateStatCollector(TurboPlayerController Controller)
     }
 
     StatsCollector.ReplicateStats();
+}
+
+function SendWaveEnd()
+{
+    if (Mutator != None && Mutator.StatsTcpLink != None)
+    {
+        Mutator.StatsTcpLink.SendWaveEnd();
+    }
+}
+
+function SendEndGameStats()
+{
+    if (Mutator != None && Mutator.StatsTcpLink != None)
+    {
+        Mutator.StatsTcpLink.SendGameEnd(TurboGRI.EndGameType);
+    }
 }
 
 defaultproperties

@@ -666,7 +666,6 @@ function bool CheckEndGame(PlayerReplicationInfo Winner, string Reason)
     if (!bGameIsOver && KFGameReplicationInfo(GameReplicationInfo).EndGameType != 0)
     {
 		class'TurboWaveEventHandler'.static.BroadcastGameEnded(Self, KFGameReplicationInfo(GameReplicationInfo).EndGameType);
-        NotifyTurboMutatorGameEnd(KFGameReplicationInfo(GameReplicationInfo).EndGameType);
     }
 
     return bResult;
@@ -760,13 +759,6 @@ function NotifyTurboMutatorGameStart()
     local KFTurboMut TurboMut;
     TurboMut = class'KFTurboMut'.static.FindMutator(Self);
     TurboMut.OnGameStart();
-}
-
-function NotifyTurboMutatorGameEnd(int Result)
-{
-    local KFTurboMut TurboMut;
-    TurboMut = class'KFTurboMut'.static.FindMutator(Self);
-    TurboMut.OnGameEnd(Result);
 }
 
 defaultproperties

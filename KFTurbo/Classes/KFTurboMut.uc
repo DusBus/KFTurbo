@@ -322,17 +322,6 @@ function OnGameStart()
 	}
 }
 
-function OnGameEnd(int Result)
-{
-	if (StatsTcpLink != None)
-	{
-		if (!Level.Game.bWaitingToStartMatch)
-		{
-			StatsTcpLink.SendGameEnd(Result);
-		}
-	}
-}
-
 function OnWaveStart()
 {
 	if (StatsTcpLink != None)
