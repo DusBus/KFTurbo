@@ -109,7 +109,9 @@ Data payload for a game end looks like the following;
     "session": "<session ID>",
     "result": "won",
     "activecards" : ["CARD2", "CARD4", "CARD8"],
-    "showncards" : ["CARD1", "CARD3", "CARD5", ...]
+
+    //Not currently sent. We need to compress card IDs or something because this causes the payload size to explode (14 (waves) x 3~4 (cards shown each wave) x 15 (card id characters average))
+    "showncards" : ["CARD1", "CARD3", "CARD5", ...] 
 }
 
 type - refers to the type of payload this is.
@@ -117,6 +119,8 @@ version - The KFTurbo version currently running.
 session - The session ID for this game.
 result - The result of the game. Can be "won", "lost", "aborted". Aborted refers to a map vote that occurred without a game end state being reached.
 activecards - The cards that were selected during the game.
+
+
 showncards - The cards that were not selected during the game.
 */
 
@@ -131,8 +135,8 @@ final function string BuildEndGamePayload(int Result, array<string> ActiveCardLi
     Payload $= "%qversion%q:%q"$Mutator.GetTurboVersionID()$"%q,";
     Payload $= "%qsession%q:%q"$Mutator.GetSessionID()$"%q,";
     Payload $= "%qresult%q:"$Result$",";
-    Payload $= "%qactivecards%q:["$ConvertToString(ActiveCardList)$"],";
-    Payload $= "%qshowncards%q:["$ConvertToString(ShownCardList)$"]}";
+    Payload $= "%qactivecards%q:["$ConvertToString(ActiveCardList)$"]}";
+    //Payload $= "%qshowncards%q:["$ConvertToString(ShownCardList)$"]}";
     
     Payload = Repl(Payload, "%q", Chr(34));
     return Payload;
