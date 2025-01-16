@@ -19,6 +19,16 @@ static function bool UnloadAssets()
 	return true;
 }
 
+simulated function PostBeginPlay()
+{
+    Super.PostBeginPlay();
+
+    if (Level.NetMode == NM_DedicatedServer)
+    {
+        ExplodeSounds[0] = None;
+    }
+}
+
 function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
 {
     if (bDisintegrated || ClassIsChildOf(DamageType, class'DamTypePipeBomb') || ClassIsChildOf(DamageType, class'DamTypeMelee'))
