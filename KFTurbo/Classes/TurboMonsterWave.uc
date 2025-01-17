@@ -32,7 +32,7 @@ var int MaxMixInSquadCount;
 //Number of Beat squads to use for beats between sequences.
 var int BeatSize;
 
-final function Initialize(TurboMonsterCollection TurboCollection)
+function Initialize(TurboMonsterCollection TurboCollection)
 {
      local int Index;
 
