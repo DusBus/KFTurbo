@@ -61,6 +61,16 @@ simulated function ProcessTouch(Actor Other, Vector HitLocation)
 	}
 }
 
+simulated function Explode(vector HitLocation, vector HitNormal)
+{
+	if (bHasExploded)
+	{
+		return;
+	}
+
+	Super.Explode(HitLocation, HitNormal);
+}
+
 defaultproperties
 {
     MyDamageType=Class'KFMod.DamTypeM79Grenade'

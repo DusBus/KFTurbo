@@ -17,6 +17,16 @@ simulated function ProcessTouch( actor Other, vector HitLocation )
 	Super.ProcessTouch(Other, HitLocation);
 }
 
+simulated function Explode(vector HitLocation, vector HitNormal)
+{
+	if (bHasExploded)
+	{
+		return;
+	}
+
+	Super.Explode(HitLocation, HitNormal);
+}
+
 simulated function bool CanDamageTarget(Actor Target)
 {
 	if(Target == self)

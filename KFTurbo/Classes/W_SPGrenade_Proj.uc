@@ -11,6 +11,16 @@ function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector M
     class'WeaponHelper'.static.SPGrenadeProjTakeDamage(self, Damage, InstigatedBy, Hitlocation, Momentum, DamageType, HitIndex);
 }
 
+simulated function Explode(vector HitLocation, vector HitNormal)
+{
+	if (bHasExploded)
+	{
+		return;
+	}
+
+	Super.Explode(HitLocation, HitNormal);
+}
+
 simulated function ProcessTouch(Actor Other, Vector HitLocation)
 {
 	local TurboPlayerEventHandler.MonsterHitData HitData;

@@ -5,6 +5,16 @@ function TakeDamage(int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector Mo
     class'WeaponHelper'.static.M79GrenadeTakeDamage(self, Damage, InstigatedBy, Hitlocation, Momentum, DamageType, HitIndex);
 }
 
+simulated function Explode(vector HitLocation, vector HitNormal)
+{
+	if (bHasExploded)
+	{
+		return;
+	}
+
+	Super.Explode(HitLocation, HitNormal);
+}
+
 defaultproperties
 {
     MyDamageType=Class'KFTurbo.W_M4203_DT'
