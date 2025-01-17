@@ -237,7 +237,7 @@ function bool PreventDeath(Pawn Killed, Controller Killer, class<DamageType> Dam
 
     if (bCheatDeathEnabled && Killed != None && PlayerController(Killed.Controller) != None)
     {
-        if (AttemptCheatDeath(PlayerController(Killed.Controller), Killed, DamageType))
+        if (IsInCheatDeathGracePeriod(PlayerController(Killed.Controller)) || AttemptCheatDeath(PlayerController(Killed.Controller), Killed, DamageType))
         {
             return true;
         }
@@ -287,8 +287,9 @@ final function bool IsInCheatDeathGracePeriod(PlayerController Injured)
     {
         //Cheated Death list is in time order.
         //If any entry we iterate to is expired, we can assume all the rest are as well.
-        if (CheatedDeathPlayerList[Index].DeathTime + 0.5f < Level.TimeSeconds)
+        if (CheatedDeathPlayerList[Index].DeathTime + 2.f < Level.TimeSeconds)
         {
+            CheatedDeathPlayerList.Remove(Index, 1);
             return false;
         }
 
