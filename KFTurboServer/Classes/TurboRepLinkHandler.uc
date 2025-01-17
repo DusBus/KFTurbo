@@ -53,6 +53,12 @@ function Timer()
     
     for(i = (PendingReplicationLinkList.Length - 1); i>=0; --i)
     {
+        if (PendingReplicationLinkList[i] == None)
+        {
+            PendingReplicationLinkList.Remove(i, 1);
+            continue;
+        }
+
         CurrentPlayerController = KFPlayerController(PendingReplicationLinkList[i].Owner);
 
         if (CurrentPlayerController == none)
