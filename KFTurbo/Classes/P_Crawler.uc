@@ -147,6 +147,15 @@ simulated event SetHeadScale(float NewScale)
 
 defaultproperties
 {
+    DoubleJumpAnims(0)="ZombieSpring"
+    DoubleJumpAnims(1)="ZombieSpring"
+    DoubleJumpAnims(2)="ZombieSpring"
+    DoubleJumpAnims(3)="ZombieSpring"
+    DodgeAnims(0)="ZombieSpring"
+    DodgeAnims(1)="ZombieSpring"
+    DodgeAnims(2)="ZombieSpring"
+    DodgeAnims(3)="ZombieSpring"
+
     Begin Object Class=AfflictionBurn Name=BurnAffliction
         BurnDurationModifier=1.f
     End Object
