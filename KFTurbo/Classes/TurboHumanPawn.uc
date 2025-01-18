@@ -241,7 +241,7 @@ simulated function SpotCloakedMonsters()
 {
 	local KFMonster Monster;
 	local float SpottingRange;
-	SpottingRange = 1600.f;
+	SpottingRange = 2000.f;
 
 	if (NextCloakCheckTime > Level.TimeSeconds)
 	{
