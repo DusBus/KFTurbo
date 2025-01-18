@@ -242,7 +242,7 @@ simulated function UnSetBurningBehavior()
 {
     class'PawnHelper'.static.UnSetBurningBehavior(self, AfflictionData);
 
-    if (!IsInState('SawingLoop'))
+    if (Role == ROLE_Authority && Controller != None && !IsInState('SawingLoop'))
     {
         if (CanAttack(Controller.Enemy))
         {
