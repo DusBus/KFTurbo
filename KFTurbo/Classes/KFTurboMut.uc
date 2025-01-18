@@ -26,6 +26,8 @@ var protected string SessionID;
 var protected string GameStartTime;
 var protected string GameType;
 
+var globalconfig bool bRequireAdminForDifficultyCommands;
+
 delegate SetPerkSwitchEnabled(bool bEnable);
 
 simulated function PostBeginPlay()
@@ -365,6 +367,8 @@ defaultproperties
 	bCheckLatestTurboVersion=true
 	TurboVersion="5.4.1"
 	bHasVersionUpdate=false
+
+	bRequireAdminForDifficultyCommands=true
 
 	GameType="turbo"
 }

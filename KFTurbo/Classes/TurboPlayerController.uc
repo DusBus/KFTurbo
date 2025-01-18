@@ -557,8 +557,13 @@ exec function GetWeapon(class<Weapon> NewWeaponClass )
 	Super.GetWeapon(NewWeaponClass);
 }
 
-final function bool IsAdmin()
+final function bool HasPermissionForCommand(optional bool bIsDifficultyCommand)
 {
+	if (bIsDifficultyCommand && !class'KFTurboMut'.default.bRequireAdminForDifficultyCommands)
+	{
+		return true;
+	}
+
 	return PlayerReplicationInfo != None && (Level.NetMode == NM_Standalone || PlayerReplicationInfo.bAdmin);
 }
 
@@ -571,7 +576,7 @@ exec function ServerDebugSkipWave()
 		return;
 	}
 
-	if (!IsAdmin())
+	if (!HasPermissionForCommand())
 	{
 		return;
 	}
@@ -603,7 +608,7 @@ exec function ServerDebugRestartWave()
 		return;
 	}
 
-	if (!IsAdmin())
+	if (!HasPermissionForCommand())
 	{
 		return;
 	}
@@ -637,7 +642,7 @@ exec function ServerDebugSetWave(int NewWaveNum)
 		return;
 	}
 
-	if (!IsAdmin())
+	if (!HasPermissionForCommand())
 	{
 		return;
 	}
@@ -683,7 +688,7 @@ exec function ServerDebugPreventGameOver()
 		return;
 	}
 
-	if (!IsAdmin())
+	if (!HasPermissionForCommand())
 	{
 		return;
 	}
@@ -711,7 +716,7 @@ exec function AdminSetTraderTime(int Time)
 		return;
 	}
 
-	if (!IsAdmin())
+	if (!HasPermissionForCommand())
 	{
 		return;
 	}
@@ -744,7 +749,7 @@ exec function AdminSetMaxPlayers(int PlayerCount)
 		return;
 	}
 
-	if (!IsAdmin())
+	if (!HasPermissionForCommand())
 	{
 		return;
 	}
@@ -774,7 +779,7 @@ exec function AdminSetFakedPlayer(int FakedPlayerCount)
 		return;
 	}
 
-	if (!IsAdmin())
+	if (!HasPermissionForCommand(true))
 	{
 		return;
 	}
@@ -793,7 +798,7 @@ exec function AdminSetPlayerHealth(int PlayerHealthCount)
 		return;
 	}
 
-	if (!IsAdmin())
+	if (!HasPermissionForCommand(true))
 	{
 		return;
 	}
@@ -812,7 +817,7 @@ exec function AdminSetSpawnRate(float SpawnRateModifier)
 		return;
 	}
 
-	if (!IsAdmin())
+	if (!HasPermissionForCommand(true))
 	{
 		return;
 	}
@@ -831,7 +836,7 @@ exec function AdminSetMaxMonsters(float MaxMonstersModifier)
 		return;
 	}
 
-	if (!IsAdmin())
+	if (!HasPermissionForCommand(true))
 	{
 		return;
 	}
@@ -850,7 +855,7 @@ exec function AdminShowSettings()
 		return;
 	}
 
-	if (!IsAdmin())
+	if (!HasPermissionForCommand(true))
 	{
 		return;
 	}
