@@ -321,6 +321,10 @@ defaultproperties
     SpecialEventMonsterCollections(2)=Class'KFTurbo.MC_Turbo'
     SpecialEventMonsterCollections(3)=Class'KFTurbo.MC_Turbo'
 
+    MapPrefix="KF"
+    BeaconName="KF"
+    Acronym="KF"
+
     GameName = "Killing Floor Turbo+ Game Type"
     Description = "Turbo+ mode of the Killing Floor Game Type."
     ScreenShotName = "KFTurbo.Generic.KFTurbo_FB"

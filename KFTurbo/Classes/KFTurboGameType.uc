@@ -800,6 +800,10 @@ defaultproperties
 
 	GameReplicationInfoClass=Class'KFTurbo.TurboGameReplicationInfo'
 	
+    MapPrefix="KF"
+    BeaconName="KF"
+    Acronym="KF"
+    
     GameName="Killing Floor Turbo Game Type"
     Description="KF Turbo version of default Killing Floor Game Type."
     ScreenShotName="KFTurbo.Generic.KFTurbo_FB"
