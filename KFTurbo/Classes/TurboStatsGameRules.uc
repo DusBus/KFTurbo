@@ -84,6 +84,16 @@ function Tick(float DeltaTime)
         Disable('Tick');
         return;
     }
+
+    if (TurboGRI == None)
+    {
+        TurboGRI = TurboGameReplicationInfo(Level.GRI);
+        
+        if (TurboGRI == None)
+        {
+            return;
+        }
+    }
     
     if (!TurboGameType.bWaveInProgress)
     {
@@ -101,7 +111,7 @@ state WaveStart
         {
             return;
         }
-
+        
         if (TurboGRI.EndGameType != 0)
         {
             GotoState('GameEnd');
