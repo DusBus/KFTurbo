@@ -7,6 +7,8 @@ var private TurboRepLink TurboRepLink;
 var class<WeaponRemappingSettings> WeaponRemappingSettings;
 var TurboInteraction TurboInteraction;
 var TurboChatInteraction TurboChatInteraction;
+var class<TurboCommandHandler> TurboCommandHandlerClass; //Can be modified in a Mutator's CheckReplacement() within a submodule. 
+var TurboCommandHandler TurboCommandHandler;
 
 var float ClientNextMarkTime, NextMarkTime;
 
@@ -56,6 +58,16 @@ simulated function PostBeginPlay()
 		class'TurboPlayerEventHandler'.static.RegisterPlayerEventHandler(Self, class'TurboPlayerStatsEventHandler');
 		class'TurboHealEventHandler'.static.RegisterHealHandler(Self, class'TurboPlayerStatsHealEventHandler');
 	}
+}
+
+simulated function CreateCommandHandler()
+{
+	if (TurboCommandHandlerClass == None)
+	{
+		TurboCommandHandlerClass = class'TurboCommandHandler';
+	}
+
+	TurboCommandHandler = New(Self)TurboCommandHandlerClass;
 }
 
 simulated function InitInputSystem()
@@ -569,303 +581,93 @@ final function bool HasPermissionForCommand(optional bool bIsDifficultyCommand)
 
 exec function ServerDebugSkipWave()
 {
-	local KFTurboGameType TurboGameType;
-
-	if (Role != ROLE_Authority)
+	if (TurboCommandHandler != None)
 	{
-		return;
+		TurboCommandHandler.SkipWave(Self);
 	}
-
-	if (!HasPermissionForCommand())
-	{
-		return;
-	}
-
-	TurboGameType = KFTurboGameType(Level.Game);
-
-	if (TurboGameType == None || !TurboGameType.bWaveInProgress)
-	{
-		return;
-	}
-
-	class'KFTurboGameType'.static.StaticDisableStatsAndAchievements(Self);
-
-	TurboGameType.TotalMaxMonsters = 0;
-	TurboGameType.NextSpawnSquad.Length = 0;
-	TurboGameType.KillZeds();
-	
-	//TurboGameType.ClearEndGame();
-
-	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', 0, PlayerReplicationInfo); //EAdminCommand.AC_SkipWave
 }
 
 exec function ServerDebugRestartWave()
 {
-	local KFTurboGameType TurboGameType;
-
-	if (Role != ROLE_Authority)
+	if (TurboCommandHandler != None)
 	{
-		return;
+		TurboCommandHandler.RestartWave(Self);
 	}
-
-	if (!HasPermissionForCommand())
-	{
-		return;
-	}
-
-	TurboGameType = KFTurboGameType(Level.Game);
-
-	if (TurboGameType == None || !TurboGameType.bWaveInProgress)
-	{
-		return;
-	}
-
-	class'KFTurboGameType'.static.StaticDisableStatsAndAchievements(Self);
-
-	TurboGameType.WaveNum = TurboGameType.WaveNum - 1;
-
-	TurboGameType.TotalMaxMonsters = 0;
-	TurboGameType.NextSpawnSquad.Length = 0;
-	TurboGameType.KillZeds();
-	
-	TurboGameType.ClearEndGame();
-	
-	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', 1, PlayerReplicationInfo); //EAdminCommand.AC_RestartWave
 }
 
 exec function ServerDebugSetWave(int NewWaveNum)
 {
-	local KFTurboGameType TurboGameType;
-
-	if (Role != ROLE_Authority)
+	if (TurboCommandHandler != None)
 	{
-		return;
+		TurboCommandHandler.SetWave(Self, NewWaveNum);
 	}
-
-	if (!HasPermissionForCommand())
-	{
-		return;
-	}
-
-	TurboGameType = KFTurboGameType(Level.Game);
-
-	if (TurboGameType == None)
-	{
-		return;
-	}
-
-	NewWaveNum = Max(NewWaveNum - 1, 0);
-
-	class'KFTurboGameType'.static.StaticDisableStatsAndAchievements(Self);
-	
-	if (TurboGameType.bWaveInProgress)
-	{
-		TurboGameType.WaveNum = NewWaveNum - 1;
-        InvasionGameReplicationInfo(GameReplicationInfo).WaveNumber = NewWaveNum;
-
-		TurboGameType.TotalMaxMonsters = 0;
-		TurboGameType.NextSpawnSquad.Length = 0;
-		TurboGameType.KillZeds();
-	}
-	else
-	{
-		TurboGameType.WaveNum = NewWaveNum;
-        InvasionGameReplicationInfo(GameReplicationInfo).WaveNumber = NewWaveNum;
-	}
-
-	TurboGameType.ClearEndGame();
-	
-	//Encode the wave number into the switch value.
-	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (2 | ((NewWaveNum + 1) << 8)), PlayerReplicationInfo); //EAdminCommand.AC_SetWave
 }
 
 exec function ServerDebugPreventGameOver()
 {
-	local KFTurboGameType TurboGameType;
-
-	if (Role != ROLE_Authority)
+	if (TurboCommandHandler != None)
 	{
-		return;
+		TurboCommandHandler.PreventGameOver(Self);
 	}
-
-	if (!HasPermissionForCommand())
-	{
-		return;
-	}
-
-	TurboGameType = KFTurboGameType(Level.Game);
-
-	if (TurboGameType == None || TurboGameType.IsPreventGameOverEnabled())
-	{
-		return;
-	}
-
-	class'KFTurboGameType'.static.StaticDisableStatsAndAchievements(Self);
-
-	KFTurboGameType(Level.Game).PreventGameOver();
-	
-	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', 5, PlayerReplicationInfo); //EAdminCommand.AC_PreventGameOver
 }
 
 exec function AdminSetTraderTime(int Time)
 {
-	local KFTurboGameType TurboGameType;
-
-	if (Role != ROLE_Authority)
+	if (TurboCommandHandler != None)
 	{
-		return;
+		TurboCommandHandler.SetTraderTime(Self, Time);
 	}
-
-	if (!HasPermissionForCommand())
-	{
-		return;
-	}
-
-	TurboGameType = KFTurboGameType(Level.Game);
-
-	if (TurboGameType == None || TurboGameType.bWaveInProgress)
-	{
-		return;
-	}
-
-	Time = Max(10, Time);
-	Time = Min(99999, Time);
-
-	TurboGameType.WaveCountDown = Time;
-	if (KFGameReplicationInfo(Level.GRI) != None)
-	{
-		KFGameReplicationInfo(Level.GRI).TimeToNextWave = TurboGameType.WaveCountDown;
-	}
-	
-	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (3 | ((Time) << 8)), PlayerReplicationInfo); //EAdminCommand.AC_SetTraderTime
 }
 
 exec function AdminSetMaxPlayers(int PlayerCount)
 {
-	local KFTurboGameType TurboGameType;
-
-	if (Role != ROLE_Authority)
+	if (TurboCommandHandler != None)
 	{
-		return;
+		TurboCommandHandler.SetMaxPlayers(Self, PlayerCount);
 	}
-
-	if (!HasPermissionForCommand())
-	{
-		return;
-	}
-
-	PlayerCount = Max(1, PlayerCount);
-	PlayerCount = Min(12, PlayerCount);
-
-	TurboGameType = KFTurboGameType(Level.Game);
-
-	if (TurboGameType == None || TurboGameType.bWaveInProgress)
-	{
-		return;
-	}
-
- 	TurboGameType.MaxPlayers = PlayerCount;
-    TurboGameType.default.MaxPlayers = PlayerCount;
-	
-	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (4 | ((PlayerCount) << 8)), PlayerReplicationInfo); //EAdminCommand.AC_SetMaxPlayers
 }
 
 exec function AdminSetFakedPlayer(int FakedPlayerCount)
 {
-	local KFTurboGameType TurboGameType;
-
-	if (Role != ROLE_Authority)
+	if (TurboCommandHandler != None)
 	{
-		return;
+		TurboCommandHandler.SetFakedPlayer(Self, FakedPlayerCount);
 	}
-
-	if (!HasPermissionForCommand(true))
-	{
-		return;
-	}
-
-	TurboGameType = KFTurboGameType(Level.Game);
-	FakedPlayerCount = TurboGameType.SetFakedPlayerCount(FakedPlayerCount);
-	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (6 | ((FakedPlayerCount) << 8)), PlayerReplicationInfo); //EAdminCommand.AC_SetFakedPlayerCount
 }
 
 exec function AdminSetPlayerHealth(int PlayerHealthCount)
 {
-	local KFTurboGameType TurboGameType;
-
-	if (Role != ROLE_Authority)
+	if (TurboCommandHandler != None)
 	{
-		return;
+		TurboCommandHandler.SetPlayerHealth(Self, PlayerHealthCount);
 	}
-
-	if (!HasPermissionForCommand(true))
-	{
-		return;
-	}
-	
-	TurboGameType = KFTurboGameType(Level.Game);
-	PlayerHealthCount = TurboGameType.SetForcedPlayerHealthCount(PlayerHealthCount);
-	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (7 | ((PlayerHealthCount) << 8)), PlayerReplicationInfo); //EAdminCommand.AC_SetPlayerHealthCount
 }
 
 exec function AdminSetSpawnRate(float SpawnRateModifier)
 {
-	local KFTurboGameType TurboGameType;
-
-	if (Role != ROLE_Authority)
+	if (TurboCommandHandler != None)
 	{
-		return;
+		TurboCommandHandler.SetSpawnRate(Self, SpawnRateModifier);
 	}
-
-	if (!HasPermissionForCommand(true))
-	{
-		return;
-	}
-	
-	TurboGameType = KFTurboGameType(Level.Game);
-	SpawnRateModifier = TurboGameType.SetAdminSpawnRateModifier(SpawnRateModifier);
-	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (8 | ((class'TurboAdminLocalMessage'.static.EncodeFloat(SpawnRateModifier)) << 8)), PlayerReplicationInfo); //EAdminCommand.AC_SetSpawnRateModifier
 }
 
 exec function AdminSetMaxMonsters(float MaxMonstersModifier)
 {
-	local KFTurboGameType TurboGameType;
-
-	if (Role != ROLE_Authority)
+	if (TurboCommandHandler != None)
 	{
-		return;
+		TurboCommandHandler.SetMaxMonsters(Self, MaxMonstersModifier);
 	}
-
-	if (!HasPermissionForCommand(true))
-	{
-		return;
-	}
-	
-	TurboGameType = KFTurboGameType(Level.Game);
-	MaxMonstersModifier = TurboGameType.SetAdminMaxMonstersModifier(MaxMonstersModifier);
-	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (9 | ((class'TurboAdminLocalMessage'.static.EncodeFloat(MaxMonstersModifier)) << 8)), PlayerReplicationInfo); //EAdminCommand.AC_SetMaxMonstersModifier
 }
 
 exec function AdminShowSettings()
 {
-	local KFTurboGameType TurboGameType;
-
-	if (Role != ROLE_Authority)
+	if (TurboCommandHandler != None)
 	{
-		return;
+		TurboCommandHandler.ShowSettings(Self);
 	}
-
-	if (!HasPermissionForCommand(true))
-	{
-		return;
-	}
-	
-	TurboGameType = KFTurboGameType(Level.Game);
-	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (10 | (TurboGameType.GetFakedPlayerCount() << 8)), PlayerReplicationInfo); 			//EAdminCommand.AC_GetFakedPlayerCount
-	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (11 | (TurboGameType.GetForcedPlayerHealthCount() << 8)), PlayerReplicationInfo);	//EAdminCommand.AC_GetPlayerHealthCount
-	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (12 | (class'TurboAdminLocalMessage'.static.EncodeFloat(TurboGameType.AdminSpawnRateModifier) << 8)), PlayerReplicationInfo);	//EAdminCommand.AC_GetSpawnRateModifier
-	Level.Game.BroadcastLocalized(Level.GRI, class'TurboAdminLocalMessage', (13 | (class'TurboAdminLocalMessage'.static.EncodeFloat(TurboGameType.AdminMaxMonstersModifier) << 8)), PlayerReplicationInfo);	//EAdminCommand.AC_GetMaxMonstersModifier
 }
+
+exec function FreeCamera(bool bFreeCamera) {}
 
 exec function EndTrader()
 {
