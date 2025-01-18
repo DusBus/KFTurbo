@@ -190,7 +190,7 @@ function SetupWave()
     {
         WaveNextSquadSpawnTime = MIN_SPAWN_TIME;
     }
-    WaveNextSquadSpawnTime /= (GameWaveSpawnRateModifier * MapWaveSpawnRateModifier* AdminSpawnRateModifier);
+    WaveNextSquadSpawnTime /= (GameWaveSpawnRateModifier * MapWaveSpawnRateModifier * AdminSpawnRateModifier);
 
     WaveEndTime = Level.TimeSeconds + 255;
     AdjustedDifficulty = GameDifficulty + TurboMonsterCollection.GetWaveDifficulty(WaveNum);
