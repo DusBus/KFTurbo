@@ -656,7 +656,7 @@ defaultproperties
         CardDescriptionList(2)="based on wave"
         CardDescriptionList(3)="size. All players"
         CardDescriptionList(4)="die when time"
-        CardDescriptionList(5)="runs outs."
+        CardDescriptionList(5)="runs out."
         CardID="EVIL_BORROWEDTIME"
         OnActivateCard=ActivateBorrowedTime
     End Object
