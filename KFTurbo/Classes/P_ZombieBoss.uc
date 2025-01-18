@@ -5,6 +5,7 @@ class P_ZombieBoss extends ZombieBoss
     DependsOn(PawnHelper);
 
 var PawnHelper.AfflictionData AfflictionData;
+var AI_ZombieBoss ZombieBossAI;
 
 var array<Material> CloakedSkinList;
 var Sound HelpMeSound;
@@ -20,13 +21,18 @@ simulated function PostBeginPlay()
 {
     Super.PostBeginPlay();
 
-     class'PawnHelper'.static.InitializePawnHelper(self, AfflictionData);
+	ZombieBossAI = AI_ZombieBoss(Controller);
+
+	class'PawnHelper'.static.InitializePawnHelper(self, AfflictionData);
 }
 
 function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
 {
+	local class<KFWeaponDamageType> WeaponDamageType;
+	WeaponDamageType = class<KFWeaponDamageType>(DamageType);
+
 	//M99 is very weak compared to Crossbow. Buff the damage.
-	if (class<DamTypeM99SniperRifle>(damageType) != None || class<DamTypeM99HeadShot>(damageType) != None )
+	if (WeaponDamageType != None && (class<DamTypeM99SniperRifle>(damageType) != None || class<DamTypeM99HeadShot>(damageType) != None))
     {
     	Damage = int(float(Damage) * 1.66f);
     }
@@ -37,6 +43,19 @@ function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Mo
 	}
 
 	Super.TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitIndex);
+
+	//Did we get hit by something that wasn't just an explosion and from very far away? Long distance charge!
+	if (WeaponDamageType != None && ZombieBossAI != None && !WeaponDamageType.default.bIsExplosive && class<DamTypeBurned>(WeaponDamageType) == None)
+	{
+		if (ShouldChargeFromDamage() && ChargeDamage > 100 && (FRand() > 0.5f) && ZombieBossAI.ShouldLongDistanceCharge(InstigatedBy))
+		{
+			SetAnimAction('transition');
+			ChargeDamage = 0;
+			LastForceChargeTime = Level.TimeSeconds;
+			ZombieBossAI.StrafingAbility = 10.f;
+			GoToState('LongDistanceSneakAround');
+		}
+	}
 
     if (Role == ROLE_Authority)
     {
@@ -299,7 +318,6 @@ state SneakAround
 			SetGroundSpeed(OriginalGroundSpeed * GetSneakSpeedMultiplier());
         }
 
-
 		Global.Tick(Delta);
 	}
 
@@ -324,6 +342,31 @@ Begin:
 		{
         	Controller.GoToState('ZombieHunt');
         }
+	}
+}
+
+state LongDistanceSneakAround extends SneakAround
+{
+	function BeginState()
+	{
+		Super.BeginState();
+	}
+	
+	function EndState()
+	{
+		ZombieBossAI.StrafingAbility = ZombieBossAI.default.StrafingAbility;
+		Super.EndState();
+	}
+
+	function Tick(float DeltaTime)
+	{
+		Super.Tick(DeltaTime);
+		ZombieBossAI.StrafingAbility = FMax(ZombieBossAI.StrafingAbility - (DeltaTime * 2.f), ZombieBossAI.default.StrafingAbility);
+	}
+
+	function float GetSneakDuration()
+	{
+		return Global.GetSneakDuration() * 2.f;
 	}
 }
 
@@ -384,4 +427,6 @@ defaultproperties
 	CloakedSkinList(0) = Shader'KF_Specimens_Trip_T.patriarch_invisible_gun'
 	CloakedSkinList(1) = Shader'KF_Specimens_Trip_T.patriarch_invisible'
     HelpMeSound=Sound'KF_EnemiesFinalSnd.Patriarch.Kev_SaveMe'
+
+	ControllerClass=class'KFTurbo.AI_ZombieBoss'
 }
