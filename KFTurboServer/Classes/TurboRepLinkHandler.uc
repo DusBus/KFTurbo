@@ -51,7 +51,7 @@ function Timer()
             break;
     }
     
-    for(i = (PendingReplicationLinkList.Length - 1); i>=0; --i)
+    for (i = (PendingReplicationLinkList.Length - 1); i >= 0; --i)
     {
         if (PendingReplicationLinkList[i] == None)
         {
@@ -77,14 +77,13 @@ function Timer()
         }
 
         LastLinkedReplicationInfo = CurrentPlayerController.PlayerReplicationInfo.CustomReplicationInfo;
+        NewRepLink = Spawn(class'TurboRepLink', CurrentPlayerController);
+        NewRepLink.KFTurboMutator = KFTurboMutator;
+        NewRepLink.OwningController = CurrentPlayerController;
+        NewRepLink.OwningReplicationInfo = KFPlayerReplicationInfo(CurrentPlayerController.PlayerReplicationInfo);
 
         if (LastLinkedReplicationInfo == none)
         {
-            NewRepLink = Spawn(class'TurboRepLink', CurrentPlayerController);
-            NewRepLink.KFTurboMutator = KFTurboMutator;
-            NewRepLink.OwningController = CurrentPlayerController;
-            NewRepLink.OwningReplicationInfo = KFPlayerReplicationInfo(CurrentPlayerController.PlayerReplicationInfo);
-
             CurrentPlayerController.PlayerReplicationInfo.CustomReplicationInfo = NewRepLink;
         }
         else
@@ -93,11 +92,6 @@ function Timer()
             {
                 LastLinkedReplicationInfo = LastLinkedReplicationInfo.NextReplicationInfo;
             }
-
-            NewRepLink = Spawn(class'TurboRepLink', CurrentPlayerController);
-            NewRepLink.KFTurboMutator = KFTurboMutator;
-            NewRepLink.OwningController = CurrentPlayerController;
-            NewRepLink.OwningReplicationInfo = KFPlayerReplicationInfo(CurrentPlayerController.PlayerReplicationInfo);
 
             LastLinkedReplicationInfo.NextReplicationInfo = NewRepLink;
         }
