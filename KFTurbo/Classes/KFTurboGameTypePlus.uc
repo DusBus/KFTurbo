@@ -67,6 +67,7 @@ function PostBeginPlay()
 event InitGame( string Options, out string Error )
 {
     SetFinalWaveOverride(7);
+    KFGameLength = GL_Long;
 
     Super.InitGame(Options, Error);
 }
