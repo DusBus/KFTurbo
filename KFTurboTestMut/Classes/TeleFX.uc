@@ -28,7 +28,7 @@ defaultproperties
          LifetimeRange=(Min=1.000000,Max=1.500000)
          StartVelocityRange=(Z=(Min=20.000000,Max=20.000000))
      End Object
-     Emitters(0)=SpriteEmitter'PerkTestMutP1.TeleFX.SpriteEmitter0'
+     Emitters(0)=SpriteEmitter'SpriteEmitter0'
 
      Begin Object Class=SpriteEmitter Name=SpriteEmitter1
          UseColorScale=True
@@ -55,7 +55,7 @@ defaultproperties
          Texture=Texture'Effects_Tex.explosions.DSmoke_2'
          LifetimeRange=(Min=0.750000,Max=0.750000)
      End Object
-     Emitters(1)=SpriteEmitter'PerkTestMutP1.TeleFX.SpriteEmitter1'
+     Emitters(1)=SpriteEmitter'SpriteEmitter1'
 
      bNoDelete=False
      RemoteRole=ROLE_SimulatedProxy
