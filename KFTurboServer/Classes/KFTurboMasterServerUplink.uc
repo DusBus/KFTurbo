@@ -7,6 +7,7 @@ class KFTurboMasterServerUplink extends IpDrv.MasterServerUplink
 var config string ServerColorString;
 var config int BlueGradientSteps;
 var config array<string> BlueStringGradient;
+var config bool bApplyVersionNumberToServerName;
 
 function PostBeginPlay()
 {
@@ -62,6 +63,11 @@ function PerformUpdate()
 		if (ServerColorString != "")
 		{
 			FullCachedServerState.ServerName = ServerColorString;
+
+			if (bApplyVersionNumberToServerName)
+			{
+				FullCachedServerState.ServerName = Repl(FullCachedServerState.ServerName, "%v", class'KFTurboMut'.static.GetTurboVersionID());
+			}
 		}
 
 		FullCachedServerState.MapName = ApplyGradientToString(FullCachedServerState.MapName);
@@ -86,7 +92,7 @@ function PerformUpdate()
 		Level.Game.GetServerPlayers(FullCachedServerState);
 
 		ServerState 		= FullCachedServerState;
-		CacheRefreshTime 	= Level.TimeSeconds + 19.f; //Reduced interval
+		CacheRefreshTime 	= Level.TimeSeconds + 9.f; //Reduced interval
 		bInitialStateCached = false;
 	}
 	else if (Level.Game.GetNumPlayers() != CachePlayerCount)
