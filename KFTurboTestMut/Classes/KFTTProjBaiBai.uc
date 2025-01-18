@@ -1,4 +1,4 @@
-class KFTTProjBaiBai extends PTProjBase;
+class KFTTProjBaiBai extends KFTTProjBase;
      
 var() KFTTHumanPawn HitPawn;
 
