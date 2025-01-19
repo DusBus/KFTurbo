@@ -15,6 +15,7 @@
 !KFTurboServer/
 !KFTurboCardGame/
 !KFTurboEmbeddable/
+!KFTurboHoldout/
 
 #Important config files.
 !System
@@ -36,6 +37,7 @@
 !Textures/KFTurboHUD.utx
 !Textures/KFTurboVet.utx
 !Textures/TurboCardGame.utx
+!Textures/TurboHoldout.utx
 !Textures/KFTurboCharacters.utx
 
 #Relevant maps.
