@@ -77,9 +77,13 @@ function TakeDamage( int Damage, Pawn InstigatedBy, Vector Hitlocation, Vector M
         }
 
         bIsHeadShot = IsHeadShot(Hitlocation, normal(Momentum), HeadShotCheckScale);
-
+        // Commando weapons don't get the damage reduction
+		if (class'V_Commando'.static.IsPerkDamageType(WeaponDamageType))
+        {
+            // Do nothing
+        }
 		// Don't reduce the damage so much if its a high headshot damage weapon
-		if( (bIsHeadShot && WeaponDamageType.default.HeadShotDamageMult >= 1.5) || (class<DamTypeCrossbuzzsaw>(DamageType) != None))
+        else if( (bIsHeadShot && WeaponDamageType.default.HeadShotDamageMult >= 1.5) || (class<DamTypeCrossbuzzsaw>(DamageType) != None))
 		{
 			Damage *= 0.75;
 		}

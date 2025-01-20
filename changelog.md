@@ -126,6 +126,7 @@
         - 14% increased damage 🟢
         - 10% tighter spread 🟢
         - Headshot bonus damage increased by 80% 🟢
+        - Penetration count 2 -> 4 🟢
 
         - Weight 2 -> 3 🔻
         - 20% more recoil 🔻
@@ -168,7 +169,7 @@
 
 - **Weapons**
     - **Bullpup** 
-        - Now penetrates up to 2 zeds with a damage loss of 25% 🆕
+        - Now penetrates up to 4 zeds with a damage loss of 10% 🆕
         - Weight 6 -> 5 🟢
         - 8% increased damage 🟢
         - 90% tighter spread 🟢
@@ -178,6 +179,7 @@
         - 25% more expensive 🔻
         - 35% less maximum ammo 🔻
     - **Thompson Drum** 
+        - Now penetrates up to 2 zeds with a damage loss of 25% 🆕
         - 66% more maximum and starting ammo 🟢
         - 20% tighter spread 🟢
 
@@ -186,10 +188,14 @@
         - 54% more expensive 🔻
         - 23% reduced damage 🔻
     - **AK47** 
+        - Now penetrates up to 2 zeds with a damage loss of 25% 🆕
+        - 13% increased damage 🟢
         - Weight 6 -> 5 🟢
         - 20% tighter spread 🟢
 
     - **MKb42**
+        - Now penetrates up to 2 zeds with a damage loss of 25% 🆕
+        - 13% increased damage 🟢
         - 10% faster reload speed 🟢
         - 15% tighter spread 🟢
 
@@ -198,6 +204,7 @@
         - Uses the scope from the M4 ⚠️
         - Underbarrel grenade launcher is now loaded manually instead of automatically by pressing alt-fire again ⚠️
         - Firing type is no longer high RoF ⚠️
+        - Now penetrates up to 2 zeds with a damage loss of 50% 🆕
         - 36% cheaper than the M4 203 🟢
         - 25% less recoil 🟢
         - 23% increased damage 🟢
@@ -208,24 +215,28 @@
         - 17% less maximum grenades 🔻
         - 28% slower fire rate 🔻
     - **SCAR MK17**
+        - Now penetrates up to 1 zed with a damage loss of 25% 🆕
         - 25% tighter spread 🟢
 
     - **FN FAL** 
+        - Now penetrates up to 1 zed with a damage loss of 10% 🆕
         - 13% faster reload speed 🟢
         - 9% cheaper 🟢
         - Headshot bonus damage increased by 80% 🟢
         - 60% tighter spread 🟢
 
         - Full-auto fire mode removed 🔻
+        - Maximum fire rate reduced by 75% 🔻
         - Magazine capacity 20 -> 12 🔻
         - 20% reduced damage 🔻
         - 36% less maximum and starting ammo 🔻
     - **Thompson SMG**
         - New incendiary variant 🆕
         - Ignites enemies  [**Burning**](#afflictions) 🆕
+        - Firing type is no longer high RoF ⚠️
+        - Now penetrates up to 2 zeds with a damage loss of 50% 🆕
         - 12% less recoil 🟢
         - 15% tighter spread 🟢
-        - Firing type is no longer high RoF ⚠️
 
         - 63% slower fire rate 🔻
         - Magazine capacity 30 -> 25 🔻
@@ -259,6 +270,7 @@
         - Uses the scope from the M4 ⚠️
         - Underbarrel grenade launcher is now loaded manually instead of automatically by pressing alt-fire again ⚠️
         - Firing type is no longer high RoF ⚠️
+        - Now penetrates up to 2 zeds with a damage loss of 50% 🆕
         - 56% cheaper base price 🟢
         - 25% less recoil 🟢
         - 23% increased damage 🟢
@@ -468,9 +480,10 @@
     - **Thompson SMG**
         - New incendiary variant 🆕
         - Ignites enemies  [**Burning**](#afflictions) 🆕
+        - Firing type is no longer high RoF ⚠️
+        - Now penetrates up to 2 zeds with a damage loss of 50% 🆕
         - 12% less recoil 🟢
         - 15% tighter spread 🟢
-        - Firing type is no longer high RoF ⚠️
 
         - 63% slower fire rate 🔻
         - Magazine capacity 30 -> 25 🔻
@@ -514,4 +527,5 @@
 - Fixed a bug that made the Fleshpound "friendly", preventing it from attacking
 - Fixed various issues with being on fire
 - Damage resistance to M99 reduced from 50% to 47.5%
+- Damage resistance to Commando weapons reduced from 50% to 0%
 - Takes 65% increased damage from Seeker Six instead of the normal 25% for explosives.
