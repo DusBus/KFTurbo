@@ -94,6 +94,7 @@ defaultproperties
 	NetUpdateFrequency=0.100000
 
 	PurchaseMessageClass=class'KFTurboHoldout.PurchaseRoomMessage'
+	PurchaseNotificationMessageClass=class'KFTurboHoldout.PurchaseRoomNotificationMessage'
 	
 	Texture=Texture'Engine.SubActionTrigger'
 	PurchaseSound=Sound'Steamland_SND.SlotMachine_Win'

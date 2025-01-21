@@ -117,5 +117,6 @@ defaultproperties
 {
 	WeaponPrice=100
 	PurchaseMessageClass=class'KFTurboHoldout.PurchaseWeaponMessage'
+	PurchaseNotificationMessageClass=class'KFTurboHoldout.PurchaseWeaponNotificationMessage'
 	Texture=Texture'Engine.S_Weapon'
 }

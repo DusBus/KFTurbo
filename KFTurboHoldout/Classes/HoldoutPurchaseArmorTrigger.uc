@@ -62,5 +62,6 @@ defaultproperties
 {
 	ArmorPrice=100
 	PurchaseMessageClass=class'KFTurboHoldout.PurchaseArmorMessage'
+	PurchaseNotificationMessageClass=class'KFTurboHoldout.PurchaseArmorNotificationMessage'
 	Texture=Texture'Engine.S_Pawn'
 }

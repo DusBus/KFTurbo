@@ -88,27 +88,22 @@ function bool PurchaseRoom(Pawn EventInstigator)
 	}
 
 	EventInstigator.PlayerReplicationInfo.Score -= PurchasePrice;
-
-	log("PurchaseTriggerList:"@PurchaseTriggerList.Length);
 	
 	for (Index = 0; Index < PurchaseTriggerList.Length; Index++)
 	{
 		PurchaseTriggerList[Index].OnPurchase();
 	}
 	
-	log("DoorList:"@DoorList.Length);
 	for (Index = 0; Index < DoorList.Length; Index++)
 	{
 		DoorList[Index].DoOpen();
 	}
 	
-	log("DoorNodeList:"@DoorNodeList.Length);
 	for (Index = 0; Index < DoorNodeList.Length; Index++)
 	{
 		DoorNodeList[Index].MoverOpened();
 	}
 	
-	log("ZombieVolumeList:"@ZombieVolumeList.Length);
 	for (Index = 0; Index < ZombieVolumeList.Length; Index++)
 	{
 		ZombieVolumeList[Index].bVolumeIsEnabled = true;

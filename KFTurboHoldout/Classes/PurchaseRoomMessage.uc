@@ -10,6 +10,6 @@ static function string GetString(optional int Switch, optional PlayerReplication
 
 defaultproperties
 {
-    PurchaseString="%dPurchase %k%r%d for %k%c%d."
-    CannotPurchaseString="%dPurchase %k%r%d for %nk%c%d."
+    PurchaseString="%kPurchase%d the %k%r%d area for %k%c%d."
+    CannotPurchaseString="%kPurchase%d the %k%r%d area for %nk%c%d."
 }

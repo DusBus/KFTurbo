@@ -9,6 +9,7 @@ var(Purchase) float PurchaseSoundVolume;
 var(Purchase) int PurchaseSoundRadius;
 
 var class<TurboLocalMessage> PurchaseMessageClass;
+var class<TurboLocalMessage> PurchaseNotificationMessageClass;
 var TurboHumanPawn TargetPawn;
 
 function UsedBy(Pawn User)
@@ -86,6 +87,11 @@ simulated event TriggerEvent(Name EventName, Actor Other, Pawn EventInstigator)
 function PerformPurchase(Pawn EventInstigator)
 {
 	PlayPurchaseSound(EventInstigator);
+
+	if (PurchaseNotificationMessageClass != None && EventInstigator.PlayerReplicationInfo != None)
+	{
+		Level.Game.BroadcastLocalizedMessage(PurchaseNotificationMessageClass, GetPurchasePrice(), EventInstigator.PlayerReplicationInfo, None, GetBroadcastMessageOptionalObject());
+	}
 }
 
 function PlayPurchaseSound(Pawn EventInstigator)

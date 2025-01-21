@@ -161,5 +161,6 @@ defaultproperties
 {
 	AmmoPrice=200
 	PurchaseMessageClass=class'KFTurboHoldout.PurchaseAmmoMessage'
+	PurchaseNotificationMessageClass=class'KFTurboHoldout.PurchaseAmmoNotificationMessage'
 	Texture=Texture'Engine.S_Ammo'
 }
