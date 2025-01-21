@@ -251,7 +251,6 @@ final function float GetScoreMultiplier()
 //Removed all team and assist scoring mechanisms.
 function ScoreKill(Controller Killer, Controller Other)
 {
-    local TurboPlayerReplicationInfo OtherPRI;
     local float KillScore;
     local Controller C;
 
