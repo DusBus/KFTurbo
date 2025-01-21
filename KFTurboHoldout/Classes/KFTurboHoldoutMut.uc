@@ -17,6 +17,13 @@ simulated function PostBeginPlay()
 	}
 }
 
+function Tick(float DeltaTime)
+{
+	class'KFTurboMut'.static.FindMutator(Level.Game).SetGameType(Self, "turboholdoutgame");
+	
+	Disable('Tick');
+}
+
 simulated function String GetHumanReadableName()
 {
 	return FriendlyName;
