@@ -72,7 +72,7 @@ State MatchInProgress
 
         Super(KFTurboGameType).BeginState();
 
-        WaveCountDown = HOLDOUT_WAVE_COUNTDOWN;
+        WaveCountDown = HOLDOUT_WAVE_COUNTDOWN * 2;
     }
 
     // Don't select shops.
@@ -136,6 +136,7 @@ State MatchInProgress
         InvasionGameReplicationInfo(GameReplicationInfo).WaveNumber = WaveNum;
 
         PerformPendingVeterancyChanges();
+        RespawnPlayers();
 
         bUpdateViewTargs = true;
 
@@ -175,6 +176,46 @@ function PerformPendingVeterancyChanges()
     }
 }
 
+function RespawnPlayers()
+{
+    local array<TurboPlayerController> PlayerList;
+    local int Index;
+    local TurboPlayerController PlayerController;
+    local TurboPlayerReplicationInfo TPRI;
+
+    PlayerList = class'TurboGameplayHelper'.static.GetPlayerControllerList(Level);
+
+    for (Index = 0; Index < PlayerList.Length; Index++)
+    {
+        PlayerController = PlayerList[Index];
+        TPRI = TurboPlayerReplicationInfo(PlayerController.PlayerReplicationInfo);
+        if (TPRI == None)
+        {
+            continue;
+        }
+
+        TPRI.bOutOfLives = false;
+        TPRI.NumLives = 0;
+
+        PlayerController.GotoState('PlayerWaiting');
+        PlayerController.SetViewTarget(PlayerController);
+        PlayerController.ClientSetBehindView(false);
+        PlayerController.bBehindView = False;
+        PlayerController.ClientSetViewTarget(PlayerController.Pawn);
+
+        PlayerController.ServerReStartPlayer();
+
+        if (WaveNum <= FinalWave)
+        {
+            PlayerController.bSpawnedThisWave = false;
+        }
+        else
+        {
+            PlayerController.bSpawnedThisWave = true;
+        }
+    }
+}
+
 function SetupWave()
 {
     Super.SetupWave();
@@ -210,15 +251,19 @@ final function float GetScoreMultiplier()
 //Removed all team and assist scoring mechanisms.
 function ScoreKill(Controller Killer, Controller Other)
 {
-    local PlayerReplicationInfo OtherPRI;
+    local TurboPlayerReplicationInfo OtherPRI;
     local float KillScore;
     local Controller C;
-
-    OtherPRI = Other.PlayerReplicationInfo;
 
     if (GameRulesModifiers != None)
     {
         GameRulesModifiers.ScoreKill(Killer, Other);
+    }
+
+    //Lose 100 dosh on death.
+    if (Other.bIsPlayer && Other.PlayerReplicationInfo != None)
+    {
+        Other.PlayerReplicationInfo.Score = Max(100, Other.PlayerReplicationInfo.Score - 100);
     }
 
     if (Killer == None || !Killer.bIsPlayer || (Killer == Other))
