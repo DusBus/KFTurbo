@@ -100,6 +100,25 @@ State MatchInProgress
         bTradingDoorsOpen = false;
     }
 
+    
+    function Timer()
+    {
+        local Controller C;
+        //Keep LastSeenOrRelevantTime current.
+        if (TotalMaxMonsters <= 0 && NumMonsters <= 5)
+        {
+            for ( C = Level.ControllerList; C != None; C = C.NextController )
+            {
+                if (!C.bIsPlayer && C.Pawn != None && C.Pawn.Health > 0 && KFMonster(C.Pawn) != None)
+                {
+                    KFMonster(C.Pawn).LastSeenOrRelevantTime = Level.TimeSeconds;
+                }   
+            }
+        }
+
+        Super.Timer();
+    }
+
     function DoWaveEnd()
     {
         local KFDoorMover KFDM;
@@ -166,7 +185,7 @@ function SetupWave()
 final function float GetScoreMultiplier()
 {
     local float Multiplier;
-    Multiplier = 1.f;
+    Multiplier = 5.f;
 
     if (GameDifficulty >= 5.0)
     {
@@ -212,7 +231,7 @@ function ScoreKill(Controller Killer, Controller Other)
         return;
     }
 
-    if(Killer.PlayerReplicationInfo !=none)
+    if(Killer.PlayerReplicationInfo != None)
     {
         KillScore = LastKilledMonsterClass.Default.ScoringValue;
         KillScore *= GetScoreMultiplier();
@@ -221,6 +240,7 @@ function ScoreKill(Controller Killer, Controller Other)
         Killer.PlayerReplicationInfo.Kills++;
 
         HandleAssists(Killer, KFMonsterController(Other));
+        Killer.PlayerReplicationInfo.Score += KillScore;
         Killer.PlayerReplicationInfo.NetUpdateTime = Level.TimeSeconds - 1;
     }
 
@@ -291,6 +311,8 @@ defaultproperties
     GameName = "Turbo Holdout Game Type"
     Description = "Holdout mode for Killing Floor Turbo"
     ScreenShotName = "KFTurbo.Generic.KFTurbo_FB"
+
+    HUDType="KFTurboHoldout.HoldoutHUDKillingFloor"
 
     MonsterCollection=Class'KFTurbo.MC_DEF'
 

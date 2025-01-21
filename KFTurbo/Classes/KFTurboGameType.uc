@@ -808,6 +808,7 @@ defaultproperties
     Description="KF Turbo version of default Killing Floor Game Type."
     ScreenShotName="KFTurbo.Generic.KFTurbo_FB"
 
+    HUDType="KFTurbo.TurboHUDKillingFloor"
 	ScoreBoardType="KFTurbo.TurboHUDScoreboard"
 
     Waves(0)=(WaveMask=196611,WaveMaxMonsters=20,WaveDuration=255,WaveDifficulty=0.100000)

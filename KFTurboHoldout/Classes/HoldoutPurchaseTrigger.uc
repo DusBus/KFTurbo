@@ -33,12 +33,6 @@ simulated function Touch(Actor Other)
 
 	TargetPawn = Pawn;
 	BroadcastMessage(PlayerController(Pawn.Controller));
-
-	if (TargetPawn.PlayerReplicationInfo.Score < GetPurchasePrice())
-	{
-		return;
-	}	
-
 	SetTimer(0.5f, false);
 }
 

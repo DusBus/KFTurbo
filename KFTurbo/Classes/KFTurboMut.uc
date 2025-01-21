@@ -132,11 +132,12 @@ function TurboStatsTcpLink SetupStatTcpLink()
 
 static function string GetHUDReplacementClass(string HUDClassString)
 {
-	if (HUDClassString ~= string(Class'ServerPerks.SRHUDKillingFloor')
-		|| HUDClassString ~= Class'KFGameType'.Default.HUDType
-		|| HUDClassString ~= Class'KFStoryGameInfo'.Default.HUDType)
+	local class<HUD> HUDClass;
+	HUDClass = class<HUD>(DynamicLoadObject(HUDClassString, class'class'));
+
+	if (class<TurboHUDKillingFloor>(HUDClass) == None)
 	{
-		HUDClassString = string(class'KFTurbo.TurboHUDKillingFloor');
+		return string(class'KFTurbo.TurboHUDKillingFloor');
 	}
 
 	return HUDClassString;

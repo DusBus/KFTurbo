@@ -834,6 +834,37 @@ function ServerSellWeapon( Class<Weapon> WClass )
 	}
 }
 
+function AddDefaultInventory()
+{
+	Super.AddDefaultInventory();
+
+	if (W_Frag_Weap(Weapon) != None)
+	{
+		EquipAnythingButGrenade();
+	}
+}
+
+function EquipAnythingButGrenade()
+{
+	local Weapon OtherWeapon;
+	local float Rating;
+	OtherWeapon = Inventory.RecommendWeapon(Rating);
+
+	if (OtherWeapon == None)
+	{
+		OtherWeapon = Weapon(FindInventoryType(class'KFTurbo.W_Knife_Weap'));
+
+		if (OtherWeapon == None)
+		{
+			return;
+		}
+	}
+
+	Weapon = OtherWeapon;
+	PendingWeapon = None;
+	Weapon.BringUp();
+}
+
 function TossWeapon(Vector TossVel)
 {
 	local Vector X,Y,Z;
@@ -913,4 +944,5 @@ defaultproperties
 	RequiredEquipment(1)="KFTurbo.W_9MM_Weap"
 	RequiredEquipment(2)="KFTurbo.W_Frag_Weap"
     RequiredEquipment(3)="KFTurbo.W_Syringe_Weap"
+	RequiredEquipment(4)="KFMod.Welder"
 }

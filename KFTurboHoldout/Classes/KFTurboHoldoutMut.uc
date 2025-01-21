@@ -1,6 +1,21 @@
 class KFTurboHoldoutMut extends Mutator;
 
 #exec obj load file="..\Textures\TurboHoldout.utx" package=KFTurboHoldout
+simulated function PostBeginPlay()
+{
+	Super.PostBeginPlay();
+
+	if(Role != ROLE_Authority)
+	{
+		return;
+	}
+
+	if (!ClassIsChildOf(Level.Game.PlayerControllerClass, class'HoldoutPlayerController'))
+	{
+		Level.Game.PlayerControllerClass = class'HoldoutPlayerController';
+		Level.Game.PlayerControllerClassName = string(class'HoldoutPlayerController');
+	}
+}
 
 defaultproperties
 {

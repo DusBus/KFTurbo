@@ -183,14 +183,12 @@ function ServerNotifyLoginMenuState(bool bNewLoginMenuState)
 
 simulated function ClientSetHUD(class<HUD> newHUDClass, class<Scoreboard> newScoringClass )
 {
-	if (class'KFTurboMut'.static.GetHUDReplacementClass(string(newHUDClass)) ~= string(class'KFTurbo.TurboHUDKillingFloor'))
+	if (class<TurboHUDKillingFloor>(newHUDClass) == None)
 	{
 		Super.ClientSetHUD(class'KFTurbo.TurboHUDKillingFloor', newScoringClass);
 	}
-	else
-	{
-		Super.ClientSetHUD(newHUDClass, newScoringClass);
-	}
+
+	Super.ClientSetHUD(newHUDClass, newScoringClass);
 }
 
 event ClientOpenMenu(string Menu, optional bool bDisconnect,optional string Msg1, optional string Msg2)
@@ -538,6 +536,52 @@ function SelectVeterancy(class<KFVeterancyTypes> VetSkill, optional bool bForceC
 	}
 
 	Super.SelectVeterancy(VetSkill, bForceChange);
+}
+
+function KFClientSwitchToBestWeapon()
+{
+	SwitchToBestWeapon();
+}
+
+exec function SwitchToBestWeapon()
+{
+	local float Rating;
+
+	if (Pawn == None || Pawn.Inventory == None)
+	{
+		return;
+	}
+
+    if (Pawn.PendingWeapon == None)
+    {
+	    Pawn.PendingWeapon = Pawn.Inventory.RecommendWeapon(Rating);
+
+		if (Pawn.PendingWeapon == None || W_Frag_Weap(Pawn.PendingWeapon) != None)
+		{
+			Pawn.PendingWeapon = Weapon(Pawn.FindInventoryType(class'KFTurbo.W_Knife_Weap'));
+		}
+
+	    if (Pawn.PendingWeapon == Pawn.Weapon)
+		{
+		    Pawn.PendingWeapon = None;
+		}
+
+	    if (Pawn.PendingWeapon == None)
+		{
+    		return;
+		}
+    }
+
+	StopFiring();
+
+	if (Pawn.Weapon == None)
+	{
+		Pawn.ChangedWeapon();
+	}
+	else if (Pawn.Weapon != Pawn.PendingWeapon)
+    {
+		Pawn.Weapon.PutDown();
+    }
 }
 
 simulated function AddExtraOptionConfig(TurboOptionObject Config)
