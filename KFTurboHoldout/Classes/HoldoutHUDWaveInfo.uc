@@ -6,6 +6,9 @@ class HoldoutHUDWaveInfo extends TurboHUDWaveInfo;
 var int LastKnownWaveNumber;
 var float NextWaveEffectProgress;
 var float NextWaveEffectRate;
+var float NextWaveGlowProgress;
+var float NextWaveGlowDelay;
+var float NextWaveGlowRate;
 
 simulated function Tick(float DeltaTime)
 {
@@ -57,6 +60,7 @@ simulated function DrawGameData(Canvas C)
 	local float SizeX, SizeY;
 	local float TextSizeX, TextSizeY, TextScale;
 	local string TestText;
+	local float Progress;
 
 	TopY = C.ClipY * BackplateSpacing.Y;
 
@@ -93,9 +97,18 @@ simulated function DrawGameData(Canvas C)
 	TempX = (TempX + (SizeX * 0.5f)) - (TextSizeX * 0.5f);
 	TempY = ((TempY + (SizeY * 0.5f)) - (TextSizeY * 0.5f));
 
-	if ((NextWaveEffectProgress * 2.f) - 1.f > 0.f)
+	Progress = (NextWaveEffectProgress * 2.f) - 1.f;
+	if (Progress > 0.f)
 	{
-		C.DrawColor = MakeColor(255, 255, 255, Round(FMin((NextWaveEffectProgress * 2.f) - 1.f, 1.f) * 255.f));
+		if (NextWaveGlowProgress >= 1.f)
+		{
+			C.DrawColor = MakeColor(255, 255, 255, 255);
+		}
+		else
+		{
+			C.DrawColor = MakeColor(255, Round(FMin(NextWaveGlowProgress, 1.f) * 255.f), Round(FMin(NextWaveGlowProgress, 1.f) * 255.f), Round(FMin(Progress, 1.f) * 255.f));
+		}
+
 		TestText = FillStringWithZeroes(string(Min(LastKnownWaveNumber, 99)), 2);
 		C.SetPos(TempX, TempY + (SizeY * NextWaveEffectProgress) - SizeY);
 		DrawTextClippedMeticulous(C, TestText, TextSizeX);
@@ -104,7 +117,18 @@ simulated function DrawGameData(Canvas C)
 	if (NextWaveEffectProgress < 1.f && (1.f - (NextWaveEffectProgress * 2.f)) > 0.f)
 	{
 		C.ClipY = TopY + SizeY;
+
+		if (NextWaveGlowDelay <= 0.f)
+		{
+			C.DrawColor = MakeColor(255, Round(FMin(NextWaveGlowProgress, 1.f) * 255.f), Round(FMin(NextWaveGlowProgress, 1.f) * 255.f), Round(FMax((1.f - (NextWaveEffectProgress * 2.f)), 0.f) * 255.f));
+		}
+		else
+		{
+			C.DrawColor = MakeColor(255, 255, 255, Round(FMax((1.f - (NextWaveEffectProgress * 2.f)), 0.f) * 255.f));
+		}
+
 		C.DrawColor = MakeColor(255, 255, 255, Round(FMax((1.f - (NextWaveEffectProgress * 2.f)), 0.f) * 255.f));
+
 		TestText = FillStringWithZeroes(string(Min(LastKnownWaveNumber - 1, 99)), 2);
 		C.SetPos(TempX, TempY + (SizeY * NextWaveEffectProgress));
 		DrawTextClippedMeticulous(C, TestText, TextSizeX);
@@ -150,6 +174,8 @@ state PlayNextWave
 	{
 		Super.BeginState();
 		NextWaveEffectProgress = 0.f;
+		NextWaveGlowDelay = default.NextWaveGlowDelay;
+		NextWaveGlowProgress = 0.f;
 	}
 
 	simulated function Tick(float DeltaTime)
@@ -157,11 +183,30 @@ state PlayNextWave
 		Global.Tick(DeltaTime);
 		NextWaveEffectProgress = Lerp(DeltaTime * NextWaveEffectRate, NextWaveEffectProgress, 1.f);
 
-		if (NextWaveEffectProgress >= 0.99f)
+		if (NextWaveEffectProgress < 0.99f)
 		{
-			NextWaveEffectProgress = 1.f;
-			GotoState('');
+			return;
 		}
+
+		NextWaveEffectProgress = 1.f;
+		
+		NextWaveGlowDelay -= DeltaTime;
+
+		if (NextWaveGlowDelay > 0.f)
+		{
+			return;
+		}
+		
+		NextWaveGlowProgress = Lerp(DeltaTime * NextWaveGlowRate, NextWaveGlowProgress, 1.f);
+
+		if (NextWaveGlowProgress < 0.99f)
+		{
+			return;
+		}
+
+		NextWaveGlowProgress = 1.f;
+		NextWaveGlowDelay = default.NextWaveGlowDelay;
+		GotoState('');
 	}
 }
 
@@ -180,6 +225,10 @@ defaultproperties
 {
 	NextWaveEffectProgress=1.f
 	NextWaveEffectRate=4.f
+
+	NextWaveGlowDelay=3.f
+	NextWaveGlowRate=2.f
+	NextWaveGlowProgress=1.f
 	
 	BackplateSize=(X=0.15f,Y=0.1f)
 }
