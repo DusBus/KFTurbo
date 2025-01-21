@@ -17,6 +17,11 @@ simulated function PostBeginPlay()
 	}
 }
 
+simulated function String GetHumanReadableName()
+{
+	return FriendlyName;
+}
+
 defaultproperties
 {
     bAddToServerPackages=True

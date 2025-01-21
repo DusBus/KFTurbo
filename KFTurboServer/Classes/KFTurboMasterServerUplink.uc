@@ -221,6 +221,10 @@ function AppendGameModeInfo(out GameInfo.ServerResponseLine ServerState)
 		{
 			GameTypeString = "Turbo Randomizer Game Mode";
 		}
+		else if (IsPlayingHoldout())
+		{
+			GameTypeString = "Turbo Holdout Game Mode";
+		}
 		else
 		{
 			GameTypeString = "Turbo Game Mode";
@@ -238,6 +242,11 @@ function bool IsPlayingCardGame()
 function bool IsPlayingRandomizer()
 {
     return HasMutatorFromGroup("KF-Randomizer");
+}
+
+function bool IsPlayingHoldout()
+{
+    return HasMutatorFromGroup("KF-Holdout");
 }
 
 function bool HasMutatorFromGroup(string GroupName)
