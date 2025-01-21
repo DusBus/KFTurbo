@@ -188,6 +188,12 @@ function RespawnPlayers()
     for (Index = 0; Index < PlayerList.Length; Index++)
     {
         PlayerController = PlayerList[Index];
+
+        if (PlayerController.Pawn != None && PlayerController.Pawn.Health > 0)
+        {
+            continue;
+        }
+
         TPRI = TurboPlayerReplicationInfo(PlayerController.PlayerReplicationInfo);
         if (TPRI == None)
         {
