@@ -42,6 +42,47 @@ simulated function bool CanCarry(float Weight)
 	return (CurrentWeight + Weight) <= MaxCarryWeight;
 }
 
+function TossWeapon(Vector TossVel)
+{
+	local Vector X,Y,Z;
+
+	if (Health <= 0)
+	{
+		PerformDeathToss(TossVel);
+		return;
+	}
+
+	TossCarriedItems();
+
+	Weapon.Velocity = TossVel;
+	GetAxes(Rotation,X,Y,Z);
+	Weapon.DropFrom(Location + 0.8 * CollisionRadius * X - 0.5 * CollisionRadius * Y);
+}
+
+function PerformDeathToss(Vector TossVel)
+{
+	local Vector X,Y,Z;
+	local Inventory WeaponToToss;
+	local float Rating;
+
+	if (KFWeapon(Weapon) == None || !KFWeapon(Weapon).bKFNeverThrow)
+	{
+		Super.TossWeapon(TossVel);
+		return;
+	}
+
+	WeaponToToss = Inventory.RecommendWeapon(Rating);
+
+	if (KFWeapon(WeaponToToss) == None || Rating < -50 || KFWeapon(WeaponToToss).bKFNeverThrow)
+	{
+		return;
+	}
+
+	WeaponToToss.Velocity = TossVel;
+	GetAxes(Rotation,X,Y,Z);
+	WeaponToToss.DropFrom(Location + 0.8 * CollisionRadius * X - 0.5 * CollisionRadius * Y);
+}
+
 defaultproperties
 {
 	bDebugServerBuyWeapon=false

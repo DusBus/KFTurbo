@@ -2,6 +2,7 @@ class HoldoutPurchaseAmmoTrigger extends HoldoutPurchaseTrigger
 	placeable;
 
 var(Purchase) int AmmoPrice;
+var localized string MarkerName;
 
 replication
 {
@@ -17,6 +18,11 @@ simulated function Object GetBroadcastMessageOptionalObject()
 simulated function int GetPurchasePrice()
 {
 	return AmmoPrice;
+}
+
+simulated function string GetMarkerName()
+{
+	return MarkerName;
 }
 
 simulated function Touch(Actor Other)
@@ -160,6 +166,7 @@ function bool GrantAmmo(Pawn Pawn)
 defaultproperties
 {
 	AmmoPrice=200
+	MarkerName="Ammo Restock"
 	PurchaseMessageClass=class'KFTurboHoldout.PurchaseAmmoMessage'
 	PurchaseNotificationMessageClass=class'KFTurboHoldout.PurchaseAmmoNotificationMessage'
 	Texture=Texture'Engine.S_Ammo'

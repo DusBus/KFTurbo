@@ -20,6 +20,18 @@ simulated function int GetPurchasePrice()
 	return WeaponPrice;
 }
 
+simulated function string GetMarkerName()
+{
+	local string WeaponName;
+	WeaponName = class<KFWeaponPickup>(GetBroadcastMessageOptionalObject()).default.ItemShortName;
+	if (WeaponName == "")
+	{
+		WeaponName = class<KFWeaponPickup>(GetBroadcastMessageOptionalObject()).default.ItemName;
+	}
+	
+	return WeaponName;
+}
+
 simulated function Touch(Actor Other)
 {
 	if (Pawn(Other) == None || HasWeapon(Pawn(Other)) || !CanCarryWeapon(HoldoutHumanPawn(Other)))

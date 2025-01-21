@@ -49,6 +49,11 @@ simulated function int GetPurchasePrice()
 	return RoomManager.GetPurchasePrice();
 }
 
+simulated function string GetMarkerName()
+{
+	return RoomManager.GetRoomName();
+}
+
 simulated function RegisterManager(HoldoutRoomManager Manager)
 {
 	RoomManager = Manager;

@@ -62,6 +62,8 @@ function PostBeginPlay()
     StartingCash = INITIAL_CASH;
     MinRespawnCash = INITIAL_CASH;
     WaveNextSquadSpawnTime = MIN_SPAWN_TIME;
+
+    Spawn(class'TurboZombieHuntManager', Self); //Always pull zombies out of hunting.
 }
 
 event InitGame( string Options, out string Error )

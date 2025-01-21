@@ -2,7 +2,7 @@ class TurboGameplayHelper extends Object;
 
 const ASSUMED_PLAYER_COUNT = 6;
 
-static final function array<TurboPlayerController> GetPlayerControllerList(LevelInfo Level)
+static final function array<TurboPlayerController> GetPlayerControllerList(LevelInfo Level, optional bool bIncludeSpectators)
 {
     local Controller Controller;
     local TurboPlayerController TurboPlayerController;
@@ -19,7 +19,7 @@ static final function array<TurboPlayerController> GetPlayerControllerList(Level
             continue;
         }
 
-        if (Controller.PlayerReplicationInfo == None || Controller.PlayerReplicationInfo.bOnlySpectator)
+        if (Controller.PlayerReplicationInfo == None || (Controller.PlayerReplicationInfo.bOnlySpectator && !bIncludeSpectators))
         {
             continue;
         }

@@ -74,6 +74,11 @@ simulated function int GetPurchasePrice()
 	return 0;
 }
 
+simulated function string GetMarkerName()
+{
+	return "";
+}
+
 simulated event TriggerEvent(Name EventName, Actor Other, Pawn EventInstigator)
 {
 	if (Role != ROLE_Authority || EventInstigator.Role != ROLE_Authority || EventInstigator == None || EventInstigator.Role != ROLE_Authority)

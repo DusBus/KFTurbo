@@ -91,10 +91,15 @@ simulated function final vector GetMarkLocation()
 {
     if (MarkedActor != None && CanMarkReceiveLocationUpdate())
     {
+        if (class<TurboMarkerType>(DataClass) != None)
+        {
+            return MarkedActor.Location + class<TurboMarkerType>(DataClass).static.GetMarkerOffset(MarkedActor, MarkActorClass, DataObject, DataClass, MarkerData);
+        }
+
         return MarkedActor.Location;
     }
 
-    return MarkLocation;
+    return MarkLocation + class<TurboMarkerType>(DataClass).static.GetMarkerOffset(MarkedActor, MarkActorClass, DataObject, DataClass, MarkerData);
 }
 
 function MarkActor(Actor Target, class<TurboMarkerType> DataClassOverride, int DataOverride)
@@ -105,7 +110,7 @@ function MarkActor(Actor Target, class<TurboMarkerType> DataClassOverride, int D
         return;
     }
     
-    if (!CanMarkActor(Target))
+    if (!CanMarkActor(Target, DataClassOverride))
     {
         return;
     }
@@ -212,7 +217,7 @@ final function TurboPlayerMarkReplicationInfo GetPRIMarkingActor(Actor TargetAct
     return None;
 }
 
-function bool CanMarkActor(Actor TargetActor)
+function bool CanMarkActor(Actor TargetActor, class<TurboMarkerType> MarkerType)
 {
     if (TargetActor == None)
     {
@@ -221,22 +226,17 @@ function bool CanMarkActor(Actor TargetActor)
 
     if (Pickup(TargetActor) != None)
     {
-        if (Pickup(TargetActor).InventoryType != None || CashPickup(TargetActor) != None || Vest(TargetActor) != None)
-        {
-            return true;
-        }
-
-        if (KFAmmoPickup(TargetActor) != None)
-        {
-            return !TargetActor.bHidden;
-        }
-
-        return false;
+        return !TargetActor.bHidden;
     }
 
     if (Pawn(TargetActor) != None)
     {
         return Pawn(TargetActor).Health > 0;
+    }
+
+    if (MarkerType != None)
+    {
+        return MarkerType.static.CanMarkActor(TargetActor);
     }
 
     return false;
@@ -331,7 +331,7 @@ function Tick(float DeltaTime)
         return;
     }
 
-    if (!CanMarkActor(MarkedActor))
+    if (!CanMarkActor(MarkedActor, class<TurboMarkerType>(DataClass)))
     {
         ClearMarkedActor();
         return;

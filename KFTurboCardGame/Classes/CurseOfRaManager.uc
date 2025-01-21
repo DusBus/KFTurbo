@@ -207,7 +207,7 @@ function RandomlyRageFleshpound()
 
     Fleshpound.StartCharging();
     Fleshpound.bFrustrated = true;
-    AI_Fleshpound(Fleshpound.Controller).bForcedRage = true;
+    AI_Fleshpound(Fleshpound.Controller).bForcedRage = FRand() > 0.5f;
 }
 
 function RandomlySetOffNearbyPipebomb()

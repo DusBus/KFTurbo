@@ -19,6 +19,11 @@ simulated function int GetPurchasePrice()
 	return ArmorPrice;
 }
 
+simulated function string GetMarkerName()
+{
+	return class<BuyableVest>(GetBroadcastMessageOptionalObject()).default.ItemName;
+}
+
 simulated function Touch(Actor Other)
 {
 	if (Pawn(Other) == None || Pawn(Other).ShieldStrength >= 100.f)
@@ -31,7 +36,7 @@ simulated function Touch(Actor Other)
 
 function PerformPurchase(Pawn EventInstigator)
 {
-	if (EventInstigator == None)
+	if (EventInstigator == None || EventInstigator.ShieldStrength >= 100.f)
 	{
 		return;
 	}
