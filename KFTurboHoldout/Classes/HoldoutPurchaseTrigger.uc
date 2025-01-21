@@ -13,7 +13,7 @@ var TurboHumanPawn TargetPawn;
 
 function UsedBy(Pawn User)
 {
-	if (User.Controller == None || !User.Controller.bIsPlayer)
+	if (User.Role != ROLE_Authority || User.Controller == None || !User.Controller.bIsPlayer)
 	{
 		return;
 	}
@@ -75,7 +75,7 @@ simulated function int GetPurchasePrice()
 
 simulated event TriggerEvent(Name EventName, Actor Other, Pawn EventInstigator)
 {
-	if (Role != ROLE_Authority || EventInstigator == None || EventInstigator.Role != ROLE_Authority)
+	if (Role != ROLE_Authority || EventInstigator.Role != ROLE_Authority || EventInstigator == None || EventInstigator.Role != ROLE_Authority)
 	{
 		return;
 	}
@@ -100,7 +100,6 @@ defaultproperties
 {
 	bAlwaysRelevant=true
 	bReplicateMovement=false
-	bOnlyDirtyReplication=true
 	RemoteRole=ROLE_SimulatedProxy
 	
 	PurchaseSound=Sound'Steamland_SND.SlotMachine_Dosh'

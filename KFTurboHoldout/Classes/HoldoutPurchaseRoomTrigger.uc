@@ -6,7 +6,7 @@ var bool bDisabled;
 
 replication
 {
-	reliable if (bNetDirty && Role == ROLE_Authority)
+	reliable if (Role == ROLE_Authority)
 		bDisabled, RoomManager;
 }
 
@@ -21,6 +21,7 @@ simulated function PostNetBeginPlay()
 			if (Manager.PurchaseTriggerTag == Tag)
 			{
 				RegisterManager(Manager);
+				Manager.Setup();
 				break;
 			}
 		}

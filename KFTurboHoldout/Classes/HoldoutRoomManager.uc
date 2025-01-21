@@ -11,24 +11,26 @@ var(RoomManager) Name ZombieVolumeTag;
 var(RoomManager) Name DoorNodeTag;
 
 var bool bIsPurchased;
+var bool bIsInitialized;
 var array<HoldoutPurchaseRoomTrigger> PurchaseTriggerList;
 var array<HoldoutDoor> DoorList;
 var array<HoldoutZombieVolume> ZombieVolumeList;
 var array<HoldoutDoorPathNode> DoorNodeList;
 
-simulated function PostBeginPlay()
-{
-	Super.PostBeginPlay();
-	Enable('Tick');
-}
-
-simulated function Tick(float DeltaTime)
+simulated function Setup()
 {
 	local HoldoutPurchaseRoomTrigger RoomTrigger;
 	local int Index;
 	local HoldoutDoor Door;
 	local HoldoutDoorPathNode DoorNode;
 	local HoldoutZombieVolume ZombieVolume;
+
+	if (bIsInitialized)
+	{
+		return;
+	}
+
+	bIsInitialized = true;
 	
 	foreach AllActors(class'HoldoutPurchaseRoomTrigger', RoomTrigger, PurchaseTriggerTag)
 	{
@@ -54,8 +56,6 @@ simulated function Tick(float DeltaTime)
 		ZombieVolume.bVolumeIsEnabled = false;
 		ZombieVolumeList[ZombieVolumeList.Length] = ZombieVolume;
 	}
-
-	Disable('Tick');
 }
 
 simulated function int GetPurchasePrice()
@@ -88,22 +88,27 @@ function bool PurchaseRoom(Pawn EventInstigator)
 	}
 
 	EventInstigator.PlayerReplicationInfo.Score -= PurchasePrice;
+
+	log("PurchaseTriggerList:"@PurchaseTriggerList.Length);
 	
 	for (Index = 0; Index < PurchaseTriggerList.Length; Index++)
 	{
 		PurchaseTriggerList[Index].OnPurchase();
 	}
 	
+	log("DoorList:"@DoorList.Length);
 	for (Index = 0; Index < DoorList.Length; Index++)
 	{
 		DoorList[Index].DoOpen();
 	}
 	
+	log("DoorNodeList:"@DoorNodeList.Length);
 	for (Index = 0; Index < DoorNodeList.Length; Index++)
 	{
 		DoorNodeList[Index].MoverOpened();
 	}
 	
+	log("ZombieVolumeList:"@ZombieVolumeList.Length);
 	for (Index = 0; Index < ZombieVolumeList.Length; Index++)
 	{
 		ZombieVolumeList[Index].bVolumeIsEnabled = true;
