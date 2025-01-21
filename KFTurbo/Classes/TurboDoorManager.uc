@@ -164,7 +164,6 @@ final function bool IsPartiallyOpen(KFUseTrigger UseTrigger)
     local int DoorIndex;
     local bool bHasOpenDoor;
     local bool bHasClosedDoor;
-    local Mover Follower;
 
     bHasOpenDoor = false;
     bHasClosedDoor = false;
@@ -178,24 +177,6 @@ final function bool IsPartiallyOpen(KFUseTrigger UseTrigger)
         else
         {
             bHasOpenDoor = true;
-        }
-
-        Follower = UseTrigger.DoorOwners[DoorIndex].Follower;
-        while(Follower != None)
-        {
-            if (KFDoorMover(Follower) != None)
-            {
-                if (Follower.bClosed)
-                {
-                    bHasClosedDoor = true;
-                }
-                else
-                {
-                    bHasOpenDoor = true;
-                }
-            }
-
-            Follower = Follower.Follower;
         }
     }
 
