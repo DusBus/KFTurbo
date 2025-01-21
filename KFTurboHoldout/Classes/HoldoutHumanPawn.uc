@@ -32,6 +32,16 @@ function AddDefaultInventory()
 	}
 }
 
+simulated function bool CanCarry(float Weight)
+{
+    if(Weight <= 0)
+    {
+        return true;
+    }
+
+	return (CurrentWeight + Weight) <= MaxCarryWeight;
+}
+
 defaultproperties
 {
 	bDebugServerBuyWeapon=false

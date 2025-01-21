@@ -10,7 +10,7 @@ var(Purchase) int PurchaseSoundRadius;
 
 var class<TurboLocalMessage> PurchaseMessageClass;
 var class<TurboLocalMessage> PurchaseNotificationMessageClass;
-var TurboHumanPawn TargetPawn;
+var HoldoutHumanPawn TargetPawn;
 
 function UsedBy(Pawn User)
 {
@@ -24,9 +24,9 @@ function UsedBy(Pawn User)
 
 simulated function Touch(Actor Other)
 {
-	local TurboHumanPawn Pawn;
+	local HoldoutHumanPawn Pawn;
 	
-	Pawn = TurboHumanPawn(Other);
+	Pawn = HoldoutHumanPawn(Other);
 	if (Pawn == None || !Pawn.IsLocallyControlled())
 	{
 		return;
@@ -39,13 +39,13 @@ simulated function Touch(Actor Other)
 
 simulated function Timer()
 {
-	local TurboHumanPawn TouchingPawn;
+	local HoldoutHumanPawn TouchingPawn;
 	if (TargetPawn == None || TargetPawn.Health <= 0)
 	{
 		return;
 	}
 
-	foreach TouchingActors(class'TurboHumanPawn', TouchingPawn)
+	foreach TouchingActors(class'HoldoutHumanPawn', TouchingPawn)
 	{
 		if (TouchingPawn == TargetPawn)
 		{

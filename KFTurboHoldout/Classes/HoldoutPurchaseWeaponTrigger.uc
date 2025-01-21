@@ -22,7 +22,7 @@ simulated function int GetPurchasePrice()
 
 simulated function Touch(Actor Other)
 {
-	if (Pawn(Other) == None || HasWeapon(Pawn(Other)))
+	if (Pawn(Other) == None || HasWeapon(Pawn(Other)) || !CanCarryWeapon(HoldoutHumanPawn(Other)))
 	{
 		return;
 	}
@@ -46,6 +46,11 @@ function PerformPurchase(Pawn EventInstigator)
 	}
 
 	if (HasWeapon(EventInstigator))
+	{
+		return;
+	}
+
+	if (!CanCarryWeapon(HoldoutHumanPawn(EventInstigator)))
 	{
 		return;
 	}
@@ -84,7 +89,7 @@ function PerformPurchase(Pawn EventInstigator)
 
 simulated function Timer()
 {
-	if (TargetPawn == None || HasWeapon(TargetPawn))
+	if (TargetPawn == None || HasWeapon(TargetPawn) || !CanCarryWeapon(TargetPawn))
 	{
 		return;
 	}
@@ -96,6 +101,11 @@ simulated function bool HasWeapon(Pawn Pawn)
 {
 	local Inventory Inv;
 	local class<Inventory> WeaponClass;
+
+	if (Pawn == None)
+	{
+		return false;
+	}
 
 	Inv = Pawn.Inventory;
 	WeaponClass = WeaponPickupClass.default.InventoryType;
@@ -111,6 +121,17 @@ simulated function bool HasWeapon(Pawn Pawn)
 	}
 
 	return false;
+}
+
+
+simulated function bool CanCarryWeapon(HoldoutHumanPawn Pawn)
+{
+	if (Pawn == None || WeaponPickupClass == None)
+	{
+		return false;
+	}
+
+	return Pawn.CanCarry(WeaponPickupClass.default.Weight);
 }
 
 defaultproperties
