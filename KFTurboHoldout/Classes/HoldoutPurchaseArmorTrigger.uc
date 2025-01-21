@@ -3,6 +3,12 @@ class HoldoutPurchaseArmorTrigger extends HoldoutPurchaseTrigger
 
 var(Purchase) int ArmorPrice;
 
+replication
+{
+	reliable if (bNetDirty && Role == ROLE_Authority)
+		ArmorPrice;
+}
+
 simulated function Object GetBroadcastMessageOptionalObject()
 {
 	return class'BuyableVest';

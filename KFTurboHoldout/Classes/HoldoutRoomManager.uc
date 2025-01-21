@@ -114,6 +114,8 @@ function bool PurchaseRoom(Pawn EventInstigator)
 
 defaultproperties
 {
+	bStatic=true
+
 	bIsPurchased=false
 	Texture=Texture'Engine.SubActionGameSpeed'
 	DrawScale=3.f

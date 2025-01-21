@@ -4,6 +4,12 @@ class HoldoutPurchaseWeaponTrigger extends HoldoutPurchaseTrigger
 var(Purchase) class<KFWeaponPickup> WeaponPickupClass;
 var(Purchase) int WeaponPrice;
 
+replication
+{
+	reliable if (bNetDirty && Role == ROLE_Authority)
+		WeaponPickupClass, WeaponPrice;
+}
+
 simulated function Object GetBroadcastMessageOptionalObject()
 {
 	return WeaponPickupClass;
@@ -69,14 +75,9 @@ function PerformPurchase(Pawn EventInstigator)
 	NewWeapon.UpdateMagCapacity(EventInstigator.PlayerReplicationInfo);
 	NewWeapon.FillToInitialAmmo();
 	NewWeapon.SellValue = 0;
-		
+	
 	NewWeapon.GiveTo(EventInstigator);
 	EventInstigator.PlayerReplicationInfo.Score -= WeaponPrice;
-
-	if (KFPawn(EventInstigator) != None)
-	{
-		KFPawn(EventInstigator).ClientForceChangeWeapon(NewInventory);
-	}
 
 	Super.PerformPurchase(EventInstigator);
 }

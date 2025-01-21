@@ -98,6 +98,11 @@ function PlayPurchaseSound(Pawn EventInstigator)
 
 defaultproperties
 {
+	bAlwaysRelevant=true
+	bReplicateMovement=false
+	bOnlyDirtyReplication=true
+	RemoteRole=ROLE_SimulatedProxy
+	
 	PurchaseSound=Sound'Steamland_SND.SlotMachine_Dosh'
 	PurchaseSoundVolume=4.f
 	PurchaseSoundRadius=5000

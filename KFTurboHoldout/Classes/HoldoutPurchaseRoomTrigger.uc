@@ -6,8 +6,25 @@ var bool bDisabled;
 
 replication
 {
-	reliable if (Role == ROLE_Authority)
-		bDisabled;
+	reliable if (bNetDirty && Role == ROLE_Authority)
+		bDisabled, RoomManager;
+}
+
+//Attempt to associate this with a manager in case it fails to do so from the manager side.
+simulated function PostNetBeginPlay()
+{
+	local HoldoutRoomManager Manager;
+	if (RoomManager == None)
+	{
+		foreach AllActors(class'HoldoutRoomManager', Manager)
+		{
+			if (Manager.PurchaseTriggerTag == Tag)
+			{
+				RegisterManager(Manager);
+				break;
+			}
+		}
+	}
 }
 
 simulated function PostNetReceive()
@@ -72,11 +89,6 @@ function OnPurchase()
 
 defaultproperties
 {
-	bAlwaysRelevant=true
-	bReplicateMovement=false
-	bOnlyDirtyReplication=true
-	RemoteRole=ROLE_SimulatedProxy
-
 	bNetNotify=true
 	NetUpdateFrequency=0.100000
 

@@ -3,6 +3,12 @@ class HoldoutPurchaseAmmoTrigger extends HoldoutPurchaseTrigger
 
 var(Purchase) int AmmoPrice;
 
+replication
+{
+	reliable if (bNetDirty && Role == ROLE_Authority)
+		AmmoPrice;
+}
+
 simulated function Object GetBroadcastMessageOptionalObject()
 {
 	return class'KFAmmoPickup';
