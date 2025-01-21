@@ -185,7 +185,7 @@ function SetupWave()
 final function float GetScoreMultiplier()
 {
     local float Multiplier;
-    Multiplier = 5.f;
+    Multiplier = 2.f;
 
     if (GameDifficulty >= 5.0)
     {

@@ -71,7 +71,7 @@ simulated function bool NeedsAmmo(Pawn Pawn)
 	{
 		Ammo = KFAmmunition(Inv);
 
-		if (Ammo == None && !Ammo.bAcceptsAmmoPickups)
+		if (Ammo == None || !Ammo.bAcceptsAmmoPickups)
 		{
 			Inv = Inv.Inventory;
 			continue;
