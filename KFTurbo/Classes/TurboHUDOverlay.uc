@@ -19,7 +19,6 @@ simulated function PreBeginPlay()
 
 simulated function Initialize(TurboHUDKillingFloor OwnerHUD)
 {
-	log("Initialized HUD:"@OwnerHUD);
 	TurboHUD = OwnerHUD;
 }
 
