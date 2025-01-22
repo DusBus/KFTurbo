@@ -36,6 +36,11 @@ function float GetNextSquadSpawnTime(int WaveNumber, int PlayerCount)
      return HoldoutWave.GetNextSquadSpawnTime(PlayerCount);
 }
 
+function float GetScoreMultiplier()
+{
+     return HoldoutWave.GetScoreMultiplier();
+}
+
 defaultproperties
 {
 	Begin Object Class=TurboMonsterHoldoutWave Name=HoldoutWave0

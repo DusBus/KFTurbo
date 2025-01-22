@@ -5,6 +5,8 @@ class KFTurboHoldoutGameType extends KFTurboGameTypePlus;
 
 const HOLDOUT_WAVE_COUNTDOWN = 5;
 
+var float ScoreMultiplier;
+
 function PreBeginPlay()
 {
 	local ShopVolume Shop;
@@ -228,7 +230,9 @@ function SetupWave()
 {
     Super.SetupWave();
     
-    WaveNextSquadSpawnTime = MIN_SPAWN_TIME; 
+    WaveNextSquadSpawnTime = MIN_SPAWN_TIME;
+    
+    ScoreMultiplier = TurboMonsterCollectionHoldoutImpl(TurboMonsterCollection).GetScoreMultiplier();
 }
 
 final function float GetScoreMultiplier()
@@ -253,7 +257,7 @@ final function float GetScoreMultiplier()
         Multiplier *= 2.0;
     }
 
-    return Multiplier;
+    return Multiplier * ScoreMultiplier;
 }
 
 //Removed all team and assist scoring mechanisms.
@@ -351,7 +355,9 @@ final function HandleAssists(Controller Killer, KFMonsterController KilledMonste
 defaultproperties
 {
     bIsHighDifficulty = false
-    
+
+    ScoreMultiplier = 1.f
+
 	Begin Object Name=TurboMonsterCollectionHoldoutImpl0 Class=TurboMonsterCollectionHoldoutImpl
 	End Object
     TurboMonsterCollection=TurboMonsterCollectionHoldoutImpl'TurboMonsterCollectionHoldoutImpl0'

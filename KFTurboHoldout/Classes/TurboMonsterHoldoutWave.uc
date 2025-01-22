@@ -14,6 +14,8 @@ enum ESquadIndex
      Wave15Squad
 };
 
+var float ScoreMultiplier;
+
 function Initialize(TurboMonsterCollection TurboCollection)
 {
      local int Index;
@@ -61,6 +63,8 @@ function InitializeForWave(int Wave)
      MaxMixInSquadCount = default.MaxMixInSquadCount;
      BeatSize = default.BeatSize;
      
+     ScoreMultiplier = default.ScoreMultiplier;
+
      if (Wave == 1)
      {
           return;
@@ -85,6 +89,11 @@ function InitializeForWave(int Wave)
 
      WaveDifficulty = FMin(2.75f, Lerp(float(Wave) / 20.f, default.WaveDifficulty, 2.75f));
      NextSquadSpawnTime *= ((0.8) ** float(Wave));
+
+     if (Wave >= 10)
+     {
+          ScoreMultiplier *= Lerp(FClamp((float(Wave) - 10.f) / 10.f, 0.f, 1.f), 1.f, 0.1f);
+     }
 
      if (Wave >= 11)
      {
@@ -203,6 +212,11 @@ final function int GetNextBeatSquadIndex()
      return -1;
 }
 
+function float GetScoreMultiplier()
+{
+     return ScoreMultiplier;
+}
+
 defaultproperties
 {
 	Begin Object Class=TurboMonsterSquad Name=Wave1Squad
@@ -250,4 +264,6 @@ defaultproperties
      MinMixInSquadCount=0
      MaxMixInSquadCount=0
      BeatSize=0
+
+     ScoreMultiplier=1.f
 }
