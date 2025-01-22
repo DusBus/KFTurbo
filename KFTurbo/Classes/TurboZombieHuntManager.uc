@@ -11,12 +11,12 @@ function PostBeginPlay()
 {
     Super.PostBeginPlay();
 
-    SetTimer(1.f, false);
+    //SetTimer(1.f, false);
 }
 
 function Timer()
 {
-    GotoState('WatchMonsters');
+    //GotoState('WatchMonsters');
 }
 
 state WatchMonsters
@@ -37,6 +37,8 @@ Begin:
 
 final function UpdateMonster(Monster Monster)
 {
+    return;
+
     if (Monster == None || Monster.Health <= 0)
     {
         return;
