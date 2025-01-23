@@ -4,6 +4,7 @@
 class KFTurboHoldoutGameType extends KFTurboGameTypePlus;
 
 const HOLDOUT_WAVE_COUNTDOWN = 5;
+const STARTING_CASH = 200;
 
 var float ScoreMultiplier;
 
@@ -41,8 +42,8 @@ function PostBeginPlay()
     // Set wave spawn period
     KFLR.WaveSpawnPeriod = MIN_SPAWN_TIME;
 
-    StartingCash = 1000;
-    MinRespawnCash = 1000;
+    StartingCash = STARTING_CASH;
+    MinRespawnCash = STARTING_CASH;
     WaveNextSquadSpawnTime = MIN_SPAWN_TIME;
 }
 
@@ -63,6 +64,11 @@ event BroadcastLocalizedMessage( class<LocalMessage> MessageClass, optional int 
     }    
 
     Super.BroadcastLocalizedMessage(MessageClass, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject);
+}
+
+function DistributeCash(TurboPlayerController ExitingPlayer)
+{
+    Super(KFTurboGameType).DistributeCash(ExitingPlayer); //Turbo+ disables this behaviour but we want it.
 }
 
 // State to handle match progress
@@ -347,6 +353,11 @@ final function HandleAssists(Controller Killer, KFMonsterController KilledMonste
             KFPRI.KillAssists++;
         }
     }
+}
+
+function int GetPlayerStartingCash()
+{
+    return STARTING_CASH;
 }
 
 // Default properties for the game type

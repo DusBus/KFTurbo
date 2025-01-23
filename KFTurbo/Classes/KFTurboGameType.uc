@@ -47,6 +47,7 @@ event InitGame( string Options, out string Error )
 {
     Super.InitGame(Options, Error);
 
+    bNoLateJoiners = false;
     InitializeMapConfigurationObject();
 }
 
@@ -149,7 +150,69 @@ function float SetAdminMaxMonstersModifier(float NewAdminMaxMonstersModifier)
     AdminMaxMonstersModifier = NewAdminMaxMonstersModifier;
     return AdminMaxMonstersModifier;
 }
- 
+
+event PlayerController Login(string Portal, string Options, out string Error)
+{
+    local PlayerController PlayerController;
+    PlayerController = Super.Login(Portal, Options, Error);
+
+    if (!PlayerController.PlayerReplicationInfo.bOnlySpectator)
+    {
+        PlayerController.PlayerReplicationInfo.Score = GetPlayerStartingCash();
+    }
+
+    return PlayerController;
+}
+
+function Logout(Controller Exiting)
+{
+    if (TurboPlayerController(Exiting) != None)
+    {
+        DistributeCash(TurboPlayerController(Exiting));
+    }
+
+    Super.Logout(Exiting);
+}
+
+function DistributeCash(TurboPlayerController ExitingPlayer)
+{
+	local int Index;
+	local float Score;
+	local array<TurboPlayerController> PlayerList;
+
+	PlayerList = class'TurboGameplayHelper'.static.GetPlayerControllerList(Level);
+
+    if (PlayerList.Length <= 1)
+    {
+        return;
+    }
+
+	Score = ExitingPlayer.PlayerReplicationInfo.Score;
+	Score -= float(GetPlayerStartingCash());
+	Score = Score / float(PlayerList.Length - 1);
+
+	if (Score < 1.f)
+	{
+		return;
+	}
+
+	for (Index = PlayerList.Length - 1; Index >= 0; Index--)
+	{
+        if (ExitingPlayer == PlayerList[Index])
+        {
+            continue;
+        }
+
+		PlayerList[Index].PlayerReplicationInfo.Score += Score;
+		PlayerList[Index].PlayerReplicationInfo.NetUpdateTime = Level.TimeSeconds - ((1.f / PlayerList[Index].PlayerReplicationInfo.NetUpdateFrequency) + 1.f);
+	}
+}
+
+function int GetPlayerStartingCash()
+{
+    return StartingCash;
+}
+
 //Provide full context on something dying to TurboGameRules.
 function Killed(Controller Killer, Controller Killed, Pawn KilledPawn, class<DamageType> DamageType)
 {

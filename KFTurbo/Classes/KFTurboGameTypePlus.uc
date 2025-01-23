@@ -72,6 +72,8 @@ event InitGame( string Options, out string Error )
     Super.InitGame(Options, Error);
 }
 
+function DistributeCash(TurboPlayerController ExitingPlayer) {} // Don't do this on Turbo+.
+
 // State to handle match progress
 State MatchInProgress
 {
