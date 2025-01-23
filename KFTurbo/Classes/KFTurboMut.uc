@@ -366,7 +366,7 @@ defaultproperties
 	bDebugClientPerkRepLink=false
 
 	bCheckLatestTurboVersion=true
-	TurboVersion="5.5.3"
+	TurboVersion="5.5.4"
 	bHasVersionUpdate=false
 
 	bRequireAdminForDifficultyCommands=true
