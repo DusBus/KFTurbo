@@ -134,7 +134,15 @@ function ReceiveDamageMessages() {
 	else if (LastDamagedZed != None) {
 		if (ZombieBoss(LastDamagedZed) == None) {
 			headHealth = int(LastDamagedZed.default.headHealth * LastDamagedZed.DifficultyHealthModifer() * Mut.HealthModifer(LastDamagedZed.PlayerNumHeadHealthScale));
-			AddDamageMessage("Head health:" @ int(LastDamagedZed.headHealth) @ "/" @ headHealth);
+
+			if (LastDamagedZed.headHealth < 10.f)
+			{
+				AddDamageMessage("Head health:" @ LastDamagedZed.headHealth @ "/" @ headHealth);
+			}
+			else
+			{
+				AddDamageMessage("Head health:" @ int(LastDamagedZed.headHealth) @ "/" @ headHealth);
+			}
 		}
 		
 		bodyHealth = int(LastDamagedZed.default.health * LastDamagedZed.DifficultyHealthModifer() * Mut.HealthModifer(LastDamagedZed.PlayerCountHealthScale));
