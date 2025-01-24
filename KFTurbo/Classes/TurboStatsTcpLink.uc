@@ -1,5 +1,5 @@
 //Killing Floor Turbo TurboStatsTcpLink
-//Sends data regarding player stats to a specified place.
+//Sends analytics data to a specified endpoint. All content is deferred over multiple frames.
 //Distributed under the terms of the GPL-2.0 License.
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboStatsTcpLink extends TcpLink
@@ -13,6 +13,9 @@ var globalconfig string StatsTcpLinkClassOverride;
 var IpAddr StatsAddress;
 
 var string CRLF;
+
+var array<string> DeferredDataList;
+var int DeferredDataIndex;
 
 static function bool ShouldBroadcastAnalytics()
 {
@@ -44,12 +47,16 @@ static final function TurboStatsTcpLink FindStats(GameInfo GameInfo)
 
 function PostBeginPlay()
 {
-    log("KFTurbo is starting up stats TCP link!", 'KFTurbo');
+    log("KFTurbo has created a stats TCP link!", 'KFTurbo');
 
 	CRLF = Chr(13) $ Chr(10);
 
     LinkMode = MODE_Text;
     ReceiveMode = RMODE_Event;
+}
+
+function OnGameStart()
+{
     BindPort();
     Resolve(StatsDomain);
 }
@@ -78,7 +85,64 @@ event ResolveFailed()
 
 function Opened()
 {
-    log("Connection to"@StatsDomain@"opened.", 'KFTurbo');
+    log("Connection to"@StatsDomain@"opened. Sending game start payload.", 'KFTurbo');
+
+    DeferredDataList.Insert(0, 1);
+    DeferredDataList[0] = BuildGameStartPayload(); //Make sure this is the first thing we send out.
+    GotoState('ConnectionReady');
+}
+
+function SendData(string Data)
+{
+    DeferredDataList[DeferredDataList.Length] = Data;
+}
+
+state ConnectionReady
+{
+Begin:
+    while (true)
+    {
+        Sleep(0.15f);
+
+        if (DeferredDataList.Length == 0)
+        {
+            continue;
+        }
+
+        SendText(DeferredDataList[0]);
+        DeferredDataList.Remove(0, 1);
+    }
+}
+
+function Closed()
+{
+    log("Connection to"@StatsDomain@"closed.", 'KFTurbo');
+    GotoState('ConnectionClosed');
+}
+
+state ConnectionClosed
+{
+Begin:
+    Sleep(1.f);
+    Resolve(StatsDomain);
+}
+
+//Game ended. Get all this data out asap.
+state FlushAllData
+{
+Begin:
+    while (true)
+    {
+        Sleep(0.05f);
+
+        if (DeferredDataList.Length == 0)
+        {
+            continue;
+        }
+
+        SendText(DeferredDataList[0]);
+        DeferredDataList.Remove(0, 1);
+    }
 }
 
 /*
@@ -96,11 +160,6 @@ version - The KFTurbo version currently running.
 session - The session ID for this game."
 gametype - The type of game being played. Can be "turbo", "turbocardgame", "turborandomizer", "turboplus".
 */
-
-function SendGameStart()
-{
-    SendText(BuildGameStartPayload());
-}
 
 final function string BuildGameStartPayload()
 {
@@ -137,7 +196,8 @@ result - The result of the game. Can be "won", "lost", "aborted". Aborted refers
 
 function SendGameEnd(int Result)
 {
-    SendText(BuildGameEndPayload(Level.Game.GetCurrentWaveNum(), GetResultName(Result)));
+    SendData(BuildGameEndPayload(Level.Game.GetCurrentWaveNum(), GetResultName(Result)));
+    GotoState('FlushAllData');
 }
 
 final function string BuildGameEndPayload(int WaveNum, string Result)
@@ -176,7 +236,7 @@ playerlist - The Steam IDs of the players in the game at the wave start.
 
 function SendWaveStart()
 {
-    SendText(BuildWaveStartPayload(Level.Game.GetCurrentWaveNum()));
+    SendData(BuildWaveStartPayload(Level.Game.GetCurrentWaveNum()));
 }
 
 final function string BuildWaveStartPayload(int WaveNum)
@@ -213,7 +273,7 @@ wavenum - The wave that started.
 
 function SendWaveEnd()
 {
-    SendText(BuildWaveEndPayload(Level.Game.GetCurrentWaveNum() - 1));
+    SendData(BuildWaveEndPayload(Level.Game.GetCurrentWaveNum() - 1));
 }
 
 final function string BuildWaveEndPayload(int WaveNum)
@@ -268,7 +328,7 @@ function SendWaveStats(TurboWavePlayerStatCollector Stats)
         return;
     }
 
-    SendText(BuildWaveStatsPayload(Stats));
+    SendData(BuildWaveStatsPayload(Stats));
 }
 
 final function string BuildWaveStatsPayload(TurboWavePlayerStatCollector Stats)

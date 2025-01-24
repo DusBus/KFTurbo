@@ -28,6 +28,8 @@ var protected string GameType;
 
 var globalconfig bool bRequireAdminForDifficultyCommands;
 
+var bool bSkipInitialMonsterWander;
+
 delegate SetPerkSwitchEnabled(bool bEnable);
 
 simulated function PostBeginPlay()
@@ -155,9 +157,17 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 		ReplaceWith(Other, string(class'KFTurbo.TurboRandomItemSpawn'));
 		return false;
 	}
-	else if(Controller(Other) != None && Controller(Other).PlayerReplicationInfo != None && TurboPlayerReplicationInfo(Controller(Other).PlayerReplicationInfo) == None)
+	else if (Controller(Other) != None)
 	{
-		Controller(Other).PlayerReplicationInfoClass = Class'TurboPlayerReplicationInfo';
+		if (Controller(Other).PlayerReplicationInfoClass != None && class<TurboPlayerReplicationInfo>(Controller(Other).PlayerReplicationInfoClass) == None)
+		{
+			Controller(Other).PlayerReplicationInfoClass = Class'TurboPlayerReplicationInfo';
+		}
+
+		if (bSkipInitialMonsterWander && KFMonsterController(Other) != None)
+		{
+			KFMonsterController(Other).PathFindState = 2;
+		}
 	}
 
 	return true;
@@ -321,7 +331,7 @@ function OnGameStart()
 
 	if (StatsTcpLink != None)
 	{
-		StatsTcpLink.SendGameStart();
+		StatsTcpLink.OnGameStart();
 	}
 }
 
@@ -372,4 +382,6 @@ defaultproperties
 	bRequireAdminForDifficultyCommands=true
 
 	GameType="turbo"
+
+	bSkipInitialMonsterWander=false
 }

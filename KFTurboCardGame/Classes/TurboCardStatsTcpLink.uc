@@ -52,7 +52,7 @@ function OnVoteComplete(array<TurboCard> ActiveCardList, array<TurboCard> VoteSe
         ShownCardList[ShownStartingIndex + Index] = VoteSelectionList[Index];
     }
 
-    GetStatsTcpLink().SendText(BuildVotePayload(Level.Game.GetCurrentWaveNum(), ConvertCardToCardID(ActiveCardList), ConvertCardToCardID(VoteSelectionList), SelectedCard.CardID));
+    GetStatsTcpLink().SendData(BuildVotePayload(Level.Game.GetCurrentWaveNum(), ConvertCardToCardID(ActiveCardList), ConvertCardToCardID(VoteSelectionList), SelectedCard.CardID));
 }
 
 /*
@@ -97,7 +97,7 @@ final function string BuildVotePayload(int WaveNumber, array<string> ActiveCardL
 
 function OnGameEnd(int Result, array<TurboCard> ActiveCardList)
 {
-    GetStatsTcpLink().SendText(BuildEndGamePayload(Result, ConvertCardToCardID(ActiveCardList), ConvertCardToCardID(ShownCardList)));
+    GetStatsTcpLink().SendData(BuildEndGamePayload(Result, ConvertCardToCardID(ActiveCardList), ConvertCardToCardID(ShownCardList)));
 }
 
 /*
