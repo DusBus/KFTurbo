@@ -76,9 +76,16 @@ State MatchInProgress
 {
     function BeginState()
     {
-	    class'KFTurboMut'.static.FindMutator(Level.Game).SetGameType(Self, "turboholdout");
+        local KFTurboMut KFTurboMut;
 
         Super(KFTurboGameType).BeginState();
+
+        KFTurboMut = class'KFTurboMut'.static.FindMutator(Self);
+        if (KFTurboMut != None)
+        {
+            KFTurboMut.SetGameType(Self, "turboholdout");
+            KFTurboMut.bSkipInitialMonsterWander = true;
+        }
 
         WaveCountDown = HOLDOUT_WAVE_COUNTDOWN * 2;
     }

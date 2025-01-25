@@ -79,9 +79,15 @@ State MatchInProgress
 {
     function BeginState()
     {
-	    class'KFTurboMut'.static.FindMutator(Level.Game).SetGameType(Self, "turboplus");
-
+        local KFTurboMut KFTurboMut;
         Super.BeginState();
+
+        KFTurboMut = class'KFTurboMut'.static.FindMutator(Self);
+        if (KFTurboMut != None)
+        {
+            KFTurboMut.SetGameType(Self, "turboplus");
+            KFTurboMut.bSkipInitialMonsterWander = true;
+        }
 
         WaveCountDown = WAVE_COUNTDOWN;
         

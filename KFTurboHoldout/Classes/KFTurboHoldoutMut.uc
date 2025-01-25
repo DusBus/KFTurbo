@@ -80,11 +80,6 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 		WeaponPickupList[WeaponPickupList.Length] = WeaponPickup(Other);
 	}
 
-	if (KFMonsterController(Other) != None && AI_ZombieBoss(Other) == None)
-	{
-		KFMonsterController(Other).PathFindState = 2;
-	}
-
 	return true;
 }
 

@@ -597,11 +597,22 @@ state MatchInProgress
 {
     function BeginState()
     {
+        local KFTurboMut KFTurboMut;
+
         Super.BeginState();
 
-        if (class'KFTurboMut'.static.HasVersionUpdate(Self))
+        KFTurboMut = class'KFTurboMut'.static.FindMutator(Self);
+        if (KFTurboMut != None)
         {
-            BroadcastLocalized(Level.GRI, class'TurboVersionLocalMessage');
+            if (KFTurboMut.bHasVersionUpdate)
+            {
+                BroadcastLocalized(Level.GRI, class'TurboVersionLocalMessage');
+            }
+
+            if (MapConfigurationObject != None && MapConfigurationObject.bSkipInitialMonsterWander)
+            {
+                KFTurboMut.bSkipInitialMonsterWander = true;
+            }
         }
 
         NotifyTurboMutatorGameStart();
