@@ -253,7 +253,7 @@ function SetupWave()
 
     BuildNextSquad();
     
-    ClearTraderEndVotes();
+    DoWaveStartForPlayers();
     class'KFTurboMut'.static.FindMutator(Self).OnWaveStart();
 	class'TurboWaveEventHandler'.static.BroadcastWaveStarted(Self, WaveNum);
 }

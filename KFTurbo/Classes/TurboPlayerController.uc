@@ -23,6 +23,8 @@ var array< class<PerkLockTurboLocalMessage> > PerkChangeLockList;
 
 var protected array<TurboOptionObject> ExternalOptionList;
 
+var bool bWasSpectatingWave;
+
 replication
 {
 	reliable if( Role == ROLE_Authority )
@@ -57,6 +59,7 @@ simulated function PostBeginPlay()
 	{
 		class'TurboPlayerEventHandler'.static.RegisterPlayerEventHandler(Self, class'TurboPlayerStatsEventHandler');
 		class'TurboHealEventHandler'.static.RegisterHealHandler(Self, class'TurboPlayerStatsHealEventHandler');
+		CreateCommandHandler();
 	}
 }
 
@@ -785,6 +788,47 @@ simulated function rotator RecoilHandler(rotator NewRotation, float DeltaTime)
     }
 
 	return NewRotation;
+}
+
+function BecomeSpectator()
+{
+	if (PlayerReplicationInfo == None || PlayerReplicationInfo.bOnlySpectator)
+	{
+		Super.BecomeActivePlayer();
+		return;
+	}
+
+	Super.BecomeSpectator();
+
+	if (PlayerReplicationInfo.bOnlySpectator && KFTurboGameType(Level.Game).bWaveInProgress)
+	{
+		bWasSpectatingWave = true;
+	}
+}
+
+function BecomeActivePlayer()
+{
+	if (PlayerReplicationInfo == None || !PlayerReplicationInfo.bOnlySpectator)
+	{
+		Super.BecomeActivePlayer();
+		return;
+	}
+
+	Super.BecomeActivePlayer();
+
+	if (Level.Game.bDelayedStart && bWasSpectatingWave && !PlayerReplicationInfo.bOnlySpectator && Pawn == None)
+	{
+		bWasSpectatingWave = false;
+		PlayerReplicationInfo.bOutOfLives = false;
+		PlayerReplicationInfo.NumLives = 0;
+		
+		SetViewTarget(Self);
+		ClientSetBehindView(false);
+		bBehindView = False;
+		ClientSetViewTarget(Pawn); //TWI calls this for some reason but pawn would be None at this point...
+
+		ServerReStartPlayer();	
+	}
 }
 
 simulated function SetPipebombUsesSpecialGroup(bool bNewPipebombUsesSpecialGroup)

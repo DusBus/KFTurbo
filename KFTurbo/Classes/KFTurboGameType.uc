@@ -528,7 +528,8 @@ function SetupWave()
     TotalMaxMonsters = CalculateTotalMaxMonster();
     KFGameReplicationInfo(Level.Game.GameReplicationInfo).MaxMonsters = TotalMaxMonsters;
 	
-    ClearTraderEndVotes();
+    DoWaveStartForPlayers();
+
     class'KFTurboMut'.static.FindMutator(Self).OnWaveStart();
 	class'TurboWaveEventHandler'.static.BroadcastWaveStarted(Self, WaveNum);
 }
@@ -810,7 +811,7 @@ function AttemptTraderEnd(TurboPlayerController VoteInstigator)
     }
 }
 
-function ClearTraderEndVotes()
+function DoWaveStartForPlayers()
 {
     local int Index;
     local TurboPlayerReplicationInfo TPRI;
@@ -825,6 +826,11 @@ function ClearTraderEndVotes()
         }
 
         TPRI.ClearTraderEndVote();
+        
+        if (TurboPlayerController(TPRI.Owner) != None)
+        {
+            TurboPlayerController(TPRI.Owner).bWasSpectatingWave = TPRI.bOnlySpectator;
+        }
     }
 }
 
