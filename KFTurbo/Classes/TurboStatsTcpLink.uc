@@ -99,6 +99,21 @@ function SendData(string Data)
 
 state ConnectionReady
 {
+    function BeginState()
+    {
+        SetTimer(9.f, true);
+    }
+
+    function EndState()
+    {
+        SetTimer(0.f, false);
+    }
+
+    function Timer()
+    {
+        SendData("keepalive");
+    }
+
 Begin:
     while (true)
     {
@@ -120,10 +135,14 @@ function Closed()
     GotoState('ConnectionClosed');
 }
 
+//Will attempt to re-establish the connection to the stats server.
 state ConnectionClosed
 {
 Begin:
     Sleep(1.f);
+    Close();
+    Sleep(2.f);
+    BindPort();
     Resolve(StatsDomain);
 }
 
@@ -458,6 +477,8 @@ final function string GetPlayerList()
 
 defaultproperties
 {
+    bAlwaysTick=true
+    
     LinkMode=MODE_Text
 
     bBroadcastAnalytics=false
