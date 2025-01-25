@@ -273,11 +273,9 @@ final function bool CheckIfNewerVersion(string LatestVersion)
 	return false;
 }
 
-static final function bool HasVersionUpdate(GameInfo Game)
+final function bool HasVersionUpdate()
 {
-    local KFTurboMut Mutator;
-    Mutator = class'KFTurboMut'.static.FindMutator(Game);
-	return Mutator.bHasVersionUpdate;
+	return bHasVersionUpdate;
 }
 
 simulated function String GetHumanReadableName()

@@ -604,7 +604,7 @@ state MatchInProgress
         KFTurboMut = class'KFTurboMut'.static.FindMutator(Self);
         if (KFTurboMut != None)
         {
-            if (KFTurboMut.bHasVersionUpdate)
+            if (KFTurboMut.HasVersionUpdate())
             {
                 BroadcastLocalized(Level.GRI, class'TurboVersionLocalMessage');
             }
