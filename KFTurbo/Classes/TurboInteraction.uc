@@ -384,7 +384,7 @@ defaultproperties
 	bReplaceTraderWithMerchant=false
 	MerchantMeshRef="KFTurbo.Merchant_Trip"
 	MerchantAnimRef="KFTurbo.Merchant_anim"
-	MerchantMaterialRef="KFTurboExtra.Merchant.Merchant_D"
+	MerchantMaterialRef="KFTurbo.Merchant.Merchant_D"
 	DefaultTraderMaterial=Texture'KF_Soldier_Trip_T.Uniforms.shopkeeper_diff'
 
 	bShiftOpensTrader=true
