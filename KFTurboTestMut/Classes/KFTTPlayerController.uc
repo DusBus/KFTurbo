@@ -701,6 +701,24 @@ state Spectating {
 	}
 }
 
+simulated function ShowWaveControlUI(TestLaneWaveManager Manager)
+{
+	if (Manager == None)
+	{
+		return;
+	}
+}
+
+simulated function ApplyWaveControlSettings(TestLaneWaveManager Manager, int WaveNumber, int PlayerCount)
+{
+	if (Manager == None)
+	{
+		return;
+	}
+
+	Manager.SetWaveConfig(WaveNumber, PlayerCount);
+}
+
 defaultproperties
 {
 	NumSegments=10

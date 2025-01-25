@@ -161,6 +161,15 @@ final function TurboMonsterSquad GetBeatSquad()
      return Squad;
 }
 
+function Reset()
+{
+     CurrentSequence.Length = 0;
+     CurrentBeat.Length = 0;
+     RemainingRegularSquadList = RegularSquadList;
+     RemainingMixInSquadList = MixInSquadList;
+     RemainingBeatSquadList = BeatSquadList;
+}
+
 //Prepares a sequence of squads to spawn - [Regular Sequence Squads with Mix Ins] followed by [Beat Squads]
 function PrepareSequence()
 {   

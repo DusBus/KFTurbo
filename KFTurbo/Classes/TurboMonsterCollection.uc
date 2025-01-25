@@ -12,10 +12,12 @@ function InitializeForWave(int WaveNumber) {}
 //Prepares a sequence of squads to spawn.
 function PrepareSequence() {}
 
+function Reset() {}
+
 function TurboMonsterSquad GetNextMonsterSquad()
 {
      return None;
-} 
+}
 
 //Appends a list of monsters to spawn to OutNextSpawnSquad given a Final Squad Number (typically represents heal count for boss) and a Player Count.
 function ApplyFinalSquad(int FinalSquadNumber, int PlayerCount, out array< class<KFMonster> > OutNextSpawnSquad) {}
