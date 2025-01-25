@@ -11,6 +11,7 @@ var bool bHasInitializedEndGameHUD;
 var float EndGameHUDAnimationProgress;
 
 var bool bSortedEmoteList;
+var bool bUseBaseGameFontForChat;
 
 var class<TurboHUDOverlay> PlayerInfoHUDClass;
 var TurboHUDOverlay PlayerInfoHUD;
@@ -299,6 +300,8 @@ simulated function PostBeginPlay()
 		TextReactionSettings = Spawn(TextReactionSettingsClass, Self);
 		TextReactionSettings.Initialize(Self);
 	}
+
+	bUseBaseGameFontForChat = class'TurboInteraction'.static.ShouldUseBaseGameFontForChat(TurboPlayerController(PlayerOwner));
 }
 
 simulated function SetScoreBoardClass(class<Scoreboard> ScoreBoardClass)
@@ -851,7 +854,14 @@ function DisplayMessages(Canvas C)
 		XPos = (0.005 * HudCanvasScale * C.SizeX) + (((1.0 - HudCanvasScale) / 2.0) * C.SizeX);
 	}
 
-	C.Font = GetConsoleFont(C);
+	if (bUseBaseGameFontForChat)
+	{
+		C.Font = GetDefaultConsoleFont(C);
+	}
+	else
+	{
+		C.Font = GetConsoleFont(C);
+	}
 	C.DrawColor = LevelActionFontColor;
 
 	C.TextSize ("A", XL, YL);
@@ -912,7 +922,14 @@ simulated function DrawTypingPrompt(Canvas C, String Text, optional int Pos)
     local float XL, YL;
 	local string PromptText;
 
-    C.Font = GetConsoleFont(C);
+	if (bUseBaseGameFontForChat)
+	{
+		C.Font = GetDefaultConsoleFont(C);
+	}
+	else
+	{
+		C.Font = GetConsoleFont(C);
+	}
     C.Style = ERenderStyle.STY_Alpha;
     C.SetDrawColor(255, 255, 255, 255);
 
@@ -1251,6 +1268,35 @@ simulated function UpdateTraderPortrait(bool bReplaceWithMerchant)
 		TraderPortrait = default.TraderPortrait;
 		TraderString = default.TraderString;
 	}
+}
+
+static function font GetDefaultConsoleFont(Canvas C)
+{
+	local int FontSize;
+
+	if( default.OverrideConsoleFontName != "" )
+	{
+		if( default.OverrideConsoleFont != None )
+			return default.OverrideConsoleFont;
+		default.OverrideConsoleFont = Font(DynamicLoadObject(default.OverrideConsoleFontName, class'Font'));
+		if( default.OverrideConsoleFont != None )
+			return default.OverrideConsoleFont;
+		Log("Warning: HUD couldn't dynamically load font "$default.OverrideConsoleFontName);
+		default.OverrideConsoleFontName = "";
+	}
+
+	FontSize = Default.ConsoleFontSize;
+	if ( C.ClipX < 640 )
+		FontSize++;
+	if ( C.ClipX < 800 )
+		FontSize++;
+	if ( C.ClipX < 1024 )
+		FontSize++;
+	if ( C.ClipX < 1280 )
+		FontSize++;
+	if ( C.ClipX < 1600 )
+		FontSize++;
+	return class'SRHUDKillingFloor'.static.LoadFontStatic(Min(8,FontSize));
 }
 
 static function Font LoadFontStatic(int i)

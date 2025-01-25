@@ -25,6 +25,8 @@ var globalconfig bool bShiftOpensTrader;
 
 var globalconfig bool bPipebombUsesSpecialGroup;
 
+var globalconfig bool bUseBaseGameFontForChat;
+
 simulated function bool KeyEvent( out EInputKey Key, out EInputAction Action, FLOAT Delta )
 {
 	if (Action == IST_Press && Key == IK_Shift && bShiftOpensTrader)
@@ -46,6 +48,7 @@ simulated function InitializeTurboInteraction()
 	InitializeVeterancyTierPreferences();
 	UpdateMerchant();
 	InitializePipebombUsesSpecialGroup();
+	UpdateUseBaseGameFontForChat();
 }
 
 exec simulated function Trade()
@@ -367,6 +370,36 @@ static final function bool ShouldPipebombUseSpecialGroup(TurboPlayerController P
 simulated function InitializePipebombUsesSpecialGroup()
 {
 	TurboPlayerController(ViewportOwner.Actor).SetPipebombUsesSpecialGroup(bPipebombUsesSpecialGroup);
+}
+
+simulated function SetUseBaseGameFontForChat(bool bNewUseBaseGameFontForChat)
+{
+	if (bNewUseBaseGameFontForChat == bUseBaseGameFontForChat)
+	{
+		return;
+	}
+
+	bUseBaseGameFontForChat = bNewUseBaseGameFontForChat;
+	UpdateUseBaseGameFontForChat();
+	SaveConfig();
+}
+
+static final function bool ShouldUseBaseGameFontForChat(TurboPlayerController PlayerController)
+{
+	if (PlayerController != None && PlayerController.TurboInteraction != None)
+	{
+		return PlayerController.TurboInteraction.bUseBaseGameFontForChat;
+	}
+
+	return false;
+}
+
+simulated function UpdateUseBaseGameFontForChat()
+{
+	if (ViewportOwner.Actor != None && TurboHUDKillingFloor(ViewportOwner.Actor.myHUD) != None)
+	{
+		TurboHUDKillingFloor(ViewportOwner.Actor.myHUD).bUseBaseGameFontForChat = bUseBaseGameFontForChat;
+	}
 }
 
 defaultproperties

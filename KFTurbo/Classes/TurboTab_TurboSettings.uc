@@ -5,6 +5,7 @@ var automated GUIButton DesiredRankButton;
 var automated moCheckbox MerchantReplacementCheckBox;
 var automated moCheckbox ShiftToTradeCheckBox;
 var automated moCheckbox PipebombGroupCheckBox;
+var automated moCheckbox UseBaseGameChatFontBox;
 var Color PerkLabelTextColor;
 var localized string TierOptionList[8];
 
@@ -124,6 +125,8 @@ function InitializePage()
     ShiftToTradeCheckBox.Checked(class'TurboInteraction'.static.IsShiftTradeEnabled(PlayerController));
     RightSection.ManageComponent(PipebombGroupCheckBox);
     PipebombGroupCheckBox.Checked(class'TurboInteraction'.static.ShouldPipebombUseSpecialGroup(PlayerController));
+    RightSection.ManageComponent(UseBaseGameChatFontBox);
+    UseBaseGameChatFontBox.Checked(class'TurboInteraction'.static.ShouldUseBaseGameFontForChat(PlayerController));
     
     PlayerController.GenerateExtraOptions(Self, PipebombGroupCheckBox.TabOrder);
 }
@@ -202,6 +205,20 @@ function OnPipebombGroupChange(GUIComponent Sender)
     TurboInteraction.SetPipebombUsesSpecialGroup(PipebombGroupCheckBox.IsChecked());
 }
 
+function OnUseBaseGameChatFontChange(GUIComponent Sender)
+{
+	local TurboInteraction TurboInteraction;
+
+    TurboInteraction = TurboPlayerController(PlayerOwner()).TurboInteraction;
+
+    if (TurboInteraction == None || TurboInteraction.bUseBaseGameFontForChat == UseBaseGameChatFontBox.IsChecked())
+    {
+        return;
+    }
+
+    TurboInteraction.SetUseBaseGameFontForChat(UseBaseGameChatFontBox.IsChecked());
+}
+
 defaultproperties
 {
     bHasInitialized = false
@@ -277,4 +294,13 @@ defaultproperties
         OnChange=TurboTab_TurboSettings.OnPipebombGroupChange
     End Object
     PipebombGroupCheckBox=moCheckBox'PipebombGroupChange'
+
+    Begin Object Class=moCheckBox Name=UseBaseGameChatFont
+        Caption="Use Base Game Font For Chat"
+        OnCreateComponent=UseBaseGameChatFont.InternalOnCreateComponent
+        Hint="Chat text will use the base game's font to help with readability in non-english locales."
+        TabOrder=54
+        OnChange=TurboTab_TurboSettings.OnUseBaseGameChatFontChange
+    End Object
+    UseBaseGameChatFontBox=moCheckBox'UseBaseGameChatFont'
 }
