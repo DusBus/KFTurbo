@@ -114,7 +114,6 @@ State MatchInProgress
     {
         bTradingDoorsOpen = false;
     }
-
     
     function Timer()
     {
@@ -366,6 +365,8 @@ function int GetPlayerStartingCash()
 {
     return STARTING_CASH;
 }
+
+function FillPlayerAmmo() {}
 
 // Default properties for the game type
 defaultproperties

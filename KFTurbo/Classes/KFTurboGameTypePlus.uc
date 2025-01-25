@@ -156,7 +156,49 @@ State MatchInProgress
     function CloseShops()
     {
         Super.CloseShops();
+        FillPlayerAmmo();
     }
+}
+
+function FillPlayerAmmo()
+{
+	local array<TurboHumanPawn> PlayerList;
+	local int Index;
+
+	PlayerList = class'TurboGameplayHelper'.static.GetPlayerPawnList(Level);
+    for (Index = 0; Index < PlayerList.Length; Index++)
+    {
+        FillUpAmmo(PlayerList[Index]);
+    }
+}
+
+final function FillUpAmmo(TurboHumanPawn HumanPawn)
+{
+	local Inventory Inv;
+	local KFWeapon Weapon;
+	local float MaxAmmo, CurAmmo;
+
+	for(Inv = HumanPawn.Inventory; Inv != None; Inv = Inv.Inventory)
+	{
+		Weapon = KFWeapon(Inv);
+		
+		if(Weapon == None)
+		{
+			continue;
+		}
+
+	    Weapon.GetAmmoCount(MaxAmmo, CurAmmo);
+		Weapon.AddAmmo(int(MaxAmmo) - int(CurAmmo), 0);
+
+		if(!Weapon.bHasSecondaryAmmo)
+		{
+			continue;
+		}
+
+		MaxAmmo = Weapon.MaxAmmo(1);
+		CurAmmo = Weapon.AmmoAmount(1);
+		Weapon.AddAmmo(MaxAmmo - CurAmmo, 1);
+	}
 }
 
 function ResetZombieVolumes()
