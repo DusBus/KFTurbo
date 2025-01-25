@@ -6,16 +6,6 @@ function AddReloadedAmmo()
 	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
 }
 
-simulated function DoToggle()
-{
-
-}
-
-function ServerChangeFireMode(bool bNewWaitForRelease)
-{
-
-}
-
 defaultproperties
 {
      MagCapacity=12
