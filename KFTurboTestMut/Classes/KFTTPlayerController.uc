@@ -31,6 +31,11 @@ replication {
 	
 	reliable if (Role < ROLE_Authority)
 		ServerSetPerk, SetHealth, SetGameSpeed, ClearLevel, ClearZeds, ServerSetKeepWeapons, ServerSetDrawHitboxes, Whoosh, GodMode, ViewZeds, ViewSelf, ForceRadial, SpawnProj;
+
+	reliable if (Role == ROLE_Authority)
+		ClientShowWaveControlUI;
+	reliable if (Role < ROLE_Authority)
+		ServerApplyWaveControlSettings;
 }
 
 /* OVERRIDEN FUNCTIONS */
@@ -701,15 +706,32 @@ state Spectating {
 	}
 }
 
-simulated function ShowWaveControlUI(TestLaneWaveManager Manager)
+simulated function ClientShowWaveControlUI(TestLaneWaveManager Manager)
 {
-	if (Manager == None)
+	local GUIController PlayerGUIController;
+	local TestWaveConfigWindow ConfigMenu;
+	if (Manager == None || Player == None)
 	{
 		return;
 	}
+
+	PlayerGUIController = GUIController(Player.GUIController);
+
+	if (PlayerGUIController == None)
+	{
+		return;
+	}
+
+	if (!PlayerGUIController.OpenMenu("KFTurboTestMut.TestWaveConfigWindow"))
+	{
+		return;
+	}
+
+	ConfigMenu = TestWaveConfigWindow(PlayerGUIController.FindMenuByClass(Class'TestWaveConfigWindow'));
+	ConfigMenu.Update(Manager);
 }
 
-simulated function ApplyWaveControlSettings(TestLaneWaveManager Manager, int WaveNumber, int PlayerCount)
+simulated function ServerApplyWaveControlSettings(TestLaneWaveManager Manager, int WaveNumber, int PlayerCount)
 {
 	if (Manager == None)
 	{

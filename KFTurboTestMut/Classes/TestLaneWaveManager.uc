@@ -2,7 +2,7 @@ class TestLaneWaveManager extends Info
 	hidecategories(Advanced,Force,Karma,LightColor,Lighting,Sound,UseTrigger)
 	placeable;
 
-var TurboMonsterCollection TurboMonsterCollection;
+var TurboMonsterCollectionWaveBase TurboMonsterCollection;
 
 var(LaneManager) Name VolumeTag;
 var array<ZombieVolume> VolumeList;
@@ -26,7 +26,31 @@ replication
 
 simulated function PostBeginPlay()
 {
+	local class<KFMonstersCollection> MonsterCollection;
+    local int Index;
+	local ZombieVolume Volume;
+
 	Super.PostBeginPlay();
+
+	if (Level.Game == None)
+	{
+		return;
+	}
+
+	MonsterCollection = KFTurboGameType(Level.Game).MonsterCollection;
+
+    for(Index = Index; Index < MonsterCollection.default.MonsterClasses.Length; Index++)
+    {
+        TurboMonsterCollection.LoadedMonsterList[TurboMonsterCollection.LoadedMonsterList.Length] = Class<KFMonster>(DynamicLoadObject(MonsterCollection.default.MonsterClasses[Index].MClassName,Class'Class', false));
+        TurboMonsterCollection.LoadedMonsterList[TurboMonsterCollection.LoadedMonsterList.Length - 1].static.PreCacheAssets(Level);
+    }
+
+	TurboMonsterCollection.InitializeCollection();
+
+	foreach AllActors(class'ZombieVolume', Volume, VolumeTag)
+	{
+		VolumeList[VolumeList.Length] = Volume;
+	}
 }
 
 simulated function ForceNetUpdate()
@@ -39,6 +63,7 @@ function SetWaveConfig(int NewWaveNumber, int NewPlayerCount)
 	WaveNumber = NewWaveNumber;
 	PlayerCount = NewPlayerCount;
 	Deactivate();
+	ForceNetUpdate();
 }
 
 function Activate(TurboHumanPawn NewWaveInstigator)
@@ -69,6 +94,10 @@ state ActiveWave
 	function BeginState()
 	{
 		bIsActive = true;
+
+		TurboMonsterCollection.Reset();
+		TurboMonsterCollection.InitializeForWave(WaveNumber);
+
 		TotalMonsters = TurboMonsterCollection.GetWaveTotalMonsters(WaveNumber, Level.Game.GameDifficulty, PlayerCount);
 		MaxMonsters = TurboMonsterCollection.GetWaveMaxMonsters(WaveNumber, Level.Game.GameDifficulty, PlayerCount);
 		NextSpawnTime = TurboMonsterCollection.GetNextSquadSpawnTime(WaveNumber, PlayerCount);
@@ -95,6 +124,7 @@ state ActiveWave
 	{
 		if (WaveInstigator == None || WaveInstigator.Health <= 0)
 		{
+			Deactivate();
 			return;
 		}
 
@@ -142,12 +172,14 @@ function UpdateCurrentSquad(float DeltaTime)
 function PerformSpawn()
 {
 	local ZombieVolume Volume;
+	local int NumSpawned;
+	local int ZedIndex;
 
 	if (CurrentSquad.Length == 0)
 	{
 		return;
 	}
-
+	
 	if (CurrentVolumeList.Length == 0)
 	{
 		CurrentVolumeList = VolumeList;
@@ -163,12 +195,38 @@ function PerformSpawn()
 	Volume = CurrentVolumeList[0];
 	CurrentVolumeList.Remove(0, 1);
 
-	Volume.SpawnInHere(CurrentSquad, false,, TotalMonsters, RemainingMaxMonsters);
+	ZedIndex = Volume.ZEDList.Length;
+
+	Volume.SpawnInHere(CurrentSquad, false, NumSpawned, TotalMonsters, RemainingMaxMonsters);
+	CurrentSquad.Remove(0, NumSpawned);
+
+	for (ZedIndex = ZedIndex; ZedIndex < Volume.ZEDList.Length; ZedIndex++)
+	{
+		OnMonsterSpawned(Volume.ZEDList[ZedIndex]);
+	}
+}
+
+final function float GetPlayerHealthModifier(float HealthScale)
+{
+	return 1.0 + (PlayerCount - 1) * HealthScale;
+}
+
+function OnMonsterSpawned(KFMonster Monster)
+{
+	if (KFMonsterController(Monster.Controller) != None)
+	{
+		KFMonsterController(Monster.Controller).SetEnemy(WaveInstigator);
+	}
+
+	Monster.Health = Monster.default.Health * Monster.DifficultyHealthModifer() * GetPlayerHealthModifier(Monster.PlayerCountHealthScale);
+	Monster.HealthMax = Monster.Health;
+
+	Monster.HeadHealth = Monster.default.HeadHealth * Monster.DifficultyHeadHealthModifer() * GetPlayerHealthModifier(Monster.PlayerNumHeadHealthScale);
 }
 
 function CheckIfWaveComplete()
 {
-	if (TotalMonsters > 0)
+	if (TotalMonsters > 0 || GetMonsterCount() > 0)
 	{
 		return;
 	}
@@ -189,7 +247,7 @@ function ClearAllZeds()
 
 	for (Index = 0; Index < VolumeList.Length; Index++)
 	{
-		for (ZedIndex = 0; ZedIndex < VolumeList[Index].ZEDList.Length; ZedIndex++)
+		for (ZedIndex = VolumeList[Index].ZEDList.Length - 1; ZedIndex >= 0; ZedIndex--)
 		{
 			if (VolumeList[Index].ZEDList[ZedIndex] != None)
 			{
@@ -213,6 +271,6 @@ defaultproperties
 	End Object
     TurboMonsterCollection=TurboPlusMonsterCollectionWaveImpl'TurboPlusMonsterCollectionWaveImpl0'
 
-	WaveNumber=1
+	WaveNumber=0
 	PlayerCount=1
 }

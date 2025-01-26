@@ -4,7 +4,7 @@ class TestWaveConfigUITrigger extends UseTrigger
 
 var TestLaneWaveManager LaneManager;
 var class<TurboLocalMessage> HintMessageClass;
-var HoldoutHumanPawn TargetPawn;
+var TurboHumanPawn TargetPawn;
 
 simulated function PostBeginPlay()
 {
@@ -18,7 +18,7 @@ simulated function PostBeginPlay()
 
 simulated function UsedBy(Pawn User)
 {
-	if (User.Controller == None || !User.Controller.bIsPlayer || !User.IsLocallyControlled())
+	if (User.Controller == None || !User.Controller.bIsPlayer || User.Role != ROLE_Authority)
 	{
 		return;
 	}
@@ -28,9 +28,9 @@ simulated function UsedBy(Pawn User)
 
 simulated function Touch(Actor Other)
 {
-	local HoldoutHumanPawn Pawn;
+	local TurboHumanPawn Pawn;
 	
-	Pawn = HoldoutHumanPawn(Other);
+	Pawn = TurboHumanPawn(Other);
 	if (Pawn == None || !Pawn.IsLocallyControlled())
 	{
 		return;
@@ -43,13 +43,13 @@ simulated function Touch(Actor Other)
 
 simulated function Timer()
 {
-	local HoldoutHumanPawn TouchingPawn;
+	local TurboHumanPawn TouchingPawn;
 	if (TargetPawn == None || TargetPawn.Health <= 0)
 	{
 		return;
 	}
 
-	foreach TouchingActors(class'HoldoutHumanPawn', TouchingPawn)
+	foreach TouchingActors(class'TurboHumanPawn', TouchingPawn)
 	{
 		if (TouchingPawn == TargetPawn)
 		{
@@ -70,17 +70,21 @@ simulated function BroadcastMessage(PlayerController PlayerController)
 
 simulated event TriggerEvent(Name EventName, Actor Other, Pawn EventInstigator)
 {
-	if (EventInstigator == None || !EventInstigator.IsLocallyControlled())
+	if (EventInstigator == None || EventInstigator.Role != ROLE_Authority)
 	{
 		return;
 	}
 
-	KFTTPlayerController(EventInstigator.Controller).ShowWaveControlUI(LaneManager);
+	KFTTPlayerController(EventInstigator.Controller).ClientShowWaveControlUI(LaneManager);
 }
 
 defaultproperties
 {
+	bAlwaysRelevant=true
+	bReplicateMovement=false
+	RemoteRole=ROLE_SimulatedProxy
+
 	Texture=Texture'Engine.SubActionTrigger'
-	HintMessageClass=class'TestWaveConfigUITrigger'
+	HintMessageClass=class'TestConfigureLaneMessage'
 	DrawScale=1.5f
 }

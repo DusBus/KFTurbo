@@ -4,16 +4,40 @@ class TestWaveTrigger extends UseTrigger
 
 var TestLaneWaveManager LaneManager;
 var class<TurboLocalMessage> HintMessageClass;
-var HoldoutHumanPawn TargetPawn;
+var TurboHumanPawn TargetPawn;
+
+replication
+{
+	reliable if (Role == ROLE_Authority)
+		LaneManager;
+}
 
 simulated function PostBeginPlay()
 {
 	Super.PostBeginPlay();
 
+	LaneManager = GetTestLaneWaveManager();
+}
+
+simulated function ForceNetUpdate()
+{
+	NetUpdateTime = FMax(Level.TimeSeconds - (1.f / NetUpdateFrequency), 0.1f);
+}
+
+simulated function TestLaneWaveManager GetTestLaneWaveManager()
+{
+	if (LaneManager != None)
+	{
+		return LaneManager;
+	}
+
 	foreach AllActors(class'TestLaneWaveManager', LaneManager, Tag)
 	{
 		break;
 	}
+
+	ForceNetUpdate();
+	return LaneManager;
 }
 
 function UsedBy(Pawn User)
@@ -28,9 +52,9 @@ function UsedBy(Pawn User)
 
 simulated function Touch(Actor Other)
 {
-	local HoldoutHumanPawn Pawn;
+	local TurboHumanPawn Pawn;
 	
-	Pawn = HoldoutHumanPawn(Other);
+	Pawn = TurboHumanPawn(Other);
 	if (Pawn == None || !Pawn.IsLocallyControlled())
 	{
 		return;
@@ -43,13 +67,13 @@ simulated function Touch(Actor Other)
 
 simulated function Timer()
 {
-	local HoldoutHumanPawn TouchingPawn;
+	local TurboHumanPawn TouchingPawn;
 	if (TargetPawn == None || TargetPawn.Health <= 0)
 	{
 		return;
 	}
 
-	foreach TouchingActors(class'HoldoutHumanPawn', TouchingPawn)
+	foreach TouchingActors(class'TurboHumanPawn', TouchingPawn)
 	{
 		if (TouchingPawn == TargetPawn)
 		{
@@ -64,7 +88,7 @@ simulated function BroadcastMessage(PlayerController PlayerController)
 {
 	if (HintMessageClass != None)
 	{
-		PlayerController.ReceiveLocalizedMessage(HintMessageClass,, PlayerController.PlayerReplicationInfo,,LaneManager);
+		PlayerController.ReceiveLocalizedMessage(HintMessageClass,, PlayerController.PlayerReplicationInfo,,GetTestLaneWaveManager());
 	}
 }
 
@@ -87,6 +111,11 @@ function TriggerEvent(Name EventName, Actor Other, Pawn EventInstigator)
 
 defaultproperties
 {
+	bAlwaysRelevant=true
+	bReplicateMovement=false
+	RemoteRole=ROLE_SimulatedProxy
+	NetUpdateFrequency=0.1f
+	
 	HintMessageClass=class'TestToggleLaneMessage'
 	Texture=Texture'Engine.SubActionTrigger'
 }
