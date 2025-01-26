@@ -56,22 +56,22 @@ defaultproperties
     bResizeWidthAllowed=False
     bResizeHeightAllowed=False
     bMoveAllowed=false
-    DefaultTop=0.2
-    DefaultLeft=0.2
-    DefaultWidth=0.6
-    DefaultHeight=0.6
+    DefaultTop=0.35
+    DefaultLeft=0.35
+    DefaultWidth=0.3
+    DefaultHeight=0.3
     bRequire640x480=True
     bPersistent=True
     bAllowedAsLast=True
-    WinTop=0.2
-    WinLeft=0.2
-    WinWidth=0.6
-    WinHeight=0.6
+    WinTop=0.35
+    WinLeft=0.35
+    WinWidth=0.3
+    WinHeight=0.3
 
     Begin Object Class=GUIHeader Name=WaveConfigTitleBar
         bUseTextHeight=True
-        WinHeight=0.05
-        RenderWeight=0.100000
+        WinHeight=0.1
+        RenderWeight=0.1
         bBoundToParent=True
         bScaleToParent=True
         bAcceptsInput=True
@@ -112,6 +112,7 @@ defaultproperties
     PlayerCount=moComboBox'PlayerCountComboBox'
 
     Begin Object Class=GUIButton Name=ApplyButton
+        WinHeight=0.2
         Caption="Apply"
         TabOrder=3
         OnClick=TestWaveConfigWindow.ApplySettings

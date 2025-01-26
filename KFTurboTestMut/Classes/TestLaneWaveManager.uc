@@ -21,7 +21,7 @@ var TurboHumanPawn WaveInstigator;
 replication
 {
 	reliable if (Role == ROLE_Authority)
-		WaveNumber, PlayerCount;
+		WaveNumber, PlayerCount, bIsActive;
 }
 
 simulated function PostBeginPlay()
