@@ -289,7 +289,6 @@ final function bool IsInCheatDeathGracePeriod(PlayerController Injured)
         //If any entry we iterate to is expired, we can assume all the rest are as well.
         if (CheatedDeathPlayerList[Index].DeathTime + 2.f < Level.TimeSeconds)
         {
-            CheatedDeathPlayerList.Remove(Index, 1);
             return false;
         }
 
