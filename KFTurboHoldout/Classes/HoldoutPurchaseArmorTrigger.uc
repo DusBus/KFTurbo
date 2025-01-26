@@ -65,7 +65,7 @@ simulated function Timer()
 
 defaultproperties
 {
-	ArmorPrice=100
+	ArmorPrice=250
 	PurchaseMessageClass=class'KFTurboHoldout.PurchaseArmorMessage'
 	PurchaseNotificationMessageClass=class'KFTurboHoldout.PurchaseArmorNotificationMessage'
 	Texture=Texture'Engine.S_Pawn'

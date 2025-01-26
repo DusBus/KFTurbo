@@ -165,7 +165,7 @@ function bool GrantAmmo(Pawn Pawn)
 
 defaultproperties
 {
-	AmmoPrice=200
+	AmmoPrice=250
 	MarkerName="Ammo Restock"
 	PurchaseMessageClass=class'KFTurboHoldout.PurchaseAmmoMessage'
 	PurchaseNotificationMessageClass=class'KFTurboHoldout.PurchaseAmmoNotificationMessage'
