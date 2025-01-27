@@ -169,7 +169,11 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 			KFMonsterController(Other).PathFindState = 2;
 		}
 	}
-
+	else if (WeaponAttachment(Other) != None)
+	{
+		Other.NetPriority = FMax(Other.NetPriority, 1.5f);
+	}
+ 
 	return true;
 }
 
