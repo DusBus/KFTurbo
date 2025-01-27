@@ -70,7 +70,7 @@ simulated function CreateCommandHandler()
 		TurboCommandHandlerClass = class'TurboCommandHandler';
 	}
 
-	TurboCommandHandler = New(Self)TurboCommandHandlerClass;
+	TurboCommandHandler = Spawn(TurboCommandHandlerClass, Self);
 }
 
 simulated function InitInputSystem()

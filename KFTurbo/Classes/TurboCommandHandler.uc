@@ -2,7 +2,7 @@
 //Commands are routed here for actual implemenetation to pull code out of TurboPlayerController and allow for submodules to modify how they behave.
 //Distributed under the terms of the GPL-2.0 License.
 //For more information see https://github.com/KFPilot/KFTurbo.
-class TurboCommandHandler extends Object;
+class TurboCommandHandler extends Info;
 
 function SkipWave(TurboPlayerController Instigator)
 {

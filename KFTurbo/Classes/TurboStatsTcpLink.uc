@@ -484,7 +484,6 @@ final function string GetPlayerList()
 
 defaultproperties
 {
-    bAlwaysTick=true
     
     LinkMode=MODE_Text
 
