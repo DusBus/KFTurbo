@@ -35,7 +35,7 @@ function InitializeForWave(int Wave)
      local int BeatInsertIndex;
      local int WaveCount;
 
-     Wave++;
+     Wave++; //1-indexed waves instead of 0-indexed.
 
      //Empty these out in preparation to fill them out.
      WaveCount = 0;
@@ -67,7 +67,17 @@ function InitializeForWave(int Wave)
 
      if (Wave == 1)
      {
+          TotalMonsters *= 0.5f;
+          ScoreMultiplier *= 2.f;
           return;
+     }
+
+     if (Wave <= 5)
+     {
+          ScoreMultiplier *= Lerp(float(Wave - 1) / 4.f, 2.f, 1.f);
+          TotalMonsters *= Lerp(float(Wave - 1) / 4.f, 0.5f, 1.f);
+
+          TotalMonsters = Max(TotalMonsters, 1);
      }
 
      RegularInsertIndex = GetNextRegularSquadIndex();
