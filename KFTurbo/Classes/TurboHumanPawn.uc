@@ -871,6 +871,11 @@ function TossWeapon(Vector TossVel)
 	local Inventory WeaponToToss;
 	local float Rating;
 
+	if (Level.bLevelChange)
+	{
+		return;
+	}
+
 	if (Health > 0)
 	{
 		Super.TossWeapon(TossVel);

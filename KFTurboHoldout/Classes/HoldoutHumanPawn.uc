@@ -65,6 +65,11 @@ function PerformDeathToss(Vector TossVel)
 	local Inventory WeaponToToss;
 	local float Rating;
 
+	if (Level.bLevelChange)
+	{
+		return;
+	}
+
 	if (KFWeapon(Weapon) == None || !KFWeapon(Weapon).bKFNeverThrow)
 	{
 		Super.TossWeapon(TossVel);

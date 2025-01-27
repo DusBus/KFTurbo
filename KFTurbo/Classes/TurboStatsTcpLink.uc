@@ -156,12 +156,19 @@ Begin:
 
         if (DeferredDataList.Length == 0)
         {
-            continue;
+            break;
+        }
+
+		if(Level.bLevelChange)
+        {
+			Level.NextSwitchCountdown = FMax(Level.NextSwitchCountdown,1.f);
         }
 
         SendText(DeferredDataList[0]);
         DeferredDataList.Remove(0, 1);
     }
+
+    Close();
 }
 
 /*

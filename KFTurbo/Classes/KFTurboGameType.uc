@@ -39,6 +39,8 @@ var protected int FakedPlayerCount; //Faked player count. Used to make wave size
 var protected int ForcedPlayerHealthCount; //Forced player health count. Used to scale up monster health.
 const MAX_FORCED_PLAYER_HEALTH = 6; //Used to keep monster health at 6 players or fewer.
 
+var globalconfig bool bDistrubteCashOnExit;
+
 //Events that KFTurboServerMut binds to for bridging communication with ServerPerksMut.
 Delegate OnStatsAndAchievementsDisabled();
 Delegate LockPerkSelection(bool bLock);
@@ -179,6 +181,11 @@ function DistributeCash(TurboPlayerController ExitingPlayer)
 	local int Index;
 	local float Score;
 	local array<TurboPlayerController> PlayerList;
+
+    if (!bDistrubteCashOnExit || Level.bLevelChange)
+    {
+        return;
+    }
 
 	PlayerList = class'TurboGameplayHelper'.static.GetPlayerControllerList(Level);
 
