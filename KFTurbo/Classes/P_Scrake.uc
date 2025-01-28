@@ -193,11 +193,28 @@ simulated function float GetOriginalGroundSpeed()
     return Super.GetOriginalGroundSpeed() * class'PawnHelper'.static.GetSpeedMultiplier(AfflictionData);
 }
 
+function OldPlayHit(float Damage, Pawn InstigatedBy, vector HitLocation, class<DamageType> DamageType, vector Momentum, optional int HitIndex)
+{
+    //We're about to stun this guy, do not play other hit reactions.
+    if(Health > 0 && Damage > (float(Default.Health) / 1.5f))
+    {
+        return;
+    }
+    
+    Super.OldPlayHit(Damage, InstigatedBy, HitLocation, DamageType, Momentum, HitIndex);
+}
+
 function PlayTakeHit(vector HitLocation, int Damage, class<DamageType> DamageType)
 {
 	if( Level.TimeSeconds - LastPainAnim < MinTimeBetweenPainAnims )
     {
 		return;
+    }
+
+    //We're about to stun this guy, do not play other hit reactions.
+    if(Health > 0 && Damage > (float(Default.Health) / 1.5f))
+    {
+        return;
     }
 
     if (class'PawnHelper'.static.ShouldPlayHit(Self, AfflictionData))
