@@ -132,7 +132,11 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
 			Zed.screamDamage /= 0.75;
 		}
 		
-		AddHitbox(Zed);
+		//Do not spawn hitboxes for wave simulation monsters.
+		if (Zed.Tag != 'WaveSimulation')
+		{
+			AddHitbox(Zed);
+		}
 	}
 	else if (Other.IsA('KFTTPlayerController')) {
 		KFTTPlayerController(Other).Mut = Self;
