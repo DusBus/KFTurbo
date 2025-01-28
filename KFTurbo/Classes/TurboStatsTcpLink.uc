@@ -17,6 +17,8 @@ var string CRLF;
 var array<string> DeferredDataList;
 var int DeferredDataIndex;
 
+var int MaxRetryCount;
+
 static function bool ShouldBroadcastAnalytics()
 {
     return default.bBroadcastAnalytics && default.StatsDomain != "" && default.StatsPort >= 0;
@@ -63,13 +65,13 @@ function OnGameStart()
 
 event Resolved(IpAddr ResolvedAddress)
 {
-    log("Resolved domain"@StatsDomain$".", 'KFTurbo');
+    log("Resolved domain stats domain"@StatsDomain$".", 'KFTurbo');
     StatsAddress = ResolvedAddress;
     StatsAddress.Port = StatsPort;
 
     if (!OpenNoSteam(StatsAddress))
     {
-        log("OpenNoSteam failed for"@StatsDomain$"!", 'KFTurbo');
+        log("OpenNoSteam failed for stats domain"@StatsDomain$"!", 'KFTurbo');
         Close();
         LifeSpan = 1.f;
     }
@@ -85,7 +87,7 @@ event ResolveFailed()
 
 function Opened()
 {
-    log("Connection to"@StatsDomain@"opened. Sending game start payload.", 'KFTurbo');
+    log("Connection to stats domain "@StatsDomain@"opened. Sending game start payload.", 'KFTurbo');
 
     DeferredDataList.Insert(0, 1);
     DeferredDataList[0] = BuildGameStartPayload(); //Make sure this is the first thing we send out.
@@ -96,6 +98,8 @@ function SendData(string Data)
 {
     DeferredDataList[DeferredDataList.Length] = Data;
 }
+
+function FlushData() {}
 
 state ConnectionReady
 {
@@ -112,6 +116,11 @@ state ConnectionReady
     function Timer()
     {
         SendData("keepalive");
+    }
+
+    function FlushData()
+    {
+        GotoState('FlushData');
     }
 
 Begin:
@@ -131,7 +140,7 @@ Begin:
 
 function Closed()
 {
-    log("Connection to"@StatsDomain@"closed.", 'KFTurbo');
+    log("Connection to stats domain"@StatsDomain@"closed.", 'KFTurbo');
     GotoState('ConnectionClosed');
 }
 
@@ -139,9 +148,18 @@ function Closed()
 state ConnectionClosed
 {
 Begin:
+    if (MaxRetryCount <= 0)
+    {
+        log("Connection to stats domain"@StatsDomain@"failed"@default.MaxRetryCount@"times. Stopping reconnection attempts.", 'KFTurbo');
+        GotoState('ConnectionFailed');
+        stop;
+    }
+
+    MaxRetryCount--;
+
     Sleep(1.f);
     Close();
-    Sleep(2.f);
+    Sleep(1.f);
     BindPort();
     Resolve(StatsDomain);
 }
@@ -152,7 +170,7 @@ state FlushAllData
 Begin:
     while (true)
     {
-        Sleep(0.05f);
+        Sleep(0.1f);
 
         if (DeferredDataList.Length == 0)
         {
@@ -161,14 +179,23 @@ Begin:
 
 		if(Level.bLevelChange)
         {
-			Level.NextSwitchCountdown = FMax(Level.NextSwitchCountdown,1.f);
+			Level.NextSwitchCountdown = FMax(Level.NextSwitchCountdown, 1.f);
         }
 
         SendText(DeferredDataList[0]);
         DeferredDataList.Remove(0, 1);
     }
 
+    Sleep(0.1f);
     Close();
+}
+
+state ConnectionFailed
+{
+    function OnGameStart() {}
+    function Resolved(IpAddr ResolvedAddress) {}
+    function Opened() { Close(); }
+    function Closed() {}
 }
 
 /*
@@ -223,7 +250,7 @@ result - The result of the game. Can be "won", "lost", "aborted". Aborted refers
 function SendGameEnd(int Result)
 {
     SendData(BuildGameEndPayload(Level.Game.GetCurrentWaveNum(), GetResultName(Result)));
-    GotoState('FlushAllData');
+    FlushData();
 }
 
 final function string BuildGameEndPayload(int WaveNum, string Result)
@@ -484,11 +511,12 @@ final function string GetPlayerList()
 
 defaultproperties
 {
-    
     LinkMode=MODE_Text
 
     bBroadcastAnalytics=false
     StatsDomain="";
     StatsPort=-1;
     StatsTcpLinkClassOverride=""
+
+    MaxRetryCount=5
 }
