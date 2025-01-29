@@ -167,6 +167,14 @@ Begin:
 //Game ended. Get all this data out asap.
 state FlushAllData
 {
+    function OnGameStart() {}
+    function Opened() {}
+
+    function Closed()
+    {
+        GotoState('ConnectionFailed');
+    }
+
 Begin:
     while (true)
     {
