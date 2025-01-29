@@ -72,10 +72,10 @@ function InitializeForWave(int Wave)
           return;
      }
 
-     if (Wave <= 5)
+     if (Wave <= 10)
      {
-          ScoreMultiplier *= Lerp(float(Wave - 1) / 4.f, 2.f, 1.f);
-          TotalMonsters *= Lerp(float(Wave - 1) / 4.f, 0.5f, 1.f);
+          ScoreMultiplier *= Lerp(float(Wave) / 10.f, 2.f, 1.f);
+          TotalMonsters *= Lerp(float(Wave) / 10.f, 0.5f, 1.f);
 
           TotalMonsters = Max(TotalMonsters, 1);
      }
