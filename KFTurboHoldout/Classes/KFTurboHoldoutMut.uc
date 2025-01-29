@@ -49,7 +49,7 @@ function Timer()
 		return;
 	}
 
-	Pickup.LifeSpan = 10.f;
+	Pickup.LifeSpan = 15.f;
 
 	for (Index = 0; Index < PlayerList.Length; Index++)
 	{
