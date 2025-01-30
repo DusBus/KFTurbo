@@ -857,7 +857,7 @@ simulated function DrawTraderEndVote(Canvas C)
 
 	bHasVotes = false;
 	
-	C.Font = class'KFTurboFontHelper'.static.LoadFontStatic(2 + FontSizeOffset);
+	C.Font = TurboHUD.LoadFont(2 + FontSizeOffset);
 	C.FontScaleX = 1.f;
 	C.FontScaleY = 1.f;
 

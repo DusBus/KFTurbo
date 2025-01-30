@@ -31,6 +31,8 @@ var TurboHUDOverlay WaveStatsHUD;
 var class<TextReactionSettings> TextReactionSettingsClass;
 var TextReactionSettings TextReactionSettings;
 
+var class<KFTurboFontHelper> FontHelperClass;
+
 //Overlays that are drawn before the player HUD but after victory/game over HUD.
 var array<HudOverlay> PreDrawOverlays;
 
@@ -39,6 +41,7 @@ var localized string MerchantString;
 
 var(Turbo) Plane InvactiveModulate;
 var(Turbo) Plane ActiveModulate;
+
 
 simulated event PostRender(Canvas Canvas)
 {
@@ -1301,13 +1304,19 @@ static function font GetDefaultConsoleFont(Canvas C)
 
 static function Font LoadFontStatic(int i)
 {
-	return class'KFTurboFontHelper'.static.LoadFontStatic(i);
+	return default.FontHelperClass.static.LoadFontStatic(i);
 }
 
 simulated function Font LoadFont(int i)
 {
-	return class'KFTurboFontHelper'.static.LoadFontStatic(i);
+	return FontHelperClass.static.LoadFontStatic(i);
 }
+
+final simulated function Font LoadLargeNumberFont(int i)
+{
+	return FontHelperClass.static.LoadLargeNumberFont(i);
+}
+
  
 //Resets all but modulator to expected values.
 static final function ResetCanvas(Canvas Canvas)
@@ -1332,6 +1341,7 @@ static final function ResetCanvas(Canvas Canvas)
 defaultproperties
 {
 	TextReactionSettingsClass=class'TurboTextReactionSettings'
+	FontHelperClass=class'KFTurboFonts.KFTurboFontHelper'
 	
 	MerchantPortrait=Texture'KFTurbo.Merchant.Merchant_Portrait'
 	MerchantString="Merchant"

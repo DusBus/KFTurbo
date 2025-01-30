@@ -139,7 +139,7 @@ function SetupScriptedTexture(ScriptedTexture Tex)
 	ApplyDescription(Tex);
 
 	FullTitleString = Caps(FullTitleString@"| Killing Floor Turbo");
-	TextFont = class'KFTurboFontHelper'.static.LoadFontStatic(GetSubTitleFontSize(Tex));
+	TextFont = TurboHUDKillingFloor(Tex.RenderViewport.Actor.myHUD).LoadFont(GetSubTitleFontSize(Tex));
 	Tex.TextSize(FullTitleString, TextFont, TextSizeX, TextSizeY);
 	TempX = (SizeX * 0.92f) - TextSizeX;
 	TempY = (SizeY * 0.8835f) - (TextSizeY);
@@ -235,7 +235,7 @@ function ApplyDescription(ScriptedTexture Tex)
 
 	if (FullDescriptionString.Length != 0)
 	{
-		TextFont = class'KFTurboFontHelper'.static.LoadFontStatic(GetTextFontSize(Tex));
+		TextFont = TurboHUDKillingFloor(Tex.RenderViewport.Actor.myHUD).LoadFont(GetTextFontSize(Tex));
 		Tex.TextSize(FullDescriptionString[0], TextFont, TextSizeX, TextSizeY);
 
 		//Space from top of texture to top of card + card margin + half of card header size

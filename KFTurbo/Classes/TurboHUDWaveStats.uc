@@ -336,7 +336,7 @@ simulated function DrawStats(Canvas C)
 	}
 
 	//Calculate box title size.
-	C.Font = class'KFTurboFontHelper'.static.LoadFontStatic(1 + FontSizeOffset);
+	C.Font = TurboHUD.LoadFont(1 + FontSizeOffset);
 	C.FontScaleX = 1.f;
 	C.FontScaleX = 1.f;
 	C.TextSize("000", TextSizeX, TextSizeY);
@@ -365,7 +365,7 @@ simulated function DrawStats(Canvas C)
 	TempY += TextSizeY;
 	SizeYPerEntry = (SizeY - TextSizeY) / 5.5f;
 	
-	C.Font = class'KFTurboFontHelper'.static.LoadFontStatic(1 + FontSizeOffset);
+	C.Font = TurboHUD.LoadFont(1 + FontSizeOffset);
 	C.FontScaleX = 1.f;
 	C.FontScaleX = 1.f;
 	C.TextSize("000", TextSizeX, TextSizeY);
@@ -526,7 +526,7 @@ final function DrawTeamBar(Canvas C, float PositionX, float PositionY, float Siz
 		return;
 	}
 	
-	C.Font = class'KFTurboFontHelper'.static.LoadFontStatic(3 + FontSizeOffset);
+	C.Font = TurboHUD.LoadFont(3 + FontSizeOffset);
 	C.FontScaleX = 1.f;
 	C.FontScaleX = 1.f;
 	C.TextSize("000", TextSizeX, TextSizeY);
@@ -609,7 +609,7 @@ final function DrawAccuracyBar(Canvas C, float PositionX, float PositionY, float
 	C.SetPos(PositionX, PositionY);
 	C.DrawTileStretched(SquareContainer, SizeX, SizeY);
 	
-	C.Font = class'KFTurboFontHelper'.static.LoadFontStatic(3 + FontSizeOffset);
+	C.Font = TurboHUD.LoadFont(3 + FontSizeOffset);
 	C.FontScaleX = 1.f;
 	C.FontScaleX = 1.f;
 	C.TextSize("000", TextSizeX, TextSizeY);

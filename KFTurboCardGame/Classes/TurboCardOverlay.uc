@@ -593,7 +593,7 @@ simulated function DrawActiveCardList(Canvas C)
 		return;
 	}
 
-	C.Font = class'KFTurboFontHelper'.static.LoadFontStatic(BaseFontSize + 1);
+	C.Font = TurboHUD.LoadFont(BaseFontSize + 1);
 	TempX = C.ClipX - 2.f;
 	TempY = ScrollDisplayY; //Remainder of CardSize for a given CardOffset, plus some extra padding.
 
@@ -818,7 +818,7 @@ simulated function DrawBorrowedTime(Canvas C)
 
 	C.FontScaleX = 1.f;
 	C.FontScaleY = 1.f;
-	C.Font = class'KFTurboFontHelper'.static.LoadLargeNumberFont(GetFontSizeForWarnLevel(WarnLevel));
+	C.Font = TurboHUD.LoadLargeNumberFont(GetFontSizeForWarnLevel(WarnLevel));
 	C.TextSize(GetStringOfZeroes(Len(TimeString)), TextSizeX, TextSizeY);
 	TextScale = (SizeY) / TextSizeY;
 	C.FontScaleX = TextScale;

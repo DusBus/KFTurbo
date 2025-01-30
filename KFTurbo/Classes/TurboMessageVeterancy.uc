@@ -17,6 +17,10 @@ static function RenderComplexMessage(
 	local Material M1,M2;
 	local byte A;
 
+	local TurboHUDKillingFloor TurboHUD;
+
+	TurboHUD = TurboHUDKillingFloor(Canvas.Viewport.Actor.myHUD);
+
 	VeterancyClass = class<SRVeterancyTypes>(OptionalObject);
 	A = Canvas.DrawColor.A;
 
@@ -30,7 +34,7 @@ static function RenderComplexMessage(
 	}
 
 	Canvas.DrawColor.A = A;
-	Canvas.Font = class'KFTurboFontHelper'.static.LoadFontStatic(default.FontSize);
+	Canvas.Font = TurboHUD.LoadFont(default.FontSize);
 	Canvas.FontScaleX = FMax(Canvas.ClipY / 2160.f, 0.75f);
 	Canvas.FontScaleY = Canvas.FontScaleX;
 	Canvas.TextSize(MessageString, XS, YS);
