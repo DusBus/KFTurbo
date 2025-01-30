@@ -305,6 +305,7 @@ simulated function PostBeginPlay()
 	}
 
 	bUseBaseGameFontForChat = class'TurboInteraction'.static.ShouldUseBaseGameFontForChat(TurboPlayerController(PlayerOwner));
+	SetFontLocale(class'TurboInteraction'.static.GetFontLocale(TurboPlayerController(PlayerOwner)));
 }
 
 simulated function SetScoreBoardClass(class<Scoreboard> ScoreBoardClass)
@@ -1273,6 +1274,36 @@ simulated function UpdateTraderPortrait(bool bReplaceWithMerchant)
 	}
 }
 
+static function font GetConsoleFont(Canvas C)
+{
+	local int FontSize;
+
+	if( default.OverrideConsoleFontName != "" )
+	{
+		if( default.OverrideConsoleFont != None )
+			return default.OverrideConsoleFont;
+		default.OverrideConsoleFont = Font(DynamicLoadObject(default.OverrideConsoleFontName, class'Font'));
+		if( default.OverrideConsoleFont != None )
+			return default.OverrideConsoleFont;
+		Log("Warning: HUD couldn't dynamically load font "$default.OverrideConsoleFontName);
+		default.OverrideConsoleFontName = "";
+	}
+
+	FontSize = Default.ConsoleFontSize;
+	if ( C.ClipX < 640 )
+		FontSize++;
+	if ( C.ClipX < 800 )
+		FontSize++;
+	if ( C.ClipX < 1024 )
+		FontSize++;
+	if ( C.ClipX < 1280 )
+		FontSize++;
+	if ( C.ClipX < 1600 )
+		FontSize++;
+	
+	return TurboHUDKillingFloor(C.Viewport.Actor.myHUD).LoadFont(Min(8,FontSize));
+}
+
 static function font GetDefaultConsoleFont(Canvas C)
 {
 	local int FontSize;
@@ -1317,7 +1348,21 @@ final simulated function Font LoadLargeNumberFont(int i)
 	return FontHelperClass.static.LoadLargeNumberFont(i);
 }
 
- 
+final simulated function Font LoadBoldFont(int i)
+{
+	return FontHelperClass.static.LoadBoldFontStatic(i);
+}
+
+final simulated function Font LoadBoldItalicFont(int i)
+{
+	return FontHelperClass.static.LoadBoldItalicFontStatic(i);
+}
+
+final simulated function Font LoadItalicFont(int i)
+{
+	return FontHelperClass.static.LoadItalicFontStatic(i);
+}
+
 //Resets all but modulator to expected values.
 static final function ResetCanvas(Canvas Canvas)
 {
@@ -1338,10 +1383,34 @@ static final function ResetCanvas(Canvas Canvas)
 	Canvas.Z           = 1.0;
 }
 
+simulated function SetFontLocale(string LocaleString)
+{
+	if (FontHelperClass != None)
+	{
+		FontHelperClass.static.Cleanup();
+	}
+	
+	switch(LocaleString)
+	{
+		case "ENG":
+			FontHelperClass=class'KFTurboFonts.KFTurboFontHelperEN';
+			break;
+		case "JPN":
+			FontHelperClass=class'KFTurboFontsJP.KFTurboFontHelperJP';
+			break;
+		case "KOR":
+			FontHelperClass=class'KFTurboFontsKR.KFTurboFontHelperKR';
+			break;
+		case "CYR":
+			FontHelperClass=class'KFTurboFontsCY.KFTurboFontHelperCY';
+			break;
+	}
+}
+
 defaultproperties
 {
 	TextReactionSettingsClass=class'TurboTextReactionSettings'
-	FontHelperClass=class'KFTurboFonts.KFTurboFontHelper'
+	FontHelperClass=class'KFTurboFonts.KFTurboFontHelperEN'
 	
 	MerchantPortrait=Texture'KFTurbo.Merchant.Merchant_Portrait'
 	MerchantString="Merchant"

@@ -6,12 +6,15 @@ var automated moCheckbox MerchantReplacementCheckBox;
 var automated moCheckbox ShiftToTradeCheckBox;
 var automated moCheckbox PipebombGroupCheckBox;
 var automated moCheckbox UseBaseGameChatFontBox;
+var automated moComboBox FontLocaleComboBox;
 var Color PerkLabelTextColor;
-var localized string TierOptionList[8];
+var localized string TierOptionList[9];
 
 var bool bHasInitialized;
 var array< class<TurboVeterancyTypes> > VeterancyClassList;
 var array< GUIComboBox > VeterancyTierComboBoxList;
+
+var string LocaleOptionList[4];
 
 function ShowPanel(bool bShow)
 {
@@ -128,6 +131,13 @@ function InitializePage()
     RightSection.ManageComponent(UseBaseGameChatFontBox);
     UseBaseGameChatFontBox.Checked(class'TurboInteraction'.static.ShouldUseBaseGameFontForChat(PlayerController));
     
+    RightSection.ManageComponent(FontLocaleComboBox);
+    FontLocaleComboBox.AddItem(LocaleOptionList[0]);
+    FontLocaleComboBox.AddItem(LocaleOptionList[1]);
+    FontLocaleComboBox.AddItem(LocaleOptionList[2]);
+    FontLocaleComboBox.AddItem(LocaleOptionList[3]);
+    FontLocaleComboBox.SetIndex(GetFontLocaleIndex(class'TurboInteraction'.static.GetFontLocale(PlayerController)));
+    
     PlayerController.GenerateExtraOptions(Self, PipebombGroupCheckBox.TabOrder);
 }
 
@@ -219,6 +229,37 @@ function OnUseBaseGameChatFontChange(GUIComponent Sender)
     TurboInteraction.SetUseBaseGameFontForChat(UseBaseGameChatFontBox.IsChecked());
 }
 
+function OnFontLocaleChange(GUIComponent Sender)
+{
+	local TurboInteraction TurboInteraction;
+
+    TurboInteraction = TurboPlayerController(PlayerOwner()).TurboInteraction;
+
+    if (TurboInteraction == None || TurboInteraction.FontLocale == LocaleOptionList[FontLocaleComboBox.GetIndex()])
+    {
+        return;
+    }
+
+    TurboInteraction.SetFontLocale(LocaleOptionList[FontLocaleComboBox.GetIndex()]);
+}
+
+function int GetFontLocaleIndex(string Locale)
+{
+    switch(Locale)
+    {
+        case "ENG":
+            return 0;
+        case "JPN":
+            return 1;
+        case "KOR":
+            return 2;
+        case "CYR":
+            return 3;
+    }
+
+    return 0;
+}
+
 defaultproperties
 {
     bHasInitialized = false
@@ -230,9 +271,15 @@ defaultproperties
     TierOptionList(2)="2 (Blue)"
     TierOptionList(3)="3 (Pink)"
     TierOptionList(4)="4 (Purple)"
-    TierOptionList(5)="5 (Gold)"
-    TierOptionList(6)="6 (Platinum)"
-    TierOptionList(7)="7 (Shining)"
+    TierOptionList(5)="5 (Orange)"
+    TierOptionList(6)="6 (Gold)"
+    TierOptionList(7)="7 (Platinum)"
+    TierOptionList(8)="8 (Shining)"
+
+    LocaleOptionList(0)="ENG"
+    LocaleOptionList(1)="JPN"
+    LocaleOptionList(2)="KOR"
+    LocaleOptionList(3)="CYR"
 
     Begin Object Class=GUISectionBackground Name=BGLeftSection
         bFillClient=True
@@ -303,4 +350,13 @@ defaultproperties
         OnChange=TurboTab_TurboSettings.OnUseBaseGameChatFontChange
     End Object
     UseBaseGameChatFontBox=moCheckBox'UseBaseGameChatFont'
+
+    Begin Object Class=moComboBox Name=FontLocale
+        Caption="Font Locale"
+        OnCreateComponent=FontLocale.InternalOnCreateComponent
+        Hint="Selects which locale font pack to use for UI."
+        TabOrder=55
+        OnChange=TurboTab_TurboSettings.OnFontLocaleChange
+    End Object
+    FontLocaleComboBox=moComboBox'FontLocale'
 }

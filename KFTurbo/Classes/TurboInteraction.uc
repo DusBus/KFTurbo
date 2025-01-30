@@ -27,6 +27,8 @@ var globalconfig bool bPipebombUsesSpecialGroup;
 
 var globalconfig bool bUseBaseGameFontForChat;
 
+var globalconfig string FontLocale;
+
 simulated function bool KeyEvent( out EInputKey Key, out EInputAction Action, FLOAT Delta )
 {
 	if (Action == IST_Press && Key == IK_Shift && bShiftOpensTrader)
@@ -49,6 +51,7 @@ simulated function InitializeTurboInteraction()
 	UpdateMerchant();
 	InitializePipebombUsesSpecialGroup();
 	UpdateUseBaseGameFontForChat();
+	UpdateFontLocale();
 }
 
 exec simulated function Trade()
@@ -402,6 +405,36 @@ simulated function UpdateUseBaseGameFontForChat()
 	}
 }
 
+simulated function SetFontLocale(string NewFontLocale)
+{
+	if (NewFontLocale == FontLocale)
+	{
+		return;
+	}
+
+	FontLocale = NewFontLocale;
+	UpdateFontLocale();
+	SaveConfig();
+}
+
+static final function string GetFontLocale(TurboPlayerController PlayerController)
+{
+	if (PlayerController != None && PlayerController.TurboInteraction != None)
+	{
+		return PlayerController.TurboInteraction.FontLocale;
+	}
+
+	return "EN";
+}
+
+simulated function UpdateFontLocale()
+{
+	if (ViewportOwner.Actor != None && TurboHUDKillingFloor(ViewportOwner.Actor.myHUD) != None)
+	{
+		TurboHUDKillingFloor(ViewportOwner.Actor.myHUD).SetFontLocale(FontLocale);
+	}
+}
+
 defaultproperties
 {
 	bHasInitializedInteraction=false
@@ -423,4 +456,6 @@ defaultproperties
 	bShiftOpensTrader=true
 
 	bPipebombUsesSpecialGroup=false
+
+	FontLocale="ENG"
 }

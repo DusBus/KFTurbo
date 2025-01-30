@@ -180,7 +180,7 @@ function string ApplyTitle(ScriptedTexture Tex)
 
 	if (FullTitleString.Length != 0)
 	{
-		TextFont = class'KFTurboFontHelper'.static.LoadBoldFontStatic(GetTitleFontSize(Tex));
+		TextFont = TurboHUDKillingFloor(Tex.RenderViewport.Actor.myHUD).LoadBoldFont(GetTitleFontSize(Tex));
 		Tex.TextSize(FullTitleString[0], TextFont, TextSizeX, TextSizeY);
 
 		//Space from top of texture to top of card + card margin + half of card header size

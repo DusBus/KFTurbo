@@ -499,11 +499,11 @@ simulated final function DrawKillFeedEntry(Canvas C, out float DrawY, out KillFe
 
 	if (bIsElite)
 	{
-		C.Font = class'KFTurboFontHelper'.static.LoadBoldItalicFontStatic(0 + FontSizeOffset);
+		C.Font = TurbohUD.LoadBoldItalicFont(0 + FontSizeOffset);
 	}
 	else
 	{
-		C.Font = class'KFTurboFontHelper'.static.LoadItalicFontStatic(1 + FontSizeOffset);
+		C.Font = TurboHUD.LoadItalicFont(1 + FontSizeOffset);
 	}
 	
 	C.FontScaleX = 1.f;

@@ -38,6 +38,9 @@ simulated function PostBeginPlay()
 
 	//Make sure fonts are added to server packages.
 	AddToPackageMap("KFTurboFonts");
+	AddToPackageMap("KFTurboFontsJP");
+	AddToPackageMap("KFTurboFontsKR");
+	AddToPackageMap("KFTurboFontsCY");
 
 	if(Role != ROLE_Authority)
 	{

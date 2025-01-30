@@ -413,7 +413,7 @@ simulated function DrawSelectableCardList(Canvas C)
 	
 	C.SetDrawColor(255, 255, 255, 255);
 
-	C.Font = class'KFTurboFontHelper'.static.LoadBoldFontStatic(BaseFontSize);
+	C.Font = TurboHUD.LoadBoldFont(BaseFontSize);
 
 	CenterIndex = float(CurrentCardCount) / 2.f;
 	CardSize = FMin(C.ClipX / 10.f, (C.ClipY / 4.f)) * Lerp(VoteMenuScale, 0.5f, 1.f);
@@ -485,7 +485,7 @@ simulated function DrawSelectableCardList(Canvas C)
 	C.SetPos(TempX, TempY);
 	C.DrawText(ColorString);
 
-	C.Font = class'KFTurboFontHelper'.static.LoadBoldFontStatic(BaseFontSize + 2);
+	C.Font = TurboHUD.LoadBoldFont(BaseFontSize + 2);
 	TempX += TextSizeX * 0.5f;
 	TempY += TextSizeY;
 
