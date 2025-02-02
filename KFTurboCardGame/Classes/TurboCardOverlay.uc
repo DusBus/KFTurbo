@@ -228,7 +228,7 @@ simulated function TickSelectableCards(float DeltaTime)
 			FadeInAndUpRatio = 1.f;
 		}
 
-		if (FadeInAndUpRatio < 0.75f)
+		if (FadeInAndUpRatio < 0.9f)
 		{
 			return;
 		}
@@ -502,7 +502,7 @@ simulated function DrawSelectableCardList(Canvas C)
 	TempX = ((C.ClipX / 2.f) - (CenterIndex * CardOffset)) + (CardOffset * 0.5f);
 	TempY += CardSize * 0.01f;
 
-	if (FadeInAndUpRatio > 0.75f)
+	if (FadeInAndUpRatio > 0.9f)
 	{
 		for (Index = Level.GRI.PRIArray.Length - 1; Index >= 0; Index--)
 		{
