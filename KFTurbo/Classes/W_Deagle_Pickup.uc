@@ -6,6 +6,18 @@ function Inventory SpawnCopy(pawn Other)
 	Return Super(KFWeaponPickup).SpawnCopy(Other);
 }
 
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
+}
+
 defaultproperties
 {
 	InventoryType=Class'KFTurbo.W_Deagle_Weap'

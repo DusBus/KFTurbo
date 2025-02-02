@@ -3,7 +3,19 @@ class W_MK23_Pickup extends MK23Pickup;
 function inventory SpawnCopy( pawn Other )
 {
 	class'WeaponHelper'.static.SingleWeaponSpawnCopy(Self, Other, class'W_DualMK23_Weap');
-	Return Super(KFWeaponPickup).SpawnCopy(Other);
+	return Super(KFWeaponPickup).SpawnCopy(Other);
+}
+
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
 }
 
 defaultproperties

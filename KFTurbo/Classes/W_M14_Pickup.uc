@@ -1,5 +1,17 @@
 class W_M14_Pickup extends M14EBRPickup;
 
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
+}
+
 defaultproperties
 {
      VariantClasses(0)=Class'KFTurbo.W_M14_Pickup'

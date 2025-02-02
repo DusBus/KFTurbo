@@ -1,5 +1,17 @@
 class W_BoomStick_Pickup extends BoomStickPickup;
 
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
+}
+
 defaultproperties
 {
      cost=750

@@ -1,5 +1,17 @@
 class W_AK47_Pickup extends AK47Pickup;
 
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
+}
+
 defaultproperties
 {
      Weight=5.000000

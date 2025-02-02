@@ -1,5 +1,17 @@
 class W_M79_Pickup extends M79Pickup;
 
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
+}
+
 defaultproperties
 {
      Cost=750

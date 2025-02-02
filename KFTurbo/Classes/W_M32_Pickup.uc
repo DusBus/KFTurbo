@@ -1,5 +1,17 @@
 class W_M32_Pickup extends M32Pickup;
 
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
+}
+
 defaultproperties
 {
      Cost=2400

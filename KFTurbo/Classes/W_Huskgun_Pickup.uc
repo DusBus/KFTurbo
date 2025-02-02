@@ -1,5 +1,17 @@
 class W_Huskgun_Pickup extends HuskGunPickup;
 
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
+}
+
 defaultproperties
 {
      Weight=11.000000

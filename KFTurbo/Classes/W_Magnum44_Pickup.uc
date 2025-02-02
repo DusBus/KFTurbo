@@ -6,6 +6,18 @@ function inventory SpawnCopy( pawn Other )
 	Return Super(KFWeaponPickup).SpawnCopy(Other);
 }
 
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
+}
+
 defaultproperties
 {
 	Weight=3.000000

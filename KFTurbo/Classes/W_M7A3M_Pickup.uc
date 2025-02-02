@@ -1,5 +1,17 @@
 class W_M7A3M_Pickup extends M7A3MPickup;
 
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
+}
+
 defaultproperties
 {
      Cost=800

@@ -1,5 +1,17 @@
 class W_MAC10_Pickup extends MAC10Pickup;
 
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
+}
+
 defaultproperties
 {
      Weight=3.000000

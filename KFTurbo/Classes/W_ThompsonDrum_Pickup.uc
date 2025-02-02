@@ -1,7 +1,16 @@
-//=============================================================================
-// ThompsonDrum Pickup.
-//=============================================================================
 class W_ThompsonDrum_Pickup extends ThompsonDrumPickup;
+
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
+}
 
 defaultproperties
 {

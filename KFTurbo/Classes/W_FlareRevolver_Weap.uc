@@ -6,9 +6,19 @@ function AddReloadedAmmo()
 	if (Role == ROLE_Authority) { class'WeaponHelper'.static.OnWeaponReload(Self); }
 }
 
+function bool HandlePickupQuery( pickup Item )
+{
+	if (class'WeaponHelper'.static.SingleWeaponHandlePickupQuery(Self, Item))
+	{
+		return false;
+	}
+
+	return Super.HandlePickupQuery(Item);
+}
+
 simulated function bool PutDown()
 {
-	if ( Instigator.PendingWeapon.class == class'W_DualFlare_Weap' )
+	if (W_DualFlare_Weap(Instigator.PendingWeapon) != None)
 	{
 		bIsReloading = false;
 	}

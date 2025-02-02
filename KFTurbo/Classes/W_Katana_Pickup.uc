@@ -1,5 +1,17 @@
 class W_Katana_Pickup extends KatanaPickup;
 
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
+}
+
 defaultproperties
 {
      VariantClasses(0)=Class'KFTurbo.W_Katana_Pickup'

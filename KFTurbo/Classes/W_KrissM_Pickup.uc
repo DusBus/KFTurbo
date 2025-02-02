@@ -1,5 +1,17 @@
 class W_KrissM_Pickup extends KrissMPickup;
 
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
+}
+
 defaultproperties
 {
      Weight=4.000000

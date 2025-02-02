@@ -1,5 +1,17 @@
 class W_SealSqueal_Pickup extends SealSquealPickup;
 
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
+}
+
 defaultproperties
 {
      Cost=1200

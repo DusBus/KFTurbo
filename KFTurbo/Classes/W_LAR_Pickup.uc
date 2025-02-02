@@ -1,5 +1,17 @@
 class W_LAR_Pickup extends WinchesterPickup;
 
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
+}
+
 defaultproperties
 {
      VariantClasses(0)=Class'KFTurbo.W_LAR_Pickup'

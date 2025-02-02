@@ -1,5 +1,17 @@
 class W_Dual44_Pickup extends Dual44MagnumPickup;
 
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
+}
+
 defaultproperties
 {
      Weight=6.000000

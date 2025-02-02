@@ -1,5 +1,17 @@
 class W_BlowerThrower_Pickup extends BlowerThrowerPickup;
 
+function Destroyed()
+{
+	if (Inventory != None)
+	{
+		Super.Destroyed();
+	}
+	else
+	{
+		Super(WeaponPickup).Destroyed();
+	}
+}
+
 defaultproperties
 {
      Cost=800
