@@ -30,7 +30,7 @@ replication {
 		ClientClearLevel, AddDamageMessage, SetDamageLifeTime, ClearDamageMessages;
 	
 	reliable if (Role < ROLE_Authority)
-		ServerSetPerk, SetHealth, SetGameSpeed, ClearLevel, ClearZeds, ServerSetKeepWeapons, ServerSetDrawHitboxes, Whoosh, GodMode, ViewZeds, ViewSelf, ForceRadial, SpawnProj;
+		ServerSetPerk, SetHealth, SetGameSpeed, ClearLevel, ClearZeds, ServerSetKeepWeapons, ServerSetDrawHitboxes, Whoosh, GodMode, ViewZeds, ViewSelf, ForceRadial, Poof, BaiBai;
 
 	reliable if (Role == ROLE_Authority)
 		ClientShowWaveControlUI;
@@ -570,6 +570,16 @@ function KFTTProjBase SpawnProj(class<KFTTProjBase> ProjClass) {
 
 exec function Poof() {
 	SpawnProj(class'KFTurboTestMut.KFTTProjPoof');
+}
+
+exec function BaiBai()
+{
+	if (PlayerReplicationInfo == None || !PlayerReplicationInfo.bAdmin)
+	{
+		return;
+	}
+
+	SpawnProj(class'KFTurboTestMut.KFTTProjBaiBai');
 }
 
 /* STATES */
