@@ -77,6 +77,7 @@ var TeamStatBarConfig DamageBar;
 var TeamStatBarConfig ShotsFiredBar;
 var TeamStatBarConfig HealBar;
 var TeamStatBarConfig ReloadsBar;
+var Color TeamBarSeparatorColor;
 
 var Color StatSubtitleTextColor;
 var Color StatSubtitleTextShadowColor;
@@ -555,6 +556,13 @@ final function DrawTeamBar(Canvas C, float PositionX, float PositionY, float Siz
 		C.SetPos(PositionX + ((SizeX * (RemainingPercent - TeammateBarPercent)) - 2.f), PositionY);
 		C.DrawTileStretched(SquareContainer, (SizeX * TeammateBarPercent) + 2.f, SizeY);
 
+		if (Index < TeamAmount.Length - 1)
+		{
+			C.DrawColor = TeamBarSeparatorColor;
+			C.SetPos(PositionX + ((SizeX * (RemainingPercent - TeammateBarPercent)) - 2.f) - 2.f, PositionY);
+			C.DrawTileStretched(SquareContainer, 2.f, SizeY);
+		}
+
 		TeammateString = class'TurboHUDScoreboard'.static.GetCompressedNumber(TeamAmount[Index].Amount) @ TeamAmount[Index].Player.PlayerName;
 		C.DrawColor = StatTextColor;
 		C.TextSize(TeammateString, TextSizeX, TextSizeY);
@@ -712,6 +720,7 @@ defaultproperties
 	ShotsFiredBar=(FillColor=(R=255,G=215,B=120,A=255),BarColor=(R=255,G=255,B=255,A=255),bDrawFillMarker=true)
 	HealBar=(FillColor=(R=135,G=255,B=120,A=255),BarColor=(R=255,G=255,B=255,A=255),bDrawFillMarker=true)
 	ReloadsBar=(FillColor=(R=255,G=215,B=120,A=255),BarColor=(R=255,G=255,B=255,A=255),bDrawFillMarker=true)
+	TeamBarSeparatorColor=(R=0,G=0,B=0,A=140)
 
 	ShotsFiredColor=(R=255,G=255,B=255,A=255)
 	ShotsHitColor=(R=120,G=145,B=255,A=255)
