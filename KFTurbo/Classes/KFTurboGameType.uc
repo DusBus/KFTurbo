@@ -162,7 +162,7 @@ event PlayerController Login(string Portal, string Options, out string Error)
 
     if (PlayerController == None)
     {
-        return;
+        return None;
     }
 
     bJoinedAsSpectatorOnly = PlayerController.PlayerReplicationInfo.bOnlySpectator;
@@ -171,7 +171,7 @@ event PlayerController Login(string Portal, string Options, out string Error)
     {
         PlayerController.PlayerReplicationInfo.Score = GetPlayerStartingCash();
     }
-    
+
     if (bJoinedAsSpectatorOnly && bWaveInProgress)
     {
         TurboPlayerController(PlayerController).bWasSpectatingWave = true;
