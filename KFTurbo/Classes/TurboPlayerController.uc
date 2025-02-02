@@ -822,12 +822,15 @@ function BecomeActivePlayer()
 		PlayerReplicationInfo.bOutOfLives = false;
 		PlayerReplicationInfo.NumLives = 0;
 		
-		SetViewTarget(Self);
-		ClientSetBehindView(false);
-		bBehindView = False;
-		ClientSetViewTarget(Pawn); //TWI calls this for some reason but pawn would be None at this point...
+		if (!KFTurboGameType(Level.Game).bWaveInProgress)
+		{
+			SetViewTarget(Self);
+			ClientSetBehindView(false);
+			bBehindView = False;
+			ClientSetViewTarget(Pawn); //TWI calls this for some reason but pawn would be None at this point...
 
-		ServerReStartPlayer();	
+			ServerReStartPlayer();	
+		}
 	}
 }
 
