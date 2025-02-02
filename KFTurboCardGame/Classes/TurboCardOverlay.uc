@@ -44,6 +44,11 @@ var float VoteMenuScale;
 var bool bHasShiftPressed;
 var bool bReduceCardVisibility;
 
+var float FadeInAndUpRatio;
+var float FadeInAndUpRate;
+var float FanOutRatio;
+var float FanOutRate;
+
 enum EBorrowedTimeWarnLevel
 {
 	NoWarning,
@@ -168,6 +173,8 @@ simulated function Tick(float DeltaTime)
 
 	Super.Tick(DeltaTime);
 
+	DeltaTime = FMin(DeltaTime, 0.1f);
+
 	if (TCRI == None)
 	{
 		return;
@@ -175,28 +182,7 @@ simulated function Tick(float DeltaTime)
 
 	if (TCRI.bCurrentlyVoting && CurrentCardCount > 0)
 	{
-		VotedCardIndex = GetVoteIndex();
-
-		for (Index = 0; Index < CardRenderActorList.Length; Index++)
-		{
-			if (Index == VotedCardIndex)
-			{
-				CardRenderActorList[Index].Ratio = FMin(Lerp(DeltaTime * 20.f, CardRenderActorList[Index].Ratio, 1.f), 1.f);
-			}
-			else
-			{
-				CardRenderActorList[Index].Ratio = FMax(Lerp(DeltaTime * 4.f, CardRenderActorList[Index].Ratio, 0.f), 0.f);
-			}
-		}
-
-		if (bHasShiftPressed || GetVoteIndex() == -1)
-		{
-			VoteMenuScale = FMin(Lerp(DeltaTime * 10.f, VoteMenuScale, 1.f), 1.f);
-		}
-		else
-		{
-			VoteMenuScale = FMax(Lerp(DeltaTime * 10.f, VoteMenuScale, 0.f), 0.f);
-		}
+		TickSelectableCards(DeltaTime);
 	}
 
 	if (!HUD(Owner).bShowScoreboard)
@@ -227,6 +213,57 @@ simulated function Tick(float DeltaTime)
 		}
 
 		ActiveCardRenderActorList[Index].Ratio = FMax(Lerp(DeltaTime * 8.f, ActiveCardRenderActorList[Index].Ratio, 0.f), 0.f);
+	}
+}
+
+simulated function TickSelectableCards(float DeltaTime)
+{
+	local int Index;
+
+	if (FadeInAndUpRatio < 1.f)
+	{
+		FadeInAndUpRatio = FMin(Lerp(DeltaTime * FadeInAndUpRate, FadeInAndUpRatio, 1.f), 1.f);
+		if (Abs(FadeInAndUpRatio - 1.f) < 0.001f)
+		{
+			FadeInAndUpRatio = 1.f;
+		}
+
+		if (FadeInAndUpRatio < 0.75f)
+		{
+			return;
+		}
+	}
+
+	if (FanOutRatio < 1.f)
+	{
+		FanOutRatio = FMin(Lerp(DeltaTime * FanOutRate, FanOutRatio, 1.f), 1.f);
+		if (Abs(FanOutRatio - 1.f) < 0.001f)
+		{
+			FanOutRatio = 1.f;
+		}
+	}
+
+	VotedCardIndex = GetVoteIndex();
+
+	for (Index = 0; Index < CardRenderActorList.Length; Index++)
+	{
+		if (Index == VotedCardIndex)
+		{
+			CardRenderActorList[Index].Ratio = FMin(Lerp(DeltaTime * 20.f, CardRenderActorList[Index].Ratio, 1.f), 1.f);
+		}
+		else
+		{
+			CardRenderActorList[Index].Ratio = FMax(Lerp(DeltaTime * 4.f, CardRenderActorList[Index].Ratio, 0.f), 0.f);
+		}
+	}
+
+	if (bHasShiftPressed || GetVoteIndex() == -1)
+	{
+		VoteMenuScale = FMin(Lerp(DeltaTime * 10.f, VoteMenuScale, 1.f), 1.f);
+	}
+	else
+	{
+		VoteMenuScale = FMax(Lerp(DeltaTime * 10.f, VoteMenuScale, 0.f), 0.f);
 	}
 }
 
@@ -309,6 +346,9 @@ simulated function OnSelectableCardsUpdated(TurboCardReplicationInfo CGRI)
 
 	bHasShiftPressed = true;
 	VoteMenuScale = 1.f;
+
+	FadeInAndUpRatio = 0.f;
+	FanOutRatio = 0.f;
 
     log ("OnSelectableCardsUpdated - CurrentCardCount:"@CurrentCardCount);
 }
@@ -410,15 +450,18 @@ simulated function DrawSelectableCardList(Canvas C)
 	local float TextSizeX, TextSizeY;
 	local array<int> VoteList;
 	local string ColorString, StrippedString;
+	local Color WhiteColor, BlackColor;
+	WhiteColor = MakeColor(255, 255, 255, 255);
+	BlackColor = MakeColor(0, 0, 0, 120);
 	
-	C.SetDrawColor(255, 255, 255, 255);
+	C.DrawColor = WhiteColor;
 
 	C.Font = TurboHUD.LoadBoldFont(BaseFontSize);
 
 	CenterIndex = float(CurrentCardCount) / 2.f;
 	CardSize = FMin(C.ClipX / 10.f, (C.ClipY / 4.f)) * Lerp(VoteMenuScale, 0.5f, 1.f);
-	CardOffset = CardSize * 1.1f;
-	TempY = (C.ClipY / 1.75f) - (CardSize * 0.5f * Lerp(VoteMenuScale, -0.5f, 1.f));
+	CardOffset = CardSize * 1.1f * Lerp(FanOutRatio, 0.1f, 1.f);
+	TempY = ((C.ClipY / 1.75f) - (CardSize * 0.5f * Lerp(VoteMenuScale, -0.5f, 1.f))) + (CardSize * 4.f *  (1.f - FadeInAndUpRatio));
 	TempX = (C.ClipX / 2.f) - (CenterIndex * CardOffset);
 
 	for (Index = 0; Index < CurrentCardCount; Index++)
@@ -458,9 +501,13 @@ simulated function DrawSelectableCardList(Canvas C)
 
 	TempX = ((C.ClipX / 2.f) - (CenterIndex * CardOffset)) + (CardOffset * 0.5f);
 	TempY += CardSize * 0.01f;
-	for (Index = Level.GRI.PRIArray.Length - 1; Index >= 0; Index--)
+
+	if (FadeInAndUpRatio > 0.75f)
 	{
-		DrawVoter(C, Level.GRI.PRIArray[Index], TempX, TempY, CardOffset, VoteList);
+		for (Index = Level.GRI.PRIArray.Length - 1; Index >= 0; Index--)
+		{
+			DrawVoter(C, Level.GRI.PRIArray[Index], TempX, TempY, CardOffset, VoteList);
+		}
 	}
 
 	ColorString = class'TurboLocalMessage'.static.FormatString(HowToVoteString);
@@ -477,11 +524,11 @@ simulated function DrawSelectableCardList(Canvas C)
 	TempX += 1.f + (Sin(Level.TimeSeconds * PI * 0.8f) * 6.3f);
 	TempY += 1.f + (Sin(Level.TimeSeconds * PI * 0.6f) * 4.125f);
 
-	C.SetDrawColor(0, 0, 0, 120);
+	C.DrawColor = BlackColor;
 	C.SetPos(TempX + 2.f, TempY + 2.f);
 	C.DrawText(StrippedString);
 
-	C.SetDrawColor(255, 255, 255, 255);
+	C.DrawColor = WhiteColor;
 	C.SetPos(TempX, TempY);
 	C.DrawText(ColorString);
 
@@ -495,11 +542,11 @@ simulated function DrawSelectableCardList(Canvas C)
 	C.TextSize(StrippedString, TextSizeX, TextSizeY);
 	TempX -= TextSizeX * 0.5f;
 
-	C.SetDrawColor(0, 0, 0, 120);
+	C.DrawColor = BlackColor;
 	C.SetPos(TempX + 2.f, TempY + 2.f);
 	C.DrawText(StrippedString);
 
-	C.SetDrawColor(255, 255, 255, 255);
+	C.DrawColor = WhiteColor;
 	C.SetPos(TempX, TempY);
 	C.DrawText(ColorString);
 }
@@ -877,6 +924,9 @@ defaultproperties
 	VotedCardIndex=-1
 	CardIndexToDisplay=-1
 	VoteMenuScale=1.f
+
+	FadeInAndUpRate=4.f
+	FanOutRate=2.f
 
 	HowToVoteString="Press %kshift%d and a %knumber%d to vote for a card!"
 	HowCardsWorkString="Choose wisely! The selected card will %klast the whole game%d."
