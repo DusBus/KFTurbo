@@ -203,7 +203,7 @@ simulated function Tick(float DeltaTime)
 
 	for (Index = MonsterList.Length - 1; Index >= 0; Index--)
 	{
-		if (MonsterList[Index].Tag == 'WaveSimulation')
+		if (MonsterList[Index] == None || MonsterList[Index].Tag == 'WaveSimulation')
 		{
 			continue;
 		}

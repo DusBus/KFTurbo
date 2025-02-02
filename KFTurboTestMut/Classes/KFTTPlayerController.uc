@@ -741,14 +741,14 @@ simulated function ClientShowWaveControlUI(TestLaneWaveManager Manager)
 	ConfigMenu.Update(Manager);
 }
 
-simulated function ServerApplyWaveControlSettings(TestLaneWaveManager Manager, int WaveNumber, int PlayerCount)
+simulated function ServerApplyWaveControlSettings(TestLaneWaveManager Manager, int WaveNumber, int PlayerCount, int PlayerHealth)
 {
 	if (Manager == None)
 	{
 		return;
 	}
 
-	Manager.SetWaveConfig(WaveNumber, PlayerCount);
+	Manager.SetWaveConfig(WaveNumber, PlayerCount, PlayerHealth);
 }
 
 defaultproperties

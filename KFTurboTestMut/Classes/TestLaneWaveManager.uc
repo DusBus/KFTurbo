@@ -10,6 +10,7 @@ var array<ZombieVolume> VolumeList;
 var bool bIsActive;
 var int WaveNumber;
 var int PlayerCount;
+var int PlayerHealth;
 
 //Properties that need to be reset when we start a wave.
 var int TotalMonsters, MaxMonsters, RemainingMaxMonsters;
@@ -21,7 +22,7 @@ var TurboHumanPawn WaveInstigator;
 replication
 {
 	reliable if (Role == ROLE_Authority)
-		WaveNumber, PlayerCount, bIsActive;
+		WaveNumber, PlayerCount, PlayerHealth, bIsActive;
 }
 
 simulated function PostBeginPlay()
@@ -58,10 +59,11 @@ simulated function ForceNetUpdate()
 	NetUpdateTime = FMax(Level.TimeSeconds - (1.f / NetUpdateFrequency), 0.1f);
 }
 
-function SetWaveConfig(int NewWaveNumber, int NewPlayerCount)
+function SetWaveConfig(int NewWaveNumber, int NewPlayerCount, int NewPlayerHealth)
 {
 	WaveNumber = NewWaveNumber;
 	PlayerCount = NewPlayerCount;
+	PlayerHealth = NewPlayerHealth;
 	Deactivate();
 	ForceNetUpdate();
 }
@@ -208,7 +210,7 @@ function PerformSpawn()
 
 final function float GetPlayerHealthModifier(float HealthScale)
 {
-	return 1.0 + (PlayerCount - 1) * HealthScale;
+	return 1.0 + (PlayerHealth - 1) * HealthScale;
 }
 
 function OnMonsterSpawned(KFMonster Monster)
@@ -273,4 +275,5 @@ defaultproperties
 
 	WaveNumber=0
 	PlayerCount=1
+	PlayerHealth=1
 }

@@ -1,7 +1,7 @@
 class TestWaveConfigWindow extends FloatingWindow;
 
 var automated GUISectionBackground Container;
-var automated moComboBox WaveNumber, PlayerCount;
+var automated moComboBox WaveNumber, PlayerCount, PlayerHealth;
 var automated GUIButton Apply;
 
 var TestLaneWaveManager Manager;
@@ -25,10 +25,12 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     for (Index = 1; Index <= 6; Index++)
     {
         PlayerCount.AddItem(string(Index));
+        PlayerHealth.AddItem(string(Index));
     }
 
     Container.ManageComponent(WaveNumber);
     Container.ManageComponent(PlayerCount);
+    Container.ManageComponent(PlayerHealth);
     Container.ManageComponent(Apply);
 }
 
@@ -39,7 +41,7 @@ function bool ApplySettings(GUIComponent Sender)
 
     if (TestPlayerController != None)
     {
-        TestPlayerController.ServerApplyWaveControlSettings(Manager, WaveNumber.GetIndex(), PlayerCount.GetIndex() + 1);
+        TestPlayerController.ServerApplyWaveControlSettings(Manager, WaveNumber.GetIndex(), PlayerCount.GetIndex() + 1, PlayerHealth.GetIndex() + 1);
     }
 
     return true;
@@ -52,7 +54,7 @@ function bool NoDraw(Canvas Canvas)
 
 defaultproperties
 {
-    WindowName="Wave Settings"
+    WindowName="Turbo+ Wave Simulator Settings"
     bResizeWidthAllowed=False
     bResizeHeightAllowed=False
     bMoveAllowed=false
@@ -111,10 +113,19 @@ defaultproperties
     End Object
     PlayerCount=moComboBox'PlayerCountComboBox'
 
+    Begin Object Class=moComboBox Name=PlayerHealthComboBox
+        bReadOnly=True
+        Caption="Player Health"
+        OnCreateComponent=PlayerHealthComboBox.InternalOnCreateComponent
+        Hint="Select the player health you'd like to simulate."
+        TabOrder=3
+    End Object
+    PlayerHealth=moComboBox'PlayerHealthComboBox'
+
     Begin Object Class=GUIButton Name=ApplyButton
         WinHeight=0.2
         Caption="Apply"
-        TabOrder=3
+        TabOrder=4
         OnClick=TestWaveConfigWindow.ApplySettings
         OnKeyEvent=ApplyButton.InternalOnKeyEvent
     End Object
