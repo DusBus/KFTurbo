@@ -17,6 +17,14 @@ var int SneakFailureCount;
 var int ChargeDurationIncreaseFailureCount; //How many failures (when trying to cloak charge) do we need before we start increasing charge duration?
 var int ChargeSpeedIncreaseFailureCount; //How many failures (when trying to cloak charge) do we need before we start increasing charge speed?
 
+var float BossHealthMax, LowestHealth;
+
+replication
+{
+	reliable if (Role == ROLE_Authority)
+		BossHealthMax, LowestHealth;
+}
+
 simulated function PostBeginPlay()
 {
     Super.PostBeginPlay();
@@ -24,6 +32,28 @@ simulated function PostBeginPlay()
 	ZombieBossAI = AI_ZombieBoss(Controller);
 
 	class'PawnHelper'.static.InitializePawnHelper(self, AfflictionData);
+
+	if (Role == ROLE_Authority)
+	{
+		BossHealthMax = HealthMax;
+		LowestHealth = HealthMax;
+	}
+}
+
+simulated function PostNetBeginPlay()
+{
+	local TurboHUDWaveInfo WaveInfoOverlay;
+	Super.PostNetBeginPlay();
+
+	if (Level.GetLocalPlayerController() != None)
+	{
+		WaveInfoOverlay = class'TurboHUDWaveInfo'.static.FindWaveInfoOverlay(Level.GetLocalPlayerController());
+
+		if (WaveInfoOverlay != None)
+		{
+			WaveInfoOverlay.RegisterZombieBoss(Self);
+		}
+	}
 }
 
 function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Momentum, class<DamageType> DamageType, optional int HitIndex)
@@ -60,7 +90,12 @@ function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Mo
     if (Role == ROLE_Authority)
     {
         class'PawnHelper'.static.PostTakeDamage(Self, Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitIndex, AfflictionData);
-    }
+    
+		if (Health < LowestHealth)
+		{
+			LowestHealth = Health;
+		}
+	}
 }
 
 //Stop boss cinematic and end game from occurring if multiple bosses are alive.
@@ -404,6 +439,8 @@ simulated event SetHeadScale(float NewScale)
 
 defaultproperties
 {
+	bAlwaysRelevant=true
+
     CommandoSpotDuration=2.f
 
 	SneakFailureCount=0

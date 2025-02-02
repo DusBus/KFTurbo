@@ -55,6 +55,56 @@ var bool bIsGameOver;
 
 var int FontSizeOffset;
 
+struct BossHitData
+{
+	var float HitAmount;
+	var float Ratio;
+	var float FadeRate;
+};
+
+struct BossSyringeEntry
+{
+	var float FadeRatio;
+};
+
+struct BossEntry
+{
+	var P_ZombieBoss BossMonster;
+	var class<P_ZombieBoss> BossClass;
+	var float PlayInRatio;
+	var float PlayOutRatio;
+	
+	var float CurrentHealth;
+	var float LastCheckedHealth;
+	var float PreviousHealth;
+	var float LastLowestRecordedHealth;
+
+	var float HealthMax;
+	
+	var BossHitData LastHit;
+
+	var float CurrentHealToHealth;
+	var float PreviousHealToHealth;
+
+	var int CurrentSyringeCount;
+
+	var BossSyringeEntry SyringeList[3];
+};
+
+var BossEntry BossData;
+var array<P_ZombieBoss> BossList;
+
+var float BossDataFadeInRate;
+var float BossDataFadeOutRate;
+var float BossDataHealthInterpRate;
+var Material BossHealthBarBackplate;
+var Material BossHealthBarFill;
+var Material BossHealthDamageBarFill;
+var Texture BossSyringeIcon;
+var Texture BossSyringeBackplateIcon;
+
+var(Turbo) Vector2D BossBarSize;
+
 //Kill Feed
 struct KillFeedEntry
 {
@@ -72,14 +122,28 @@ var array<KillFeedEntry> KillFeedList;
 var float TrashMonsterKillLifeTime, TrashMonsterKillCountExtension;
 var float EliteMonsterKillLifeTime, EliteMonsterKillCountExtension;
 
+static final function TurboHUDWaveInfo FindWaveInfoOverlay(PlayerController PlayerController)
+{
+	local TurboHUDKillingFloor TurboHUD;
+	TurboHUD = TurboHUDKillingFloor(PlayerController.myHUD);
+	return TurboHUD.WaveInfoHUD;
+}
+
 simulated function Initialize(TurboHUDKillingFloor OwnerHUD)
 {
+	local P_ZombieBoss BossMonster;
+	
 	Super.Initialize(OwnerHUD);
 
 	TGRI = TurboGameReplicationInfo(Level.GRI);
 	bIsTestGameMode = class'KFTurboGameType'.static.StaticIsTestGameType(Self);
 
 	ActiveBackplateSize = BackplateSize;
+
+	foreach DynamicActors(class'P_ZombieBoss', BossMonster)
+	{
+		RegisterZombieBoss(BossMonster);
+	}
 }
 
 simulated function Tick(float DeltaTime)
@@ -106,7 +170,9 @@ simulated function Tick(float DeltaTime)
 	else if (!TGRI.bWaveInProgress && !IsInState('WaitingWave'))
 	{
 		GotoState('WaitingWave');
-	}	
+	}
+
+	TickBossData(DeltaTime);
 }
 
 simulated function TickGameState(float DeltaTime)
@@ -136,6 +202,13 @@ simulated function Render(Canvas C)
 	
 	DrawKillFeed(C);
 	
+	class'TurboHUDKillingFloor'.static.ResetCanvas(C);
+
+	if ((BossData.BossMonster != None || BossData.PlayOutRatio > 0.f) && BossData.PlayOutRatio < 1.f)
+	{
+		DrawBossHealthBar(C);
+	}
+
 	class'TurboHUDKillingFloor'.static.ResetCanvas(C);
 }
 
@@ -312,6 +385,8 @@ state ActiveWave
 		{
 			TickActiveFadeIn(DeltaTime);
 		}
+
+		TickBossData(DeltaTime);
 	}
 
 	simulated function DrawWaveData(Canvas C)
@@ -649,6 +724,8 @@ state WaitingWave
 		{
 			TickTraderFadeIn(DeltaTime);
 		}
+
+		TickBossData(DeltaTime);
 	}
 	
 	simulated function DrawWaveData(Canvas C)
@@ -948,6 +1025,301 @@ simulated function DrawTraderEndVote(Canvas C)
 	}
 }
 
+simulated function RegisterZombieBoss(P_ZombieBoss BossMonster)
+{
+	local int Index;
+
+	if (bIsTestGameMode)
+	{
+		return;
+	}
+
+	for (Index = 0; Index < BossList.Length; Index++)
+	{
+		if (BossList[Index] == BossMonster)
+		{
+			return;
+		}
+	}
+
+	BossList[BossList.Length] = BossMonster;
+
+	//There's already a boss monster using the boss UI. Currently we only want one at a time.
+	if (BossData.BossMonster != None)
+	{
+		return;
+	}
+
+	InitializeBossData(BossMonster);
+}
+
+simulated function InitializeBossData(P_ZombieBoss BossMonster)
+{
+	local int Index;
+
+	BossData.BossMonster = BossMonster;
+	BossData.BossClass = BossMonster.Class;
+	BossData.PlayInRatio = 0.f;
+	BossData.PlayOutRatio = 0.f;
+	
+	BossData.CurrentHealth = float(BossMonster.Health) / BossMonster.BossHealthMax;
+	BossData.LastCheckedHealth = BossData.CurrentHealth;
+	BossData.PreviousHealth = BossData.CurrentHealth;
+	BossData.LastLowestRecordedHealth = 1.f;
+	
+	BossData.HealthMax = BossMonster.BossHealthMax;
+
+	BossData.LastHit.HitAmount = 0.f;
+	BossData.LastHit.Ratio = 1.f;
+
+	BossData.CurrentHealToHealth = 0;
+	BossData.PreviousHealToHealth = 0;
+
+	BossData.CurrentSyringeCount = 3 - BossMonster.SyringeCount;
+
+	BossData.SyringeList[0].FadeRatio = 0.f;
+	BossData.SyringeList[1].FadeRatio = 0.f;
+	BossData.SyringeList[2].FadeRatio = 0.f;
+
+	Index = 3;
+	while (Index > BossData.CurrentSyringeCount && Index - 1 >= 0)
+	{
+		BossData.SyringeList[Index - 1].FadeRatio = 1.f;
+		Index--;
+	}
+}
+
+simulated function OnPlayOutComplete()
+{
+	local int Index;
+
+	if (BossList.Length == 0)
+	{
+		BossData.BossMonster = None;
+		BossData.BossClass = None;
+
+		BossData.PlayInRatio = 0.f;
+		BossData.PlayOutRatio = 0.f;
+
+		return;
+	}
+
+	for (Index = BossList.Length - 1; Index >= 0; Index--)
+	{
+		if (BossList[Index] == None || BossList[Index] == BossData.BossMonster)
+		{
+			BossList.Remove(Index, 1);
+		}
+	}
+
+	BossData.BossMonster = None;
+	BossData.BossClass = None;
+
+	BossData.PlayInRatio = 0.f;
+	BossData.PlayOutRatio = 0.f;
+
+	if (BossList.Length == 0)
+	{
+		return;
+	}
+
+	InitializeBossData(BossList[0]);
+}
+
+simulated function TickBossData(float DeltaTime)
+{
+	local P_ZombieBoss BossMonster;
+	local float NewHealthPercent, NewLowestHealthPercent;
+	local int SyringeIndex;
+
+	if (bIsTestGameMode)
+	{
+		return;
+	}
+
+	//No boss monster and we're not playing out a boss monster.
+	if (BossData.BossClass == None || (BossData.BossMonster == None && BossData.PlayOutRatio <= 0.f))
+	{
+		return;
+	}
+
+	if (BossData.PlayOutRatio > 0.f)
+	{
+		BossData.PlayOutRatio = Lerp(DeltaTime * BossDataFadeOutRate, BossData.PlayOutRatio, 0.f);
+
+		if (Abs(BossData.PlayOutRatio) < 0.001f)
+		{
+			OnPlayOutComplete();
+		}
+	}
+
+	if (BossData.PlayInRatio < 1.f)
+	{
+		BossData.PlayInRatio = Lerp(DeltaTime * BossDataFadeInRate, BossData.PlayInRatio, 1.f);
+
+		if (Abs(BossData.PlayInRatio - 1.f) < 0.0001f)
+		{
+			BossData.PlayInRatio = 1.f;
+		}
+	}
+
+	if (BossData.LastHit.Ratio < 1.f)
+	{
+		BossData.LastHit.Ratio += BossData.LastHit.FadeRate * DeltaTime;
+		BossData.LastHit.Ratio = FMin(BossData.LastHit.Ratio, 1.f);
+	}
+
+	BossMonster = BossData.BossMonster;
+	NewHealthPercent = (float(BossMonster.Health) / BossMonster.BossHealthMax);
+	NewLowestHealthPercent = (BossMonster.LowestHealth / BossMonster.BossHealthMax);
+
+	BossData.CurrentSyringeCount = 3 - BossMonster.SyringeCount;
+
+	if (NewHealthPercent != BossData.LastCheckedHealth)
+	{
+		BossData.CurrentHealth = NewHealthPercent;
+	
+		if (NewHealthPercent < BossData.LastCheckedHealth && BossData.PlayInRatio > 0.9f)
+		{
+			InitializeHitData(BossData);
+		}
+		
+		BossData.LastCheckedHealth = NewHealthPercent;
+
+		if (NewHealthPercent <= 0.f)
+		{
+			BossData.PlayOutRatio = 1.f;
+		}
+	}
+		
+	if (BossData.CurrentHealth < BossData.PreviousHealth)
+	{
+		BossData.PreviousHealth = Lerp(BossDataHealthInterpRate * DeltaTime, BossData.PreviousHealth, BossData.CurrentHealth);
+	}
+	else if (BossData.CurrentHealth > BossData.PreviousHealth)
+	{
+		BossData.PreviousHealth = Lerp(BossDataHealthInterpRate * DeltaTime * 4.f, BossData.PreviousHealth, BossData.CurrentHealth);
+		BossData.LastHit.HitAmount = 0.f;
+		BossData.LastHit.Ratio = 1.f;
+	}
+
+	if (BossData.LastHit.HitAmount > 0.f)
+	{
+		BossData.LastHit.HitAmount = Lerp(DeltaTime * BossData.LastHit.FadeRate, BossData.LastHit.HitAmount, BossData.CurrentHealth);
+		BossData.LastHit.Ratio = Lerp(DeltaTime * BossData.LastHit.FadeRate, BossData.LastHit.Ratio, 1.f);
+	}
+
+	if (NewLowestHealthPercent != BossData.LastLowestRecordedHealth)
+	{
+		//On lowest recorded health update... do something cool I guess?
+		BossData.LastLowestRecordedHealth = NewLowestHealthPercent;
+	}
+
+	SyringeIndex = 2;
+	while (SyringeIndex >= 0)
+	{
+		if (SyringeIndex + 1 <= BossData.CurrentSyringeCount)
+		{
+			break;
+		}
+
+		BossData.SyringeList[SyringeIndex].FadeRatio = FMin(BossData.SyringeList[SyringeIndex].FadeRatio + DeltaTime, 1.f);
+		SyringeIndex--;
+	}
+}
+
+simulated final function InitializeHitData(out BossEntry BossInfo)
+{	
+	BossInfo.LastHit.HitAmount = FMax(BossInfo.CurrentHealth, BossInfo.LastHit.HitAmount);
+	BossInfo.LastHit.FadeRate = 0.5f;
+	BossInfo.LastHit.Ratio = 0.f;
+}
+
+simulated function DrawBossHealthBar(Canvas C)
+{
+	local float TempX, TempY;
+	local float SizeX, SizeY;
+	local float TextSizeX, TextSizeY;
+	local float FadeRatio;
+	local float HealthPercent, DamagePercent;
+	local Color BarBackplateColor, FillColor;
+	local int SyringeIndex;
+	local float SyringeFadeRatio;
+
+	if (bIsTestGameMode)
+	{
+		return;
+	}
+
+	if (BossData.PlayOutRatio <= 0.f)
+	{
+		FadeRatio = FClamp(BossData.PlayInRatio, 0.f, 1.f);
+	}
+	else
+	{
+		FadeRatio = FClamp(BossData.PlayInRatio * BossData.PlayOutRatio, 0.f, 1.f);
+	}
+
+	HealthPercent = FClamp(BossData.PreviousHealth * BossData.PlayInRatio, 0.f, 1.f);
+	DamagePercent = FMax(BossData.LastHit.HitAmount - HealthPercent, 0.f);
+
+	SizeX = float(C.SizeX) * BossBarSize.X;
+	SizeY = float(C.SizeY) * BossBarSize.Y;
+
+	TempX = float(C.SizeX) * (0.5f - (BossBarSize.X / 2.f));
+	TempY = (float(C.SizeY) * ((BackplateSpacing.Y * 2.f) + BackplateSize.Y)) + ((1.f - FadeRatio) * SizeY * 2.f);
+
+	BarBackplateColor = MakeColor(0, 0, 0, FadeRatio * 180.f);
+	FillColor = MakeColor(255, 255, 255, FadeRatio * 255.f);
+
+	C.SetPos(TempX, TempY);
+
+	C.DrawColor = BarBackplateColor;
+	C.DrawTileStretched(BossHealthBarBackplate, SizeX, SizeY);
+
+	if (BossData.PlayInRatio > 0.9f && DamagePercent > 0.f && BossData.LastHit.Ratio < 1.f)
+	{
+		C.SetPos(TempX + (SizeX * HealthPercent), TempY);
+		C.DrawColor = MakeColor(255, 255, 255, FadeRatio * FMin((1.f - BossData.LastHit.Ratio) * 2.f, 1.f) * 255.f);
+		C.DrawTileClipped(BossHealthDamageBarFill, SizeX * DamagePercent, SizeY, 0, 0, SizeX * DamagePercent, BossHealthBarFill.MaterialVSize());
+	}
+	
+	C.SetPos(TempX, TempY);
+	C.DrawColor = FillColor;
+	C.DrawTileClipped(BossHealthBarFill, SizeX * HealthPercent, SizeY, 0, 0, SizeX * HealthPercent, BossHealthBarFill.MaterialVSize());
+
+	TempY += SizeY * 1.1f;
+	C.SetPos(TempX, TempY);
+	C.Font = TurboHUD.LoadFont(3 + FontSizeOffset);
+	C.TextSize("P", TextSizeX, TextSizeY);
+	C.DrawText(BossData.BossClass.default.MenuName);
+
+	TempX += SizeX;
+	TempY -= SizeY * 0.33f;
+	SyringeIndex = 0;
+	while(SyringeIndex < 3)
+	{
+		TempX -= TextSizeY;
+		C.DrawColor = BarBackplateColor;
+		C.SetPos(TempX, TempY);
+		C.DrawRect(BossSyringeBackplateIcon, TextSizeY, TextSizeY);
+
+		SyringeFadeRatio = BossData.SyringeList[SyringeIndex].FadeRatio;
+		SyringeIndex++;
+		if (SyringeFadeRatio >= 1.f)
+		{
+			TempX -= TextSizeY * 0.125f;
+			continue;
+		}
+		
+		FillColor.A = FadeRatio * 255.f * (1.f - SyringeFadeRatio);
+		C.DrawColor = FillColor;
+		C.SetPos(TempX - (TextSizeY * 0.125f), TempY - (TextSizeY * 0.125f));
+		C.DrawRect(BossSyringeIcon, TextSizeY, TextSizeY);
+		TempX -= TextSizeY * 0.125f;
+	}
+}
+
 defaultproperties
 {
 	bNeedTraderWaveInitialization=true
@@ -957,6 +1329,18 @@ defaultproperties
 	ActiveWaveFadeRate=2.f
 	ActiveWaveSizeRate=4.f
 	NumberZedsInterpRate=2.f
+
+	BossDataFadeInRate=1.f
+	BossDataFadeOutRate=4.f
+	BossDataHealthInterpRate=8.f
+
+	BossBarSize=(X=0.7f,Y=0.03)
+	BossHealthBarBackplate=Texture'KFTurbo.HUD.ContainerSquare_D'
+	BossHealthBarFill=FinalBlend'KFTurbo.Boss.Bar_FB'
+	BossHealthDamageBarFill=Texture'KFTurbo.Boss.DamageBar_D'
+
+	BossSyringeIcon=Texture'KFTurbo.Boss.Syringe_D'
+	BossSyringeBackplateIcon=Texture'KFTurbo.Boss.SyringeBack_D'
 
 	BackplateColor=(R=0,G=0,B=0,A=140)
 
