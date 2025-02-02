@@ -156,11 +156,25 @@ function float SetAdminMaxMonstersModifier(float NewAdminMaxMonstersModifier)
 event PlayerController Login(string Portal, string Options, out string Error)
 {
     local PlayerController PlayerController;
+    local bool bJoinedAsSpectatorOnly;
+
     PlayerController = Super.Login(Portal, Options, Error);
 
-    if (!PlayerController.PlayerReplicationInfo.bOnlySpectator)
+    if (PlayerController == None)
+    {
+        return;
+    }
+
+    bJoinedAsSpectatorOnly = PlayerController.PlayerReplicationInfo.bOnlySpectator;
+
+    if (!bJoinedAsSpectatorOnly)
     {
         PlayerController.PlayerReplicationInfo.Score = GetPlayerStartingCash();
+    }
+    
+    if (bJoinedAsSpectatorOnly && bWaveInProgress)
+    {
+        TurboPlayerController(PlayerController).bWasSpectatingWave = true;
     }
 
     return PlayerController;
