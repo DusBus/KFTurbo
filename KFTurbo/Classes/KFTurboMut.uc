@@ -380,7 +380,7 @@ defaultproperties
 	bDebugClientPerkRepLink=false
 
 	bCheckLatestTurboVersion=true
-	TurboVersion="5.5.6"
+	TurboVersion="5.6.0"
 	bHasVersionUpdate=false
 
 	bRequireAdminForDifficultyCommands=true
