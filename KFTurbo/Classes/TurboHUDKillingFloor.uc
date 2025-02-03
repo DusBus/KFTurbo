@@ -1398,11 +1398,11 @@ simulated function SetFontLocale(string LocaleString)
 		case "JPN":
 			FontHelperClass=class'KFTurboFontsJP.KFTurboFontHelperJP';
 			break;
-		case "KOR":
-			FontHelperClass=class'KFTurboFontsKR.KFTurboFontHelperKR';
-			break;
 		case "CYR":
 			FontHelperClass=class'KFTurboFontsCY.KFTurboFontHelperCY';
+			break;
+		default:
+			FontHelperClass=class'KFTurboFonts.KFTurboFontHelperEN';
 			break;
 	}
 }

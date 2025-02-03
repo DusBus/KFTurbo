@@ -424,7 +424,7 @@ static final function string GetFontLocale(TurboPlayerController PlayerControlle
 		return PlayerController.TurboInteraction.FontLocale;
 	}
 
-	return "EN";
+	return "ENG";
 }
 
 simulated function UpdateFontLocale()

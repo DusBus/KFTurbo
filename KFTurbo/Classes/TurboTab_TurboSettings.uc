@@ -14,7 +14,7 @@ var bool bHasInitialized;
 var array< class<TurboVeterancyTypes> > VeterancyClassList;
 var array< GUIComboBox > VeterancyTierComboBoxList;
 
-var string LocaleOptionList[4];
+var string LocaleOptionList[3]; //3 for now (ENG/JPN/CYR). KOR will be added eventually but need to figure out the character set.
 
 function ShowPanel(bool bShow)
 {
@@ -131,12 +131,13 @@ function InitializePage()
     RightSection.ManageComponent(UseBaseGameChatFontBox);
     UseBaseGameChatFontBox.Checked(class'TurboInteraction'.static.ShouldUseBaseGameFontForChat(PlayerController));
     
+    FontLocaleComboBox.bIgnoreChange = true;
     RightSection.ManageComponent(FontLocaleComboBox);
     FontLocaleComboBox.AddItem(LocaleOptionList[0]);
     FontLocaleComboBox.AddItem(LocaleOptionList[1]);
     FontLocaleComboBox.AddItem(LocaleOptionList[2]);
-    FontLocaleComboBox.AddItem(LocaleOptionList[3]);
     FontLocaleComboBox.SetIndex(GetFontLocaleIndex(class'TurboInteraction'.static.GetFontLocale(PlayerController)));
+    FontLocaleComboBox.bIgnoreChange = false;
     
     PlayerController.GenerateExtraOptions(Self, PipebombGroupCheckBox.TabOrder);
 }
@@ -251,10 +252,8 @@ function int GetFontLocaleIndex(string Locale)
             return 0;
         case "JPN":
             return 1;
-        case "KOR":
-            return 2;
         case "CYR":
-            return 3;
+            return 2;
     }
 
     return 0;
@@ -278,8 +277,7 @@ defaultproperties
 
     LocaleOptionList(0)="ENG"
     LocaleOptionList(1)="JPN"
-    LocaleOptionList(2)="KOR"
-    LocaleOptionList(3)="CYR"
+    LocaleOptionList(2)="CYR"
 
     Begin Object Class=GUISectionBackground Name=BGLeftSection
         bFillClient=True
