@@ -108,7 +108,7 @@ simulated function ApplyHeadSizeModification(KFMonster Monster)
 {
     local float ExtCollisionHeightScale, ExtCollisionRadiusScale;
 
-    if (Monster.MyExtCollision.Role != ROLE_Authority && MonsterHeadSizeModifier > 1.f && Monster.MyExtCollision != None)
+    if (Monster.MyExtCollision != None && Monster.MyExtCollision.Role != ROLE_Authority && MonsterHeadSizeModifier > 1.f)
     {
         ExtCollisionHeightScale = ((MonsterHeadSizeModifier - 1.f) * 0.5f) + 1.f;
         ExtCollisionRadiusScale = ((MonsterHeadSizeModifier - 1.f) * 0.25f) + 1.f;
