@@ -194,13 +194,7 @@ simulated function float GetOriginalGroundSpeed()
 }
 
 function OldPlayHit(float Damage, Pawn InstigatedBy, vector HitLocation, class<DamageType> DamageType, vector Momentum, optional int HitIndex)
-{
-    //We're about to stun this guy, do not play other hit reactions.
-    if(Health > 0 && Damage > (float(Default.Health) / 1.5f))
-    {
-        return;
-    }
-    
+{    
     Super.OldPlayHit(Damage, InstigatedBy, HitLocation, DamageType, Momentum, HitIndex);
 }
 
@@ -211,19 +205,13 @@ function PlayTakeHit(vector HitLocation, int Damage, class<DamageType> DamageTyp
 		return;
     }
 
-    //We're about to stun this guy, do not play other hit reactions.
-    if(Health > 0 && Damage > (float(Default.Health) / 1.5f))
-    {
-        return;
-    }
-
     if (class'PawnHelper'.static.ShouldPlayHit(Self, AfflictionData))
     {
         if((Level.Game.GameDifficulty < 5.0 || StunsRemaining != 0) && Damage >= 150)
         {
             PlayDirectionalHit(HitLocation);
         }
-
+        
         LastPainAnim = Level.TimeSeconds;
     }
 
