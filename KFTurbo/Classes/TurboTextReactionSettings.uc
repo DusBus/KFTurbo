@@ -9,6 +9,7 @@ struct TextSoundMap
     var string SoundRef;
     var Sound Sound;
     var float CooldownTime;
+    var bool bFullCooldown;
 };
 
 var array<TextSoundMap> TextSoundList;
@@ -56,7 +57,16 @@ simulated function ReceivedMessage(TurboPlayerController PlayerController, strin
                 return;
             }
 
-            TextSoundList[Index].CooldownTime = PlayerController.Level.TimeSeconds + TextSoundList[Index].Sound.Duration + 0.5f;
+
+            if (TextSoundList[Index].bFullCooldown)
+            {
+                TextSoundList[Index].CooldownTime = PlayerController.Level.TimeSeconds + TextSoundList[Index].Sound.Duration + 0.5f;
+            }
+            else
+            {
+                TextSoundList[Index].CooldownTime = PlayerController.Level.TimeSeconds + (TextSoundList[Index].Sound.Duration * 0.5f) + 0.5f;
+            }
+
             PlayLocalSound(PlayerController, TextSoundList[Index].Sound);
             return;
         }
@@ -67,9 +77,10 @@ defaultproperties
 {
     TextSoundList(0)=(Text=":goosecooked:",SoundRef="KFTurbo.UI.goosecooked")
     TextSoundList(1)=(Text=":plink:",SoundRef="KFTurbo.UI.plink")
-    TextSoundList(2)=(Text=":nervous:",SoundRef="KFTurbo.UI.NervousTerran")
+    TextSoundList(2)=(Text=":nervous:",SoundRef="KFTurbo.UI.NervousTerran",bFullCooldown=true)
     TextSoundList(3)=(Text=":peasant:",SoundRef="KFTurbo.UI.Peasant")
-    TextSoundList(4)=(Text=":shame:",SoundRef="KFTurbo.UI.WhatAShame")
+    TextSoundList(4)=(Text=":shame:",SoundRef="KFTurbo.UI.WhatAShame",bFullCooldown=true)
     TextSoundList(5)=(Text=":abouttime:",SoundRef="KFTurbo.UI.abouttime")
-    TextSoundList(6)=(Text=":thatsterror:",SoundRef="KFTurbo.UI.ThatsTerror")
+    TextSoundList(6)=(Text=":thatsterror:",SoundRef="KFTurbo.UI.ThatsTerror",bFullCooldown=true)
+    TextSoundList(7)=(Text=":metalpipe:",SoundRef="KFTurbo.UI.MetalPipe")
 }
