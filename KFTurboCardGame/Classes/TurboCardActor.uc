@@ -112,24 +112,28 @@ simulated event Destroyed()
 	{
 		CardScriptedTexture.Reset();
 		Level.ObjectPool.FreeObject(CardScriptedTexture);
+		CardScriptedTexture = None;
 	}
 
 	if (CardOpacity != None)
 	{
 		CardOpacity.Reset();
 		Level.ObjectPool.FreeObject(CardOpacity);
+		CardOpacity = None;
 	}
 
 	if (CardDiffuse != None)
 	{
 		CardDiffuse.Reset();
 		Level.ObjectPool.FreeObject(CardDiffuse);
+		CardDiffuse = None;
 	}
 
 	if (CardShader != None)
 	{
 		CardShader.Reset();
 		Level.ObjectPool.FreeObject(CardShader);
+		CardShader = None;
 	}
 
 	Super.Destroyed();
