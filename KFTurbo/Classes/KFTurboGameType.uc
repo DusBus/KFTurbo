@@ -165,6 +165,11 @@ event PlayerController Login(string Portal, string Options, out string Error)
 
     PlayerController = Super.Login(Portal, Options, Error);
 
+    if (Level.bLevelChange)
+    {
+        return PlayerController;
+    }
+
     if (PlayerController == None)
     {
         return None;
@@ -187,7 +192,7 @@ event PlayerController Login(string Portal, string Options, out string Error)
 
 function Logout(Controller Exiting)
 {
-    if (TurboPlayerController(Exiting) != None)
+    if (!Level.bLevelChange && TurboPlayerController(Exiting) != None)
     {
         DistributeCash(TurboPlayerController(Exiting));
     }
@@ -200,11 +205,6 @@ function DistributeCash(TurboPlayerController ExitingPlayer)
 	local int Index;
 	local float Score;
 	local array<TurboPlayerController> PlayerList;
-
-    if (Level.bLevelChange)
-    {
-        return;
-    }
 
 	PlayerList = class'TurboGameplayHelper'.static.GetPlayerControllerList(Level);
     
