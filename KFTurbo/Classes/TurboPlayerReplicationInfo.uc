@@ -79,6 +79,12 @@ simulated function Destroyed()
 {
     local int Index;
 
+    if (Level.bLevelChange)
+    {
+        Super.Destroyed();
+        return;
+    }
+
     for (Index = StatCollectorList.Length - 1; Index >= 0; Index--)
     {
         if (StatCollectorList[Index] != None)
