@@ -51,6 +51,13 @@ event InitGame( string Options, out string Error )
     InitializeMapConfigurationObject();
 }
 
+function ProcessServerTravel( string URL, bool bItems )
+{
+    MapConfigurationObject = None;
+
+    Super.ProcessServerTravel(URL, bItems);
+}
+
 function InitializeMapConfigurationObject()
 {
     local string MapName;
