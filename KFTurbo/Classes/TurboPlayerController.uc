@@ -55,7 +55,7 @@ simulated function PostBeginPlay()
 		Spawn(class'TurboRepLinkFix', Self);
 	}
 
-	if (Role == ROLE_Authority)
+	if (Role == ROLE_Authority && !Level.bLevelChange)
 	{
 		class'TurboPlayerEventHandler'.static.RegisterPlayerEventHandler(Self, class'TurboPlayerStatsEventHandler');
 		class'TurboHealEventHandler'.static.RegisterHealHandler(Self, class'TurboPlayerStatsHealEventHandler');
@@ -77,7 +77,10 @@ simulated function InitInputSystem()
 {
 	Super.InitInputSystem();
 
-	SetupTurboInteraction();
+	if (!Level.bLevelChange)
+	{
+		SetupTurboInteraction();
+	}
 }
 
 exec function ChangeCharacter(string newCharacter, optional string inClass)
