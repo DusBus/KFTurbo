@@ -88,6 +88,11 @@ function AddMutator(Mutator M)
 
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 {
+	if (Level.bLevelChange)
+	{
+		return true;
+	}
+
 	if (RepLinkHandler != none && ServerStStats(Other) != None)
 	{
 		RepLinkHandler.OnServerStatsAdded(ServerStStats(Other));

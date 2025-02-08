@@ -149,6 +149,11 @@ static function string GetHUDReplacementClass(string HUDClassString)
 
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 {
+	if (Level.bLevelChange)
+	{
+		return true;
+	}
+
 	if (KFPlayerReplicationInfo(Other) != None)
 	{
 		AddTurboPlayerMarkReplicationInfo(KFPlayerReplicationInfo(Other));
