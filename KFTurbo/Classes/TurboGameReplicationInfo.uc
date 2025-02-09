@@ -1,11 +1,13 @@
 //Killing Floor Turbo TurboGameReplicationInfo
-//KFTurbo's GRI. Hooks up CustomTurboModifier and CustomTurboClientModifier systems.
+//KFTurbo's GRI. Hooks up CustomTurboModifier, CustomTurboClientModifier, and voting systems.
 //Distributed under the terms of the GPL-2.0 License.
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboGameReplicationInfo extends KFGameReplicationInfo;
 
 var TurboGameModifierReplicationLink CustomTurboModifier;
 var TurboClientModifierReplicationLink CustomTurboClientModifier;
+
+var array<TurboGameVoteBase> VoteInstanceList;
 
 replication
 {
