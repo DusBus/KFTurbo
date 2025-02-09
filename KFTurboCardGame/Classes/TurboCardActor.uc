@@ -1,6 +1,6 @@
 //Killing Floor Turbo TurboCardActor
 //Client-only actor. Responsible for doing CardScriptedTexture rendering so that the UI can use it.
-//Distributed under the terms of the GPL-2.0 License.
+//Distributed under the terms of the MIT License.
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboCardActor extends Info;
 

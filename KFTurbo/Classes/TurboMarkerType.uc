@@ -1,6 +1,6 @@
 //Killing Floor Turbo TurboMarkerType
 //Special class that allows for special behaviour for a marked actor.
-//Distributed under the terms of the GPL-2.0 License.
+//Distributed under the terms of the MIT License.
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboMarkerType extends Object
     abstract;

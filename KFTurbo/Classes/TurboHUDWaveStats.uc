@@ -1,6 +1,6 @@
 //Killing Floor Turbo TurboHUDWaveStats
 //Handles wave player stats UI.
-//Distributed under the terms of the GPL-2.0 License.
+//Distributed under the terms of the MIT License.
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboHUDWaveStats extends TurboHUDOverlay
     hidecategories(Advanced,Collision,Display,Events,Force,Karma,LightColor,Lighting,Movement,Object,Sound);

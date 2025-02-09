@@ -1,6 +1,6 @@
 //Killing Floor Turbo TurboGameModifierReplicationLink
 //ReplicationInfo that represents a voting instance. All voting through this is done via Yes/No.
-//Distributed under the terms of the GPL-2.0 License.
+//Distributed under the terms of the MIT License.
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboGameVoteBase extends ReplicationInfo
     abstract;

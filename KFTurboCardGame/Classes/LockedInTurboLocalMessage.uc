@@ -1,6 +1,6 @@
 //Killing Floor Turbo LockedInTurboLocalMessage
 //Represents a reason why perk selection is locked for a player.
-//Distributed under the terms of the GPL-2.0 License.
+//Distributed under the terms of the MIT License.
 //For more information see https://github.com/KFPilot/KFTurbo.
 class LockedInTurboLocalMessage extends PerkLockTurboLocalMessage;
 

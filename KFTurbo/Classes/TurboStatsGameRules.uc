@@ -1,7 +1,7 @@
 //Killing Floor Turbo TurboStatsGameRules
 //Responsible for managing stat collectors/replications and broadcasting events related to kills/damage.
 //Needs to be at the front of the GameRules list so it can make sure all rules have gone first.
-//Distributed under the terms of the GPL-2.0 License.
+//Distributed under the terms of the MIT License.
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboStatsGameRules extends TurboGameRules
 	config(KFTurbo);

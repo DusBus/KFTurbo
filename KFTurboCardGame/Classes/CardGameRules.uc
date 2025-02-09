@@ -1,6 +1,6 @@
 //Killing Floor Turbo CardGameRules
 //Used to apply a variety of gameplay effects. Moved handling of modifying spawned actors here as well out of the Mutator.
-//Distributed under the terms of the GPL-2.0 License.
+//Distributed under the terms of the MIT License.
 //For more information see https://github.com/KFPilot/KFTurbo.
 class CardGameRules extends TurboGameRules
     dependson(PawnHelper)

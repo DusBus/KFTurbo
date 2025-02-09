@@ -1,6 +1,6 @@
 //Killing Floor Turbo TurboLocalMessage
 //Base class for KFTurbo local messages. Adds the ability to conditionally ignore a local message per player (on the client's end).
-//Distributed under the terms of the GPL-2.0 License.
+//Distributed under the terms of the MIT License.
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboLocalMessage extends LocalMessage;
 

@@ -1,6 +1,6 @@
 //Killing Floor Turbo TurboHUDWaveInfo
 //Handles wave info-related UI such as wave number, remaining monsters/trader time, monster kill feed.
-//Distributed under the terms of the GPL-2.0 License.
+//Distributed under the terms of the MIT License.
 //For more information see https://github.com/KFPilot/KFTurbo.
 class TurboHUDWaveInfo extends TurboHUDOverlay
     hidecategories(Advanced,Collision,Display,Events,Force,Karma,LightColor,Lighting,Movement,Object,Sound);
